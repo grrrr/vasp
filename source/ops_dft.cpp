@@ -71,8 +71,9 @@ static BL fft_inv_real_any(I cnt,F *dt)
 		return false;
 	}
 
+	int i;
 	re[0] = dt[0]; im[0] = 0;
-	for(I i = 1; i < cnt/2; ++i) {
+	for(i = 1; i < cnt/2; ++i) {
 		re[i] = re[cnt-i] = dt[i];
 		im[i] = -(im[cnt-i] = dt[cnt-i]);
 	}

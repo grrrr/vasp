@@ -470,7 +470,7 @@ public:																			\
 protected:																		\
 	virtual Vasp *tx_work() { return ref.m_##op(); }							\
 };																				\
-FLEXT_NEW(name,vasp_u_##op)
+FLEXT_LIB(name,vasp_u_##op)
 
 #define VASP_UNARY_SETUP(op) FLEXT_SETUP(vasp_u_##op);  
 
@@ -485,7 +485,7 @@ public:																			\
 protected:																		\
 	virtual Vasp *tx_work(const Argument &arg) { return ref.m_##op(arg); }		\
 };																				\
-FLEXT_NEW_G(name,vasp_b_##op)
+FLEXT_LIB_G(name,vasp_b_##op)
 
 #define VASP_BINARY_SETUP(op) FLEXT_SETUP(vasp_b_##op);  
 

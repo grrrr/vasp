@@ -11,8 +11,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 #include <math.h>
 
+#ifndef PI
 #define PI 3.1415926535897932385
-
+#endif
 
 static BL d_osc(F *dt,F frq,I cnt) 
 { 

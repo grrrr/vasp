@@ -11,7 +11,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 #include <math.h>
 
+#ifndef PI
 #define PI 3.1415926535897932385
+#endif
 
 inline F sgn(F x) { return x < 0.?-1.F:1.F; }
 

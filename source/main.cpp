@@ -11,10 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 
 
-#ifdef PD
-// Initialization for pd xsample library
-
-extern "C" FLEXT_EXT V vasp_setup()
+V vasp_setup()
 {
 	post("VASP modular %s - vector assembling signal processor, (C)2002 Thomas Grill",VASP_VERSION);
 	post("");
@@ -92,7 +89,8 @@ extern "C" FLEXT_EXT V vasp_setup()
 	VASP_UNARY_SETUP(cfft)
 	VASP_UNARY_SETUP(cifft)
 }
-#endif
+
+FLEXT_LIB_SETUP("vasp",vasp_setup)
 
 ///////////////////////////////////////////////////////////////////////////
 

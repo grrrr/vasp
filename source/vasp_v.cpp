@@ -33,7 +33,7 @@ private:
 */
 };
 
-FLEXT_NEW_G("vasp",vasp_v)
+FLEXT_LIB_G("vasp",vasp_v)
 
 vasp_v::vasp_v(I argc,t_atom *argv)
 {
