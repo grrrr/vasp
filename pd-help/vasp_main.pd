@@ -1,5 +1,5 @@
-#N canvas 0 0 549 583 10;
-#N canvas 49 0 334 401 objects 0;
+#N canvas 11 4 551 585 10;
+#N canvas 49 0 336 403 objects 0;
 #N canvas 306 143 429 271 vasp.displace 0;
 #X text 158 165 rotate buffer content symmetrically;
 #X obj 80 164 vasp.xrot;
@@ -16,7 +16,7 @@
 #X obj 35 22 cnv 15 15 15 empty empty vasp_displace 0 10 1 14 -262144
 -1 0;
 #X restore 72 214 pd vasp.displace;
-#N canvas 407 1 538 682 define_vasps 0;
+#N canvas 407 1 540 684 define_vasps 0;
 #X obj 74 626 vasp.part;
 #X obj 74 595 vasp.gather;
 #X obj 74 564 vasp.spit;
@@ -88,7 +88,7 @@
 #X obj 59 28 cnv 15 15 15 empty empty vasp_utilities 0 10 1 14 -262144
 -1 0;
 #X restore 72 295 pd vasp.utilities;
-#N canvas 195 285 647 297 vasp.minmax_etc. 0;
+#N canvas 195 285 649 299 vasp.minmax_etc. 0;
 #X obj 422 250 vasp.rmin;
 #X obj 422 218 vasp.rmax;
 #X text 511 250 radius minimum;
@@ -138,7 +138,7 @@
 #X obj 35 22 cnv 15 15 15 empty empty vasp_transcendent 0 10 1 14 -262144
 -1 0;
 #X restore 72 241 pd vasp.transcendent;
-#N canvas 407 0 589 625 vasp.arithmetic 0;
+#N canvas 407 0 591 627 vasp.arithmetic 0;
 #X obj 301 137 vasp.c!-;
 #X text 150 135 reverse subtraction;
 #X obj 74 134 vasp.!-;
@@ -246,7 +246,7 @@
 #X restore 169 312 pd objects;
 #X text 54 169 vasp objects are using a specialized message syntax
 for all objects to refer to a buffer or a part of it.;
-#N canvas 6 13 948 628 syntax 0;
+#N canvas 6 13 950 630 syntax 0;
 #X text 76 52 the vasp message:;
 #X obj 75 20 cnv 15 15 15 empty empty vasp_syntax 0 10 1 14 -262144
 -1 0;
@@ -365,6 +365,7 @@ can differ in the buffers and offsets;
 #X connect 21 0 23 0;
 #X connect 23 0 22 0;
 #X connect 25 0 24 0;
+#X connect 28 0 25 0;
 #X connect 32 0 34 0;
 #X connect 34 0 33 0;
 #X connect 36 0 35 0;
@@ -416,8 +417,8 @@ guenther rabl at www.canto-crudo.com;
 #X restore 169 380 pd links;
 #X text 86 379 useful links;
 #X text 96 346 vasps units;
-#N canvas 49 240 509 376 units 0;
-#N canvas 442 226 402 338 Hz_to_period_length 0;
+#N canvas 49 240 511 378 units 0;
+#N canvas 442 226 404 340 Hz_to_period_length 0;
 #X text 17 201 current sampling rate;
 #X floatatom 157 241 0 0 0;
 #X obj 157 143 t b f;
@@ -455,9 +456,6 @@ in the buffer;
 #X restore 169 347 pd units;
 #X text 67 311 the vasp objects;
 #X text 68 273 the vasp message;
-#X text 54 123 vasp is a library of objects for max/msp and pd \, enabling
-functions to generate and modify vectors as well as buffer content
-in a non-realtime context.;
 #X text 51 497 pd version of the help-patches by marius schebella.
 ;
 #X obj 61 37 cnv 2 2 2 empty 2-1-r empty 20 12 64 14 -225271 -262144
@@ -831,3 +829,6 @@ in a non-realtime context.;
 0;
 #X obj 89 61 cnv 2 2 2 empty 14-15-r empty 20 12 64 14 -225271 -262144
 0;
+#X text 54 123 vasp is a library of objects for max/msp and pd \, containing
+functions to generate and modify vectors as well as buffer content
+in a non-realtime context.;
