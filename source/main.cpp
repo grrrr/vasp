@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 
 
-const C *VASP_VERSION = "0.1.1";
+const C *VASP_VERSION = "0.1.2pre2";
 
 V lib_setup()
 {
