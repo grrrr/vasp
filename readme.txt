@@ -41,6 +41,9 @@ Goals/features of the package:
 Version history:
 
 0.0.3:
+- restructured the code for future use of break-point lists as arguments
+- changes some object's names
+- new objects: vasp.min?, vasp.max? and the likes
 
 0.0.2:
 - vasp.cmin,vasp.cmax - renamed to vasp.rmin,vasp.rmax
@@ -86,8 +89,6 @@ objects:
 - wave object for table-lookup oscs.
 - various random distributions for noise
 
-- spin: polar -> phase difference -> power -> cartesian   ( convention: abs(phase difference) <= pi ) 
-
 - search functions for values -> offset
 
 - envelopes
@@ -96,6 +97,7 @@ objects:
 
 bugs:
 
+- vasp.min? , vasp.max? : right outlet is no dedicated float outlet -> can't plug into number box!
 
 tests:
 
