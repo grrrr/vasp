@@ -221,14 +221,14 @@ BufEntry *BufLib::Resize(BufEntry *e,I fr,BL keep,BL zero)
 		e->len = fr;
 	}
 	else {
-		S *nd = new S[fr];
+		S *nd = new S[fr]; 
 		if(keep) {
 			I l = fr;
 			if(e->len < l) {
 				l = e->len;
-				if(zero) flext::ZeroMem(e->data+e->len,(fr-e->len)*sizeof(*e->data));
+				if(zero) flext::ZeroMem(nd+l,(fr-l)*sizeof(*nd));
 			}
-			flext::CopyMem(e->data,nd,l);
+			flext::CopyMem(nd,e->data,l*sizeof(*nd));
 		}
 
 		delete[] e->data;
