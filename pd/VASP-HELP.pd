@@ -1,5 +1,5 @@
-#N canvas 211 19 620 644 10;
-#N canvas 49 0 356 425 objects 0;
+#N canvas 211 19 622 646 10;
+#N canvas 49 0 358 427 objects 0;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
 -1 0;
 #N canvas 306 143 558 381 vasp.displace 0;
@@ -23,7 +23,7 @@
 #X text 161 310 buffer is divided in two symmetrical halves and each
 one is resampled around a center position;
 #X restore 72 213 pd vasp.displace;
-#N canvas 254 4 711 704 define_vasps 0;
+#N canvas 254 4 713 706 define_vasps 0;
 #X obj 63 627 vasp.part;
 #X obj 63 596 vasp.gather;
 #X obj 63 565 vasp.spit;
@@ -78,8 +78,11 @@ one is resampled around a center position;
 #X obj 554 367 vasp.size/;
 #X obj 554 389 vasp.size?;
 #X obj 519 511 vasp.offset=;
+#X obj 523 559 vasp.imm;
+#X obj 526 599 vasp.copy;
+#X obj 526 623 vasp.ccopy;
 #X restore 72 78 pd define_vasps;
-#N canvas 188 241 785 414 vasp.utilities 0;
+#N canvas 188 241 787 416 vasp.utilities 0;
 #X text 156 275 symmetrical resampling;
 #X obj 77 245 vasp.tilt;
 #X text 155 246 resampling;
@@ -106,11 +109,9 @@ one is resampled around a center position;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_utilities 0 10 1 14 -262144
 -1 0;
 #X obj 77 276 vasp.xtilt;
-#X obj 78 322 vasp.copy;
 #X obj 78 352 vasp.fix;
-#X obj 256 325 vasp.imm;
 #X obj 255 353 vasp.radio;
-#X obj 408 328 vasp;
+#X obj 382 322 vasp;
 #X restore 72 321 pd vasp.utilities;
 #N canvas 195 285 651 301 vasp.minmax_etc. 0;
 #X obj 422 250 vasp.rmin;
