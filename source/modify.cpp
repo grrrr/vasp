@@ -28,13 +28,8 @@ V vasp_modify::cb_setup(t_class *c)
 	FLEXT_ADDMETHOD_G(c,"mmax",m_mmax);
 
 	// unary functions
-	FLEXT_ADDMETHOD(c,"norm",m_norm);
-	FLEXT_ADDMETHOD(c,"cnorm",m_cnorm);
-//	FLEXT_ADDMETHOD(c,"opt",m_norm);
-//	FLEXT_ADDMETHOD(c,"copt",m_cnorm);
-
 	FLEXT_ADDMETHOD_1(c,"pow",m_pow,F);
-	FLEXT_ADDMETHOD_G(c,"cpow",m_cpow);
+//	FLEXT_ADDMETHOD_G(c,"cpow",m_cpow);
 	FLEXT_ADDMETHOD(c,"sqr",m_sqr);
 	FLEXT_ADDMETHOD(c,"csqr",m_csqr);
 	FLEXT_ADDMETHOD_1(c,"root",m_root,F);
@@ -46,6 +41,15 @@ V vasp_modify::cb_setup(t_class *c)
 	FLEXT_ADDMETHOD(c,"polar",m_polar);
 	FLEXT_ADDMETHOD(c,"cart",m_cart);
 
+	FLEXT_ADDMETHOD(c,"norm",m_norm);
+	FLEXT_ADDMETHOD(c,"cnorm",m_cnorm);
+//	FLEXT_ADDMETHOD(c,"opt",m_norm);
+//	FLEXT_ADDMETHOD(c,"copt",m_cnorm);
+
+	FLEXT_ADDMETHOD(c,"cswap",m_cswap);
+	FLEXT_ADDMETHOD(c,"cconj",m_cconj);
+
+/*
 	// Buffer rearrange functions
 	FLEXT_ADDMETHOD_1(c,"shift",m_shift,F);
 	FLEXT_ADDMETHOD_1(c,"xshift",m_xshift,F);
@@ -69,6 +73,7 @@ V vasp_modify::cb_setup(t_class *c)
 	FLEXT_ADDMETHOD(c,"cfft",m_cfft);
 	FLEXT_ADDMETHOD(c,"cifft",m_cifft);
 //	FLEXT_ADDMETHOD(c,"cfft-",m_cifft);
+*/
 }
 
 

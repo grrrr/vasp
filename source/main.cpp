@@ -208,7 +208,7 @@ vasp &vasp::operator ()(I argc,t_atom *argv)
 vasp &vasp::MakeList(BL withvasp)
 {
 	I voffs = withvasp?1:0;
-	I needed = voffs+1+Channels()*3;
+	I needed = voffs+1+Vectors()*3;
 	if(!atomlist || needed != atoms) {
 		if(atomlist) delete[] atomlist;
 		atomlist = new t_atom[atoms = needed];
@@ -219,8 +219,8 @@ vasp &vasp::MakeList(BL withvasp)
 
 	SETFLINT(&atomlist[voffs],frames);  // frames
 
-	for(I ix = 0; ix < Channels(); ++ix) {
-		Ref &r = Channel(ix);
+	for(I ix = 0; ix < Vectors(); ++ix) {
+		Ref &r = Vector(ix);
 		SETSYMBOL(&atomlist[voffs+1+ix*3],r.sym);  // buf
 		SETFLINT(&atomlist[voffs+2+ix*3],r.chn);  // chn
 		SETFLINT(&atomlist[voffs+3+ix*3],r.offs);  // offs
@@ -231,8 +231,12 @@ vasp &vasp::MakeList(BL withvasp)
 
 vbuffer *vasp::Buffer(I ix) const
 {
-	const Ref &r = Channel(ix);
-	return new vbuffer(r.Symbol(),r.Channel(),Frames(),r.Offset());
+	if(ix < Vectors()-1) 
+		return NULL;
+	else {
+		const Ref &r = Vector(ix);
+		return new vbuffer(r.Symbol(),r.Channel(),Frames(),r.Offset());
+	}
 }
 
 

@@ -70,26 +70,26 @@ public:
 	// set used channels to 0
 	vasp &Clear() { frames = 0; chns = 0; return *this; }
 
-	// used channels
-	I Channels() const { return chns; }
+	// used vectors
+	I Vectors() const { return chns; }
 
 	// length of the vasp (in frames)
 	I Frames() const { return frames; }
 
-	BL Ok() const { return ref && Channels() > 0; }
-	BL Complex() const { return ref && Channels() >= 2 && ref[1].sym != NULL; }
+	BL Ok() const { return ref && Vectors() > 0; }
+	BL Complex() const { return ref && Vectors() >= 2 && ref[1].sym != NULL; }
 
-	// get any channel - test if in range 0..Channels()-1!
-	const Ref &Channel(I ix) const { return ref[ix]; }
-	Ref &Channel(I ix) { return ref[ix]; }
+	// get any vector - test if in range 0..Vectors()-1!
+	const Ref &Vector(I ix) const { return ref[ix]; }
+	Ref &Vector(I ix) { return ref[ix]; }
 
 	// get real part - be sure that Ok!
-	const Ref &Real() const { return Channel(0); }
-	Ref &Real() { return Channel(0); }
+	const Ref &Real() const { return Vector(0); }
+	Ref &Real() { return Vector(0); }
 
 	// get imaginary part - be sure that Complex!
-	const Ref &Imag() const { return Channel(1); }
-	Ref &Imag() { return Channel(1); }
+	const Ref &Imag() const { return Vector(1); }
+	Ref &Imag() { return Vector(1); }
 
 	// get buffer associated to a channel
 	vbuffer *Buffer(I ix) const;
@@ -171,29 +171,36 @@ public:
 	virtual I m_set(I argc,t_atom *argv); // set destination (non-triggering)
 
 	// assignment functions
-	virtual V m_copy(I argc,t_atom *argv); // copy to (one vec or real/complex)
+	virtual V m_copy(I argc,t_atom *argv); // copy to (one vec or real)
+	virtual V m_ccopy(I argc,t_atom *argv); // complex copy (pairs of vecs or complex)
 	virtual V m_mcopy(I argc,t_atom *argv); // copy to (multi-channel)
 //	virtual V m_mix(I argc,t_atom *argv); // mix in (one vec or real/complex)
 //	virtual V m_mmix(I argc,t_atom *argv); // mix in (multi-channel)
 
 	// binary functions
-	virtual V m_add(I argc,t_atom *argv); // add to (one vec or real/complex)
+	virtual V m_add(I argc,t_atom *argv); // add to (one vec or real)
+	virtual V m_cadd(I argc,t_atom *argv); // complex add (pairs of vecs or complex)
 	virtual V m_madd(I argc,t_atom *argv); // add to (multi-channel)
 	virtual V m_sub(I argc,t_atom *argv); // sub from (one vec or real/complex)
+	virtual V m_csub(I argc,t_atom *argv); // complex sub (pairs of vecs or complex)
 	virtual V m_msub(I argc,t_atom *argv); // sub from (multi-channel)
 	virtual V m_mul(I argc,t_atom *argv); // mul with (one vec or real/complex)
+	virtual V m_cmul(I argc,t_atom *argv); // complex mul (pairs of vecs or complex)
 	virtual V m_mmul(I argc,t_atom *argv); // mul with (multi-channel)
 	virtual V m_div(I argc,t_atom *argv); // div by (one vec or real/complex)
+	virtual V m_cdiv(I argc,t_atom *argv); // complex div (pairs of vecs or complex)
 	virtual V m_mdiv(I argc,t_atom *argv); // div by (multi-channel)
 
 	virtual V m_min(I argc,t_atom *argv); // min (one vec or real)
+//	virtual V m_cmin(I argc,t_atom *argv); // complex (abs) min (pairs of vecs or complex)
 	virtual V m_mmin(I argc,t_atom *argv); // min (multi-channel)
 	virtual V m_max(I argc,t_atom *argv); // max (one vec or real)
+//	virtual V m_cmax(I argc,t_atom *argv); // complex (abs) max (pairs of vecs or complex)
 	virtual V m_mmax(I argc,t_atom *argv); // max (multi-channel)
 
 	// "unary" functions
 	virtual V m_pow(F v); // power
-	virtual V m_cpow(I argc,t_atom *argv); // complex power (with each two channels)
+//	virtual V m_cpow(I argc,t_atom *argv); // complex power (with each two channels)
 	virtual V m_sqr();   // unsigned square 
 	virtual V m_ssqr();   // signed square 
 	virtual V m_csqr();  // complex square (with each two channels)
@@ -203,7 +210,7 @@ public:
 //	virtual V m_csqrt();  // complex square root (how about branches?)
 
 	virtual V m_exp();  // exponential function
-	virtual V m_cexp();  // complex exponential function
+//	virtual V m_cexp();  // complex exponential function
 	virtual V m_log(); // natural logarithm
 //	virtual V m_cln(); // complex logarithm (how about branches?)
 
@@ -222,6 +229,7 @@ public:
 	virtual V m_cswap();  // swap real and imaginary parts
 	virtual V m_cconj();  // complex conjugate
 
+/*
 	// Rearrange buffer
 	virtual V m_shift(F u);  // shift buffer
 	virtual V m_xshift(F u);  // shift buffer (symmetrically)
@@ -241,44 +249,52 @@ public:
 	virtual V m_rifft();
 	virtual V m_cfft();
 	virtual V m_cifft();
+*/
 
 private:
-	V fr_assign(I argc,t_atom *argv,V (*dofun)(F *,F,I));
-	V fc_assign(I argc,t_atom *argv,V (*dofun)(F *,F *,F,F,I));
-	V fs_assign(I argc,t_atom *argv,V (*dofun)(F *,const F *,I));
-	V fm_assign(I argc,t_atom *argv,V (*dofun)(F *,const F *,I));
-
+	V fr_transf(const C *op,F v,V (*dofunR)(F *,F,I));
+	V fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F,I));
+	V fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I),V (*dofunR)(F *,F,I));
+	V fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const F *,const F *,I),V (*dofunC)(F *,F *,F,F,I));
+	V fm_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I));
 
 	FLEXT_CALLBACK_G(m_set)
 
 	FLEXT_CALLBACK_G(m_copy)
+	FLEXT_CALLBACK_G(m_ccopy)
 	FLEXT_CALLBACK_G(m_mcopy)
 //	FLEXT_CALLBACK_G(m_mix)
 //	FLEXT_CALLBACK_G(m_mmix)
 
 	FLEXT_CALLBACK_G(m_add)
+	FLEXT_CALLBACK_G(m_cadd)
 	FLEXT_CALLBACK_G(m_madd)
 	FLEXT_CALLBACK_G(m_sub)
+	FLEXT_CALLBACK_G(m_csub)
 	FLEXT_CALLBACK_G(m_msub)
 	FLEXT_CALLBACK_G(m_mul)
+	FLEXT_CALLBACK_G(m_cmul)
 	FLEXT_CALLBACK_G(m_mmul)
 	FLEXT_CALLBACK_G(m_div)
+	FLEXT_CALLBACK_G(m_cdiv)
 	FLEXT_CALLBACK_G(m_mdiv)
 
 	FLEXT_CALLBACK_G(m_min)
+//	FLEXT_CALLBACK_G(m_cmin)
 	FLEXT_CALLBACK_G(m_mmin)
 	FLEXT_CALLBACK_G(m_max)
+//	FLEXT_CALLBACK_G(m_cmax)
 	FLEXT_CALLBACK_G(m_mmax)
 
 	FLEXT_CALLBACK_1(m_pow,F)
-	FLEXT_CALLBACK_G(m_cpow)
+//	FLEXT_CALLBACK_G(m_cpow)
 	FLEXT_CALLBACK(m_sqr)
 	FLEXT_CALLBACK(m_csqr)
 	FLEXT_CALLBACK_1(m_root,F)
 	FLEXT_CALLBACK(m_sqrt)
 
 	FLEXT_CALLBACK(m_exp)
-	FLEXT_CALLBACK(m_cexp)
+//	FLEXT_CALLBACK(m_cexp)
 	FLEXT_CALLBACK(m_log)
 
 	FLEXT_CALLBACK(m_inv)
@@ -292,6 +308,10 @@ private:
 	FLEXT_CALLBACK(m_norm)
 	FLEXT_CALLBACK(m_cnorm)
 
+	FLEXT_CALLBACK(m_cswap)
+	FLEXT_CALLBACK(m_cconj)
+
+/*
 	FLEXT_CALLBACK_1(m_shift,F)
 	FLEXT_CALLBACK_1(m_xshift,F)
 	FLEXT_CALLBACK_1(m_rot,F)
@@ -308,6 +328,7 @@ private:
 	FLEXT_CALLBACK(m_rifft)
 	FLEXT_CALLBACK(m_cfft)
 	FLEXT_CALLBACK(m_cifft)
+*/
 };
 
 
