@@ -11,7 +11,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPS_ASSIGN_H
 #define __VASP_OPS_ASSIGN_H
 
-// Filtering functions
+#include "opbase.h"
+
+// Assignment functions
 
 namespace VecOp {
 	BL d_copy(OpParam &p); 

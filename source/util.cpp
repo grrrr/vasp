@@ -270,7 +270,7 @@ Vasp *VecBlock::_ResVasp(I n)
 
 
 // Duplication of breakpoint lists should be avoided
-OpArg &OpArg::operator =(const OpArg &op)
+OpParam::Arg &OpParam::Arg::operator =(const Arg &op)
 {
 	Clear();
 
@@ -291,7 +291,7 @@ OpArg &OpArg::operator =(const OpArg &op)
 	return *this;
 }
 
-V OpArg::Clear()
+V OpParam::Arg::Clear()
 {
 	if(argtp == arg_l) {
 		if(l.r) delete[] l.r;	
@@ -300,7 +300,7 @@ V OpArg::Clear()
 	argtp = arg_;
 }
 
-OpArg &OpArg::SetX(S r,S i)
+OpParam::Arg &OpParam::Arg::SetX(S r,S i)
 {
 	Clear();
 	argtp = arg_x;
@@ -308,7 +308,7 @@ OpArg &OpArg::SetX(S r,S i)
 	return *this;
 }
 
-OpArg &OpArg::SetV(S *r,I rs,S *i,I is)
+OpParam::Arg &OpParam::Arg::SetV(S *r,I rs,S *i,I is)
 {
 	Clear();
 	argtp = arg_v;
@@ -317,7 +317,7 @@ OpArg &OpArg::SetV(S *r,I rs,S *i,I is)
 	return *this;
 }
 
-OpArg &OpArg::SetL(I pts,R *r,R *i)
+OpParam::Arg &OpParam::Arg::SetL(I pts,R *r,R *i)
 {
 	Clear();
 	argtp = arg_l;
@@ -356,7 +356,7 @@ V OpParam::InitArgs(I n)
 {
 	if(arg) Clear();
 	args = n;
-	if(args) arg = new OpArg[args];
+	if(args) arg = new Arg[args];
 }
 
 V OpParam::Clear()
@@ -392,24 +392,24 @@ V OpParam::C_Rev()
 
 V OpParam::AR_Rev(I bl) 
 { 
-	if(arg[bl].argtp == OpArg::arg_v && arg[bl].v.rdt) 
+	if(arg[bl].argtp == Arg::arg_v && arg[bl].v.rdt) 
 		arg[bl].v.rdt -= (frames-1)*(arg[bl].v.rs = -arg[bl].v.rs); 
 }
 
 V OpParam::AI_Rev(I bl) 
 { 
-	if(arg[bl].argtp == OpArg::arg_v && arg[bl].v.idt) 
+	if(arg[bl].argtp == Arg::arg_v && arg[bl].v.idt) 
 		arg[bl].v.idt -= (frames-1)*(arg[bl].v.is = -arg[bl].v.is); 
 }
 
-BL OpParam::AR_In(I bl) const { return arg[bl].argtp == OpArg::arg_v && arg[bl].v.rdt && rddt > arg[bl].v.rdt && rddt < arg[bl].v.rdt+frames*arg[bl].v.rs; } 
-BL OpParam::AI_In(I bl) const { return arg[bl].argtp == OpArg::arg_v && arg[bl].v.idt && iddt > arg[bl].v.idt && iddt < arg[bl].v.idt+frames*arg[bl].v.is; } 
+BL OpParam::AR_In(I bl) const { return arg[bl].argtp == Arg::arg_v && arg[bl].v.rdt && rddt > arg[bl].v.rdt && rddt < arg[bl].v.rdt+frames*arg[bl].v.rs; } 
+BL OpParam::AI_In(I bl) const { return arg[bl].argtp == Arg::arg_v && arg[bl].v.idt && iddt > arg[bl].v.idt && iddt < arg[bl].v.idt+frames*arg[bl].v.is; } 
 
-BL OpParam::AR_Can(I bl) const { return arg[bl].argtp != OpArg::arg_v || !arg[bl].v.rdt || arg[bl].v.rdt <= rddt || arg[bl].v.rdt >= rddt+frames*rds; } 
-BL OpParam::AI_Can(I bl) const { return arg[bl].argtp != OpArg::arg_v || !arg[bl].v.idt || arg[bl].v.idt <= iddt || arg[bl].v.idt >= iddt+frames*ids; } 
+BL OpParam::AR_Can(I bl) const { return arg[bl].argtp != Arg::arg_v || !arg[bl].v.rdt || arg[bl].v.rdt <= rddt || arg[bl].v.rdt >= rddt+frames*rds; } 
+BL OpParam::AI_Can(I bl) const { return arg[bl].argtp != Arg::arg_v || !arg[bl].v.idt || arg[bl].v.idt <= iddt || arg[bl].v.idt >= iddt+frames*ids; } 
 
-BL OpParam::AR_Ovr(I bl) const { return arg[bl].argtp == OpArg::arg_v && arg[bl].v.rdt && rddt != arg[bl].v.rdt && rddt < arg[bl].v.rdt+frames*arg[bl].v.rs && arg[bl].v.rdt < rddt+frames*rds; } 
-BL OpParam::AI_Ovr(I bl) const { return arg[bl].argtp == OpArg::arg_v && arg[bl].v.idt && iddt != arg[bl].v.idt && iddt < arg[bl].v.idt+frames*arg[bl].v.is && arg[bl].v.idt < iddt+frames*ids; } 
+BL OpParam::AR_Ovr(I bl) const { return arg[bl].argtp == Arg::arg_v && arg[bl].v.rdt && rddt != arg[bl].v.rdt && rddt < arg[bl].v.rdt+frames*arg[bl].v.rs && arg[bl].v.rdt < rddt+frames*rds; } 
+BL OpParam::AI_Ovr(I bl) const { return arg[bl].argtp == Arg::arg_v && arg[bl].v.idt && iddt != arg[bl].v.idt && iddt < arg[bl].v.idt+frames*arg[bl].v.is && arg[bl].v.idt < iddt+frames*ids; } 
 
 
 

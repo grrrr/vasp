@@ -12,6 +12,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __VASP_OPBASE_H
 
 #include "main.h"
+#include "classes.h"
+#include "vecblk.h"
 
 class OpParam {
 public:
@@ -125,8 +127,6 @@ namespace VecOp {
 	BL d__cop(V fun(S &rv,S &iv,S ra,S ia,OpParam &p),OpParam &p);
 }
 
-class RVecBlock;
-class CVecBlock;
 
 namespace VaspOp {
 	typedef flext_base flx;

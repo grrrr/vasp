@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPS_FEATURE_H
 #define __VASP_OPS_FEATURE_H
 
+#include "opbase.h"
+
 // Feature extraction functions
 
 namespace VecOp {

@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPS_ARITH_H
 #define __VASP_OPS_ARITH_H
 
+#include "opbase.h"
+
 // Arithmetic math functions
 
 namespace VecOp {

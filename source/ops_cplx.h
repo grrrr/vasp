@@ -11,7 +11,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPS_CPLX_H
 #define __VASP_OPS_CPLX_H
 
-// Transcendent math functions
+#include "opbase.h"
+
+// Complex functions
 
 namespace VecOp {
 	BL d_polar(OpParam &p); 

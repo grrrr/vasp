@@ -105,11 +105,19 @@ SOURCE=..\readme.txt
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\mixfft.cpp
+SOURCE=.\base.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\rdx2fft.cpp
+SOURCE=.\classes.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\main.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\util.h
 # End Source File
 # Begin Source File
 
@@ -118,6 +126,102 @@ SOURCE=.\vasp.cpp
 # Begin Source File
 
 SOURCE=.\vasp__ctrl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp_op.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vecblk.h
+# End Source File
+# End Group
+# Begin Group "ops"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\opbase.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\opdefs.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_arith.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_arith.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_assign.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_assign.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_cmp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_cmp.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_cplx.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_cplx.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_dft.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_feature.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_flt.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_gen.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_rearr.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_resmp.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_trnsc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_trnsc.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_wnd.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_wnd.h
 # End Source File
 # Begin Source File
 
@@ -137,14 +241,6 @@ SOURCE=.\vasp__gen.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp__math.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\vasp__op.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\vasp__resmp.cpp
 # End Source File
 # Begin Source File
@@ -153,11 +249,19 @@ SOURCE=.\vasp__rng.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp__simple.cpp
+SOURCE=.\vasp_unbin.cpp
+# End Source File
+# End Group
+# Begin Group "dft"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\mixfft.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp__util.cpp
+SOURCE=.\rdx2fft.cpp
 # End Source File
 # End Group
 # Begin Source File
@@ -170,23 +274,11 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\util.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\vasp_base.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\vasp_op.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\vasp_unbin.cpp
 # End Source File
 # Begin Source File
 

@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPS_TRNSC_H
 #define __VASP_OPS_TRNSC_H
 
+#include "opbase.h"
+
 // Transcendent math functions
 
 namespace VecOp {

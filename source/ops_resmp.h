@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPS_RESMP_H
 #define __VASP_OPS_RESMP_H
 
+#include "opbase.h"
+
 // Resampling (around center sample)
 
 namespace VecOp {

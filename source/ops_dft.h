@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPS_DFT_H
 #define __VASP_OPS_DFT_H
 
+#include "opbase.h"
+
 // Fourier transforms
 
 namespace VaspOp {

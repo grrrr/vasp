@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\brief Routines for resampling
 */
 
-#include "main.h"
+#include "ops_resmp.h"
 
 
 // --- resample ---------------------

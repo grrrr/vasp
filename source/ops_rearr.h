@@ -8,8 +8,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#ifndef __VASP_REARR_FLT_H
-#define __VASP_REARR_FLT_H
+#ifndef __VASP_OPS_REARR_H
+#define __VASP_OPS_REARR_H
+
+#include "opbase.h"
 
 // Rearrange buffer 
 

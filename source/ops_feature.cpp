@@ -8,77 +8,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#include "main.h"
+#include "ops_feature.h"
+#include "util.h"
 #include <math.h>
-
-
-// --- integrate/differentiate
-
-/*! \brief Integration
-	\remark The delay of the result is +/- one sample, depending on the direction of the calculation 
-	
-	\todo different modes how to initialize first carry?
-	\todo repetition count
-*/
-BL VecOp::d_int(OpParam &p) 
-{ 
-	if(p.revdir)
-		post("%s - reversed operation direction due to overlap: opposite sample delay",p.opname);
-
-	register S d = p.intdif.carry;
-	for(; p.frames-- ; p.rsdt += p.rss,p.rddt += p.rds) { 
-		*p.rddt = (d += *p.rsdt); 
-	}
-	p.intdif.carry = d;
-	return true; 
-}
-
-/*! \brief Differentiation
-	\remark The delay of the result is +/- one sample, depending on the direction of the calculation 
-
-	\todo different modes how to initialize first carry?
-	\todo repetition count
-*/
-BL VecOp::d_dif(OpParam &p) 
-{ 
-	if(p.revdir)
-		post("%s - reversed operation direction due to overlap: opposite sample delay",p.opname);
-
-	register S d = p.intdif.carry;
-	for(; p.frames-- ; p.rsdt += p.rss,p.rddt += p.rds) { 
-		register S d1 = *p.rsdt; 
-		*p.rddt = d1-d,d = d1; 
-	}
-	p.intdif.carry = d;
-	return true; 
-}
-
-/*! \brief Does vasp integration/differentiation.
-
-	\param arg argument list 
-	\param dst destination vasp (NULL for in-place operation)
-	\param inv true for differentiation
-	\return normalized destination vasp
-*/
-Vasp *VaspOp::m_int(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL inv) 
-{ 
-	Vasp *ret = NULL;
-	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
-	if(vecs) {
-		p.intdif.carry = 0,p.intdif.rep = 1;
-		if(arg.IsList() && arg.GetList().Count() >= 1) p.intdif.rep = flx::GetAInt(arg.GetList()[0]);
-		
-		if(p.intdif.rep < 0) {
-			post("%s - invalid repetition count (%i) -> set to 1",p.opname,p.intdif.rep);
-			p.intdif.rep = 1;
-		}
-		
-		ret = DoOp(vecs,inv?VecOp::d_dif:VecOp::d_int,p);
-		delete vecs;
-	}
-	return ret;
-}
-
 
 // --- find peaks
 

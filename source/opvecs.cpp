@@ -13,8 +13,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#include "main.h"
-
+#include "opbase.h"
+#include "classes.h"
+#include "vecblk.h"
+#include "util.h"
 
 /*! \brief Corrects for the common vector frame count
 	\param frms frame count to correct

@@ -40,6 +40,7 @@ Goals/features of the package:
 Version history:
 
 0.0.6:
+- reorganized file structure
 
 0.0.5:
 - fixed lacking sqrt in [vasp.rmin?],[vasp.rmax?]
