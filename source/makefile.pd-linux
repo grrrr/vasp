@@ -28,7 +28,7 @@ TARGDIR=../pd-linux
 
 # compiler stuff
 INCLUDES=$(PDPATH)
-FLAGS=-DPD
+FLAGS=-DPD -DFLEXT_THREADS
 CFLAGS=-O6 -mcpu=pentiumpro -funroll-loops -fmove-all-movables -frerun-loop-opt -finline-functions
 LIBS=m
 
