@@ -1,6 +1,6 @@
-#N canvas 11 4 551 585 10;
-#N canvas 49 0 336 403 objects 0;
-#N canvas 306 143 429 271 vasp.displace 0;
+#N canvas 11 4 553 587 10;
+#N canvas 49 0 340 407 objects 0;
+#N canvas 306 143 431 273 vasp.displace 0;
 #X text 158 165 rotate buffer content symmetrically;
 #X obj 80 164 vasp.xrot;
 #X obj 80 232 vasp.xmirr;
@@ -9,14 +9,14 @@
 #X obj 80 97 vasp.xshift;
 #X obj 80 62 vasp.shift;
 #X text 158 232 mirrors a vasp symmetrically;
-#X text 157 97 shifts the buffer content symetrically;
 #X text 158 197 mirrors a vasp;
 #X text 158 63 shifts the buffer content;
 #X text 158 132 rotate buffer content;
 #X obj 35 22 cnv 15 15 15 empty empty vasp_displace 0 10 1 14 -262144
 -1 0;
+#X text 157 97 shifts the buffer content symmetrically;
 #X restore 72 214 pd vasp.displace;
-#N canvas 407 1 540 684 define_vasps 0;
+#N canvas 407 1 542 686 define_vasps 0;
 #X obj 74 626 vasp.part;
 #X obj 74 595 vasp.gather;
 #X obj 74 564 vasp.spit;
@@ -207,7 +207,7 @@
 #X obj 35 22 cnv 15 15 15 empty empty vasp_fftobjects 0 10 1 14 -262144
 -1 0;
 #X restore 72 104 pd vasp.fftobjects;
-#N canvas 506 170 281 178 vasp.filters 0;
+#N canvas 506 170 283 180 vasp.filters 0;
 #X obj 53 108 vasp.flp;
 #X obj 53 77 vasp.fhp;
 #X text 114 108 low pass;
@@ -215,7 +215,7 @@
 #X obj 35 22 cnv 15 15 15 empty empty vasp_filters 0 10 1 14 -262144
 -1 0;
 #X restore 72 186 pd vasp.filters;
-#N canvas 267 189 735 318 vasp.generators 0;
+#N canvas 267 189 739 322 vasp.generators 0;
 #X obj 507 245 vasp.*cosc;
 #X obj 507 218 vasp.*!bevel;
 #X obj 507 190 vasp.*bevel;
@@ -229,7 +229,6 @@
 #X obj 72 119 vasp.phasor;
 #X obj 72 91 vasp.osc;
 #X text 72 67 generate .....;
-#X text 154 203 vasp ramp from 1- 0;
 #X text 154 174 vasp ramp from 0 - 1;
 #X text 154 145 vasp noise generator;
 #X text 154 118 vasp saw tooth generator;
@@ -240,6 +239,7 @@
 #X text 154 231 complex sine wave;
 #X obj 35 22 cnv 15 15 15 empty empty vasp_generators 0 10 1 14 -262144
 -1 0;
+#X text 154 203 vasp ramp from 1 - 0;
 #X restore 72 158 pd vasp.generators;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
 -1 0;

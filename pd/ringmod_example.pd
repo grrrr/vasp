@@ -1,4 +1,4 @@
-#N canvas 34 28 856 440 10;
+#N canvas 34 28 858 442 10;
 #X obj 71 32 cnv 15 15 15 empty empty ringmod_example 0 10 1 14 -262144
 -1 0;
 #X obj 73 260 cnv 15 80 17 empty empty empty 20 12 0 14 -258699 -66577
@@ -20,7 +20,6 @@
 #X restore 523 309 pd clear_buffer;
 #X obj 73 306 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
-#X obj 79 99 filelist \$0;
 #X obj 428 95 wavedisplay-simple bufmosc1 \$0;
 #X msg 73 215 vasp bufmosc1;
 #X obj 73 260 vasp.*osc 220;
@@ -55,11 +54,12 @@
 #X restore 682 310 pd inside;
 #X floatatom 146 239 5 0 0;
 #X text 192 238 value;
+#X obj 79 99 filelist \$0;
 #X connect 2 0 7 0;
-#X connect 4 0 14 0;
-#X connect 10 0 11 0;
-#X connect 11 0 2 0;
-#X connect 13 0 6 0;
-#X connect 14 0 3 0;
-#X connect 14 0 3 1;
-#X connect 16 0 11 1;
+#X connect 4 0 13 0;
+#X connect 9 0 10 0;
+#X connect 10 0 2 0;
+#X connect 12 0 6 0;
+#X connect 13 0 3 0;
+#X connect 13 0 3 1;
+#X connect 15 0 10 1;

@@ -1,4 +1,4 @@
-#N canvas 20 55 846 497 10;
+#N canvas 20 55 848 499 10;
 #X obj 75 32 cnv 15 15 15 empty empty vasp.xshift 0 10 1 14 -262144
 -1 0;
 #X obj 329 388 dac~;
@@ -45,17 +45,17 @@
 #X connect 9 0 0 0;
 #X restore 617 388 pd inside;
 #X floatatom 165 276 8 0 0;
-#X text 71 60 shifts buffer content symmetrical;
 #X msg 68 231 vasp bufxshift;
 #X obj 329 365 tabplay~ bufxshift;
 #X msg 463 365 vasp bufxshift;
 #X obj 344 153 wavedisplay-simple bufxshift \$0;
 #X obj 68 305 vasp.xshift 11000;
-#X connect 2 0 15 0;
+#X text 71 60 shifts buffer content symmetrically;
+#X connect 2 0 14 0;
 #X connect 8 0 9 0;
-#X connect 12 0 18 1;
-#X connect 14 0 18 0;
-#X connect 15 0 1 0;
-#X connect 15 0 1 1;
-#X connect 16 0 6 0;
-#X connect 18 0 8 0;
+#X connect 12 0 17 1;
+#X connect 13 0 17 0;
+#X connect 14 0 1 0;
+#X connect 14 0 1 1;
+#X connect 15 0 6 0;
+#X connect 17 0 8 0;
