@@ -1,4 +1,4 @@
-#N canvas 185 2 620 682 10;
+#N canvas 185 2 622 684 10;
 #X obj 104 47 cnv 15 15 15 empty empty vasp_modular 0 10 1 14 -262144
 -1 0;
 #X obj 61 37 cnv 2 2 2 empty 2-1-r empty 20 12 64 14 -225271 -262144
@@ -704,7 +704,7 @@ of an object chain;
 #X connect 79 0 80 0;
 #X restore 232 356 pd moremessages;
 #X text 107 389 the vasp objects;
-#N canvas 49 0 406 441 objects 0;
+#N canvas 49 0 408 443 objects 0;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
 -1 0;
 #N canvas 339 189 509 292 fftobjects 0;
@@ -892,7 +892,7 @@ one is resampled around a center position;
 #X obj 35 22 cnv 15 15 15 empty empty minmax 0 10 1 14 -262144 -1 0
 ;
 #X restore 71 279 pd minmax_etc.;
-#N canvas 229 139 536 397 window-functions 0;
+#N canvas 229 139 538 399 window-functions 0;
 #X obj 59 28 cnv 15 15 15 empty empty window-functions 0 10 1 14 -262144
 -1 0;
 #X obj 77 92 vasp.window;
