@@ -59,7 +59,7 @@ Vasp *VaspOp::m_radd(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 }
 
 
-VASP_ANYOP("vasp.r+",radd,1,true,VASP_ARG_R(0),"add offset to complex radius (of complex vector pair)") 
+VASP_ANYOP("vasp.r+",radd,0,true,VASP_ARG_R(0),"add offset to complex radius (of complex vector pair)") 
 
 
 // -----------------------------------------------------

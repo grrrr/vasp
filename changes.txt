@@ -5,6 +5,7 @@ Version history:
 - CHANGE: clear stored vasp of an object if a "set" message with an invalid vasp is received
 - CHANGE: cleaned up the process loops (with thread yield) and fixed a corresponding bug in vasp.peaks/valleys
 - CHANGE: warn - but don't stop - on large FFT prime factors
+- FIX: vasp.radd had wrong argument initialization
 
 0.0.8:
 - CHANGE: vasp.radio got right outlet for non-radio messages
