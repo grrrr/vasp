@@ -28,65 +28,77 @@ BL mixfft(I n,F *xRe,F *xIm,F *yRe,F *yIm);
 
 static BL fft_fwd_real_any(I cnt,S *dt) 
 {
+	BL ret;
 	F *im,*tre,*tim;
-	try {
+//	try {
 		im = new float[cnt];
 		tre = new float[cnt];
 		tim = new float[cnt];
+/*
 	}
 	catch(...) {
 		return false;
 	}
+*/
+	if(im && tre && tim) {
+		I i;
+		for(i = 0; i < cnt; ++i) im[i] = 0;
 
-	I i;
-	for(i = 0; i < cnt; ++i) im[i] = 0;
+		ret = mixfft(cnt,dt,im,tre,tim);
 
-	BL ret = mixfft(cnt,dt,im,tre,tim);
-
-	if(ret) {
-		F nrm = 1./sqrt(cnt);
-		dt[0] = tre[0]*nrm; 
-		for(i = 1; i < cnt/2; ++i) {
-			dt[i] = tre[i]*nrm;
-			dt[cnt-i] = tim[i]*nrm;
+		if(ret) {
+			F nrm = 1./sqrt(cnt);
+			dt[0] = tre[0]*nrm; 
+			for(i = 1; i < cnt/2; ++i) {
+				dt[i] = tre[i]*nrm;
+				dt[cnt-i] = tim[i]*nrm;
+			}
+			if(cnt%2 == 0) dt[i] = tre[i]*nrm;
 		}
-		if(cnt%2 == 0) dt[i] = tre[i]*nrm;
 	}
+	else 
+		ret = false;
 
-	delete[] im;
-	delete[] tre;
-	delete[] tim;
+	if(im) delete[] im;
+	if(tre) delete[] tre;
+	if(tim) delete[] tim;
 	return ret;
 }
 
 static BL fft_inv_real_any(I cnt,F *dt) 
 {
+	BL ret;
 	float *re,*im,*tim;
-	try {
+//	try {
 		re = new float[cnt];
 		im = new float[cnt];
 		tim = new float[cnt];
+/*
 	}
 	catch(...) {
 		return false;
 	}
+*/
+	if(re && im && tim) {
+		int i;
+		re[0] = dt[0]; im[0] = 0;
+		for(i = 1; i < cnt/2; ++i) {
+			re[i] = re[cnt-i] = dt[i];
+			im[i] = -(im[cnt-i] = dt[cnt-i]);
+		}
+		if(cnt%2 == 0) { re[i] = dt[i]; im[i] = 0; }
 
-	int i;
-	re[0] = dt[0]; im[0] = 0;
-	for(i = 1; i < cnt/2; ++i) {
-		re[i] = re[cnt-i] = dt[i];
-		im[i] = -(im[cnt-i] = dt[cnt-i]);
+		ret = mixfft(cnt,re,im,dt,tim);
+
+		F nrm = 1./sqrt(cnt);
+		for(i = 0; i < cnt; ++i) dt[i] *= nrm;
 	}
-	if(cnt%2 == 0) { re[i] = dt[i]; im[i] = 0; }
+	else
+		return false;
 
-	BL ret = mixfft(cnt,re,im,dt,tim);
-
-	F nrm = 1./sqrt(cnt);
-	for(i = 0; i < cnt; ++i) dt[i] *= nrm;
-
-	delete[] re;
-	delete[] im;
-	delete[] tim;
+	if(re) delete[] re;
+	if(im) delete[] im;
+	if(tim) delete[] tim;
 	return ret;
 }
 

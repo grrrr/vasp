@@ -113,12 +113,16 @@ bool fft_fwd_real_radix2(int size,float *real)
 {
   register int i;
   float *imag;
-  try {
+//  try {
 	imag = new float[size]; // should be aligned
+/*
   }
   catch(...) {
 	  return false;
   }
+*/
+	if(!imag) return false;
+
   for(i=0;i<size;i++) imag[i]=(float)0;
   fft_fwd_complex_radix2(size,real,imag);
   for(i = 0; i < size/2; ++i)
@@ -139,12 +143,16 @@ bool fft_fwd_real_radix2(int size,float *real,float *imag)
 bool fft_inv_real_radix2(int size,float *real)
 {
   float *imag;
-  try {
+//  try {
 	imag = new float[size]; // should be aligned
-  }
+/*
+	}
   catch(...) {
 	  return false;
   }
+*/
+	if(!imag) return false;
+
   register int i;
   for(i = 0; i < size/2; ++i)
 	  imag[i]=real[size/2+i];

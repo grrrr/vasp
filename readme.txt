@@ -119,6 +119,7 @@ bugs:
 ---------------------
 - vasp.(!)(c)fft can't handle strided data
 - vasp.xtilt nonfunctional
+- immediates - do bind(), not steal s_thing directly!!
 
 tests:
 ---------------------
