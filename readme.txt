@@ -1,5 +1,5 @@
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
-version 0.0.3
+version 0.0.4
 
 Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -44,6 +44,8 @@ Version history:
 - restructured the code for future use of break-point lists as arguments
 - changes some object's names
 - new objects: vasp.min?, vasp.max? and the likes
+- fixed Max problem with connecting vasp.min,vasp.max right outlet to number boxes
+- fixed right inlet problem for generator and filter objects
 
 0.0.2:
 - vasp.cmin,vasp.cmax - renamed to vasp.rmin,vasp.rmax
@@ -97,7 +99,6 @@ objects:
 
 bugs:
 
-- vasp.min? , vasp.max? : right outlet is no dedicated float outlet -> can't plug into number box!
 
 tests:
 
