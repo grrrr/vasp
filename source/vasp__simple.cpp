@@ -9,7 +9,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "main.h"
-#include <math.h>
+#include "vasp__op.h"
+
 
 #ifdef _MSC_VER
 
@@ -20,6 +21,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define TEMPL2(V1,V2) 
 #define TINIT2(L1,V1,L2,V2) const I L1 = _##L1,L2 = _##L2
 #define TF2(FUN) FUN
+
+#define TEMPL3(V1,V2,V3) 
+#define TINIT3(L1,V1,L2,V2,L3,V3) const I L1 = _##L1,L2 = _##L2,L3 = _##L3
+#define TF3(FUN) FUN
 
 #else
 
@@ -32,7 +37,149 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define TINIT2(L1,V1,L2,V2) const I L1 = V1?V1:_##L1,L2 = V2?V2:_##L2
 #define TF2(FUN) FUN<0,0>
 
+#define TEMPL3(V1,V2,V3) template <I V1,I V2,I V3>
+#define TINIT2(L1,V1,L2,V2,L3,V3) const I L1 = V1?V1:_##L1,L2 = V2?V2:_##L2,L3 = V3?V3:_##L3
+#define TF3(FUN) FUN<0,0,0>
+
 #endif
+
+
+/*! \brief skeleton for unary real operations
+	\todo optimization for src=dst
+*/
+template <V fun(S &v,S a)>
+static BL d__run(OpParam &p) 
+{ 
+	for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds) 
+		fun(*p.rddt,*p.rsdt); 
+	return true; 
+}
+
+/*! \brief skeleton for unary complex operations
+	\todo optimization for src=dst
+*/
+template <V fun(S &rv,S &iv,S ra,S ia)>
+static BL d__cun(OpParam &p) 
+{ 
+	if(p.isdt)
+		for(; p.frames--; p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids) 
+			fun(*p.rddt,*p.iddt,*p.rsdt,*p.isdt);
+	else
+		for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.iddt += p.ids) 
+			fun(*p.rddt,*p.iddt,*p.rsdt,0);
+	return true; 
+}
+
+/*! \brief skeleton for binary real operations
+	\todo optimization for src=dst
+*/
+template <V fun(S &v,S a,S b)>
+static BL d__rbin(OpParam &p) 
+{ 
+	if(p.HasArg()) {
+		for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.radt += p.ras) 
+			fun(*p.rddt,*p.rsdt,*p.radt); 
+	}
+	else {
+		S v = p.rbin.arg;
+		for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds) 
+			fun(*p.rddt,*p.rsdt,v); 
+	}
+
+	return true; 
+}
+
+/*! \brief skeleton for binary complex operations
+	\todo optimization for src=dst
+*/
+template <V fun(S &rv,S &iv,S ra,S ia,S rb,S ib)>
+static BL d__cbin(OpParam &p) 
+{ 
+	if(p.HasArg()) {
+		if(p.isdt)
+			if(p.iadt)
+				for(; p.frames--; p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids,p.radt += p.ras,p.iadt += p.ias) 
+					fun(*p.rddt,*p.iddt,*p.rsdt,*p.isdt,*p.radt,*p.iadt);
+			else
+				for(; p.frames--; p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids,p.radt += p.ras) 
+					fun(*p.rddt,*p.iddt,*p.rsdt,*p.isdt,*p.radt,0);
+		else
+			if(p.iadt)
+				for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.iddt += p.ids,p.radt += p.ras,p.iadt += p.ias) 
+					fun(*p.rddt,*p.iddt,*p.rsdt,0,*p.radt,*p.iadt);
+			else
+				for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.iddt += p.ids,p.radt += p.ras) 
+					fun(*p.rddt,*p.iddt,*p.rsdt,0,*p.radt,0);
+	}
+	else {
+		S rv = p.cbin.rarg,iv = p.cbin.iarg;
+		if(p.isdt)
+			for(; p.frames--; p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids) 
+				fun(*p.rddt,*p.iddt,*p.rsdt,*p.isdt,rv,iv);
+		else
+			for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.iddt += p.ids) 
+				fun(*p.rddt,*p.iddt,*p.rsdt,0,rv,iv);
+	}
+
+	return true; 
+}
+
+
+
+// --------------------------------------------------------------
+
+BL VecOp::d_copy(OpParam &p) { return d__rbin<f_rcopy>(p); }
+BL VecOp::d_ccopy(OpParam &p) { return d__cbin<f_ccopy>(p); }
+BL VecOp::d_add(OpParam &p) { return d__rbin<f_radd>(p); }
+BL VecOp::d_cadd(OpParam &p) { return d__cbin<f_cadd>(p); }
+BL VecOp::d_sub(OpParam &p) { return d__rbin<f_rsub>(p); }
+BL VecOp::d_csub(OpParam &p) { return d__cbin<f_csub>(p); }
+BL VecOp::d_mul(OpParam &p) { return d__rbin<f_rmul>(p); }
+BL VecOp::d_cmul(OpParam &p) { return d__cbin<f_cmul>(p); }
+BL VecOp::d_div(OpParam &p) { return d__rbin<f_rdiv>(p); }
+BL VecOp::d_cdiv(OpParam &p) { return d__cbin<f_cdiv>(p); }
+
+BL VecOp::d_min(OpParam &p) { return d__rbin<f_rmin>(p); }
+BL VecOp::d_cmin(OpParam &p) { return d__cbin<f_cmin>(p); }
+BL VecOp::d_max(OpParam &p) { return d__rbin<f_rmax>(p); }
+BL VecOp::d_cmax(OpParam &p) { return d__cbin<f_cmax>(p); }
+
+BL VecOp::d_minmax(OpParam &p) { return d__cbin<f_minmax>(p); }
+
+BL VecOp::d_lwr(OpParam &p) { return d__rbin<f_rlwr>(p); }
+BL VecOp::d_gtr(OpParam &p) { return d__rbin<f_rgtr>(p); }
+
+BL VecOp::d_pow(OpParam &p) { return d__rbin<f_rpow>(p); }
+
+BL VecOp::d_sqr(OpParam &p) { return d__run<f_rsqr>(p); }
+BL VecOp::d_ssqr(OpParam &p) { return d__run<f_rssqr>(p); }
+BL VecOp::d_csqr(OpParam &p) { return d__cun<f_csqr>(p); }
+BL VecOp::d_sqrt(OpParam &p) { return d__run<f_rsqrt>(p); }
+BL VecOp::d_ssqrt(OpParam &p) { return d__run<f_rssqrt>(p); }
+
+BL VecOp::d_exp(OpParam &p) { return d__run<f_rexp>(p); }
+BL VecOp::d_log(OpParam &p) { return d__run<f_rlog>(p); }
+
+BL VecOp::d_inv(OpParam &p) { return d__run<f_rinv>(p); }
+BL VecOp::d_cinv(OpParam &p) { return d__cun<f_cinv>(p); }
+
+BL VecOp::d_cnorm(OpParam &p) { return d__cun<f_cnorm>(p); }
+
+BL VecOp::d_abs(OpParam &p) { return d__run<f_rabs>(p); }
+BL VecOp::d_sign(OpParam &p) { return d__run<f_rsign>(p); }
+
+BL VecOp::d_polar(OpParam &p) { return d__cun<f_polar>(p); }
+BL VecOp::d_cart(OpParam &p) { return d__cun<f_cart>(p); }
+BL VecOp::d_cswap(OpParam &p) { return d__cun<f_cswap>(p); }
+BL VecOp::d_cconj(OpParam &p) { return d__cun<f_cconj>(p); }
+
+
+
+
+
+
+
+#if 0
 
 TEMPL1(STR)
 static BL d_scopy(I cnt,F *dst,I _str,F val) 
@@ -336,3 +483,5 @@ static BL d_minmax(I cnt,F *re,I _rstr,F *im,I _istr,F,F)
 }
 
 Vasp *Vasp::m_minmax() { return fc_arg("minmax",CX(),TF2(d_minmax)); }
+
+#endif

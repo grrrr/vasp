@@ -13,33 +13,30 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 VASP_BINARY("vasp.=",copy,false)
 VASP_BINARY("vasp.c=",ccopy,false)
-//VASP_BINARY("vasp.v=",vcopy)
 
 VASP_BINARY("vasp.+",add,true)
 VASP_BINARY("vasp.c+",cadd,true)
-//VASP_BINARY("vasp.v+",vadd)
-
 VASP_BINARY("vasp.-",sub,true)
 VASP_BINARY("vasp.c-",csub,true)
-//VASP_BINARY("vasp.v-",vsub)
-
 VASP_BINARY("vasp.*",mul,true)
 VASP_BINARY("vasp.c*",cmul,true)
-//VASP_BINARY("vasp.v*",vmul)
-
 VASP_BINARY("vasp./",div,true)
 VASP_BINARY("vasp.c/",cdiv,true)
-//VASP_BINARY("vasp.v/",vdiv)
 
 VASP_BINARY("vasp.min",min,true)
-//VASP_BINARY("vasp.vmin",vmin)
+VASP_BINARY("vasp.cmin",cmin,true)
 VASP_BINARY("vasp.max",max,true)
-//VASP_BINARY("vasp.vmax",vmax)
+VASP_BINARY("vasp.cmax",cmax,true)
+
 VASP_UNARY("vasp.minmax",minmax,true) 
+
+VASP_BINARY("vasp.<",lwr,true)
+VASP_BINARY("vasp.>",gtr,true)
 
 VASP_BINARY("vasp.int",int,true) 
 VASP_BINARY("vasp.dif",dif,true) 
 VASP_BINARY("vasp.peaks",peaks,true) 
+VASP_BINARY("vasp.valleys",valleys,true) 
 
 
 VASP_UNARY("vasp.sqr",sqr,true) 
@@ -48,7 +45,7 @@ VASP_UNARY("vasp.csqr",csqr,true)
 VASP_UNARY("vasp.sqrt",sqrt,true) 
 VASP_UNARY("vasp.ssqrt",ssqrt,true) 
 VASP_BINARY("vasp.pow",pow,true) 
-VASP_BINARY("vasp.root",root,true) 
+VASP_BINARY("vasp.cpowi",cpowi,true) 
 
 VASP_UNARY("vasp.exp",exp,true) 
 VASP_UNARY("vasp.log",log,true) 

@@ -140,6 +140,10 @@ SOURCE=.\vasp__math.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\vasp__op.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\vasp__resmp.cpp
 # End Source File
 # Begin Source File
@@ -178,6 +182,10 @@ SOURCE=.\vasp_base.cpp
 # Begin Source File
 
 SOURCE=.\vasp_op.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp_unbin.cpp
 # End Source File
 # Begin Source File
 

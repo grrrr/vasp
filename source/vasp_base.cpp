@@ -104,6 +104,17 @@ V vasp_op::m_vasp(I argc,t_atom *argv)
 	m_bang();
 }
 
+V vasp_op::m_to(I argc,t_atom *argv)
+{
+	Vasp to(argc,argv);
+
+	if(argc && !to.Ok()) {
+		post("%s - invalid vasp detected and ignored",thisName());
+	}
+	else 
+		dst = to;
+}
+
 V vasp_op::m_update(I argc,t_atom *argv) 
 {
 	if(argc == 0) 

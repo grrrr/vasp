@@ -19,6 +19,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 BL VecOp::d_osc(OpParam &p) 
 { 
+	if(p.revdir) {
+	}
+
 	register R ph = p.gen.ph,phinc = p.gen.phinc; 
 	for(; p.frames--; ph += phinc,p.rddt += p.rds) *p.rddt = cos(ph);
 	p.gen.ph = ph;
@@ -340,11 +343,9 @@ Vasp *VaspOp::m_bevelup(Vasp &src,Vasp *dst,BL up,BL mul)
 }
 
 
-#if 0
-
 // --- window --------------------------
 
-BL VecOp::d_window(I cnt,S *dt,I str,I wndtp) 
+BL VecOp::d_window(OpParam &p) 
 { 
 	post("vasp.window: Sorry, not implemented yet");
 	return false;
@@ -353,7 +354,7 @@ BL VecOp::d_window(I cnt,S *dt,I str,I wndtp)
 //	return true;
 }
 
-BL VecOp::d_vwindow(I cnt,S *dst,I dstr,const S *src,I sstr) 
+BL VecOp::d_vwindow(OpParam &p) 
 { 
 	post("vasp.window: Sorry, not implemented yet");
 	return false;
@@ -362,7 +363,7 @@ BL VecOp::d_vwindow(I cnt,S *dst,I dstr,const S *src,I sstr)
 //	return true;
 }
 
-BL VecOp::d_mwindow(I cnt,S *dt,I str,I wndtp) 
+BL VecOp::d_mwindow(OpParam &p) 
 { 
 	post("vasp*window: Sorry, not implemented yet");
 	return false;
@@ -371,7 +372,7 @@ BL VecOp::d_mwindow(I cnt,S *dt,I str,I wndtp)
 //	return true;
 }
 
-BL VecOp::d_vmwindow(I cnt,S *dst,I dstr,const S *src,I sstr) 
+BL VecOp::d_vmwindow(OpParam &p) 
 { 
 	post("vasp*window: Sorry, not implemented yet");
 	return false;
@@ -402,21 +403,23 @@ Vasp *Vasp::m_mwindow(const Argument &arg)
 
 */
 
-Vasp *VaspOp::m_window(Vasp &dst,const Argument &arg,BL mul) 
+Vasp *VaspOp::m_window(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
-	
-	RVecBlock *vecs = GetRVecs(mul?"*window":"window",dst);
-	if(vecs) {
-		BL ok = true;
-		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
-			VBuffer *s = vecs->Src(i);
-			ok = VecOp::d_noise(vecs->Frames(),s->Pointer(),s->Channels());
+	Vasp *ret = NULL;
+	OpParam p(mul?"*window":"window");
+	if(arg.IsList() && arg.GetList().Count() >= 1) {
+		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
+		if(vecs) {
+			// window mode
+			p.wnd.wndtp = flx::GetAInt(arg.GetList()[1]);
+		
+			ret = DoOp(vecs,mul?VecOp::d_mwindow:VecOp::d_window,p);
+			delete vecs;
 		}
-		return ok?vecs->ResVasp():NULL;
 	}
-	else
-		return NULL;
+
+	return ret;
 }
 
-#endif
+
 

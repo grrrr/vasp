@@ -14,23 +14,31 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	
 	\todo check for src/dst overlap
 */
-BL VecOp::d_shift(I cnt,const S *src,I sstr,S *dst,I dstr,R sh) 
+BL VecOp::d_shift(OpParam &p) 
 { 
-	I ish = (I)sh;
-	if(sh == ish) { // integer shift
+	if(p.part || p.ovrlap) {
+		post("%s - cannot operate on partioned or overlapped vectors",p.opname);
+		return false;
+	}
+
+	I ish = (I)p.sh.sh;
+	if(p.sh.sh == ish) { // integer shift
 		// no zero filling!
 
-		I ssh = ish*str;
+		I ssh = ish*p.rss;
 		if(ish > 0)
-			for(I i = cnt-1; i >= ish; ++i,src += sstr,dst += dstr) *dst = src[-ssh];
+			for(I i = p.frames-1; i >= ish; ++i,p.rsdt += p.rss,p.rddt += p.rds) 
+				*p.rddt = p.rsdt[-ssh];
 		else
-			for(I i = ish; i < cnt; ++i,src += sstr,dst += dstr) dst[-ssh] = *src;
+			for(I i = ish; i < p.frames; ++i,p.rsdt += p.rss,p.rddt += p.rds) 
+				p.rddt[-ssh] = *p.rsdt;
 		return true;
 	}
 	else {
 		// requires interpolation
 		post("non-integer shift not implemented - truncating to integer");
-		return d_shift(cnt,src,sstr,dst,dstr,ish);
+		p.sh.sh = ish;
+		return d_shift(p);
 	}
 }
 
@@ -40,19 +48,24 @@ BL VecOp::d_shift(I cnt,const S *src,I sstr,S *dst,I dstr,R sh)
 	\todo implement!
 	\todo check for src/dst overlap
 */
-BL VecOp::d_rot(I cnt,const S *src,I sstr,S *dst,I dstr,R sh) 
+BL VecOp::d_rot(OpParam &p) 
 { 
-	I ish = (I)sh;
-	if(sh == ish) { // integer shift
+	if(p.part || p.ovrlap) {
+		post("%s - cannot operate on partioned or overlapped vectors",p.opname);
+		return false;
+	}
+
+	I ish = (I)p.sh.sh;
+	if(p.sh.sh == ish) { // integer shift
 /*
 		if(ish*2 > cnt) 
 			// if more than half is rotated -> change direction
 			d_rot(dt,ish-cnt,cnt);
 		else {
 */
-			I ssh = ish*str;
+			I ssh = ish*p.rss;
 			if(ish > 0) {
-				for(I i = cnt-1; i >= 0; ++i) {
+				for(I i = p.frames-1; i >= 0; ++i) {
 				}
 /*
 	template<class _RI, class _Pd, class _Ty> inline
@@ -79,7 +92,8 @@ BL VecOp::d_rot(I cnt,const S *src,I sstr,S *dst,I dstr,R sh)
 */
 			}
 			else {
-				for(I i = ish; i < cnt-ish; ++i,src += sstr,dst += dstr) dst[-ssh] = *src;
+				for(I i = ish; i < p.frames-ish; ++i,p.rsdt += p.rss,p.rddt += p.rds) 
+					p.rddt[-ssh] = *p.rsdt;
 			}
 //		}
 		return false; 
@@ -87,55 +101,41 @@ BL VecOp::d_rot(I cnt,const S *src,I sstr,S *dst,I dstr,R sh)
 	else {
 		// requires interpolation
 		post("non-integer rot not implemented - truncating to integer");
-		return d_rot(cnt,src,sstr,dst,dstr,ish);
+		p.sh.sh = ish;
+		return d_rot(p);
 	}
 }
 
+
+/*! \brief vasp shift or rotation
+	\todo symmetric operation
+	\todo units for shift
+*/
 Vasp *VaspOp::m_shift(Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm) 
-{ 
+{
+	Vasp *ret = NULL;
+	OpParam p(shift?(symm?"xshift":"shift"):(symm?"xrot":"rot"));
+
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		R sh = flx::GetADouble(arg.GetList()[0]);
-
-		RVecBlock *vecs = GetRVecs(shift?(symm?"xshift":"shift"):(symm?"xrot":"rot"),src,dst);
+		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
-			BL ok = true;
-			for(I i = 0; ok && i < vecs->Vecs(); ++i) {
-				VBuffer *s = vecs->Src(i),*d = vecs->Dst(i);
-				if(!d) d = s; // if there's no dst, take src
+			// shift length
+			p.sh.sh = flx::GetAFloat(arg.GetList()[0]);
 
-				I cnt = vecs->Frames();
-				I sc = s->Channels(),dc = d->Channels();
-				if(shift) {
-					if(symm) {
-						// symmetric mode
-						I hcnt = cnt/2;
-						ok = 
-							d_shift(hcnt,s->Pointer(),sc,d->Pointer(),dc,sh) &&
-							d_shift(hcnt,s->Pointer()+(cnt-hcnt),sc,d->Pointer()+(cnt-hcnt),dc,sh);
-					}
-					else
-						// normal mode
-						ok = d_shift(cnt,s->Pointer(),sc,d->Pointer(),dc,sh);
-				}
-				else {
-					if(symm) {
-						// symmetric mode
-						I hcnt = cnt/2;
-						ok = 
-							d_rot(hcnt,s->Pointer(),sc,d->Pointer(),dc,sh) &&
-							d_rot(hcnt,s->Pointer()+(cnt-hcnt),sc,d->Pointer()+(cnt-hcnt),dc,sh);
-					}
-					else
-						// normal mode
-						ok = d_rot(cnt,s->Pointer(),sc,d->Pointer(),dc,sh);
-				}
+			if(symm) {
+				post("%s - not implemented yet",p.opname);
 			}
-			return ok?vecs->ResVasp():NULL;
+			else {
+				ret = DoOp(vecs,shift?VecOp::d_shift:VecOp::d_rot,p);
+			}
+			delete vecs;
 		}
-		else
-			return NULL;
 	}
-	else return NULL;
+	else {
+		post("%s - invalid argument",p.opname);
+	}
+
+	return ret;
 }
 
 
@@ -143,46 +143,40 @@ Vasp *VaspOp::m_shift(Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm)
 	
 	\todo check for src/dst overlap
 */
-BL VecOp::d_mirr(I cnt,const S *src,I sstr,S *dst,I dstr) 
+BL VecOp::d_mirr(OpParam &p) 
 { 
-	if(dst == src) 
-		for(S *dl = dst,*du = dst+(cnt-1)*dstr; dl < du; dl += dstr,du -= dstr) {
-			F t;
+	if(p.part || p.ovrlap) {
+		post("%s - cannot operate on partioned or overlapped vectors",p.opname);
+		return false;
+	}
+
+	if(p.rsdt == p.rddt) 
+		for(S *dl = p.rddt,*du = p.rddt+(p.frames-1)*p.rds; dl < du; dl += p.rds,du -= p.rds) {
+			register S t;
 			t = *dl; *dl = *du; *du = t;
 		}
 	else {
-		const S *ds = src;
-		S *dd = dst+(cnt-1)*dstr;
-		for(I i = 0; i < cnt; ++cnt,ds += sstr,dd -= dstr) *dd = *ds;
+		const S *ds = p.rsdt;
+		S *dd = p.rddt+(p.frames-1)*p.rds;
+		for(; p.frames--; ds += p.rss,dd -= p.rds) *dd = *ds;
 	}
 	return true; 
 }
 
-Vasp *VaspOp::m_mirr(Vasp &src,const Argument &arg,Vasp *dst,BL symm) 
-{ 
-	RVecBlock *vecs = GetRVecs(symm?"xmirr":"mirr",src,dst);
+Vasp *VaspOp::m_mirr(Vasp &src,Vasp *dst,BL symm) 
+{
+	Vasp *ret = NULL;
+	OpParam p(symm?"xmirr":"mirr");
+
+	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		BL ok = true;
-		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
-			VBuffer *s = vecs->Src(i),*d = vecs->Dst(i);
-			if(!d) d = s; // if there's no dst, take src
-
-			I cnt = vecs->Frames();
-			I sc = s->Channels(),dc = d->Channels();
-			if(symm) {
-				// symmetric mode
-				I hcnt = cnt/2;
-				ok = 
-					d_mirr(hcnt,s->Pointer(),sc,d->Pointer(),dc) &&
-					d_mirr(hcnt,s->Pointer()+(cnt-hcnt),sc,d->Pointer()+(cnt-hcnt),dc);
-			}
-			else
-				// normal mode
-				ok = d_mirr(cnt,s->Pointer(),sc,d->Pointer(),dc);
+		if(symm) {
+			post("%s - not implemented yet",p.opname);
 		}
-		return ok?vecs->ResVasp():NULL;
+		else {
+			ret = DoOp(vecs,VecOp::d_mirr,p);
+		}
+		delete vecs;
 	}
-	else
-		return NULL;
+	return ret;
 }
-

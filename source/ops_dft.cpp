@@ -187,7 +187,7 @@ static BL d_cifft(I cnt,S *re,I rstr,S *im,I istr)
 
 Vasp *VaspOp::m_rfft(Vasp &src,Vasp *dst,BL inv) 
 { 
-	if(dst) {
+	if(dst && dst->Ok()) {
 		error("rfft: out-of-place operation not implemented yet");
 		return NULL;
 	}
@@ -210,7 +210,7 @@ Vasp *VaspOp::m_rfft(Vasp &src,Vasp *dst,BL inv)
 
 Vasp *VaspOp::m_cfft(Vasp &src,Vasp *dst,BL inv) 
 { 
-	if(dst) {
+	if(dst && dst->Ok()) {
 		error("rfft: out-of-place operation not implemented yet");
 		return NULL;
 	}

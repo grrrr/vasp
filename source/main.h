@@ -21,6 +21,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 #include <typeinfo.h>
+#include <stdlib.h>
 
 #define I int
 #define L long
@@ -199,8 +200,8 @@ protected:
 
 F arg(F re,F im);
 inline F arg(const CX &c) { return arg(c.real,c.imag); }
-inline F abs(F re,F im) { return re*re+im*im; }
-inline F abs(const CX &c) { return abs(c.real,c.imag); }
+inline F sqabs(F re,F im) { return re*re+im*im; }
+inline F sqabs(const CX &c) { return sqabs(c.real,c.imag); }
 inline F sgn(F x) { return x < 0.?-1.F:1.F; }
 inline V swap(F &a,F &b) { F c = a; a = b; b = c; }
 
@@ -288,20 +289,22 @@ protected:
 
 class OpParam {
 public:
-	OpParam(const C *opnm): opname(opnm),frames(0),rsdt(NULL),revdir(false) {}
+	OpParam(const C *opnm);
+
+	BL HasArg() const { return radt != NULL; }
 
 	// check for overlap 
 	// \remark if on same vector, stride is the same for src, arg, dst!
-	inline BL SR_In() const { return rddt >= rsdt && rddt < rsdt+frames*rss; } 
-	inline BL SI_In() const { return iddt >= isdt && iddt < isdt+frames*iss; } 
-	inline BL AR_In() const { return rddt >= radt && rddt < radt+frames*ras; } 
-	inline BL AI_In() const { return iddt >= iadt && iddt < iadt+frames*ias; } 
+	inline BL SR_In() const { return rddt > rsdt && rddt < rsdt+frames*rss; } 
+	inline BL SI_In() const { return iddt > isdt && iddt < isdt+frames*iss; } 
+	inline BL AR_In() const { return rddt > radt && rddt < radt+frames*ras; } 
+	inline BL AI_In() const { return iddt > iadt && iddt < iadt+frames*ias; } 
 	
 	// Can we reverse direction?
-	inline BL SR_Can() const { return rsdt >= rddt && rsdt < rddt+frames*rds; } 
-	inline BL SI_Can() const { return isdt >= iddt && isdt < iddt+frames*ids; } 
-	inline BL AR_Can() const { return radt >= rddt && radt < rddt+frames*rds; } 
-	inline BL AI_Can() const { return iadt >= iddt && iadt < iddt+frames*ids; } 
+	inline BL SR_Can() const { return rsdt > rddt && rsdt < rddt+frames*rds; } 
+	inline BL SI_Can() const { return isdt > iddt && isdt < iddt+frames*ids; } 
+	inline BL AR_Can() const { return radt > rddt && radt < rddt+frames*rds; } 
+	inline BL AI_Can() const { return iadt > iddt && iadt < iddt+frames*ids; } 
 	
 	// reverse direction
 	inline V SR_Rev() { rsdt -= (frames-1)*(rss = -rss); }
@@ -327,7 +330,7 @@ public:
 
 	const C *opname;
 	I frames;
-	BL revdir;
+	BL part,ovrlap,revdir;
 	S *rsdt,*isdt; I rss,iss;
 	S *rddt,*iddt; I rds,ids;
 	S *radt,*iadt; I ras,ias;
@@ -368,6 +371,7 @@ namespace VecOp {
 	BL d_cmax(OpParam &p); 
 	BL d_cpowi(OpParam &p); 
 
+	BL d_minmax(OpParam &p); 
 	BL d_sqr(OpParam &p); 
 	BL d_ssqr(OpParam &p); 
 	BL d_sqrt(OpParam &p); 
@@ -443,108 +447,108 @@ namespace VaspOp {
 	Vasp *m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm); // real binary (one vec or real)
 	Vasp *m_cbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm); // complex binary (one vec or complex)
 
-	Vasp *m_copy(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_copy,"copy"); } // copy to (one vec or real)
-	Vasp *m_add(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_add,"add"); } // add to (one vec or real)
-	Vasp *m_sub(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_sub,"sub"); } // sub from (one vec or real)
-	Vasp *m_mul(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_mul,"mul"); } // mul with (one vec or real)
-	Vasp *m_div(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_div,"div"); } // div by (one vec or real)
-	Vasp *m_min(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_min,"min"); } // min (one vec or real)
-	Vasp *m_max(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_max,"max"); } // max (one vec or real)
-	Vasp *m_lwr(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_lwr,"lwr"); } // lower than
-	Vasp *m_gtr(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_gtr,"gtr"); } // greater than
-	Vasp *m_pow(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_pow,"pow"); } // power
+	inline Vasp *m_copy(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_copy,"copy"); } // copy to (one vec or real)
+	inline Vasp *m_add(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_add,"add"); } // add to (one vec or real)
+	inline Vasp *m_sub(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_sub,"sub"); } // sub from (one vec or real)
+	inline Vasp *m_mul(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_mul,"mul"); } // mul with (one vec or real)
+	inline Vasp *m_div(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_div,"div"); } // div by (one vec or real)
+	inline Vasp *m_min(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_min,"min"); } // min (one vec or real)
+	inline Vasp *m_max(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_max,"max"); } // max (one vec or real)
+	inline Vasp *m_lwr(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_lwr,"lwr"); } // lower than
+	inline Vasp *m_gtr(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_gtr,"gtr"); } // greater than
+	inline Vasp *m_pow(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_pow,"pow"); } // power
 
-	Vasp *m_ccopy(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_ccopy,"ccopy"); }  // complex copy (pairs of vecs or complex)
-	Vasp *m_cadd(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cadd,"cadd"); }  // complex add (pairs of vecs or complex)
-	Vasp *m_csub(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_csub,"csub"); }  // complex sub (pairs of vecs or complex)
-	Vasp *m_cmul(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmul,"cmul"); }  // complex mul (pairs of vecs or complex)
-	Vasp *m_cdiv(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cdiv,"cdiv"); }  // complex div (pairs of vecs or complex)
-	Vasp *m_cmin(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmin,"cmin"); }  // complex (abs) min (pairs of vecs or complex)
-	Vasp *m_cmax(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmax,"cmax"); }  // complex (abs) max (pairs of vecs or complex)
-	Vasp *m_cpowi(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cpowi,"cpowi"); }  // complex integer power (with each two channels)
+	Vasp *m_cpowi(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex integer power (with each two channels)
 
-	Vasp *m_minmax(Vasp &src,Vasp *dst = NULL,BL rev = false); // min/max 
-	Vasp *m_maxmin(Vasp &src,Vasp *dst = NULL) { return m_minmax(src,dst,true); } // min/max 
+	inline Vasp *m_ccopy(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_ccopy,"ccopy"); }  // complex copy (pairs of vecs or complex)
+	inline Vasp *m_cadd(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cadd,"cadd"); }  // complex add (pairs of vecs or complex)
+	inline Vasp *m_csub(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_csub,"csub"); }  // complex sub (pairs of vecs or complex)
+	inline Vasp *m_cmul(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmul,"cmul"); }  // complex mul (pairs of vecs or complex)
+	inline Vasp *m_cdiv(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cdiv,"cdiv"); }  // complex div (pairs of vecs or complex)
+	inline Vasp *m_cmin(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmin,"cmin"); }  // complex (abs) min (pairs of vecs or complex)
+	inline Vasp *m_cmax(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmax,"cmax"); }  // complex (abs) max (pairs of vecs or complex)
 
-	Vasp *m_sqr(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_sqr,"sqr"); }    // unsigned square 
-	Vasp *m_ssqr(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_ssqr,"ssqr"); }   // signed square 
-	Vasp *m_sqrt(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_sqrt,"sqrt"); }  // square root (from abs value)
-	Vasp *m_ssqrt(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_ssqrt,"ssqrt"); }  // square root (from abs value)
+	inline Vasp *m_minmax(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_minmax,"minmax"); } // min/max 
 
-	Vasp *m_csqr(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_csqr,"csqr"); }  // complex square (with each two channels)
-//	Vasp *m_csqrt(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_csqrt); }  // complex square root (how about branches?)
+	inline Vasp *m_sqr(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_sqr,"sqr"); }    // unsigned square 
+	inline Vasp *m_ssqr(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_ssqr,"ssqr"); }   // signed square 
+	inline Vasp *m_sqrt(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_sqrt,"sqrt"); }  // square root (from abs value)
+	inline Vasp *m_ssqrt(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_ssqrt,"ssqrt"); }  // square root (from abs value)
 
-	Vasp *m_exp(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_exp,"exp"); }  // exponential function
-	Vasp *m_log(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_log,"log"); } // natural logarithm
+	inline Vasp *m_csqr(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_csqr,"csqr"); }  // complex square (with each two channels)
+//	inline Vasp *m_csqrt(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_csqrt); }  // complex square root (how about branches?)
 
-//	Vasp *m_cexp(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cexp); }  // complex exponential function
-//	Vasp *m_clog(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_clog); } // complex logarithm (how about branches?)
+	inline Vasp *m_exp(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_exp,"exp"); }  // exponential function
+	inline Vasp *m_log(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_log,"log"); } // natural logarithm
 
-	Vasp *m_inv(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_inv,"inv"); }  // invert buffer values
-	Vasp *m_cinv(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cinv,"cinv"); } // complex invert buffer values (each two)
+//	inline Vasp *m_cexp(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cexp); }  // complex exponential function
+//	inline Vasp *m_clog(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_clog); } // complex logarithm (how about branches?)
 
-	Vasp *m_abs(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_abs,"abs"); }  // absolute values
-	Vasp *m_cabs(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cabs,"cabs"); }  // absolute values
+	inline Vasp *m_inv(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_inv,"inv"); }  // invert buffer values
+	inline Vasp *m_cinv(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cinv,"cinv"); } // complex invert buffer values (each two)
 
-	Vasp *m_sign(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_sign,"sign"); }  // sign function 
+	inline Vasp *m_abs(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_abs,"abs"); }  // absolute values
+	inline Vasp *m_cabs(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cabs,"cabs"); }  // absolute values
 
-	Vasp *m_polar(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_polar,"polar"); } // cartesian -> polar (each two)
-	Vasp *m_cart(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cart,"cart"); } // polar -> cartesian (each two)
+	inline Vasp *m_sign(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_sign,"sign"); }  // sign function 
 
-	Vasp *m_opt(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_opt,"opt"); }  // optimize
-	Vasp *m_copt(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_copt,"copt"); }  // complex optimize
+	inline Vasp *m_polar(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_polar,"polar"); } // cartesian -> polar (each two)
+	inline Vasp *m_cart(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cart,"cart"); } // polar -> cartesian (each two)
 
-	Vasp *m_cnorm(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cnorm,"cnorm"); } // complex normalize
+	inline Vasp *m_opt(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_opt,"opt"); }  // optimize
+	inline Vasp *m_copt(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_copt,"copt"); }  // complex optimize
 
-	Vasp *m_cswap(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cswap,"cswap"); }  // swap real and imaginary parts
-	Vasp *m_cconj(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cconj,"cconj"); }  // complex conjugate
+	inline Vasp *m_cnorm(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cnorm,"cnorm"); } // complex normalize
+
+	inline Vasp *m_cswap(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cswap,"cswap"); }  // swap real and imaginary parts
+	inline Vasp *m_cconj(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_cconj,"cconj"); }  // complex conjugate
 
 	// int/dif functions
 	Vasp *m_int(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL inv = false); //! integrate
-	Vasp *m_dif(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_int(src,arg,dst,true); } //! differentiate
+	inline Vasp *m_dif(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_int(src,arg,dst,true); } //! differentiate
 	
 	// extrema functions
 	Vasp *m_peaks(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL inv = false); //! find peaks
-	Vasp *m_valleys(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_peaks(src,arg,dst,true); } //! find valleys	
+	inline Vasp *m_valleys(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_peaks(src,arg,dst,true); } //! find valleys	
 
 	// Filter functions
 	Vasp *m_fhp(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL hp = true); //! hi pass
-	Vasp *m_flp(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_fhp(src,arg,dst,false); } //! lo pass
+	inline Vasp *m_flp(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_fhp(src,arg,dst,false); } //! lo pass
 	
 	// Rearrange buffer 
 	Vasp *m_shift(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL sh = true,BL symm = false);  // shift buffer
-	Vasp *m_xshift(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_shift(src,arg,dst,true,true); }  // shift buffer (symmetrically)
-	Vasp *m_rot(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_shift(src,arg,dst,false,false); } // rotate buffer
-	Vasp *m_xrot(Vasp &src,const Argument &arg,Vasp *dst = NULL)  { return m_shift(src,arg,dst,false,true); }  // rotate buffer (symmetrically)
+	inline Vasp *m_xshift(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_shift(src,arg,dst,true,true); }  // shift buffer (symmetrically)
+	inline Vasp *m_rot(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_shift(src,arg,dst,false,false); } // rotate buffer
+	inline Vasp *m_xrot(Vasp &src,const Argument &arg,Vasp *dst = NULL)  { return m_shift(src,arg,dst,false,true); }  // rotate buffer (symmetrically)
 	Vasp *m_mirr(Vasp &src,Vasp *dst = NULL,BL symm = false);  //! mirror buffer
-	Vasp *m_xmirr(Vasp &src,Vasp *dst = NULL) { return m_mirr(src,dst,true); } //! mirror buffer (symmetrically)
+	inline Vasp *m_xmirr(Vasp &src,Vasp *dst = NULL) { return m_mirr(src,dst,true); } //! mirror buffer (symmetrically)
 
 	// Generator functions 
 	Vasp *m_osc(Vasp &src,const Argument &arg,Vasp *dst,BL mul = false);  // real osc
-	Vasp *m_mosc(Vasp &src,const Argument &arg,Vasp *dst) { return m_osc(src,arg,dst,true); }   // * real osc
+	inline Vasp *m_mosc(Vasp &src,const Argument &arg,Vasp *dst) { return m_osc(src,arg,dst,true); }   // * real osc
 	Vasp *m_cosc(Vasp &src,const Argument &arg,Vasp *dst,BL mul = false);  // complex osc (phase rotates)
-	Vasp *m_mcosc(Vasp &src,const Argument &arg,Vasp *dst) { return m_cosc(src,arg,dst,true); }  // * complex osc (phase rotates)
+	inline Vasp *m_mcosc(Vasp &src,const Argument &arg,Vasp *dst) { return m_cosc(src,arg,dst,true); }  // * complex osc (phase rotates)
 	Vasp *m_phasor(Vasp &src,const Argument &arg,Vasp *dst,BL mul = false);  // phasor
-	Vasp *m_mphasor(Vasp &src,const Argument &arg,Vasp *dst) { return m_phasor(src,arg,dst,true); }  // * phasor
+	inline Vasp *m_mphasor(Vasp &src,const Argument &arg,Vasp *dst) { return m_phasor(src,arg,dst,true); }  // * phasor
 	Vasp *m_noise(Vasp &src,Vasp *dst);  // real noise
 	Vasp *m_cnoise(Vasp &src,Vasp *dst); // complex noise (arg and abs random)
 	Vasp *m_bevelup(Vasp &src,Vasp *dst,BL up = true,BL mul = false);  // bevel up 
-	Vasp *m_mbevelup(Vasp &src,Vasp *dst) { return m_bevelup(src,dst,true,true); }   // * bevel up (fade in)
-	Vasp *m_beveldn(Vasp &src,Vasp *dst) { return m_bevelup(src,dst,false,false); }  // bevel down
-	Vasp *m_mbeveldn(Vasp &src,Vasp *dst) { return m_bevelup(src,dst,false,true); }   // * bevel down (fade out)
+	inline Vasp *m_mbevelup(Vasp &src,Vasp *dst) { return m_bevelup(src,dst,true,true); }   // * bevel up (fade in)
+	inline Vasp *m_beveldn(Vasp &src,Vasp *dst) { return m_bevelup(src,dst,false,false); }  // bevel down
+	inline Vasp *m_mbeveldn(Vasp &src,Vasp *dst) { return m_bevelup(src,dst,false,true); }   // * bevel down (fade out)
 	Vasp *m_window(Vasp &src,const Argument &arg,Vasp *dst,BL mul = false);  // window curve
-	Vasp *m_mwindow(Vasp &src,const Argument &arg,Vasp *dst) { return m_window(src,arg,dst,true); }  // * window curve
+	inline Vasp *m_mwindow(Vasp &src,const Argument &arg,Vasp *dst) { return m_window(src,arg,dst,true); }  // * window curve
 
 	// Resampling (around center sample)
 	Vasp *m_tilt(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL symm = false,I mode = 0); 
 	// Symmetric resampling (around center sample)
-	Vasp *m_xtilt(Vasp &src,const Argument &arg,Vasp *dst = NULL,I mode = 0) { return m_tilt(src,arg,dst,true,mode); }
+	inline Vasp *m_xtilt(Vasp &src,const Argument &arg,Vasp *dst = NULL,I mode = 0) { return m_tilt(src,arg,dst,true,mode); }
 
 	// Fourier transforms 
 	Vasp *m_rfft(Vasp &src,Vasp *dst = NULL,BL inv = false);  // real forward
-	Vasp *m_rifft(Vasp &src,Vasp *dst = NULL) { return m_rfft(src,dst,true); } // real inverse
+	inline Vasp *m_rifft(Vasp &src,Vasp *dst = NULL) { return m_rfft(src,dst,true); } // real inverse
 	Vasp *m_cfft(Vasp &src,Vasp *dst = NULL,BL inv = false); // complex forward
-	Vasp *m_cifft(Vasp &src,Vasp *dst = NULL) { return m_cfft(src,dst,true); } // complex inverse
+	inline Vasp *m_cifft(Vasp &src,Vasp *dst = NULL) { return m_cfft(src,dst,true); } // complex inverse
 
 }
 

@@ -167,17 +167,15 @@ Argument &Argument::Set(VX *vec)
 	return *this;
 }
 
-I Argument::GetAInt() const 
-{
-	if(IsInt()) return GetInt();
-	else if(IsFloat()) return (I)GetFloat();
-	else return 0;
-}
+I Argument::GetAInt() const { return (I)GetADouble(); }
 
-F Argument::GetAFloat() const
+F Argument::GetAFloat() const { return GetADouble(); }
+
+D Argument::GetADouble() const
 {
 	if(IsInt()) return GetInt();
 	else if(IsFloat()) return GetFloat();
+	else if(IsDouble()) return GetDouble();
 	else return 0;
 }
 
@@ -185,6 +183,7 @@ CX Argument::GetAComplex() const
 {
 	if(IsInt()) return (F)GetInt();
 	else if(IsFloat()) return GetFloat();
+	else if(IsDouble()) return GetDouble();
 	else if(IsComplex()) return GetComplex();
 	else return 0;
 }
@@ -280,6 +279,11 @@ V OpParam::SADR_Rev() { SR_Rev(); AR_Rev(); DR_Rev(); }
 V OpParam::SADI_Rev() { SI_Rev(); AI_Rev(); DI_Rev(); }
 V OpParam::SADC_Rev() { SADR_Rev(); SADI_Rev(); }
 */
+
+OpParam::OpParam(const C *opnm): 
+	opname(opnm),frames(0),rsdt(NULL),
+	part(false),ovrlap(false),revdir(false) 
+{}
 
 /*! \brief Reverse direction of real vector operation 
 	\todo Check for existence of vectors!

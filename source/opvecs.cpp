@@ -359,12 +359,21 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 }
 
 
+/*! \brief Run the operation on the various real vectors.
+
+	\param vecs src/arg/dst vector block
+	\param fun operative function
+	\param p parameter block for operative function
+	\return normalized vasp or NULL on error
+
+	\remark operative function must be capable of handling reversed direction
+*/
 Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p)
 {
-	p.frames = vecs->Frames();
-
 	BL ok = true;
 	for(I i = 0; ok && i < vecs->Vecs(); ++i) {
+		p.frames = vecs->Frames();
+	
 		VBuffer *s = vecs->Src(i),*d = vecs->Dst(i),*a = vecs->Arg(i);
 		p.rsdt = s->Pointer(),p.rss = s->Channels();
 	
@@ -374,10 +383,11 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p)
 		if(a) p.radt = a->Pointer(),p.ras = a->Channels();
 		else p.radt = NULL;
 
-		{
-			// ---- Check out overlap situation ------------
+		{	// ---- Check out and try to resolve overlap situation ------------
+
 			BL sovr = p.SR_In(); // check whether dst is before src 
-			if(a) {
+			if(p.HasArg()) { 
+				// has argument
 				if(sovr) {
 					// src/dst needs reversal -> check if ok for arg/dst
 					if(p.AR_Can()) 
@@ -409,37 +419,78 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p)
 }
 
 
+/*! \brief Run the operation on the various complex vector pairs.
+
+	\param vecs src/arg/dst vector block
+	\param fun operative function
+	\param p parameter block for operative function
+	\return normalized vasp or NULL on error
+
+	\remark operative function must be capable of handling reversed direction
+*/
 Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p)
 {
-	p.frames = vecs->Frames();
-
 	BL ok = true;
 	for(I i = 0; ok && i < vecs->Pairs(); ++i) {
-		VBuffer *rv = vecs->ReSrc(i),*iv = vecs->ImSrc(i);
-		p.rsdt = rv->Pointer(),p.rss = rv->Channels();
-		p.isdt = iv->Pointer(),p.iss = iv->Channels();
+		p.frames = vecs->Frames();
+	
+		VBuffer *rsv = vecs->ReSrc(i),*isv = vecs->ImSrc(i);
+		p.rsdt = rsv->Pointer(),p.rss = rsv->Channels();
+		p.isdt = isv->Pointer(),p.iss = isv->Channels();
 
-		rv = vecs->ReDst(i),iv = vecs->ImDst(i);
-		if(rv) {
-			p.rddt = rv->Pointer(),p.rds = rv->Channels();
-			p.iddt = iv?iv->Pointer():NULL,p.ids = iv?iv->Channels():0;
+		VBuffer *rdv = vecs->ReDst(i),*idv = vecs->ImDst(i);
+		if(rdv) {
+			p.rddt = rdv->Pointer(),p.rds = rdv->Channels();
+			p.iddt = idv?idv->Pointer():NULL,p.ids = idv?idv->Channels():0;
 		}
 		else { 
 			p.rddt = p.rsdt,p.rds = p.rss,p.iddt = p.isdt,p.ids = p.iss;
 		}
 		
-		rv = vecs->ReArg(i),iv = vecs->ImArg(i);
-		if(rv) {
-			p.radt = rv->Pointer(),p.rds = rv->Channels();
-			p.iadt = iv?iv->Pointer():NULL,p.ids = iv?iv->Channels():0;
+		VBuffer *rav = vecs->ReArg(i),*iav = vecs->ImArg(i);
+		if(rav) {
+			p.radt = rav->Pointer(),p.rds = rav->Channels();
+			p.iadt = iav?iav->Pointer():NULL,p.ids = iav?iav->Channels():0;
 		}
 		else { 
 			p.radt = NULL,p.iadt = NULL;
 		}
 
-		// Check out overlap situation
+		{	// ---- Check out and try to resolve overlap situation ------------
 
+			BL sovr = p.SR_In(); // check whether dst is before src 
+			if(sovr && !p.SI_Can()) {
+				post("%s - src/dst overlap of re/im vectors not resolvable",p.opname);			
+				ok = false;
+			}
 
+			if(ok && p.HasArg()) { 
+				// has argument
+				if(sovr) {
+					// src/dst needs reversal -> check if ok for arg/dst
+
+					if(p.AR_Can() && p.AI_Can()) 
+						p.C_Rev(); // Revert vectors
+					else {
+						post("%s - vector overlap situation can't be resolved",p.opname);
+						ok = false;
+					}
+				}
+				else if(p.AR_In() || p.AI_In()) { 
+					// arg/dst needs reversal -> check if ok for src/dst
+
+					if(p.AR_Can() && p.AI_Can() && p.SR_Can() && p.SI_Can()) 
+						p.C_Rev(); // Revert vectors
+					else {
+						post("%s - vector overlap situation can't be resolved",p.opname);
+						ok = false;
+					}
+				}
+			}
+			else { // No arg
+				if(sovr) p.C_Rev(); // if overlapping revert vectors
+			}
+		}
 
 		ok = fun(p);
 	}
