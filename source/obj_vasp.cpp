@@ -47,11 +47,16 @@ public:
 
 		FLEXT_ADDMETHOD_(1,"list",m_set);
 		FLEXT_ADDMETHOD_(1,"vasp",m_set);
+		FLEXT_ADDMETHOD_(1,"radio",a_radio);
 	}
+
+	V a_radio(I,t_atom *) {}
 
 	virtual Vasp *x_work() { return new Vasp(ref); }
 
 	virtual V m_help() { post("%s - Store and output a vasp",thisName()); }
+private:
+	FLEXT_CALLBACK_V(a_radio);
 };
 
 FLEXT_LIB_V("vasp",vasp_v)

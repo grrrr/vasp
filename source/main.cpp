@@ -29,6 +29,9 @@ V lib_setup()
 
 	VASP_SETUP(sync);  // vasp.sync
 
+	VASP_SETUP(radio);  // vasp.radio
+	VASP_SETUP(noradio);  // vasp.noradio
+
 	VASP_SETUP(vector); // vasp.vector
 	VASP_SETUP(qvectors); // vasp.vectors?
 
@@ -141,8 +144,8 @@ V lib_setup()
 //	VASP__SETUP(cswap)
 	VASP__SETUP(cconj)
 
-	VASP__SETUP(shift)
-	VASP__SETUP(xshift)
+	VASP_SETUP(shift)
+	VASP_SETUP(xshift)
 	VASP__SETUP(rot)
 	VASP__SETUP(xrot)
 	VASP__SETUP(mirr)
@@ -164,11 +167,13 @@ V lib_setup()
 	VASP__SETUP(window)
 	VASP__SETUP(mwindow)
 
+	VASP__SETUP(flp)
+	VASP__SETUP(fhp)
+
 	VASP__SETUP(int) 
 	VASP__SETUP(dif) 
 
-	VASP__SETUP(flp)
-	VASP__SETUP(fhp)
+	VASP__SETUP(fix) 
 
 	VASP__SETUP(tilt)
 	VASP__SETUP(xtilt)

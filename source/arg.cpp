@@ -1,5 +1,6 @@
 #include "arg.h"
 //#include <math.h>
+#include "classes.h"
 
 Argument::Argument(): tp(tp_none),nxt(NULL) {}
 Argument::~Argument() { ClearAll(); }
@@ -9,11 +10,16 @@ Argument &Argument::Parse(I argc,t_atom *argv)
 	if(argc == 0)
 		Clear();
 	else // real?
-	if(argc == 1 && (flext_base::IsFloat(argv[0]) || flext_base::IsInt(argv[0]))) 
+	if(argc == 1 && flext_base::CanbeFloat(argv[0])) 
 		SetR(flext_base::GetAFloat(argv[0]));
 	else // complex?
-	if(argc == 2 && (flext_base::IsFloat(argv[0]) || flext_base::IsInt(argv[0])) && (flext_base::IsFloat(argv[1]) || flext_base::IsInt(argv[1])))
+	if(argc == 2 && flext_base::CanbeFloat(argv[0]) && flext_base::CanbeFloat(argv[1]))
 		SetCX(flext_base::GetAFloat(argv[1]),flext_base::GetAFloat(argv[2]));
+	else // double?
+	if(argc >= 2 && flext_base::GetASymbol(argv[0]) == vasp_base::sym_double &&
+		flext_base::CanbeFloat(argv[1]) && (argc == 2 || flext_base::CanbeFloat(argv[2]))
+		)
+		SetR((D)flext_base::GetAFloat(argv[1])+(D)flext_base::GetAFloat(argv[2]));
 	else // envelope?
 	if(Env::ChkArgs(argc,argv)) {
 		Env *e = new Env(argc,argv);
@@ -64,6 +70,7 @@ Argument &Argument::Clear()
 		break;
 	case tp_int:
 	case tp_float:
+	case tp_double:
 		break;
 	default:
 		error("Argument: Internal error - type unknown!");
@@ -104,6 +111,13 @@ Argument &Argument::SetR(F f)
 {
 	if(tp != tp_none) Clear();
 	dt.f = f; tp = tp_float;
+	return *this;
+}
+
+Argument &Argument::SetR(D f)
+{
+	if(tp != tp_none) Clear();
+	dt.d = f; tp = tp_double;
 	return *this;
 }
 

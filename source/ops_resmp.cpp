@@ -32,6 +32,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\todo implement more interpolation methods
 	\todo check for operation direction!
 	\todo symmetric operation!
+	\todo flag for filling remaining space
 */
 BL VecOp::d_tilt(OpParam &p) 
 { 

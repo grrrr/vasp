@@ -19,6 +19,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 const t_symbol *vasp_base::sym_radio;
 const t_symbol *vasp_base::sym_vasp;
 const t_symbol *vasp_base::sym_env;
+const t_symbol *vasp_base::sym_double;
 const t_symbol *vasp_base::sym_complex;
 const t_symbol *vasp_base::sym_vector;
 
@@ -27,11 +28,15 @@ V vasp_base::setup(t_class *c)
 	sym_radio = gensym("radio");
 	sym_vasp = gensym("vasp");
 	sym_env = gensym("env");
+	sym_double = gensym("double");
 	sym_complex = gensym("complex");
 	sym_vector = gensym("vector");
 }
 
-vasp_base::vasp_base()
+vasp_base::vasp_base():
+	refresh(false),argchk(false),
+	unit(xsu_sample),loglvl(0),
+	detach(false),prior(xsp_lower)
 {
 	FLEXT_ADDMETHOD_(0,"radio",m_radio);
 	FLEXT_ADDMETHOD_(0,"argchk",m_argchk);
@@ -39,6 +44,7 @@ vasp_base::vasp_base()
 	FLEXT_ADDMETHOD_E(0,"unit",m_unit);
 	FLEXT_ADDMETHOD_(0,"detach",m_detach);
 	FLEXT_ADDMETHOD_(0,"stop",m_stop);
+	FLEXT_ADDMETHOD_E(0,"prior",m_prior);
 }
 
 vasp_base::~vasp_base() {}
@@ -62,6 +68,7 @@ V vasp_base::m_unit(xs_unit u) { unit = u; }
 V vasp_base::m_argchk(BL chk) {	argchk = chk; }
 V vasp_base::m_loglvl(I lvl) { loglvl = lvl; }
 V vasp_base::m_detach(BL thr) { detach = thr; }
+V vasp_base::m_prior(xs_prior p) { prior = p; }
 V vasp_base::m_stop() {}
 
 
@@ -155,11 +162,6 @@ V vasp_tx::m_bang()
 	// Thread has to wait until previous is finished
 	Lock(); 
 
-#ifdef FLEXT_THREADS
-	// lower the thread priority
-	if(detach) LowerPriority();
-#endif
-
 //	if(ref.Ok()) 
 	{
 		Vasp *ret = x_work();
@@ -186,10 +188,6 @@ V vasp_tx::m_bang()
 	}
 */
 
-#ifdef FLEXT_THREADS
-	// back to normal
-	if(detach) NormalPriority();
-#endif
 	Unlock();
 }
 
@@ -235,6 +233,7 @@ vasp_binop::vasp_binop(I argc,t_atom *argv,const Argument &def,BL op,UL outcode)
 	FLEXT_ADDMETHOD_(1,"vasp",a_vasp);
 	FLEXT_ADDMETHOD_(1,"env",a_env);
 	FLEXT_ADDMETHOD_(1,"float",a_float);
+	FLEXT_ADDMETHOD_(1,"double",a_double);
 	FLEXT_ADDMETHOD_(1,"int",a_int);
 	FLEXT_ADDMETHOD_(1,"complex",a_complex);
 	FLEXT_ADDMETHOD_(1,"vector",a_vector);
@@ -288,13 +287,28 @@ V vasp_binop::a_env(I argc,t_atom *argv)
 
 V vasp_binop::a_float(F v) { arg.SetR(v); }
 
+V vasp_binop::a_double(I argc,t_atom *argv) 
+{ 
+	if(
+		(argc == 1 && CanbeFloat(argv[0])) || 
+		(argc == 2 && CanbeFloat(argv[0]) && CanbeFloat(argv[1]))
+	) {
+		arg.SetR((D)GetAFloat(argv[0])+(D)GetAFloat(argv[1]));
+		if(argchk) {
+			// check argument feasibility
+		}
+	}
+	else 
+		post("%s - invalid double argument (ignored)",thisName());
+}
+
 V vasp_binop::a_int(I v) { arg.SetI(v); }
 
 V vasp_binop::a_complex(I argc,t_atom *argv) 
 { 
 	if(
-		(argc == 1 && IsFloat(argv[0])) || 
-		(argc == 2 && IsFloat(argv[0]) && IsFloat(argv[1]))
+		(argc == 1 && CanbeFloat(argv[0])) || 
+		(argc == 2 && CanbeFloat(argv[0]) && CanbeFloat(argv[1]))
 	) {
 		arg.SetCX(GetAFloat(argv[0]),GetAFloat(argv[1]));
 		if(argchk) {

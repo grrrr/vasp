@@ -20,17 +20,18 @@ public:
 	public:
 		Ref(): sym(NULL) {}
 		Ref(VBuffer &b);
-		Ref(t_symbol *s,I c,I o);
+		Ref(VSymbol &s,I c,I o);
 		Ref(const Ref &r) { operator =(r); }
 		~Ref();
 
 		Ref &operator =(const Ref &r);
 
-		V Clear() { sym = NULL; }
-		BL Ok() const { return sym != NULL; }
+		V Clear() { sym.Clear(); }
+		BL Ok() const { return sym.Ok(); }
 
-		VSym &Symbol() const { return sym; }
-		V Symbol(VSym &s);
+		VSymbol &Symbol() { return sym; }
+		const VSymbol &Symbol() const { return sym; }
+		V Symbol(const VSymbol &s);
 		I Channel() const { return chn; }
 		V Channel(I c) { chn = c; }
 		I Offset() const { return offs; }
@@ -38,7 +39,7 @@ public:
 		V OffsetD(I o) { offs += o; }
 
 	protected:
-		VSym sym;
+		VSymbol sym;
 		I chn;
 		I offs; // counted in frames
 	};
@@ -96,7 +97,7 @@ public:
 	V OffsetD(I fr);
 
 	BL Ok() const { return ref && Vectors() > 0; }
-	BL IsComplex() const { return ref && Vectors() >= 2 && ref[1].Symbol() != NULL; }
+	BL IsComplex() const { return ref && Vectors() >= 2 && ref[1].Ok(); }
 
 	// get any vector - test if in range 0..Vectors()-1!
 	const Ref &Vector(I ix) const { return ref[ix]; }

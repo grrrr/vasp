@@ -1,34 +1,16 @@
 #include "vbuffer.h"
-//#include <math.h>
+#include "buflib.h"
 
+V VSymbol::Inc() { if(sym) BufLib::IncRef(sym); }
+V VSymbol::Dec() { if(sym) BufLib::DecRef(sym); }
 
 ///////////////////////////////////////////////////////////////////////////
 // SysBuf class
 ///////////////////////////////////////////////////////////////////////////
 
-/*
-SysBuf::SysBuf(t_symbol *s,I c,I l,I o)
-{	
-	Set(s,c,l,o); 
-}
-
-VBuffer::VBuffer(const VBuffer &v):
-	chn(0),len(0),offs(0) 
-{ 
-	operator =(v); 
-}
-
-SysBuf::~SysBuf() {}
-
-VBuffer &VBuffer::operator =(const VBuffer &v)
+SysBuf &SysBuf::Set(const VSymbol &s,I c,I l,I o)
 {
-	return Set(v.Symbol(),v.Channel(),v.Length(),v.Offset());
-}
-*/
-
-SysBuf &SysBuf::Set(VSym &s,I c,I l,I o)
-{
-	buf.Set(s);
+	buf.Set(s.Symbol());
 
 	chn = c;
 	if(chn > Channels()) chn = Channels()-1; // simply correct the channel??

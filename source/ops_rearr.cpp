@@ -10,9 +10,32 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "ops_rearr.h"
 
+/*! \brief vasp shift or rotation
+	\todo units for shift
+*/
+Vasp *VaspOp::m_shift(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm) 
+{
+	Vasp *ret = NULL;
+	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
+	if(vecs) {
+		if(arg.IsList() && arg.GetList().Count() >= 1 && flx::CanbeFloat(arg.GetList()[0])) {
+			// shift length
+			p.sh.sh = flx::GetAFloat(arg.GetList()[0]);
+		}
+		else {
+			post("%s - invalid argument -> set to 0",p.opname);
+			p.sh.sh = 0;
+		}
+
+		ret = DoOp(vecs,shift?VecOp::d_shift:VecOp::d_rot,p,symm);
+		delete vecs;
+	}
+
+	return ret;
+}
+
+
 /*! \brief shift buffer
-	
-	\todo flag for zero filling?
 */
 BL VecOp::d_shift(OpParam &p) 
 { 
@@ -31,7 +54,6 @@ BL VecOp::d_shift(OpParam &p)
 	ish = ish%p.frames;
 	if(p.symm == 1) ish = -ish;
 
-	// no zero filling!
 	I cnt = p.frames-abs(ish);
 	const S *sd = p.rsdt-ish*p.rss;
 	S *dd = p.rddt;
@@ -41,14 +63,85 @@ BL VecOp::d_shift(OpParam &p)
 		p.rss = -p.rss,p.rds = -p.rds;
 	}
 
-	if(p.rss == 1 && p.rds == 1)
+	// do shift
+	if(p.rss == 1 && p.rds == 1) 
 		for(I i = 0; i < cnt; ++i) *(dd++) = *(sd++);
-	else
+	else if(p.rss == -1 && p.rds == -1) 
+		for(I i = 0; i < cnt; ++i) *(dd--) = *(sd--);
+	else 
 		for(I i = 0; i < cnt; ++i,sd += p.rss,dd += p.rds) *dd = *sd;
+
+	// fill spaces
+	if(p.sh.fill) {
+		S vfill = p.sh.fill == 1?0:dd[-p.rds];
+		I aish = abs(ish);
+		if(p.rds == 1) 
+			for(I i = 0; i < aish; ++i) *(dd++) = vfill;
+		else if(p.rds == -1) 
+			for(I i = 0; i < aish; ++i) *(dd--) = vfill;
+		else 
+			for(I i = 0; i < aish; ++i,dd += p.rds) *dd = vfill;
+	}
 
 	return true;
 }
 
+
+class vasp_shift:
+	public vasp_anyop
+{																				
+	FLEXT_HEADER(vasp_shift,vasp_anyop)
+public:			
+	
+	vasp_shift(I argc,t_atom *argv): 
+		vasp_anyop(argc,argv,VASP_ARG_I(0),true),
+		fill(xsf_zero)
+	{
+		FLEXT_ADDMETHOD_E(0,"fill",m_fill);
+	}
+
+	enum xs_fill {
+		xsf__ = -1,  // don't change
+		xsf_zero = 0,xsf_none,xsf_edge
+	};	
+
+	V m_fill(xs_fill f) { fill = f; }
+
+	virtual Vasp *do_shift(OpParam &p) { return VaspOp::m_shift(p,ref,arg,&dst); }
+		
+	virtual Vasp *tx_work(const Argument &arg) 
+	{ 
+		OpParam p(thisName(),0);													
+		p.sh.fill  = (I)fill;
+
+		Vasp *ret = do_shift(p);
+		return ret;
+	}
+
+	virtual V m_help() { post("%s - Shifts buffer data",thisName()); }
+
+protected:
+	xs_fill fill;
+
+private:
+	FLEXT_CALLBACK_1(m_fill,xs_fill)
+};																				
+FLEXT_LIB_V("vasp.shift",vasp_shift)
+
+
+class vasp_xshift:
+	public vasp_shift
+{																				
+	FLEXT_HEADER(vasp_xshift,vasp_shift)
+public:			
+	
+	vasp_xshift(I argc,t_atom *argv): vasp_shift(argc,argv) {}
+
+	virtual Vasp *do_shift(OpParam &p) { return VaspOp::m_xshift(p,ref,arg,&dst); }
+		
+	virtual V m_help() { post("%s - Shifts buffer data symmetrically (in two halves)",thisName()); }
+};																				
+FLEXT_LIB_V("vasp.xshift",vasp_xshift)
 
 
 
@@ -112,31 +205,8 @@ BL VecOp::d_rot(OpParam &p)
 	return true; 
 }
 
-
-/*! \brief vasp shift or rotation
-	\todo units for shift
-	\todo include padding modes (on command line?)
-*/
-Vasp *VaspOp::m_shift(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm) 
-{
-	Vasp *ret = NULL;
-	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
-	if(vecs) {
-		if(arg.IsList() && arg.GetList().Count() >= 1 && flx::CanbeFloat(arg.GetList()[0])) {
-			// shift length
-			p.sh.sh = flx::GetAFloat(arg.GetList()[0]);
-		}
-		else {
-			post("%s - invalid argument -> set to 0",p.opname);
-			p.sh.sh = 0;
-		}
-
-		ret = DoOp(vecs,shift?VecOp::d_shift:VecOp::d_rot,p,symm);
-		delete vecs;
-	}
-
-	return ret;
-}
+VASP_ANYOP("vasp.rot",rot,0,true,VASP_ARG_I(0),"Rotates buffer data")
+VASP_ANYOP("vasp.xrot",xrot,0,true,VASP_ARG_I(0),"Rotates buffer data symmetrically (in two halves)")
 
 
 /*! \brief mirror buffer
@@ -174,11 +244,6 @@ Vasp *VaspOp::m_mirr(OpParam &p,Vasp &src,Vasp *dst,BL symm)
 	return ret;
 }
 
-
-VASP_ANYOP("vasp.shift",shift,0,true,VASP_ARG_I(0),"")
-VASP_ANYOP("vasp.xshift",xshift,0,true,VASP_ARG_I(0),"")
-VASP_ANYOP("vasp.rot",rot,0,true,VASP_ARG_I(0),"")
-VASP_ANYOP("vasp.xrot",xrot,0,true,VASP_ARG_I(0),"")
-VASP_UNARY("vasp.mirr",mirr,true,"")
-VASP_UNARY("vasp.xmirr",xmirr,true,"")
+VASP_UNARY("vasp.mirr",mirr,true,"Mirrors buffer data")
+VASP_UNARY("vasp.xmirr",xmirr,true,"Mirrors buffer data symmetrically (in two halves)")
 

@@ -26,38 +26,35 @@ BL VecOp::d_set(OpParam &p) { D__rbin(f_rset<S>,p); }
 BL VecOp::d_cset(OpParam &p) { D__cbin(f_cset<S>,p); }
 
 
-VASP_BINARY("vasp.set vasp.=",set,false,VASP_ARG_R(0),"assigns a value, env or vasp")
-VASP_BINARY("vasp.cset vasp.c=",cset,false,VASP_ARG_R(0),"assigns a complex value, real env or vasp")
+VASP_BINARY("vasp.set vasp.=",set,false,VASP_ARG_R(0),"Assigns a value, envelope or vasp")
+VASP_BINARY("vasp.cset vasp.c=",cset,false,VASP_ARG_R(0),"Assigns a complex value, real envelope or vasp")
 
 
 
-Vasp *VaspOp::m_copy(OpParam &p,Vasp &src,Vasp &dst) 
+Vasp *VaspOp::m_copy(OpParam &p,Vasp &src,Vasp &arg) 
 { 
-	Vasp *ret = NULL;
-
-	RVecBlock *vecs = GetRVecs(p.opname,src,&dst);
+	Vasp *s = NULL,*d = NULL;
+	RVecBlock *vecs = GetRVecs(p.opname,src,&arg);
 	if(vecs) {
-		ret = DoOp(vecs,VecOp::d_copy,p);
-		Vasp *d = vecs->DstVasp();
-		if(d) dst = *d; else { dst.Clear(); delete d; }
+		d = DoOp(vecs,VecOp::d_copy,p);
+		s = vecs->SrcVasp();
+		if(d) arg = *d; else { arg.Clear(); delete d; }
 		delete vecs;
 	}
-
-	return ret;
+	return s;
 }
 
-Vasp *VaspOp::m_ccopy(OpParam &p,Vasp &src,Vasp &dst) 
+Vasp *VaspOp::m_ccopy(OpParam &p,Vasp &src,Vasp &arg) 
 { 
-	Vasp *ret = NULL;
-	CVecBlock *vecs = GetCVecs(p.opname,src,&dst);
+	Vasp *s = NULL,*d = NULL;
+	CVecBlock *vecs = GetCVecs(p.opname,src,&arg);
 	if(vecs) {
-		ret = DoOp(vecs,VecOp::d_ccopy,p);
-		Vasp *d = vecs->DstVasp();
-		if(d) dst = *d; else { dst.Clear(); delete d; }
+		d = DoOp(vecs,VecOp::d_ccopy,p);
+		s = vecs->SrcVasp();
+		if(d) arg = *d; else { arg.Clear(); delete d; }
 		delete vecs;
 	}
-
-	return ret;
+	return s;
 }
 
 class vasp_copy:
@@ -87,6 +84,8 @@ public:
 			return NULL;
 		}
 	}
+
+	virtual V m_help() { post("%s - Copies the triggering vasp to the argument vasp",thisName()); }
 };																				
 FLEXT_LIB_V("vasp.copy vasp.->",vasp_copy)
 
@@ -100,6 +99,8 @@ public:
 	vasp_ccopy(I argc,t_atom *argv): vasp_copy(argc,argv) {}
 
 	virtual Vasp *do_copy(OpParam &p,Vasp &dst) { return VaspOp::m_ccopy(p,ref,dst); }
+
+	virtual V m_help() { post("%s - Copies complex pairs of the triggering vasp to the argument vasp",thisName()); }
 };																				
 FLEXT_LIB_V("vasp.ccopy vasp.c->",vasp_ccopy)
 

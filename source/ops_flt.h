@@ -21,6 +21,8 @@ namespace VecOp {
 
 	BL d_int(OpParam &p);
 	BL d_dif(OpParam &p); 
+
+	BL d_fix(OpParam &p); 
 }
 
 namespace VaspOp {
@@ -31,7 +33,9 @@ namespace VaspOp {
 	// int/dif functions
 	Vasp *m_int(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL,BL inv = false); //! integrate
 	inline Vasp *m_dif(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_int(p,src,arg,dst,true); } //! differentiate
-	
+
+	// fix denormals/NANs
+	inline Vasp *m_fix(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_run(p,src,dst,VecOp::d_fix); }    // ! NAN/denormal filter
 }
 
 #endif

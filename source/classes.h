@@ -25,8 +25,14 @@ public:
 		xsu_sample = 0,xsu_buffer,xsu_ms,xsu_s
 	};	
 
+	enum xs_prior {
+		xsp__ = -1,  // don't change
+		xsp_normal = 0,xsp_lower,xsp_lowest
+	};	
+
 	static const t_symbol *sym_vasp;
 	static const t_symbol *sym_env;
+	static const t_symbol *sym_double;
 	static const t_symbol *sym_complex;
 	static const t_symbol *sym_vector;
 	static const t_symbol *sym_radio;
@@ -37,10 +43,11 @@ protected:
 
 	virtual V m_radio(I argc,t_atom *argv);  // commands for all
 
-	virtual V m_argchk(BL chk);  // precheck argument on arrival
-	virtual V m_loglvl(I lvl);  // noise level of log messages
-	virtual V m_unit(xs_unit u);  // unit command
-	virtual V m_detach(BL thr);				// detached thread
+	V m_argchk(BL chk);  // precheck argument on arrival
+	V m_loglvl(I lvl);  // noise level of log messages
+	V m_unit(xs_unit u);  // unit command
+	V m_detach(BL thr);		// detached thread
+	V m_prior(xs_prior p);  // thread priority
 	virtual V m_stop();				// stop working
 
 	BL refresh;  // immediate graphics refresh?
@@ -48,6 +55,7 @@ protected:
 	xs_unit unit;  // time units
 	I loglvl;	// noise level for log messages
 	BL detach;	// detached operation?
+	xs_prior prior;  // thread priority
 
 	friend class Vasp;
 
@@ -63,6 +71,7 @@ private:
 	FLEXT_CALLBACK_1(m_unit,xs_unit)
 	FLEXT_CALLBACK(m_stop)
 	FLEXT_CALLBACK_B(m_detach)
+	FLEXT_CALLBACK_1(m_prior,xs_prior)
 };
 
 
@@ -157,12 +166,13 @@ protected:
 
 	// assignment functions
 	virtual V a_list(I argc,t_atom *argv); 
-	virtual V a_vasp(I argc,t_atom *argv);
-	virtual V a_env(I argc,t_atom *argv);
-	virtual V a_float(F f); 
-	virtual V a_int(I f); 
-	virtual V a_complex(I argc,t_atom *argv); 
-	virtual V a_vector(I argc,t_atom *argv); 
+	/*virtual*/ V a_vasp(I argc,t_atom *argv);
+	/*virtual*/ V a_env(I argc,t_atom *argv);
+	/*virtual*/ V a_float(F f); 
+	/*virtual*/ V a_int(I f); 
+	/*virtual*/ V a_double(I argc,t_atom *argv); 
+	/*virtual*/ V a_complex(I argc,t_atom *argv); 
+	/*virtual*/ V a_vector(I argc,t_atom *argv); 
 
 	V a_radio(I,t_atom *) {}
 
@@ -177,6 +187,7 @@ private:
 	FLEXT_CALLBACK_V(a_env)
 	FLEXT_CALLBACK_1(a_float,F)
 	FLEXT_CALLBACK_1(a_int,I)
+	FLEXT_CALLBACK_V(a_double)
 	FLEXT_CALLBACK_V(a_complex)
 	FLEXT_CALLBACK_V(a_vector)
 	FLEXT_CALLBACK_V(a_radio)

@@ -25,8 +25,12 @@ Version history:
 - ADD: vasp.frames* (vasp.f*), vasp.frames/ (vasp.f/), vasp.size* (vasp.s*), vasp.size/ (vasp.s/)
 - ADD: detached operation: operations run as threads, according to detach flag/message
 - CHANGE: vasp.sync has as many outputs as inputs and outputs all input vasps
-- ADD: vasp.! : like vasp but stores the content temporarily
-- ADD: vasp.copy (vasp.->) and vasp.ccopy (vasp.c->) for vasp copying
+- ADD: vasp.! : like vasp but stores the content temporarily (not just the reference)
+- ADD: vasp.copy (vasp.->) and vasp.ccopy (vasp.c->) for instant vasp copying
+- ADD: vasp.radio and vasp.noradio (vasp.!radio) ... filters for radio messages
+- ADD: vasp.fix - bashes NANs to zero, normalizes denormal numbers
+- ADD: double type consisting of 2 additive floats (e.g. "double 1. 1.e-13") for all numeric arguments
+- ADD: vasp.(x)shift - "fill" method/flag defines how to fill shifted areas (0..zero (default),1..none,2..edge value)
 
 0.0.5:
 - FIX: lacking sqrt in [vasp.rmin?],[vasp.rmax?]
@@ -42,7 +46,7 @@ Version history:
 - ADD: right inlet to [vasp]... just like in [float] etc.
 
 0.0.3:
-- restructured the code for future use of break-point lists as arguments
+- restructured the code for future use of break-point lists (aka envelopes) as arguments
 - changed some object's names
 - new objects: vasp.min?, vasp.max? and the likes
 - fixed Max problem with connecting vasp.min,vasp.max right outlet to number boxes
@@ -69,14 +73,10 @@ TODO list:
 features:
 ---------------------
 - introduce several log levels (for warning posts)
-- flags how to handle special situations (div/0, log(<0) etc.) -> NAN-filter
 - how handle symmetric data operations (x*): leave 0 and n-1 bin, odd remainder bin?
 - progress % - outlet?
-- asynchrone operations (multithreading, re-triggering) and interruptibility 
-	- this implies a message queue at the inlet!
 - grab (and recompose) signals for granular vasp usage
 - vasp~s for realtime-capable vasp objects
-- double precision variables?
 
 - complex power operations - delta phase
 
@@ -88,6 +88,11 @@ features:
 - how to handle beyond buffer-domain:
 warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay on last frame
 
+- set thread priority (introduce feature into flext!)
+- better algorithm for vasp.fix
+
+- make loops granular and interruptible
+
 objects:
 ---------------------
 - wave object for table-lookup oscs.
@@ -95,22 +100,16 @@ objects:
 
 - search functions for values -> offset
 
-- envelopes
-- gliss,slope -> stretch factor
 - slope: frequency distortion with given exponent
 
 - vasp.trigger object
 - vasp.expr
 
-- vasp.radio, vasp.noradio (vasp.!radio): filter objects for radio commands
-
-- vasp.!nan: NAN filter
-
 
 bugs:
 ---------------------
 - vasp.(!)(c)fft can't handle strided data
-- how to set thread priority?
+- vasp.xtilt nonfunctional
 
 tests:
 ---------------------

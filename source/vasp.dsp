@@ -417,6 +417,10 @@ SOURCE=.\obj_q.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\obj_radio.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\obj_size.cpp
 # End Source File
 # Begin Source File

@@ -29,39 +29,55 @@ static t_clock *libclk = NULL;
 static flext_base::ThrMutex libmtx;
 #endif
 
+V FreeLibSym(t_symbol *s);
+
+
+class BufEntry
+{
+public:
+	BufEntry(t_symbol *s,I fr);
+	~BufEntry();
+
+	V IncRef();
+	V DecRef();
+
+	UL magic;
+	t_symbol *sym;
+	I refcnt,tick;
+	BufEntry *nxt;
+
+	I alloc,len;
+	S *data;
+};
+
+
 BufEntry::BufEntry(t_symbol *s,I fr): 
 	sym(s),magic(LIBMAGIC),
 	alloc(fr),len(fr),data(new S[fr]),
 	refcnt(0),nxt(NULL) 
 {
-	ASSERT(!sym->s_thing);
+	ASSERT(!flext_base::GetThing(sym));
 	flext_base::SetThing(sym,this);
 }
 
 BufEntry::~BufEntry()
 {
-	if(sym) {
-		flext_base::SetThing(sym,NULL);
-		if(!freehead) freehead = sym;
-		flext_base::SetThing(freetail,sym);
-		
-	}
+	if(sym) FreeLibSym(sym);
 	if(data) delete[] data;
 }
 
 V BufEntry::IncRef() { ++refcnt; }
 V BufEntry::DecRef() { --refcnt; tick = libtick; }
 
-
-static BufEntry *FindInLib(t_symbol *s) 
+static BufEntry *FindInLib(const t_symbol *s) 
 {
 	BufEntry *e = (BufEntry *)flext_base::GetThing(s);
 	return e && e->magic == LIBMAGIC?e:NULL;
 }
 
-VBuffer *BufLib::Get(t_symbol *s,I chn,I len,I offs)
+VBuffer *BufLib::Get(const VSymbol &s,I chn,I len,I offs)
 {
-	BufEntry *e = FindInLib(s);
+	BufEntry *e = FindInLib(s.Symbol());
 	if(e) 
 		return new ImmBuf(e,len,offs);
 	else
@@ -72,7 +88,8 @@ V BufLib::IncRef(t_symbol *s)
 { 
 	if(s) {
 		BufEntry *e = (BufEntry *)flext_base::GetThing(s);
-		if(e && e->magic == LIBMAGIC) e->IncRef();
+		if(e && e->magic == LIBMAGIC) 
+			e->IncRef();
 	}
 }
 
@@ -80,10 +97,10 @@ V BufLib::DecRef(t_symbol *s)
 { 
 	if(s) {
 		BufEntry *e = (BufEntry *)flext_base::GetThing(s);
-		if(e && e->magic == LIBMAGIC) e->DecRef();
+		if(e && e->magic == LIBMAGIC) 
+			e->DecRef();
 	}
 }
-
 
 static t_symbol *GetLibSym()
 {
@@ -107,6 +124,14 @@ static t_symbol *GetLibSym()
 	}
 	
 	clock_delay(libclk,LIBTICK);
+}
+
+static V FreeLibSym(t_symbol *sym)
+{
+	flext_base::SetThing(sym,NULL);
+	if(!freehead) freehead = sym;
+	else flext_base::SetThing(freetail,sym);
+	freetail = sym;
 }
 
 static V LibTick(V *)
@@ -187,13 +212,11 @@ BufEntry *BufLib::Resize(BufEntry *e,I fr,BL keep)
 	}
 	else {
 		BufEntry *ret = NewImm(fr);
-		ret->IncRef();
 		if(keep) {
 			I l = ret->len;
 			if(e->len < l) l = e->len;
 			flext_base::CopyMem(e->data,ret->data,l);
 		}
-		e->DecRef();
 		return  ret;
 	}
 }
@@ -203,28 +226,14 @@ BufEntry *BufLib::Resize(BufEntry *e,I fr,BL keep)
 ImmBuf::ImmBuf(I len):
 	VBuffer(0,len),
 	entry(BufLib::NewImm(len))
-{
-	if(entry) entry->IncRef(); 
-}
+{}
 
 ImmBuf::ImmBuf(BufEntry *e,I len,I offs): 
 	VBuffer(0,len,offs),
 	entry(e) 
-{ 
-	if(entry) entry->IncRef(); 
-}
+{}
 
-ImmBuf::~ImmBuf() 
-{ 
-	if(entry) entry->DecRef(); 
-}
-
-/*
-V ImmBuf::IncRef() {}
-V ImmBuf::DecRef() {}
-*/
-
-VSym ImmBuf::Symbol() const { return entry->sym; }
+VSymbol ImmBuf::Symbol() const { return entry->sym; }
 
 I ImmBuf::Frames() const { return entry->len; }
 

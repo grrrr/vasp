@@ -130,10 +130,10 @@ Vasp *VaspOp::m_cosc(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 }
 
 
-VASP_ANYOP("vasp.osc",osc,1,false,VASP_ARG(),"")
-VASP_ANYOP("vasp.*osc",mosc,1,true,VASP_ARG(),"")
-VASP_ANYOP("vasp.cosc",cosc,1,false,VASP_ARG(),"")
-VASP_ANYOP("vasp.*cosc",mcosc,1,true,VASP_ARG(),"")
+VASP_ANYOP("vasp.osc",osc,1,false,VASP_ARG(),"Calculates a cosine wave")
+VASP_ANYOP("vasp.*osc",mosc,1,true,VASP_ARG(),"Multiplies with a cosine wave")
+VASP_ANYOP("vasp.cosc",cosc,1,false,VASP_ARG(),"Calculates a complex oscillation (cos + i sin)")
+VASP_ANYOP("vasp.*cosc",mcosc,1,true,VASP_ARG(),"Multiplies with a complex oscillation (cos + i sin)")
 
 // --- phasor ---------------------------------------
 
@@ -193,8 +193,8 @@ Vasp *VaspOp::m_phasor(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul
 }
 
 
-VASP_ANYOP("vasp.phasor",phasor,1,false,VASP_ARG(),"")
-VASP_ANYOP("vasp.*phasor",mphasor,1,true,VASP_ARG(),"")
+VASP_ANYOP("vasp.phasor",phasor,1,false,VASP_ARG(),"Calculates a sawtooth wave")
+VASP_ANYOP("vasp.*phasor",mphasor,1,true,VASP_ARG(),"Multiplies with a sawtooth wave")
 
 // --- noise --------------------------------
 
@@ -260,6 +260,6 @@ Vasp *VaspOp::m_cnoise(OpParam &p,Vasp &src,Vasp *dst)
 	return ret;
 }
 
-VASP_UNARY("vasp.noise",noise,false,"")
-VASP_UNARY("vasp.cnoise",cnoise,false,"")
+VASP_UNARY("vasp.noise",noise,false,"Fills the vectors with white noise")
+VASP_UNARY("vasp.cnoise",cnoise,false,"Fills the vectors with complex white noise (radius and angle are random)")
 

@@ -13,49 +13,28 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 
-/*
-class VBuffer:
-	public flext_base::buffer
-{
-	typedef flext_base::buffer parent;
-
-public:
-	VBuffer(t_symbol *s = NULL,I chn = 0,I len = -1,I offs = 0);
-	VBuffer(const VBuffer &v);
-	~VBuffer();
-
-	VBuffer &operator =(const VBuffer &v);
-	VBuffer &Set(t_symbol *s = NULL,I chn = 0,I len = -1,I offs = 0);
-
-	I Channel() const { return chn; }
-	I Offset() const { return offs; }
-	I Length() const { return len; }
-
-	S *Pointer() { return Data()+Offset()*Channels()+Channel(); }
-
-protected:
-	I chn,offs,len;
-};
-*/
-
-class VSym
+class VSymbol
 {
 public:
-	VSym(t_symbol *s = NULL): sym(s) { Inc(); }
-	VSym(VSym &s): sym(s.sym) { Inc(); }
-	~VSym() { Dec(); }
+	VSymbol(t_symbol *s = NULL): sym(s) { Inc(); }
+	VSymbol(const VSymbol &s): sym(s.sym) { Inc(); }
+	~VSymbol() { Dec(); }
 	
+	BL Ok() const { return sym != NULL; }
 	V Clear() { Dec(); sym = NULL; }
+
+	V *Thing() { return sym?flext_base::GetThing(sym):NULL; }
+	V Thing(V *th) { if(sym) flext_base::GetThing(sym); }
 	
-	VSym &operator =(VSym &s) { Clear(); sym = s.sym; Inc(); return *this; }
+	VSymbol &operator =(const VSymbol &s) { Dec(); sym = s.sym; Inc(); return *this; }
 	
 	t_symbol *Symbol() { return sym; }
 	const t_symbol *Symbol() const { return sym; }
-	const C *Name() const { return flext_base::GetString(Symbol()); }
+	const C *Name() const { return flext_base::GetAString(Symbol()); }
 	
 protected:
-	V Inc(); // { if(sym) BufLib::IncRef(s); }
-	V Dec(); // { if(sym) BufLib::DecRef(s); }
+	V Inc();
+	V Dec();
 
 	t_symbol *sym;
 };
@@ -74,14 +53,9 @@ public:
 
 	virtual V Dirty() = 0;
 
-/*
-	virtual V IncRef() = 0;
-	virtual V DecRef() = 0;
-*/
-
 	S *Pointer() { return Data()+Offset()*Channels()+Channel(); }
 
-	virtual VSym Symbol() const = 0;
+	virtual VSymbol Symbol() const = 0;
 	const C *Name() const { return Symbol().Name(); }
 
 	I Channel() const { return chn; }
@@ -104,20 +78,14 @@ class SysBuf:
 	public VBuffer
 {
 public:
-	SysBuf(VSym &s,I chn = 0,I len = -1,I offs = 0) { Set(s,chn,len,offs); }
-	virtual ~SysBuf() {}
+	SysBuf(const VSymbol &s,I chn = 0,I len = -1,I offs = 0) { Set(s,chn,len,offs); }
 
 	virtual BL Ok() const { return buf.Ok(); }
 	virtual V Dirty() { buf.Dirty(true); }
 
-/*
-	virtual V IncRef() {};
-	virtual V DecRef() {};
-*/
+	virtual VSymbol Symbol() const { return buf.Symbol(); }
 
-	virtual VSym Symbol() const { return buf.Symbol(); }
-
-	SysBuf &Set(VSym &s,I chn = 0,I len = -1,I offs = 0);
+	SysBuf &Set(const VSymbol &s,I chn = 0,I len = -1,I offs = 0);
 
 	virtual I Frames() const { return buf.Frames(); }
 	virtual V Frames(I fr,BL keep) { buf.Frames(fr,keep); }
@@ -138,19 +106,11 @@ class ImmBuf:
 public:
 	ImmBuf(I len);
 	ImmBuf(BufEntry *e,I len = -1,I offs = 0);
-	virtual ~ImmBuf();
 
 	virtual BL Ok() const { return entry != NULL; }
 	virtual V Dirty() {}
 
-/*
-	virtual V IncRef();
-	virtual V DecRef();
-*/
-
-	virtual VSym Symbol() const;
-
-//	ImmBuf &Set(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
+	virtual VSymbol Symbol() const;
 
 	virtual I Frames() const;
 	virtual V Frames(I fr,BL keep);

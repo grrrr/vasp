@@ -35,14 +35,14 @@ public:
 		AddOutAnything();
 		SetupInOut();
 
-		FLEXT_ADDMETHOD_A(0,m_any);
+		FLEXT_ADDMETHOD(0,m_any);
 	}
 
 	virtual V m_any(t_symbol *s,I argc,t_atom *argv);
 
 	virtual V m_help() { post("%s - lets only radio messages pass through",thisName()); }
 private:
-	FLEXT_CALLBACK_A(m_all);
+	FLEXT_CALLBACK_A(m_any);
 };
 
 FLEXT_LIB("vasp.radio",vasp_radio)
@@ -50,7 +50,7 @@ FLEXT_LIB("vasp.radio",vasp_radio)
 
 V vasp_radio::m_any(t_symbol *s,I argc,t_atom *argv) 
 {
-	if(s == sym_radio) ToOutAnything(s,argc,argv);
+	if(s == vasp_base::sym_radio) ToOutAnything(0,s,argc,argv);
 }
 
 
@@ -63,7 +63,7 @@ V vasp_radio::m_any(t_symbol *s,I argc,t_atom *argv)
 	\retval outlet all messages except radio messages
 */
 class vasp_noradio:
-	public flext_radio
+	public vasp_radio
 {
 	FLEXT_HEADER(vasp_noradio,vasp_radio)
 
@@ -79,5 +79,5 @@ FLEXT_LIB("vasp.noradio vasp.!radio",vasp_noradio)
 
 V vasp_noradio::m_any(t_symbol *s,I argc,t_atom *argv) 
 {
-	if(s != sym_radio) ToOutAnything(s,argc,argv);
+	if(s != vasp_base::sym_radio) ToOutAnything(0,s,argc,argv);
 }

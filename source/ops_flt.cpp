@@ -9,6 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "ops_flt.h"
+#include "opdefs.h"
 #include "util.h"
 
 // --- highpass ---------------------------------------
@@ -127,8 +128,8 @@ Vasp *VaspOp::m_fhp(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL hp)
 	return ret;
 }
 
-VASP_ANYOP("vasp.flp",flp,1,true,VASP_ARG(),"")
-VASP_ANYOP("vasp.fhp",fhp,1,true,VASP_ARG(),"")
+VASP_ANYOP("vasp.flp",flp,1,true,VASP_ARG(),"Passive one pole low pass filter")
+VASP_ANYOP("vasp.fhp",fhp,1,true,VASP_ARG(),"Passive one pole high pass filter")
 
 
 // --- integrate/differentiate
@@ -198,7 +199,31 @@ Vasp *VaspOp::m_int(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL inv)
 	return ret;
 }
 
-VASP_ANYOP("vasp.int",int,0,true,VASP_ARG_I(1),"") 
-VASP_ANYOP("vasp.dif",dif,0,true,VASP_ARG_I(1),"") 
+VASP_ANYOP("vasp.int",int,0,true,VASP_ARG_I(1),"Integration") 
+VASP_ANYOP("vasp.dif",dif,0,true,VASP_ARG_I(1),"Differentiation") 
 
 
+
+/*! \brief Bashes denormals and NANs to zero
+
+	\param arg argument list 
+	\param dst destination vasp (NULL for in-place operation)
+	\return normalized destination vasp
+*/
+template<class T> inline V f_fix(T &v,T a) 
+{ 
+	if(a != a) // NAN
+		v = 0; 
+	else {
+		// denormal bashing (doesn't propagate to the next stage)
+
+		static const F anti_denormal = 1e-18F;
+		a += anti_denormal;
+		a -= anti_denormal;
+		v = a; 
+	}
+} 
+
+BL VecOp::d_fix(OpParam &p) { D__run(f_fix<S>,p); }
+
+VASP_UNARY("vasp.fix",fix,true,"Bashes denormals/NANs to zero") 

@@ -17,7 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 ///////////////////////////////////////////////////////////////////////////
 
 Vasp::Ref::Ref(VBuffer &b): sym(b.Symbol()),chn(b.Channel()),offs(b.Offset()) {}
-Vasp::Ref::Ref(VSym &s,I c,I o): sym(s),chn(c),offs(o) {}
+Vasp::Ref::Ref(VSymbol &s,I c,I o): sym(s),chn(c),offs(o) {}
 Vasp::Ref::~Ref() {}
 
 Vasp::Ref &Vasp::Ref::operator =(const Ref &r)
@@ -26,7 +26,7 @@ Vasp::Ref &Vasp::Ref::operator =(const Ref &r)
 	return *this;
 }
 
-V Vasp::Ref::Symbol(VSym &s) { sym = s; }
+V Vasp::Ref::Symbol(const VSymbol &s) { sym = s; }
 
 
 Vasp::Vasp(): 
@@ -191,7 +191,7 @@ Vasp &Vasp::operator ()(I argc,const t_atom *argv)
 
 		// is a symbol!
 		Ref &r = ref[chns];
-		r.Symbol(bsym);
+		r.Symbol(VSymbol(bsym));
 
 		if(argc > ix && (flext_base::IsFlint(argv[ix]) || flext_base::IsFloat(argv[ix]))) {
 			r.Offset(flext_base::GetAFlint(argv[ix]));
@@ -246,7 +246,7 @@ flext_base::AtomList *Vasp::MakeList(BL withvasp)
 
 	for(I ix = 0; ix < Vectors(); ++ix) {
 		Ref &r = Vector(ix);
-		flext_base::SetSymbol((*ret)[voffs+1+ix*3],r.Symbol());  // buf
+		flext_base::SetSymbol((*ret)[voffs+1+ix*3],r.Symbol().Symbol());  // buf
 		flext_base::SetFlint((*ret)[voffs+2+ix*3],r.Offset());  // offs
 		flext_base::SetFlint((*ret)[voffs+3+ix*3],r.Channel());  // chn
 	}

@@ -102,7 +102,7 @@ public:
 		struct { R ph,phinc; } gen;
 		struct { R factor,center; I mode; } tilt; 
 		struct { R cur,inc; } bvl;
-		struct { R sh; I ish; } sh;
+		struct { R sh; I ish; I fill; } sh;
 		struct { I wndtp; } wnd;
 		struct { R minmax,scl; } norm;
 		struct { I arg; } ibin;
