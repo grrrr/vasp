@@ -59,9 +59,3 @@ documentation:
 - no special characters!
 
 
-5 fundamental parameter types:
-real - float 
-double - double [f] [f] ... f's are internally summed up
-complex - list with 2 floats
-env - list with >= 3 float values
-vasp - list with ([f] s [f] [f] ) structure
