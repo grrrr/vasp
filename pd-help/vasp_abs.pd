@@ -1,0 +1,30 @@
+#N canvas 74 41 834 428 10;
+#X text 167 257 get the absolute values;
+#X obj 77 302 vasp.update;
+#X text 160 159 generate a sinewave;
+#X msg 77 162 vasp bufabs;
+#X obj 77 187 vasp.osc 22050;
+#X text 71 76 get absolute values of a vasp;
+#X obj 77 279 vasp.abs;
+#N canvas 0 0 450 300 graph1 0;
+#X array bufabs 44100 float 0;
+#X coords 0 1 44099 -1 300 100 1;
+#X restore 432 201 graph;
+#N canvas 0 0 386 262 init 0;
+#X msg 33 73 \; \$1 xticks 0 4410 5 \; \$1 xlabel 1.1 0 22050 44100
+\; \$1 yticks 0 0.25 2 \; \$1 ylabel 48000 -1 -0.5 0 0.5 1;
+#X obj 33 19 loadbang;
+#X msg 33 45 symbol bufabs;
+#X connect 1 0 2 0;
+#X connect 2 0 0 0;
+#X restore 431 322 pd init;
+#X obj 77 210 vasp.update;
+#X msg 77 257 vasp bufabs;
+#X obj 75 32 cnv 15 15 15 empty empty vasp.abs 0 10 1 14 -262144 -1
+0;
+#X text 70 94 see also vasp_mul.pd (vasp.*) for an example using vasp.abs
+to generate an envelope from a vasp;
+#X connect 3 0 4 0;
+#X connect 4 0 9 0;
+#X connect 6 0 1 0;
+#X connect 10 0 6 0;
