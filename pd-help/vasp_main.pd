@@ -1,0 +1,833 @@
+#N canvas 0 0 547 581 10;
+#N canvas 49 0 330 397 objects 0;
+#N canvas 306 143 429 271 vasp.displace 0;
+#X text 158 165 rotate buffer content symmetrically;
+#X obj 80 164 vasp.xrot;
+#X obj 80 232 vasp.xmirr;
+#X obj 80 197 vasp.mirr;
+#X obj 80 132 vasp.rot;
+#X obj 80 97 vasp.xshift;
+#X obj 80 62 vasp.shift;
+#X text 158 232 mirrors a vasp symmetrically;
+#X text 157 97 shifts the buffer content symetrically;
+#X text 158 197 mirrors a vasp;
+#X text 158 63 shifts the buffer content;
+#X text 158 132 rotate buffer content;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_displace 0 10 1 14 -262144
+-1 0;
+#X restore 72 214 pd vasp.displace;
+#N canvas 407 1 536 680 define_vasps 0;
+#X obj 74 626 vasp.part;
+#X obj 74 595 vasp.gather;
+#X obj 74 564 vasp.spit;
+#X obj 74 470 vasp.frames?;
+#X obj 74 439 vasp.frames+;
+#X obj 74 408 vasp.frames;
+#X obj 74 283 vasp.n?;
+#X obj 74 252 vasp.n;
+#X obj 74 190 vasp.update;
+#X obj 74 127 vasp.chk;
+#X obj 74 96 vasp.??;
+#X obj 74 65 vasp.?;
+#X text 161 96 output all non zero samples of a vasp as list;
+#X text 161 595 gather several vasps into one;
+#X text 161 502 split a vasp into its vectors;
+#X text 161 564 spit out vectors of a vasp (one vector after the other)
+;
+#X text 161 533 join several vasps into one;
+#X text 161 471 get a vasps frame count;
+#X text 161 439 raise/lower a vasps frame count;
+#X text 161 408 set a vasps frame count;
+#X text 161 377 get a single vectored vasp«s offset(s) into the buffer
+;
+#X text 161 346 shift a vasp«s offset(s) into the vector buffers;
+#X text 161 315 set a vasp«s offset(s) into the vector buffers;
+#X text 161 283 get the number vectors of a vasp;
+#X text 161 252 get a vector of a vasp;
+#X text 161 221 output a vasp multiply;
+#X text 161 65 output the samples of a vasp as list;
+#X text 161 127 check vasp dimensions;
+#X text 161 159 sync 2 or more vasps;
+#X text 161 190 update the graphics of a patcher (e.g. waveform);
+#X text 161 627 output vasps with different lengths and offsets;
+#X obj 35 22 cnv 15 15 15 empty empty define_vasps 0 10 1 14 -262144
+-1 0;
+#X obj 74 158 vasp.sync 2;
+#X obj 74 221 vasp.m 2;
+#X obj 74 314 vasp.offset;
+#X obj 74 346 vasp.offset+;
+#X obj 74 377 vasp.offset?;
+#X obj 74 502 vasp.split 2;
+#X obj 74 533 vasp.join 2;
+#X restore 72 78 pd define_vasps;
+#N canvas 183 315 768 326 vasp.utilities 0;
+#X msg 76 274 vasp.xtilt;
+#X text 156 275 symmetrical resampling;
+#X obj 77 245 vasp.tilt;
+#X text 155 246 resampling;
+#X obj 360 98 vasp.cnorm;
+#X obj 77 198 vasp.pwrap;
+#X obj 77 164 vasp.peaks;
+#X obj 77 131 vasp.valleys;
+#X obj 77 97 vasp.opt;
+#X obj 77 64 vasp.gate;
+#X text 155 165 local peaks of a vasp;
+#X text 155 131 local minima of a vasp;
+#X text 155 97 optimize buffer content;
+#X text 155 64 gates vasp under a value (amplitude);
+#X text 436 97 sets complex radius of all samples to unity;
+#X obj 525 227 vasp.rvalleys;
+#X obj 525 260 vasp.rpeaks;
+#X obj 525 193 vasp.ropt;
+#X text 616 227 radius valleys;
+#X text 616 261 radius peaks;
+#X text 616 193 radius optimize;
+#X obj 525 160 vasp.rgate;
+#X text 616 160 radius gate;
+#X text 155 198 wraps value from 0-2 to -1 to 1;
+#X obj 59 28 cnv 15 15 15 empty empty vasp_utilities 0 10 1 14 -262144
+-1 0;
+#X restore 72 295 pd vasp.utilities;
+#N canvas 195 285 647 297 vasp.minmax_etc. 0;
+#X obj 422 250 vasp.rmin;
+#X obj 422 218 vasp.rmax;
+#X text 511 250 radius minimum;
+#X text 511 219 radius maximum;
+#X obj 76 250 vasp.min;
+#X obj 76 218 vasp.max;
+#X obj 76 187 vasp.max?;
+#X obj 76 156 vasp.min?;
+#X obj 76 125 vasp.amax?;
+#X obj 76 94 vasp.amin?;
+#X obj 422 187 vasp.rmax?;
+#X obj 422 156 vasp.rmin?;
+#X obj 76 62 vasp.minmax;
+#X text 167 250 minimum of vasp and argument;
+#X text 167 219 maximum of vasp and argument;
+#X text 167 156 output min. value of a vasp;
+#X text 167 187 output max. value of a vasp;
+#X text 167 125 output max. absolute value of a vasp;
+#X text 167 94 output min. absolute value of a vasp;
+#X text 511 187 radius max. value;
+#X text 511 156 radius min. value;
+#X text 167 65 splits a vasp into minimum and maximum values;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_minmax 0 10 1 14 -262144
+-1 0;
+#X restore 72 268 pd vasp.minmax_etc.;
+#N canvas 198 295 770 293 vasp.transcendent 0;
+#X text 350 165 complex sample^2;
+#X text 350 135 complex integer power function;
+#X text 145 195 square root;
+#X text 145 226 signed sample^2;
+#X obj 276 134 vasp.cpowi;
+#X obj 276 164 vasp.csqr;
+#X obj 73 257 vasp.ssqrt;
+#X obj 73 226 vasp.ssqr;
+#X obj 73 194 vasp.sqrt;
+#X obj 73 164 vasp.sqr;
+#X obj 73 134 vasp.pow;
+#X text 145 257 signed square root;
+#X text 145 135 samps^x;
+#X text 145 165 sample^2;
+#X obj 538 134 vasp.rpow;
+#X text 605 135 radius power function;
+#X obj 73 102 vasp.log;
+#X obj 73 66 vasp.exp;
+#X text 145 102 logarithm;
+#X text 145 66 exponential;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_transcendent 0 10 1 14 -262144
+-1 0;
+#X restore 72 241 pd vasp.transcendent;
+#N canvas 407 0 589 625 vasp.arithmetic 0;
+#X obj 301 137 vasp.c!-;
+#X text 150 135 reverse subtraction;
+#X obj 74 134 vasp.!-;
+#X text 151 527 integral function;
+#X text 151 555 differential function;
+#X obj 76 554 vasp.dif;
+#X obj 76 527 vasp.int;
+#X obj 403 84 vasp.r+;
+#X text 462 84 radius offset;
+#X obj 302 218 vasp.c!/;
+#X text 151 217 reverse division;
+#X obj 76 217 vasp.!/;
+#X obj 302 246 vasp.c=;
+#X obj 302 192 vasp.c/;
+#X obj 302 163 vasp.c*;
+#X obj 302 110 vasp.c-;
+#X obj 302 84 vasp.c+;
+#X obj 76 499 vasp.sign;
+#X obj 76 473 vasp.%;
+#X obj 76 448 vasp.abs;
+#X obj 76 420 vasp.!=;
+#X obj 76 392 vasp.==;
+#X obj 76 365 vasp.>=;
+#X obj 76 336 vasp.<=;
+#X obj 76 307 vasp.>;
+#X obj 76 278 vasp.<;
+#X obj 76 248 vasp.=;
+#X obj 76 191 vasp./;
+#X obj 76 162 vasp.*;
+#X obj 74 110 vasp.-;
+#X obj 74 84 vasp.+;
+#X text 151 365 vasp >= x;
+#X text 151 336 vasp >= x;
+#X text 151 307 vasp > x;
+#X text 151 279 vasp < x;
+#X text 151 393 equal to;
+#X text 151 162 multiplication;
+#X text 151 191 division;
+#X text 150 111 subtraction;
+#X text 151 420 not equal to;
+#X text 151 473 modulo (remainder of a division);
+#X text 151 448 absolute value of a vasp;
+#X text 150 84 addition;
+#X text 301 59 complex ....;
+#X text 151 249 vasp = x;
+#X text 151 499 values < 0 become -1 | values > 0 become 1;
+#X text 403 59 radius ....;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_arithmetic 0 10 1 14 -262144
+-1 0;
+#X restore 72 131 pd vasp.arithmetic;
+#N canvas 408 1 504 289 vasp.fftobjects 0;
+#X obj 281 103 vasp.r!fft;
+#X obj 281 71 vasp.rfft;
+#X obj 77 160 vasp.polar;
+#X obj 77 103 vasp.c!fft;
+#X obj 77 71 vasp.cfft;
+#X text 145 160 changes between cartesian and polar representation
+;
+#X text 344 103 inverse real fft;
+#X text 145 71 complex fft;
+#X text 145 103 inverse complex fft;
+#X text 344 71 real fft;
+#X text 145 213 changes between polar and cartesian representation
+;
+#X obj 77 212 vasp.rect;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_fftobjects 0 10 1 14 -262144
+-1 0;
+#X restore 72 104 pd vasp.fftobjects;
+#N canvas 506 170 281 178 vasp.filters 0;
+#X obj 53 108 vasp.flp;
+#X obj 53 77 vasp.fhp;
+#X text 114 108 low pass;
+#X text 114 77 high pass;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_filters 0 10 1 14 -262144
+-1 0;
+#X restore 72 186 pd vasp.filters;
+#N canvas 267 189 735 318 vasp.generators 0;
+#X obj 507 245 vasp.*cosc;
+#X obj 507 218 vasp.*!bevel;
+#X obj 507 190 vasp.*bevel;
+#X obj 507 135 vasp.*phasor;
+#X obj 507 107 vasp.*osc;
+#X obj 72 257 vasp.cnoise;
+#X obj 72 229 vasp.cosc;
+#X obj 72 202 vasp.!bevel;
+#X obj 72 174 vasp.bevel;
+#X obj 72 146 vasp.noise;
+#X obj 72 119 vasp.phasor;
+#X obj 72 91 vasp.osc;
+#X text 72 67 generate .....;
+#X text 154 203 vasp ramp from 1- 0;
+#X text 154 174 vasp ramp from 0 - 1;
+#X text 154 145 vasp noise generator;
+#X text 154 118 vasp saw tooth generator;
+#X text 154 90 vasp sine wave generator;
+#X text 366 67 multiplies a buffer content with the oscillator functions
+...;
+#X text 154 261 complex noise;
+#X text 154 231 complex sine wave;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_generators 0 10 1 14 -262144
+-1 0;
+#X restore 72 158 pd vasp.generators;
+#X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
+-1 0;
+#X restore 169 312 pd objects;
+#X text 54 169 vasp objects are using a specialized message syntax
+for all objects to refer to a buffer or a part of it.;
+#N canvas 6 13 948 628 syntax 0;
+#X text 76 52 the vasp message:;
+#X obj 75 20 cnv 15 15 15 empty empty vasp_syntax 0 10 1 14 -262144
+-1 0;
+#N canvas 0 0 401 214 init 0;
+#X obj 33 19 loadbang;
+#X msg 33 80 \; \$1 xticks 0 4410 5 \; \$1 xlabel 1.1 0 22050 44100
+66150 88200 \; \$1 yticks 0 0.25 2 \; \$1 ylabel 94000 -1 -0.5 0 0.5
+1;
+#X msg 33 45 symbol buf1 \, symbol buf2 \, sysymbol buf1 \, symbol
+buf2 \, symbol buf3 \, symbol buf4 \, symbol buf5 \, symbol buf6;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 827 44 pd init;
+#X obj 73 92 cnv 15 800 450 empty empty empty 20 12 0 14 -241339 -66577
+0;
+#X text 455 243 (default 0);
+#X text 355 271 (default 0);
+#X text 469 183 which does the same.;
+#X msg 417 182 vasp -1;
+#X msg 207 270 vasp 44100 buf1 22050 0;
+#X text 110 271 and the channel;
+#X msg 310 241 vasp 44100 buf1 22050;
+#X text 110 243 an optional offset in samples;
+#X msg 333 215 vasp 44100 buf1;
+#X text 110 216 the name of the buffer it refers to;
+#X msg 325 157 vasp 44100;
+#X text 110 161 followed by the length in samples;
+#X msg 257 132 vasp;
+#X text 89 102 - a vasp message is structured by the following parts:
+;
+#X text 110 135 it always starts with;
+#X text 110 450 set all samples of buf1 to 0;
+#X text 110 384 generate a sine wave at 2Hz;
+#X msg 288 451 vasp buf1;
+#X obj 288 497 vasp.update;
+#X obj 288 473 vasp.= 0;
+#X obj 287 412 vasp.update;
+#X obj 287 383 vasp.osc 22050;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf1 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 498 403 graph;
+#X text 438 324 refering to buffer buf1 from 0.5 sec to 1.5 sec on
+channel 0;
+#X msg 287 323 vasp 44100 buf1 22050 0;
+#X text 110 325 one vectored vasp message:;
+#X obj 73 582 cnv 15 800 450 empty empty empty 20 12 0 14 -241339 -66577
+0;
+#X text 140 898 set all samples of buf1 and buf2 to 0;
+#X msg 277 918 vasp buf2 buf3;
+#X obj 277 964 vasp.update;
+#X obj 277 940 vasp.= 0;
+#X obj 274 846 vasp.update;
+#X obj 274 816 vasp.osc 22050;
+#X text 139 999 a vasp message can contain as many vectors as you like
+\, but all vectors have the same length;
+#X text 469 684 refering to buffer buf1 from 0 sec to 1 sec on channel
+0 and buffer buf2 from 0.5 sec to 1.5 sec on channel 0;
+#X msg 274 688 vasp 44100 buf2 0 0 buf3 22050;
+#X text 110 689 two vectored vasp message:;
+#X text 110 633 all vectors have the same length \, but the vectors
+can differ in the buffers and offsets;
+#X text 89 597 - if a vasp message contains more than one vector:;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf2 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 477 754 graph;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf3 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 478 878 graph;
+#X obj 75 1075 cnv 15 800 550 empty empty empty 20 12 0 14 -241339
+-66577 0;
+#X text 162 1556 set all samples of buf5/6 to 0;
+#X msg 352 1554 vasp buf5 buf6;
+#X obj 352 1604 vasp.update;
+#X obj 352 1578 vasp.= 0;
+#X text 83 1494 and modulate the noise with a 4Hz sine wave;
+#X obj 351 1395 vasp.* 0.5;
+#X text 150 1337 - to:;
+#X text 175 1238 set all samples of buf1 to 0;
+#X msg 352 1468 to vasp buf6 \, vasp buf5;
+#X obj 352 1519 vasp.update;
+#X obj 352 1490 vasp.*osc 11025;
+#X obj 351 1422 vasp.update;
+#X obj 351 1369 vasp.noise;
+#X msg 351 1237 vasp buf4;
+#X obj 351 1287 vasp.update;
+#X obj 351 1261 vasp.= 0;
+#X obj 351 1207 vasp.update;
+#X obj 351 1177 vasp.osc 22050;
+#X text 177 1471 sets the target buffer buf6;
+#X msg 351 1338 vasp buf5;
+#X text 477 1140 sets the message \, bang triggers the operation;
+#X text 113 1097 additional vasp messages:;
+#X msg 351 1140 set vasp 44100 buf4;
+#X text 150 1139 - set:;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf4 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 524 1193 graph;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf5 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 525 1317 graph;
+#X obj 284 1139 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144
+-1 -1;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf6 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 528 1491 graph;
+#X obj 877 1626 cnv 15 15 15 empty empty empty 20 12 0 14 -262144 -66577
+0;
+#X text 110 184 if missing \, it refers to the whole buffer \, or type
+;
+#X connect 21 0 23 0;
+#X connect 23 0 22 0;
+#X connect 25 0 24 0;
+#X connect 32 0 34 0;
+#X connect 34 0 33 0;
+#X connect 36 0 35 0;
+#X connect 39 0 36 0;
+#X connect 47 0 49 0;
+#X connect 49 0 48 0;
+#X connect 51 0 57 0;
+#X connect 54 0 56 0;
+#X connect 56 0 55 0;
+#X connect 58 0 51 0;
+#X connect 59 0 61 0;
+#X connect 61 0 60 0;
+#X connect 63 0 62 0;
+#X connect 65 0 58 0;
+#X connect 68 0 63 0;
+#X connect 72 0 63 0;
+#X restore 169 274 pd syntax;
+#X text 51 464 vasp.help patches by florian bogner and oliver grimm
+- ©2002 patcherboys - www.patcherboys.com;
+#X text 54 202 these help patches should give you an idea of what is
+possible. feel free to combine different patches to more complex ones.
+;
+#X text 54 90 vasp modular 0.0.6 - vector assembling signal processor
+©2002 thomas grill;
+#X text 51 431 inspired by guenther rabl's fft-box and tool-box. find
+guenther rabl at www.canto-crudo.com;
+#X obj 104 47 cnv 15 15 15 empty empty vasp_modular 0 10 1 14 -262144
+-1 0;
+#N canvas 93 94 807 343 links 0;
+#X text 483 224 don't miss that!;
+#X text 134 257 http://www.canto-crudo.com/;
+#X text 483 190 comparable (but more extensive) functionality;
+#X text 64 52 about fft:;
+#X text 134 190 http://www.bath.ac.uk/~masjpf/CDP/CDP.htm;
+#X text 84 190 CDP:;
+#X text 134 113 http://sepwww.stanford.edu/oldsep/hale/FftLab.html
+;
+#X text 483 113 very useful;
+#X text 134 151 http://www.fftw.org/links.html;
+#X text 483 151 more fft links;
+#X text 483 80 introduction to fft;
+#X text 134 80 http://www.eptools.com/tn/T0001/INDEX.HTM;
+#X text 20 224 Numerical Recipes:;
+#X text 134 224 http://www.nr.com/;
+#X text 28 22 vasp_links;
+#X text 134 52 http://www.parasitaere-kapazitaeten.net/Pd/fft_and_pd_en.htm
+;
+#X text 44 257 guenther rabl:;
+#X restore 169 380 pd links;
+#X text 86 379 useful links;
+#X text 96 346 vasps units;
+#N canvas 49 240 509 376 units 0;
+#N canvas 442 226 402 338 Hz_to_period_length 0;
+#X text 17 201 current sampling rate;
+#X floatatom 157 241 0 0 0;
+#X obj 157 143 t b f;
+#X text 215 242 period length;
+#X floatatom 157 115 0 0 0;
+#X obj 157 210 / 1;
+#X floatatom 30 180 0 0 0;
+#X text 202 112 frequency in Hz;
+#X obj 30 138 samplerate~;
+#X obj 30 115 loadbang;
+#X obj 39 44 cnv 15 15 15 empty empty Hz_to_period_length 0 10 1 14
+-262144 -1 0;
+#X connect 2 0 5 0;
+#X connect 2 1 5 1;
+#X connect 4 0 2 0;
+#X connect 5 0 1 0;
+#X connect 8 0 6 0;
+#X connect 8 0 5 0;
+#X connect 9 0 8 0;
+#X restore 150 310 pd Hz_to_period_length;
+#X text 103 281 sample rate/frequency in Hz = frequency in period length
+(float);
+#X text 60 264 - frequencies are always defined in period lengths;
+#X msg 149 227 vasp 44100 buf1 22050 0;
+#X text 103 187 e.g: vasp message with an offset of 0.5 sec. and a
+length of 1 sec. (sr 44100);
+#X text 60 155 - lengths and offsets are always defined in samples
+(depending on sample rate);
+#X msg 150 113 vasp 44100 buf1 22050 0;
+#X text 60 69 - vasp index counting starts from 0;
+#X text 104 81 e.g: channel 0 in a vasp message means first channel
+in the buffer;
+#X obj 51 27 cnv 15 15 15 empty empty vasp_units 0 10 1 14 -262144
+-1 0;
+#X restore 169 347 pd units;
+#X text 67 311 the vasp objects;
+#X text 68 273 the vasp message;
+#X text 54 123 vasp is a library of objects for max/msp and pd \, enabling
+functions to generate and modify vectors as well as buffer content
+in a non-realtime context.;
+#X text 51 497 pd version of the help-patches by marius schebella.
+;
+#X obj 61 37 cnv 2 2 2 empty 2-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 37 cnv 2 2 2 empty 2-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 37 cnv 2 2 2 empty 2-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 37 cnv 2 2 2 empty 2-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 37 cnv 2 2 2 empty 2-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 37 cnv 2 2 2 empty 2-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 37 cnv 2 2 2 empty 2-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 37 cnv 2 2 2 empty 2-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 37 cnv 2 2 2 empty 2-9-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 79 37 cnv 2 2 2 empty 2-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 37 cnv 2 2 2 empty 2-11-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 83 37 cnv 2 2 2 empty 2-12-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 85 37 cnv 2 2 2 empty 2-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 37 cnv 2 2 2 empty 2-14-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 89 37 cnv 2 2 2 empty 2-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 39 cnv 2 2 2 empty 3-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 39 cnv 2 2 2 empty 3-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 39 cnv 2 2 2 empty 3-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 39 cnv 2 2 2 empty 3-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 39 cnv 2 2 2 empty 3-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 39 cnv 2 2 2 empty 3-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 39 cnv 2 2 2 empty 3-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 39 cnv 2 2 2 empty 3-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 39 cnv 2 2 2 empty 3-9-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 79 39 cnv 2 2 2 empty 3-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 39 cnv 2 2 2 empty 3-11-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 83 39 cnv 2 2 2 empty 3-12-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 85 39 cnv 2 2 2 empty 3-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 39 cnv 2 2 2 empty 3-14-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 89 39 cnv 2 2 2 empty 3-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 41 cnv 2 2 2 empty 4-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 41 cnv 2 2 2 empty 4-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 41 cnv 2 2 2 empty 4-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 41 cnv 2 2 2 empty 4-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 41 cnv 2 2 2 empty 4-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 41 cnv 2 2 2 empty 4-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 41 cnv 2 2 2 empty 4-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 41 cnv 2 2 2 empty 4-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 41 cnv 2 2 2 empty 4-9-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 79 41 cnv 2 2 2 empty 4-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 41 cnv 2 2 2 empty 4-11-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 83 41 cnv 2 2 2 empty 4-12-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 85 41 cnv 2 2 2 empty 4-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 41 cnv 2 2 2 empty 4-14-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 89 41 cnv 2 2 2 empty 4-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 43 cnv 2 2 2 empty 5-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 43 cnv 2 2 2 empty 5-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 43 cnv 2 2 2 empty 5-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 43 cnv 2 2 2 empty 5-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 43 cnv 2 2 2 empty 5-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 43 cnv 2 2 2 empty 5-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 43 cnv 2 2 2 empty 5-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 43 cnv 2 2 2 empty 5-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 43 cnv 2 2 2 empty 5-9-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 79 43 cnv 2 2 2 empty 5-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 43 cnv 2 2 2 empty 5-11-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 83 43 cnv 2 2 2 empty 5-12-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 85 43 cnv 2 2 2 empty 5-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 43 cnv 2 2 2 empty 5-14-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 89 43 cnv 2 2 2 empty 5-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 45 cnv 2 2 2 empty 6-1-r empty 20 12 64 14 -1 -262144 0;
+#X obj 63 45 cnv 2 2 2 empty 6-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 45 cnv 2 2 2 empty 6-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 45 cnv 2 2 2 empty 6-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 45 cnv 2 2 2 empty 6-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 45 cnv 2 2 2 empty 6-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 45 cnv 2 2 2 empty 6-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 45 cnv 2 2 2 empty 6-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 45 cnv 2 2 2 empty 6-9-r empty 20 12 64 14 -1 -262144 0;
+#X obj 79 45 cnv 2 2 2 empty 6-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 45 cnv 2 2 2 empty 6-11-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 83 45 cnv 2 2 2 empty 6-12-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 85 45 cnv 2 2 2 empty 6-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 45 cnv 2 2 2 empty 6-14-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 89 45 cnv 2 2 2 empty 6-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 47 cnv 2 2 2 empty 7-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 47 cnv 2 2 2 empty 7-2-r empty 20 12 64 14 -1 -262144 0;
+#X obj 65 47 cnv 2 2 2 empty 7-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 47 cnv 2 2 2 empty 7-4-r empty 20 12 64 14 -1 -262144 0;
+#X obj 69 47 cnv 2 2 2 empty 7-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 47 cnv 2 2 2 empty 7-6-r empty 20 12 64 14 -1 -262144 0;
+#X obj 73 47 cnv 2 2 2 empty 7-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 47 cnv 2 2 2 empty 7-8-r empty 20 12 64 14 -1 -262144 0;
+#X obj 77 47 cnv 2 2 2 empty 7-9-r empty 20 12 64 14 -1 -262144 0;
+#X obj 79 47 cnv 2 2 2 empty 7-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 47 cnv 2 2 2 empty 7-11-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 83 47 cnv 2 2 2 empty 7-12-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 85 47 cnv 2 2 2 empty 7-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 47 cnv 2 2 2 empty 7-14-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 89 47 cnv 2 2 2 empty 7-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 49 cnv 2 2 2 empty 8-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 49 cnv 2 2 2 empty 8-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 49 cnv 2 2 2 empty 8-3-r empty 20 12 64 14 -1 -262144 0;
+#X obj 67 49 cnv 2 2 2 empty 8-4-r empty 20 12 64 14 -1 -262144 0;
+#X obj 69 49 cnv 2 2 2 empty 8-5-r empty 20 12 64 14 -1 -262144 0;
+#X obj 71 49 cnv 2 2 2 empty 8-6-r empty 20 12 64 14 -1 -262144 0;
+#X obj 73 49 cnv 2 2 2 empty 8-7-r empty 20 12 64 14 -1 -262144 0;
+#X obj 75 49 cnv 2 2 2 empty 8-8-r empty 20 12 64 14 -1 -262144 0;
+#X obj 77 49 cnv 2 2 2 empty 8-9-r empty 20 12 64 14 -1 -262144 0;
+#X obj 79 49 cnv 2 2 2 empty 8-10-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 81 49 cnv 2 2 2 empty 8-11-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 83 49 cnv 2 2 2 empty 8-12-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 85 49 cnv 2 2 2 empty 8-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 49 cnv 2 2 2 empty 8-14-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 89 49 cnv 2 2 2 empty 8-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 51 cnv 2 2 2 empty 9-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 51 cnv 2 2 2 empty 9-2-r empty 20 12 64 14 -1 -262144 0;
+#X obj 65 51 cnv 2 2 2 empty 9-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 51 cnv 2 2 2 empty 9-4-r empty 20 12 64 14 -1 -262144 0;
+#X obj 69 51 cnv 2 2 2 empty 9-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 51 cnv 2 2 2 empty 9-6-r empty 20 12 64 14 -1 -262144 0;
+#X obj 73 51 cnv 2 2 2 empty 9-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 51 cnv 2 2 2 empty 9-8-r empty 20 12 64 14 -1 -262144 0;
+#X obj 77 51 cnv 2 2 2 empty 9-9-r empty 20 12 64 14 -1 -262144 0;
+#X obj 79 51 cnv 2 2 2 empty 9-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 51 cnv 2 2 2 empty 9-11-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 83 51 cnv 2 2 2 empty 9-12-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 85 51 cnv 2 2 2 empty 9-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 51 cnv 2 2 2 empty 9-14-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 89 51 cnv 2 2 2 empty 9-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 53 cnv 2 2 2 empty 10-1-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 63 53 cnv 2 2 2 empty 10-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 53 cnv 2 2 2 empty 10-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 53 cnv 2 2 2 empty 10-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 53 cnv 2 2 2 empty 10-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 53 cnv 2 2 2 empty 10-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 53 cnv 2 2 2 empty 10-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 53 cnv 2 2 2 empty 10-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 53 cnv 2 2 2 empty 10-9-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 79 53 cnv 2 2 2 empty 10-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 53 cnv 2 2 2 empty 10-11-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 83 53 cnv 2 2 2 empty 10-12-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 85 53 cnv 2 2 2 empty 10-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 53 cnv 2 2 2 empty 10-14-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 89 53 cnv 2 2 2 empty 10-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 55 cnv 2 2 2 empty 11-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 55 cnv 2 2 2 empty 11-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 55 cnv 2 2 2 empty 11-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 55 cnv 2 2 2 empty 11-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 55 cnv 2 2 2 empty 11-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 55 cnv 2 2 2 empty 11-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 55 cnv 2 2 2 empty 11-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 55 cnv 2 2 2 empty 11-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 55 cnv 2 2 2 empty 11-9-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 79 55 cnv 2 2 2 empty 11-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 55 cnv 2 2 2 empty 11-11-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 83 55 cnv 2 2 2 empty 11-12-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 85 55 cnv 2 2 2 empty 11-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 55 cnv 2 2 2 empty 11-14-r empty 20 12 64 14 -1 -262144 0
+;
+#X obj 89 55 cnv 2 2 2 empty 11-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 57 cnv 2 2 2 empty 12-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 57 cnv 2 2 2 empty 12-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 57 cnv 2 2 2 empty 12-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 57 cnv 2 2 2 empty 12-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 57 cnv 2 2 2 empty 12-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 57 cnv 2 2 2 empty 12-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 57 cnv 2 2 2 empty 12-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 57 cnv 2 2 2 empty 12-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 57 cnv 2 2 2 empty 12-9-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 79 57 cnv 2 2 2 empty 12-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 57 cnv 2 2 2 empty 12-11-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 83 57 cnv 2 2 2 empty 12-12-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 85 57 cnv 2 2 2 empty 12-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 57 cnv 2 2 2 empty 12-14-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 89 57 cnv 2 2 2 empty 12-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 59 cnv 2 2 2 empty 13-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 59 cnv 2 2 2 empty 13-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 59 cnv 2 2 2 empty 13-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 59 cnv 2 2 2 empty 13-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 59 cnv 2 2 2 empty 13-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 59 cnv 2 2 2 empty 13-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 59 cnv 2 2 2 empty 13-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 59 cnv 2 2 2 empty 13-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 59 cnv 2 2 2 empty 13-9-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 79 59 cnv 2 2 2 empty 13-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 59 cnv 2 2 2 empty 13-11-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 83 59 cnv 2 2 2 empty 13-12-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 85 59 cnv 2 2 2 empty 13-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 59 cnv 2 2 2 empty 13-14-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 89 59 cnv 2 2 2 empty 13-15-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 61 61 cnv 2 2 2 empty 14-1-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 63 61 cnv 2 2 2 empty 14-2-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 65 61 cnv 2 2 2 empty 14-3-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 67 61 cnv 2 2 2 empty 14-4-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 69 61 cnv 2 2 2 empty 14-5-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 71 61 cnv 2 2 2 empty 14-6-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 73 61 cnv 2 2 2 empty 14-7-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 75 61 cnv 2 2 2 empty 14-8-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 77 61 cnv 2 2 2 empty 14-9-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 79 61 cnv 2 2 2 empty 14-10-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 81 61 cnv 2 2 2 empty 14-11-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 83 61 cnv 2 2 2 empty 14-12-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 85 61 cnv 2 2 2 empty 14-13-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 87 61 cnv 2 2 2 empty 14-14-r empty 20 12 64 14 -225271 -262144
+0;
+#X obj 89 61 cnv 2 2 2 empty 14-15-r empty 20 12 64 14 -225271 -262144
+0;

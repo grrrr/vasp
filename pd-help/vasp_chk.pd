@@ -1,0 +1,18 @@
+#N canvas 215 115 558 349 10;
+#X text 237 127 buffer length = 88200 samples;
+#X text 59 77 checks the dimensions of a vasp and corrects them;
+#X obj 75 32 cnv 15 15 15 empty empty vasp.chk 0 10 1 14 -262144 -1
+0;
+#X obj 70 125 table bufchk 88200;
+#X obj 70 200 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X text 237 272 corrected vasp with maximum length at offset 44100
+;
+#X obj 70 241 prepend set;
+#X msg 70 170 vasp 88200 bufchk 44100 0;
+#X obj 70 200 vasp.chk;
+#X text 237 171 vasp with impossible dimensions;
+#X msg 70 271 vasp 44100 bufchk 44100 0;
+#X connect 6 0 10 0;
+#X connect 7 0 8 0;
+#X connect 8 0 6 0;

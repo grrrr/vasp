@@ -1,0 +1,20 @@
+#N canvas 133 378 124 69 10;
+#X obj 0 0 cnv 15 125 70 empty empty read 0 8 0 8 -262144 -66577 0
+;
+#X obj 34 18 hdl 15 0 524928 6 \$1-beat empty empty 0 -6 128 8 -262144
+-1 -1 0;
+#X obj 34 18 cnv 15 90 15 empty \$1-beat-color beat.aif 5 8 64 8 -166441
+-233017 8214;
+#X obj 34 36 hdl 15 0 524800 6 \$1-fly empty empty 0 -6 128 8 -262144
+-1 -1 0;
+#X obj 34 36 cnv 15 90 15 empty \$1-fly-color fly.aif 5 8 64 8 -166441
+-233017 8212;
+#X obj 34 0 hdl 15 0 524928 6 \$1-bass empty empty 0 -6 128 8 -262144
+-1 -1 0;
+#X obj 34 0 cnv 15 90 15 empty \$1-bass-color bass.aif 5 8 64 8 -166441
+-233017 8214;
+#X obj 34 54 hdl 15 0 525312 6 \$1-plastic empty empty 0 -6 128 8 -262144
+-1 -1 0;
+#X obj 34 54 cnv 15 90 15 empty \$1-plastic-color plastic.aif 5 8 64
+8 -166441 -233017 8220;
+#X coords 0 0 1 1 125 70 1;
