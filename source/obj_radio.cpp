@@ -15,6 +15,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "classes.h"
 
+
+namespace flext {																\
+
 /*! \class vasp_radio
 	\remark \b vasp.radio
 	\brief Lets only radio messages pass through.
@@ -51,5 +54,7 @@ FLEXT_LIB("vasp, vasp.radio",vasp_radio)
 
 V vasp_radio::m_any(const t_symbol *s,I argc,t_atom *argv) 
 {
-	ToOutAnything(s == vasp_base::sym_radio?0:1,s,argc,argv);
+	ToOutAnything(s == flext::sym_radio?0:1,s,argc,argv);
+}
+
 }

@@ -85,7 +85,7 @@ Vasp *VaspOp::m_search(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL st)
 
 		RVecBlock *vecs = GetRVecs(p.opname,all,dst);
 		if(vecs) {
-			p.srch.val = arg.IsList()?flx::GetAFloat(arg.GetList()[0]):arg.GetAFloat();
+			p.srch.val = arg.IsList()?flext::GetAFloat(arg.GetList()[0]):arg.GetAFloat();
 
 			ret = DoOp(vecs,VecOp::d_search,p);
 
@@ -106,6 +106,8 @@ Vasp *VaspOp::m_search(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL st)
 
 	return ret;
 }
+
+namespace flext {
 
 class vasp_search:
 	public vasp_anyop
@@ -167,4 +169,5 @@ public:
 };																				
 FLEXT_LIB_V("vasp, vasp.frames= vasp.f=",vasp_sframes)
 
+}
 

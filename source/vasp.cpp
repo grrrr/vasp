@@ -68,16 +68,16 @@ BL Vasp::ChkArgs(I argc,const t_atom *argv)
 	I ix = 0;
 
 	// vasp keyword
-	t_symbol *v = ix < argc?flext_base::GetASymbol(argv[ix]):NULL;
-	if(v && v == vasp_base::sym_vasp) ix++; // if it is "vasp" ignore it
+	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
+	if(v && v == flext::sym_vasp) ix++; // if it is "vasp" ignore it
 
 	// length argument
-	if(argc > ix && flext_base::CanbeInt(argv[ix])) ix++;
+	if(argc > ix && flext::CanbeInt(argv[ix])) ix++;
 
 	while(argc > ix) {
 		// check for symbol
-		t_symbol *bsym = flext_base::GetASymbol(argv[ix]);
-		if(!bsym || !flext_base::GetString(bsym) || !flext_base::GetString(bsym)[0]) {  // expect a symbol
+		t_symbol *bsym = flext::GetASymbol(argv[ix]);
+		if(!bsym || !flext::GetString(bsym) || !flext::GetString(bsym)[0]) {  // expect a symbol
 			// not symbol -> bail out
 			return false;
 		}
@@ -85,10 +85,10 @@ BL Vasp::ChkArgs(I argc,const t_atom *argv)
 			ix++;
 
 		// check for offset
-		if(argc > ix && flext_base::CanbeInt(argv[ix])) ix++;
+		if(argc > ix && flext::CanbeInt(argv[ix])) ix++;
 
 		// check for channel
-		if(argc > ix && flext_base::CanbeInt(argv[ix])) ix++;
+		if(argc > ix && flext::CanbeInt(argv[ix])) ix++;
 	}
 
 	return true;
@@ -168,11 +168,11 @@ Vasp &Vasp::operator ()(I argc,const t_atom *argv)
 		ref = new Ref[refs = maxneeded];
 	}
 
-	t_symbol *v = ix < argc?flext_base::GetASymbol(argv[ix]):NULL;
-	if(v && v == vasp_base::sym_vasp) ix++; // if it is "vasp" ignore it
+	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
+	if(v && v == flext::sym_vasp) ix++; // if it is "vasp" ignore it
 
-	if(argc > ix && flext_base::CanbeInt(argv[ix])) {
-		frames = flext_base::GetAInt(argv[ix]);
+	if(argc > ix && flext::CanbeInt(argv[ix])) {
+		frames = flext::GetAInt(argv[ix]);
 		lenset = true;
 		ix++;
 	}
@@ -181,8 +181,8 @@ Vasp &Vasp::operator ()(I argc,const t_atom *argv)
 
 	chns = 0;
 	while(argc > ix) {
-		t_symbol *bsym = flext_base::GetASymbol(argv[ix]);
-		if(!bsym || !flext_base::GetString(bsym) || !flext_base::GetString(bsym)[0]) {  // expect a symbol
+		t_symbol *bsym = flext::GetASymbol(argv[ix]);
+		if(!bsym || !flext::GetString(bsym) || !flext::GetString(bsym)[0]) {  // expect a symbol
 			Clear();
 			return *this;
 		}
@@ -193,15 +193,15 @@ Vasp &Vasp::operator ()(I argc,const t_atom *argv)
 		Ref &r = ref[chns];
 		r.Symbol(VSymbol(bsym));
 
-		if(argc > ix && flext_base::CanbeInt(argv[ix])) {
-			r.Offset((I)flext_base::GetAInt(argv[ix]));
+		if(argc > ix && flext::CanbeInt(argv[ix])) {
+			r.Offset((I)flext::GetAInt(argv[ix]));
 			ix++;
 		}
 		else
 			r.Offset(0);
 
-		if(argc > ix && flext_base::CanbeInt(argv[ix])) {
-			r.Channel((I)flext_base::GetAInt(argv[ix]));
+		if(argc > ix && flext::CanbeInt(argv[ix])) {
+			r.Channel((I)flext::GetAInt(argv[ix]));
 			ix++;
 		}
 		else
@@ -233,22 +233,22 @@ VBuffer *Vasp::Buffer(I ix) const
 }
 
 // generate Vasp list of buffer references
-flext_base::AtomList *Vasp::MakeList(BL withvasp)
+flext::AtomList *Vasp::MakeList(BL withvasp)
 {
 	I voffs = withvasp?1:0;
 	I needed = voffs+1+Vectors()*3;
-	flext_base::AtomList *ret = new flext_base::AtomList(needed);
+	flext::AtomList *ret = new flext::AtomList(needed);
 
 	if(withvasp) 
-		flext_base::SetSymbol((*ret)[0],vasp_base::sym_vasp);  // VASP
+		flext::SetSymbol((*ret)[0],flext::sym_vasp);  // VASP
 
-	flext_base::SetInt((*ret)[voffs],frames);  // frames
+	flext::SetInt((*ret)[voffs],frames);  // frames
 
 	for(I ix = 0; ix < Vectors(); ++ix) {
 		Ref &r = Vector(ix);
-		flext_base::SetSymbol((*ret)[voffs+1+ix*3],r.Symbol().Symbol());  // buf
-		flext_base::SetInt((*ret)[voffs+2+ix*3],r.Offset());  // offs
-		flext_base::SetInt((*ret)[voffs+3+ix*3],r.Channel());  // chn
+		flext::SetSymbol((*ret)[voffs+1+ix*3],r.Symbol().Symbol());  // buf
+		flext::SetInt((*ret)[voffs+2+ix*3],r.Offset());  // offs
+		flext::SetInt((*ret)[voffs+3+ix*3],r.Channel());  // chn
 	}
 
 	return ret;

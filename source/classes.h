@@ -14,6 +14,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "vasp.h"
 #include "arg.h"
 
+
+namespace flext {
+
+extern const t_symbol *sym_vasp;
+extern const t_symbol *sym_env;
+extern const t_symbol *sym_double;
+extern const t_symbol *sym_complex;
+extern const t_symbol *sym_vector;
+extern const t_symbol *sym_radio;
+
 class vasp_base:
 	public flext_base
 {
@@ -24,13 +34,6 @@ public:
 		xsu__ = -1,  // don't change
 		xsu_sample = 0,xsu_buffer,xsu_ms,xsu_s
 	};	
-
-	static const t_symbol *sym_vasp;
-	static const t_symbol *sym_env;
-	static const t_symbol *sym_double;
-	static const t_symbol *sym_complex;
-	static const t_symbol *sym_vector;
-	static const t_symbol *sym_radio;
 
 protected:
 	vasp_base();
@@ -216,9 +219,12 @@ private:
 	FLEXT_CALLBACK_V(a_radio)
 };
 
+} // namespace flext
+
 
 
 #define VASP_UNARY(name,op,to,help)												\
+namespace flext {																\
 class vasp_##op:																\
 	public vasp_unop															\
 {																				\
@@ -233,10 +239,11 @@ protected:																		\
 	}																			\
 	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
-FLEXT_LIB("vasp," name,vasp_##op)
-
+FLEXT_LIB("vasp," name,vasp_##op)												\
+}
 
 #define VASP_BINARY(name,op,to,def,help)										\
+namespace flext {																\
 class vasp_ ## op:																\
 	public vasp_binop															\
 {																				\
@@ -251,10 +258,12 @@ protected:																		\
 	}																			\
 	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
-FLEXT_LIB_V("vasp," name,vasp_##op)
+FLEXT_LIB_V("vasp," name,vasp_##op)												\
+}
 
 
 #define VASP_ANYOP(name,op,args,to,def,help)									\
+namespace flext {																\
 class vasp_ ## op:																\
 	public vasp_anyop															\
 {																				\
@@ -269,7 +278,9 @@ protected:																		\
 	}																			\
 	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
-FLEXT_LIB_V("vasp," name,vasp_##op)
+FLEXT_LIB_V("vasp," name,vasp_##op)												\
+}
+
 
 #define VASP__SETUP(op) FLEXT_SETUP(vasp_##op);  
 

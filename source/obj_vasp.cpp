@@ -16,6 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "util.h"
 
+namespace flext {
+
 /*! \class vasp_v 
 	\remark \b vasp
 	\brief Stores vasp messages.
@@ -201,5 +203,6 @@ public:
 
 FLEXT_LIB_V("vasp, vasp.multi vasp.m",vasp_multi)
 
+}
 
 

@@ -12,6 +12,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "util.h"
 
 
+namespace flext {
+
 /*! \class vasp_part
 	\remark \b vasp.part
 	\brief Gets parts of vasp vectors.
@@ -99,6 +101,7 @@ protected:
 
 FLEXT_LIB_V("vasp, vasp.part",vasp_part)
 
+}
 
 
 

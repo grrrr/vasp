@@ -10,16 +10,16 @@ Argument &Argument::Parse(I argc,t_atom *argv)
 	if(argc == 0)
 		Clear();
 	else // real?
-	if(argc == 1 && flext_base::CanbeFloat(argv[0])) 
-		SetR(flext_base::GetAFloat(argv[0]));
+	if(argc == 1 && flext::CanbeFloat(argv[0])) 
+		SetR(flext::GetAFloat(argv[0]));
 	else // complex?
-	if(argc == 2 && flext_base::CanbeFloat(argv[0]) && flext_base::CanbeFloat(argv[1]))
-		SetCX(flext_base::GetAFloat(argv[1]),flext_base::GetAFloat(argv[2]));
+	if(argc == 2 && flext::CanbeFloat(argv[0]) && flext::CanbeFloat(argv[1]))
+		SetCX(flext::GetAFloat(argv[1]),flext::GetAFloat(argv[2]));
 	else // double?
-	if(argc >= 2 && flext_base::GetASymbol(argv[0]) == vasp_base::sym_double &&
-		flext_base::CanbeFloat(argv[1]) && (argc == 2 || flext_base::CanbeFloat(argv[2]))
+	if(argc >= 2 && flext::GetASymbol(argv[0]) == flext::sym_double &&
+		flext::CanbeFloat(argv[1]) && (argc == 2 || flext::CanbeFloat(argv[2]))
 		)
-		SetR((D)flext_base::GetAFloat(argv[1])+(D)flext_base::GetAFloat(argv[2]));
+		SetR((D)flext::GetAFloat(argv[1])+(D)flext::GetAFloat(argv[2]));
 	else // envelope?
 	if(Env::ChkArgs(argc,argv)) {
 		Env *e = new Env(argc,argv);
@@ -103,7 +103,7 @@ Argument &Argument::SetEnv(Env *e)
 Argument &Argument::SetList(I argc,t_atom *argv)
 {
 	if(tp != tp_none) Clear();
-	dt.atoms = new flext_base::AtomList(argc,argv); tp = tp_list;
+	dt.atoms = new flext::AtomList(argc,argv); tp = tp_list;
 	return *this;
 }
 

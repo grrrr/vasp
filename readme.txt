@@ -20,6 +20,8 @@ Version history:
 - REMOVE: vasp.noradio (vasp.!radio)... can easily be an abstraction of vasp.radio
 _ ADD: minimum length parameter for immediate vasps
 - ADD: vasp.channel? (vasp.c?), vasp.channel (vasp.c) for set/query of buffer channel
+- CHANGE: env - reversed time/value pairs to value/time pairs
+- FIX: vasp.! with length arg outputs its reference on bang
 
 0.0.7:
 - CHANGE: vasp.m is now called vasp.multi by default

@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "util.h"
 
+namespace flext {
+
 /*! \class vasp_channel
 	\remark \b vasp.channel
 	\brief Sets channel index of vasp.
@@ -102,6 +104,7 @@ public:
 
 FLEXT_LIB("vasp, vasp.channel? vasp.c?",vasp_qchannel)
 
+}
 
 
 

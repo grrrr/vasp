@@ -11,31 +11,48 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.8pre3"
+#define VASP_VERSION "0.0.8pre4"
 
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 303)
-#error You need at least flext version 0.3.3
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
+#error You need at least flext version 0.4.0
 #endif
 
 #include <typeinfo>
 #include <stdlib.h>
 
-#define I int
-#define L long
-#define UL unsigned long
-#define F float
-#define D double
-#define C char
-#define BL bool
-#define V void
-#define S t_sample // type for samples
-#define R double // type for internal calculations
-#define CX complex
-#define VX vector
+class complex;
+class vector;
 
+#if 0
+	#define I int
+	#define L long
+	#define UL unsigned long
+	#define F float
+	#define D double
+	#define C char
+	#define BL bool
+	#define V void
+	#define S t_sample // type for samples
+	#define R double // type for internal calculations
+	#define CX complex
+	#define VX vector
+#else
+	typedef int I;
+	typedef long L;
+	typedef unsigned long UL;
+	typedef float F;
+	typedef double D;
+	typedef char C;
+	typedef bool BL;
+	typedef void V;
+	typedef t_sample S; // type for samples
+	typedef double R; // type for internal calculations
+	typedef complex CX;
+	typedef vector VX;
+#endif
 
 #ifdef PD
 // buffers are never interleaved - special optimizations may occur

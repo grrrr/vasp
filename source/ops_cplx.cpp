@@ -44,8 +44,8 @@ Vasp *VaspOp::m_radd(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	Vasp *ret = NULL;
 	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 	if(vecs) {
-		if(arg.IsList() && arg.GetList().Count() >= 1 && flx::CanbeFloat(arg.GetList()[0]))
-			p.cbin.rarg = flx::GetAFloat(arg.GetList()[0]);
+		if(arg.IsList() && arg.GetList().Count() >= 1 && flext::CanbeFloat(arg.GetList()[0]))
+			p.cbin.rarg = flext::GetAFloat(arg.GetList()[0]);
 		else {
 			post("%s - argument is invalid -> set to 0",p.opname);
 			p.cbin.rarg = 0;

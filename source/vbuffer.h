@@ -30,7 +30,7 @@ public:
 	
 	t_symbol *Symbol() { return sym; }
 	const t_symbol *Symbol() const { return sym; }
-	const C *Name() const { return flext_base::GetAString(Symbol()); }
+	const C *Name() const { return flext::GetAString(Symbol()); }
 	
 protected:
 	V Inc();
@@ -96,7 +96,7 @@ public:
 	virtual S *Data() { return buf.Data(); }
 
 protected:
-	flext_base::buffer buf;
+	flext::buffer buf;
 };
 
 

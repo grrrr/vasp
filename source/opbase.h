@@ -29,8 +29,6 @@ namespace VecOp {
 
 
 namespace VaspOp {
-	typedef flext_base flx;
-
 	RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp *dst = NULL);
 	CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp *dst = NULL,BL full = false);
 	RVecBlock *GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst = NULL,I multi = -1,BL ssize = true);

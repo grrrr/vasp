@@ -122,7 +122,7 @@ public:
 	VBuffer *ImBuffer() const { return Buffer(1); }
 
 	// prepare and reference t_atom list for output
-	flext_base::AtomList *MakeList(BL withvasp = true);
+	flext::AtomList *MakeList(BL withvasp = true);
 
 	// make a graphical update of all buffers in vasp
 	V Refresh();

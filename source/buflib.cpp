@@ -54,7 +54,7 @@ static I libcnt = 0,libtick = 0;
 static t_clock *libclk = NULL;
 
 #ifdef FLEXT_THREADS
-static flext_base::ThrMutex libmtx;
+static flext::ThrMutex libmtx;
 #endif
 
 static V FreeLibSym(t_symbol *s);
@@ -225,7 +225,7 @@ BufEntry *BufLib::Resize(BufEntry *e,I fr,BL keep)
 		if(keep) {
 			I l = ret->len;
 			if(e->len < l) l = e->len;
-			flext_base::CopyMem(e->data,ret->data,l);
+			flext::CopyMem(e->data,ret->data,l);
 		}
 		return  ret;
 	}

@@ -76,8 +76,8 @@ Vasp *VaspOp::m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 	if(vecs) {
 		I powi = 1;
-		if(arg.IsList() && arg.GetList().Count() >= 1 && flx::CanbeInt(arg.GetList()[0]))
-			powi = flx::GetAInt(arg.GetList()[0]);
+		if(arg.IsList() && arg.GetList().Count() >= 1 && flext::CanbeInt(arg.GetList()[0]))
+			powi = flext::GetAInt(arg.GetList()[0]);
 		else 
 			post("%s - power arg is invalid -> set to 1",p.opname);
 

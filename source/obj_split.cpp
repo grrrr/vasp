@@ -12,6 +12,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "util.h"
 
 
+namespace flext {
+
 /*! \class vasp_split
 	\remark \b vasp.split
 	\brief Splits a vasp into a number of vectors and the remainder.
@@ -284,6 +286,7 @@ private:
 
 FLEXT_LIB_V("vasp, vasp.gather",vasp_gather)
 
+}
 
 
 

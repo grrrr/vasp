@@ -70,7 +70,7 @@ public:
 	BL IsVector() const { return tp == tp_vx; }
 	BL CanbeVector() const { return tp == tp_vx || CanbeComplex(); }
 
-	const flext_base::AtomList &GetList() const { return *dt.atoms; }
+	const flext::AtomList &GetList() const { return *dt.atoms; }
 	const Vasp &GetVasp() const { return *dt.v; }
 	Vasp GetAVasp() const;
 	const Env &GetEnv() const { return *dt.env; }
@@ -94,7 +94,7 @@ protected:
 	union {
 		Vasp *v;
 		Env *env;
-		flext_base::AtomList *atoms;
+		flext::AtomList *atoms;
 		F f;
 		D d;
 		I i;

@@ -20,9 +20,9 @@ Vasp *VaspOp::m_shift(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL shif
 	Vasp *ret = NULL;
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		if(arg.IsList() && arg.GetList().Count() >= 1 && flx::CanbeFloat(arg.GetList()[0])) {
+		if(arg.IsList() && arg.GetList().Count() >= 1 && flext::CanbeFloat(arg.GetList()[0])) {
 			// shift length
-			p.sh.sh = flx::GetAFloat(arg.GetList()[0]);
+			p.sh.sh = flext::GetAFloat(arg.GetList()[0]);
 		}
 		else {
 			post("%s - invalid argument -> set to 0",p.opname);
@@ -91,6 +91,8 @@ BL VecOp::d_shift(OpParam &p)
 }
 
 
+namespace flext {
+
 class vasp_shift:
 	public vasp_anyop
 {																				
@@ -147,7 +149,7 @@ public:
 };																				
 FLEXT_LIB_V("vasp.xshift",vasp_xshift)
 
-
+}
 
 inline int rotation(int ij, int n,OpParam &p) { return (ij+n-p.sh.ish)%n; }
 
@@ -234,4 +236,5 @@ Vasp *VaspOp::m_mirr(OpParam &p,Vasp &src,Vasp *dst,BL symm)
 
 VASP_UNARY("vasp.mirr",mirr,true,"Mirrors buffer data")
 VASP_UNARY("vasp.xmirr",xmirr,true,"Mirrors buffer data symmetrically (in two halves)")
+
 

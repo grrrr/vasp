@@ -15,8 +15,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 Env::Env(I argc,const t_atom *argv)
 {
 	I ix = 0;
-	t_symbol *v = ix < argc?flext_base::GetASymbol(argv[ix]):NULL;
-	if(v && v == vasp_base::sym_env) ix++; // if it is "env" ignore it
+	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
+	if(v && v == flext::sym_env) ix++; // if it is "env" ignore it
 
 	cnt = (argc-ix)/2;
 	pos = new R[cnt];
@@ -25,8 +25,8 @@ Env::Env(I argc,const t_atom *argv)
 	R prev = -BIG;
 	BL ok = true;
 	for(I i = 0; i < cnt; ++i) {
-		val[i] = flext_base::GetAFloat(argv[ix++]);
-		pos[i] = flext_base::GetAFloat(argv[ix++]);
+		val[i] = flext::GetAFloat(argv[ix++]);
+		pos[i] = flext::GetAFloat(argv[ix++]);
 		if(pos[i] < prev) ok = false;
 		prev = pos[i];
 	}
@@ -54,18 +54,18 @@ BL Env::ChkArgs(I argc,const t_atom *argv)
 	I ix = 0;
 
 	// vasp keyword
-	t_symbol *v = ix < argc?flext_base::GetASymbol(argv[ix]):NULL;
-	if(v && v == vasp_base::sym_env) ix++; // if it is "env" ignore it
+	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
+	if(v && v == flext::sym_env) ix++; // if it is "env" ignore it
 
 	while(argc > ix) {
 		// check for position
-		if(flext_base::CanbeFloat(argv[ix])) ix++;
+		if(flext::CanbeFloat(argv[ix])) ix++;
 		else 
 			return false;
 
 		// check for value
 		if(argc > ix)
-			if(flext_base::CanbeFloat(argv[ix])) ix++;
+			if(flext::CanbeFloat(argv[ix])) ix++;
 			else 
 				return false;
 	}

@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "util.h"
 
+namespace flext {
+
 /*! \class vasp_offset
 	\remark \b vasp.offset
 	\brief Sets offset of vasp vectors.
@@ -171,3 +173,4 @@ public:
 
 FLEXT_LIB("vasp, vasp.offset? vasp.o?",vasp_qoffset)
 
+}

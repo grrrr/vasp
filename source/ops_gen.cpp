@@ -54,9 +54,9 @@ Vasp *VaspOp::m_osc(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
 			// period length
-			p.gen.phinc = 2*PI/flx::GetAFloat(arg.GetList()[0]); 
+			p.gen.phinc = 2*PI/flext::GetAFloat(arg.GetList()[0]); 
 			// starting phase
-			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+			p.gen.ph = arg.GetList().Count() >= 2?flext::GetAFloat(arg.GetList()[1]):0;
 
 			ret = DoOp(vecs,mul?VecOp::d_mosc:VecOp::d_osc,p);
 			delete vecs;
@@ -115,9 +115,9 @@ Vasp *VaspOp::m_cosc(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 		CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 		if(vecs) {
 			// period length
-			p.gen.phinc = 2*PI/flx::GetAFloat(arg.GetList()[0]); 
+			p.gen.phinc = 2*PI/flext::GetAFloat(arg.GetList()[0]); 
 			// starting phase
-			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+			p.gen.ph = arg.GetList().Count() >= 2?flext::GetAFloat(arg.GetList()[1]):0;
 
 			ret = DoOp(vecs,mul?VecOp::d_mcosc:VecOp::d_cosc,p);
 			delete vecs;
@@ -178,9 +178,9 @@ Vasp *VaspOp::m_phasor(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
 			// period length
-			p.gen.phinc = 1./flx::GetAFloat(arg.GetList()[0]); 
+			p.gen.phinc = 1./flext::GetAFloat(arg.GetList()[0]); 
 			// starting phase
-			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+			p.gen.ph = arg.GetList().Count() >= 2?flext::GetAFloat(arg.GetList()[1]):0;
 		
 			ret = DoOp(vecs,mul?VecOp::d_mphasor:VecOp::d_phasor,p);
 			delete vecs;

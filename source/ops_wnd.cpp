@@ -152,16 +152,16 @@ Vasp *VaspOp::m_window(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL inv
 
 		if(arg.IsList() && arg.GetList().Count() >= 1) {
 			// window mode
-			const flext_base::AtomList &l = arg.GetList();
-			if(flx::IsSymbol(l[0])) {
+			const flext::AtomList &l = arg.GetList();
+			if(flext::IsSymbol(l[0])) {
 				I i;
-				const C *s = flx::GetString(l[0]);
+				const C *s = flext::GetString(l[0]);
 				p.wnd.wndtp = -1;
 				for(i = 0; i < wndnum; ++i)
 					if(!strcmp(wndtps[i],s)) { p.wnd.wndtp = i; break; }
 			}
-			else if(flx::CanbeInt(l[0])) {
-				p.wnd.wndtp = flx::GetAInt(l[0]);
+			else if(flext::CanbeInt(l[0])) {
+				p.wnd.wndtp = flext::GetAInt(l[0]);
 			}
 			else p.wnd.wndtp = -1;
 		}

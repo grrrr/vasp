@@ -12,6 +12,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "util.h"
 #include <math.h>
 
+namespace flext {
+
 /*! \class vasp_qpeaks
 	\remark \b vasp.peaks?
 	\brief Get most pronounced peaks of a single vasp vector.
@@ -107,5 +109,6 @@ private:
 
 FLEXT_LIB_V("vasp, vasp.peaks?",vasp_qpeaks)
 
+}
 
 

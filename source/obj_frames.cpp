@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "util.h"
 
+namespace flext {
+
 /*! \class vasp_frames
 	\remark \b vasp.frames
 	\brief Sets frame count of vasp.
@@ -224,5 +226,6 @@ public:
 
 FLEXT_LIB("vasp, vasp.frames? vasp.f?",vasp_qframes)
 
+}
 
 

@@ -110,9 +110,9 @@ Vasp *VaspOp::m_fhp(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL hp)
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
-			p.flt.coef = 2*PI/flx::GetAFloat(arg.GetList()[0]);
+			p.flt.coef = 2*PI/flext::GetAFloat(arg.GetList()[0]);
 		    if(p.flt.coef > 1) p.flt.coef = 1;
-			p.flt.rep = arg.GetList().Count() >= 2?flx::GetAInt(arg.GetList()[1]):1;
+			p.flt.rep = arg.GetList().Count() >= 2?flext::GetAInt(arg.GetList()[1]):1;
 			p.flt.rep = -p.flt.rep;  // fwd/bwd operation
 /*
 			if(p.SROvr()) {
@@ -191,7 +191,7 @@ Vasp *VaspOp::m_int(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL inv)
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		p.intdif.carry = 0,p.intdif.rep = 1;
-		if(arg.IsList() && arg.GetList().Count() >= 1) p.intdif.rep = flx::GetAInt(arg.GetList()[0]);
+		if(arg.IsList() && arg.GetList().Count() >= 1) p.intdif.rep = flext::GetAInt(arg.GetList()[0]);
 		
 		if(p.intdif.rep < 0) {
 			post("%s - invalid repetition count (%i) -> set to 1",p.opname,p.intdif.rep);

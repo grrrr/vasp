@@ -181,8 +181,8 @@ Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm)
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
-			p.tilt.factor = flx::GetAFloat(arg.GetList()[0]);
-			p.tilt.center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+			p.tilt.factor = flext::GetAFloat(arg.GetList()[0]);
+			p.tilt.center = arg.GetList().Count() >= 2?flext::GetAFloat(arg.GetList()[1]):0;
 
 			ret = DoOp(vecs,VecOp::d_tilt,p,symm);
 
@@ -196,6 +196,8 @@ Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm)
 }
 
 
+
+namespace flext {
 
 class vasp_tilt:
 	public vasp_anyop
@@ -262,4 +264,6 @@ public:
 	virtual V m_help() { post("%s - Resamples buffer data symmetrically (in two halves)",thisName()); }
 };																				
 FLEXT_LIB_V("vasp, vasp.xtilt",vasp_xtilt)
+
+}
 
