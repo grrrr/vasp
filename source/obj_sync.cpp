@@ -31,7 +31,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class vasp_sync:
 	public vasp_op
 {
-	FLEXT_HEADER(vasp_sync,vasp_op)
+	FLEXT_HEADER_S(vasp_sync,vasp_op,Setup)
 
 public:
 	vasp_sync(I argc,t_atom *argv):
@@ -52,9 +52,11 @@ public:
 
 		AddInAnything(cnt);
 		AddOutAnything(cnt);
+	}
 
-		FLEXT_ADDMETHOD_(0,"reset",m_reset);
-
+	static V Setup(t_class *c)
+	{
+		FLEXT_CADDMETHOD_(c,0,"reset",m_reset);
 	}
 
 	virtual BL Init() 
