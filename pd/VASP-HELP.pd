@@ -1,5 +1,5 @@
-#N canvas 211 19 618 642 10;
-#N canvas 49 0 354 423 objects 0;
+#N canvas 211 19 620 644 10;
+#N canvas 49 0 356 425 objects 0;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
 -1 0;
 #N canvas 306 143 558 381 vasp.displace 0;
@@ -260,7 +260,7 @@ one is resampled around a center position;
 #X obj 35 22 cnv 15 15 15 empty empty vasp_generators 0 10 1 14 -262144
 -1 0;
 #X restore 72 159 pd vasp.generators;
-#N canvas 229 139 565 403 vasp.window-functions 0;
+#N canvas 229 139 567 405 vasp.window-functions 0;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_window-functions 0 10 1
 14 -262144 -1 0;
 #X obj 77 92 vasp.window;
@@ -272,7 +272,7 @@ one is resampled around a center position;
 #X text 188 122 symmetrical window;
 #X text 188 90 left part of symmetrical window;
 #X text 190 161 right part of symmetrical window;
-#X text 77 212 multiplicate...;
+#X text 77 212 multiply...;
 #X restore 72 294 pd vasp.window-functions;
 #X restore 192 357 pd objects;
 #X text 54 169 vasp objects are using a specialized message syntax
