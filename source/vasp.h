@@ -54,6 +54,9 @@ public:
 
 	const C *thisName() const { return typeid(*this).name(); }
 
+	// check if vasp reference is valid
+	BL Check() const;
+
 	Vasp &operator =(const Vasp &v);
 	Vasp &operator ()(I argc,const t_atom *argv /*,BL withvasp = false*/);
 

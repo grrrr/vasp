@@ -116,8 +116,12 @@ I vasp_op::m_set(I argc,t_atom *argv)
 	if(argc && !arg.Ok()) {
 		post("%s - invalid vasp detected and ignored",thisName());
 	}
-	else 
-		ref = arg;
+	else {
+		if(arg.Check())
+			ref = arg;
+		else
+			post("%s - vasp reference is invalid",thisName());
+	}
 
 	return 0; 
 }

@@ -59,7 +59,7 @@ public:
 
 	virtual V m_bang() 
 	{ 
-		if(!ref.Ok()) {
+		if(!ref.Ok() || !ref.Check()) {
 			if(!frms) 
 				post("%s - No length defined!",thisName());
 			else {

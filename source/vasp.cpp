@@ -319,6 +319,20 @@ V Vasp::SizeM(R f)
 	}
 }
 
+BL Vasp::Check() const 
+{
+	BL ok = true;
+	for(I i = 0; ok && i < Vectors(); ++i) {
+		VBuffer *buf = Buffer(i);
+		if(!buf) 
+			ok = false;
+		else {
+			ok = buf->Data() != NULL;
+			delete buf;
+		}
+	}
+	return ok;
+}	
 
 I Vasp::ChkFrames() const
 {
