@@ -1,4 +1,4 @@
-#N canvas 44 207 837 466 10;
+#N canvas 44 207 839 468 10;
 #X obj 62 41 cnv 15 15 15 empty empty vasp.> 0 10 1 14 -262144 -1 0
 ;
 #N canvas 0 0 450 300 graph1 0;
@@ -37,7 +37,6 @@
 #X text 338 218 1/true;
 #X text 337 258 0/false;
 #X obj 57 418 VASP-HELP;
-#X text 99 418 - vasp overview;
 #X obj 58 366 vasp.update;
 #X floatatom 113 308 5 0 0;
 #X text 164 230 copy to new buffer;
@@ -47,7 +46,7 @@
 #X connect 5 0 6 0;
 #X connect 9 0 5 0;
 #X connect 10 0 7 0;
-#X connect 16 0 18 1;
-#X connect 18 0 15 0;
-#X connect 19 0 20 0;
-#X connect 20 0 18 0;
+#X connect 15 0 17 1;
+#X connect 17 0 14 0;
+#X connect 18 0 19 0;
+#X connect 19 0 17 0;

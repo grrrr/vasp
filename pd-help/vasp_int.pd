@@ -1,4 +1,4 @@
-#N canvas 95 158 860 402 10;
+#N canvas 95 158 862 404 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.int 0 10 1 14 -262144 -1
 0;
 #N canvas 0 0 450 300 graph1 0;
@@ -27,15 +27,14 @@
 #X obj 77 178 vasp.update;
 #X text 70 77 argument: repetition count;
 #X obj 76 336 VASP-HELP;
-#X text 118 336 - vasp overview;
 #X obj 77 289 vasp.update;
 #X msg 77 211 vasp bufint;
 #X obj 77 242 vasp.int;
 #X obj 77 266 vasp.opt;
 #X obj 77 153 vasp.window lin;
 #X connect 5 0 3 0;
-#X connect 6 0 15 0;
+#X connect 6 0 14 0;
+#X connect 11 0 12 0;
 #X connect 12 0 13 0;
-#X connect 13 0 14 0;
-#X connect 14 0 11 0;
-#X connect 15 0 7 0;
+#X connect 13 0 10 0;
+#X connect 14 0 7 0;

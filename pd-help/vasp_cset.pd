@@ -1,4 +1,4 @@
-#N canvas 232 203 573 401 10;
+#N canvas 232 203 575 403 10;
 #X text 57 188 differences in lengths are adjusted to smaller vector
 of each pair;
 #X text 58 124 c \, d is the target;
@@ -17,5 +17,4 @@ as pairs;
 #X obj 277 266 vasp.c*;
 #X obj 194 287 vasp.c-;
 #X obj 57 352 VASP-HELP;
-#X text 99 352 - vasp overview;
 #X obj 194 266 vasp.c+;

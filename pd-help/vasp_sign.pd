@@ -1,4 +1,4 @@
-#N canvas 95 158 856 398 10;
+#N canvas 95 158 858 400 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.sign 0 10 1 14 -262144 -1
 0;
 #N canvas 0 0 450 300 graph1 0;
@@ -35,7 +35,6 @@
 #X text 79 237 use sign to generate a square wave out of a sine wave
 ;
 #X obj 46 370 VASP-HELP;
-#X text 88 370 - vasp overview;
 #X connect 9 0 10 0;
 #X connect 10 0 5 0;
 #X connect 11 0 3 0;

@@ -1,8 +1,8 @@
-#N canvas 35 127 920 429 10;
-#N canvas 40 55 178 120 clear_buffer 0;
+#N canvas 35 127 922 431 10;
+#N canvas 40 55 247 122 clear_buffer 0;
 #X obj 54 79 vasp.update;
 #X obj 54 56 vasp.= 0;
-#X obj 54 26 inlet~;
+#X obj 54 26 inlet;
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X restore 613 298 pd clear_buffer;
@@ -37,13 +37,12 @@
 #X text 187 260 modulo;
 #X msg 100 219 vasp bufmod;
 #X obj 53 388 VASP-HELP;
-#X text 95 388 - vasp overview;
 #X obj 286 148 vasp.window lin;
 #X connect 5 0 3 0;
 #X connect 11 0 5 0;
 #X connect 12 0 0 0;
-#X connect 13 0 21 0;
+#X connect 13 0 20 0;
 #X connect 15 0 16 1;
 #X connect 16 0 14 0;
 #X connect 18 0 16 0;
-#X connect 21 0 2 0;
+#X connect 20 0 2 0;
