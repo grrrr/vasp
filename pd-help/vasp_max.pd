@@ -1,4 +1,4 @@
-#N canvas 53 20 821 518 10;
+#N canvas 53 20 825 522 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.max 0 10 1 14 -262144 -1
 0;
 #N canvas 40 55 281 170 clear_buffer 0;
@@ -35,18 +35,17 @@
 #X restore 400 251 graph;
 #X text 625 70 source;
 #X obj 72 281 vasp.= bufmax;
-#X obj 72 305 vasp.abs;
-#X obj 72 329 vasp.max 0.4;
 #X msg 72 255 vasp bufmax1;
-#X obj 72 354 vasp.update;
+#X obj 72 334 vasp.update;
 #X msg 400 382 vasp bufmax bufmax1;
 #X text 162 121 generate a sine wave at 1 Hz;
 #X text 178 251 copy to new buffer;
-#X text 164 306 find absolute values;
+#X obj 72 309 vasp.max -0.4;
+#X obj 65 435 VASP-HELP;
+#X text 177 327 set all values < -0.4 to -0.4;
 #X connect 4 0 5 0;
 #X connect 8 0 4 0;
-#X connect 11 0 12 0;
-#X connect 12 0 13 0;
-#X connect 13 0 15 0;
-#X connect 14 0 11 0;
-#X connect 16 0 1 0;
+#X connect 11 0 17 0;
+#X connect 12 0 11 0;
+#X connect 14 0 1 0;
+#X connect 17 0 13 0;

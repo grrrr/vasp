@@ -1,4 +1,4 @@
-#N canvas 56 83 865 429 10;
+#N canvas 56 83 867 431 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.noise 0 10 1 14 -262144
 -1 0;
 #N canvas 0 0 450 300 graph1 0;
@@ -34,7 +34,6 @@
 #X text 175 125 generate white noise;
 #X obj 77 171 vasp.noise;
 #X obj 65 369 VASP-HELP;
-#X text 107 369 - vasp overview;
 #X connect 5 0 8 0;
 #X connect 8 0 4 0;
 #X connect 8 0 4 1;

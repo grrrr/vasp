@@ -1,4 +1,4 @@
-#N canvas 57 40 755 365 10;
+#N canvas 57 40 757 367 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.max? 0 10 1 14 -262144 -1
 0;
 #N canvas 40 55 281 170 clear_buffer 0;
@@ -36,7 +36,6 @@
 #X obj 75 251 vasp.max?;
 #X text 167 282 >>>> maximum value;
 #X obj 64 339 VASP-HELP;
-#X text 106 339 - vasp overview;
 #X connect 5 0 6 0;
 #X connect 6 0 7 0;
 #X connect 8 0 5 0;

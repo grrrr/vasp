@@ -1,4 +1,4 @@
-#N canvas 36 36 879 651 10;
+#N canvas 36 36 881 653 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.rmax? 0 10 1 14 -262144
 -1 0;
 #X obj 289 135 filelist \$0;
@@ -78,7 +78,6 @@
 #X msg 53 234 vasp bufqrmax1 bufqrmax2;
 #X msg 53 282 vasp bufqrmax1 bufqrmax2;
 #X obj 50 618 VASP-HELP;
-#X text 92 618 - vasp overview;
 #X connect 7 0 26 0;
 #X connect 12 0 5 0;
 #X connect 13 0 14 0;

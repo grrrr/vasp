@@ -1,4 +1,4 @@
-#N canvas 47 54 879 557 10;
+#N canvas 47 54 881 559 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.cnoise 0 10 1 14 -262144
 -1 0;
 #N canvas 0 0 450 300 graph1 0;
@@ -30,7 +30,6 @@
 #X text 71 63 vasp complex noise generator;
 #X text 71 83 needs 2 buffers;
 #X msg 65 127 vasp bufcnoise1 bufcnoise2;
-#X text 265 126 generate a complex moise;
 #X text 267 140 into two buffers;
 #X obj 65 171 vasp.cnoise;
 #X obj 324 411 dac~;
@@ -41,14 +40,14 @@
 #X obj 324 366 tabplay~ bufcnoise1;
 #X obj 343 388 tabplay~ bufcnoise2;
 #X obj 64 505 VASP-HELP;
-#X text 106 504 - vasp overview;
 #X obj 189 472 vasp.noise;
 #X text 64 471 related object:;
+#X text 265 126 generate complex noise;
 #X connect 4 0 3 0;
-#X connect 9 0 12 0;
-#X connect 12 0 4 0;
-#X connect 14 0 17 0;
-#X connect 14 0 18 0;
-#X connect 16 0 5 0;
-#X connect 17 0 13 0;
-#X connect 18 0 13 1;
+#X connect 9 0 11 0;
+#X connect 11 0 4 0;
+#X connect 13 0 16 0;
+#X connect 13 0 17 0;
+#X connect 15 0 5 0;
+#X connect 16 0 12 0;
+#X connect 17 0 12 1;

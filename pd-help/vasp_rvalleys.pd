@@ -1,4 +1,4 @@
-#N canvas 36 36 835 640 10;
+#N canvas 36 36 837 642 10;
 #X obj 72 26 cnv 15 15 15 empty empty vasp.rval 0 10 1 14 -262144 -1
 0;
 #X obj 76 131 filelist \$0;
@@ -72,7 +72,6 @@
 #X text 257 382 current density;
 #X obj 65 362 vasp.rvalleys 0.05;
 #X obj 54 595 VASP-HELP;
-#X text 96 595 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 7 0 8 0;
 #X connect 8 0 3 0;

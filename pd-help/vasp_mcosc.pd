@@ -1,8 +1,8 @@
-#N canvas 14 55 984 488 10;
-#N canvas 4 20 452 302 Hz_to_period_length 0;
+#N canvas 14 55 988 492 10;
+#N canvas 4 20 454 304 Hz_to_period_length 0;
 #X floatatom 135 238 0 0 0;
 #X obj 135 142 t b f;
-#X text 174 238 period length in samples (float);
+#X text 136 260 period length in samples (float);
 #X floatatom 135 80 0 0 0;
 #X obj 135 206 / 1;
 #X text 180 79 frequency in Hz;
@@ -59,11 +59,10 @@
 #X msg 65 267 vasp bufmcosc1 bufmcosc2;
 #X obj 65 311 vasp.*cosc 44100;
 #X obj 64 448 VASP-HELP;
-#X text 106 448 - vasp overview;
 #X obj 65 154 vasp.window lin;
 #X connect 8 0 4 0;
-#X connect 10 0 21 0;
+#X connect 10 0 20 0;
 #X connect 16 0 15 0;
 #X connect 17 0 18 0;
 #X connect 18 0 16 0;
-#X connect 21 0 9 0;
+#X connect 20 0 9 0;

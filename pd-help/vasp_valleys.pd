@@ -1,4 +1,4 @@
-#N canvas 36 36 845 580 10;
+#N canvas 36 36 847 582 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.valleys 0 10 1 14 -262144
 -1 0;
 #X obj 71 131 filelist \$0;
@@ -70,7 +70,6 @@
 #X text 69 81 outlet: current density value;
 #X text 185 389 optimize the buffer content;
 #X obj 44 530 VASP-HELP;
-#X text 86 530 - vasp overview;
 #X connect 4 0 7 0;
 #X connect 5 0 6 0;
 #X connect 9 0 20 0;

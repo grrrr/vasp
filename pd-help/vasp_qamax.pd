@@ -1,4 +1,4 @@
-#N canvas 57 40 899 553 10;
+#N canvas 57 40 901 555 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.amax? 0 10 1 14 -262144
 -1 0;
 #X obj 492 462 dac~;
@@ -54,13 +54,12 @@
 #X text 166 216 find the absolute maximum of this soundfile;
 #X msg 73 305 vasp bufamax;
 #X obj 73 328 vasp./;
-#X text 169 327 use it to optimise buffer content;
 #X obj 73 351 vasp.update;
 #X obj 73 376 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
 #X text 171 271 -> current absolute maximum;
 #X obj 63 520 VASP-HELP;
-#X text 105 520 - vasp overview;
+#X text 169 327 use it to optimize buffer content;
 #X connect 2 0 9 0;
 #X connect 9 0 1 0;
 #X connect 9 0 1 1;
@@ -72,5 +71,5 @@
 #X connect 18 0 19 0;
 #X connect 19 1 17 0;
 #X connect 21 0 22 0;
-#X connect 22 0 24 0;
-#X connect 24 0 25 0;
+#X connect 22 0 23 0;
+#X connect 23 0 24 0;

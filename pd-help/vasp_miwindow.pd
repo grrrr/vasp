@@ -1,4 +1,4 @@
-#N canvas 44 117 887 561 10;
+#N canvas 44 117 889 563 10;
 #X obj 62 41 cnv 15 15 15 empty empty vasp.*!window 0 10 1 14 -262144
 -1 0;
 #N canvas 0 0 450 300 graph1 0;
@@ -25,7 +25,6 @@
 #X connect 2 0 3 0;
 #X restore 569 327 pd clear_buffers;
 #X obj 63 495 VASP-HELP;
-#X text 105 494 - vasp overview;
 #X obj 61 302 vasp.u;
 #X floatatom 194 210 5 0 0;
 #X text 259 209 0..4;
@@ -53,13 +52,13 @@
 #X msg 61 149 vasp bufmiwindow;
 #X obj 61 250 vasp.*!window lin;
 #X obj 134 426 vasp.*window;
-#X connect 7 0 31 1;
-#X connect 9 0 31 1;
-#X connect 10 0 31 1;
-#X connect 11 0 31 1;
-#X connect 12 0 31 1;
-#X connect 13 0 31 1;
-#X connect 26 0 31 0;
-#X connect 29 0 3 0;
-#X connect 30 0 26 0;
-#X connect 31 0 6 0;
+#X connect 6 0 30 1;
+#X connect 8 0 30 1;
+#X connect 9 0 30 1;
+#X connect 10 0 30 1;
+#X connect 11 0 30 1;
+#X connect 12 0 30 1;
+#X connect 25 0 30 0;
+#X connect 28 0 3 0;
+#X connect 29 0 25 0;
+#X connect 30 0 5 0;

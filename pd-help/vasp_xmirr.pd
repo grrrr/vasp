@@ -1,4 +1,4 @@
-#N canvas 40 34 834 679 10;
+#N canvas 48 7 827 616 10;
 #N canvas 92 108 411 413 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 84 238 s \$0-sample-length;
@@ -23,10 +23,7 @@
 #X connect 10 0 6 0;
 #X restore 643 547 pd inside;
 #X obj 79 100 filelist \$0;
-#X obj 62 228 vasp.cfft;
-#X obj 62 248 vasp.update;
-#X obj 62 269 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
+#X obj 69 234 vasp.cfft;
 #X obj 327 546 dac~;
 #N canvas 0 0 413 295 clear_buffers 0;
 #X obj 49 73 vasp.= 0;
@@ -45,43 +42,45 @@
 #X obj 75 32 cnv 15 15 15 empty empty vasp.xmirr 0 10 1 14 -262144
 -1 0;
 #X text 75 52 mirrors a vasp symmetrical;
-#X obj 355 297 wavedisplay-simple bufxmirr2 \$0;
-#X obj 355 144 wavedisplay-simple bufxmirr1 \$0;
-#X msg 62 207 vasp bufxmirr1 bufxmirr2;
-#X obj 62 355 vasp.update;
-#X obj 62 376 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+#X obj 472 303 wavedisplay-simple bufxmirr2 \$0;
+#X obj 472 150 wavedisplay-simple bufxmirr1 \$0;
+#X msg 69 213 vasp bufxmirr1 bufxmirr2;
+#X obj 69 298 vasp.update;
+#X obj 69 319 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
-#X msg 62 292 vasp bufxmirr1 bufxmirr2;
-#X obj 62 334 vasp.= 0;
-#X obj 62 313 vasp.upper;
+#X obj 69 277 vasp.= 0;
+#X obj 69 256 vasp.upper;
 #X msg 461 523 vasp bufxmirr1 bufxmirr2;
-#X obj 62 535 vasp.update;
-#X obj 62 558 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+#X obj 69 484 vasp.update;
+#X obj 69 507 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
-#X msg 62 491 vasp bufxmirr1 bufxmirr2;
-#X obj 62 512 vasp.cfft;
+#X msg 69 440 vasp bufxmirr1 bufxmirr2;
+#X obj 69 461 vasp.cfft;
 #X obj 327 523 tabplay~ bufxmirr1;
-#X obj 62 444 vasp.update;
-#X obj 62 465 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+#X obj 69 393 vasp.update;
+#X obj 69 414 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
-#X msg 62 402 vasp bufxmirr1 bufxmirr2;
-#X obj 62 423 vasp.xmirr;
-#X obj 50 625 VASP-HELP;
-#X text 92 625 - vasp overview;
-#X connect 2 0 3 0;
-#X connect 3 0 4 0;
-#X connect 7 0 25 0;
-#X connect 14 0 2 0;
-#X connect 15 0 16 0;
-#X connect 17 0 19 0;
-#X connect 18 0 15 0;
-#X connect 19 0 18 0;
-#X connect 20 0 6 0;
-#X connect 21 0 22 0;
+#X msg 69 351 vasp bufxmirr1 bufxmirr2;
+#X obj 69 372 vasp.xmirr;
+#X obj 57 574 VASP-HELP;
+#X text 332 88 revert the frequency spectrum;
+#X text 332 103 of the example sound;
+#X text 249 226 and clear upper part;
+#X text 247 351 2 revert spectrum;
+#X text 245 440 3 inverse fourier transform;
+#X text 248 209 1 fourier transform;
+#X connect 2 0 16 0;
+#X connect 5 0 22 0;
+#X connect 12 0 2 0;
+#X connect 13 0 14 0;
+#X connect 15 0 13 0;
+#X connect 16 0 15 0;
+#X connect 17 0 4 0;
+#X connect 18 0 19 0;
+#X connect 20 0 21 0;
+#X connect 21 0 18 0;
+#X connect 22 0 3 0;
+#X connect 22 0 3 1;
 #X connect 23 0 24 0;
-#X connect 24 0 21 0;
-#X connect 25 0 5 0;
-#X connect 25 0 5 1;
-#X connect 26 0 27 0;
-#X connect 28 0 29 0;
-#X connect 29 0 26 0;
+#X connect 25 0 26 0;
+#X connect 26 0 23 0;

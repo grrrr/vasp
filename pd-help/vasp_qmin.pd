@@ -1,4 +1,4 @@
-#N canvas 57 40 815 434 10;
+#N canvas 57 40 817 436 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.min? 0 10 1 14 -262144 -1
 0;
 #N canvas 40 55 281 170 clear_buffer 0;
@@ -36,7 +36,6 @@
 #X msg 75 230 vasp bufqmin;
 #X text 167 282 >>>> minimum value;
 #X obj 56 344 VASP-HELP;
-#X text 98 344 - vasp overview;
 #X connect 6 0 1 0;
 #X connect 7 0 8 0;
 #X connect 8 0 9 0;

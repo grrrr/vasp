@@ -1,4 +1,4 @@
-#N canvas 181 1 613 682 10;
+#N canvas 181 1 615 684 10;
 #X obj 104 47 cnv 15 15 15 empty empty vasp_modular 0 10 1 14 -262144
 -1 0;
 #X obj 61 37 cnv 2 2 2 empty 2-1-r empty 20 12 64 14 -225271 -262144
@@ -631,7 +631,7 @@ of an object chain;
 #X connect 79 0 80 0;
 #X restore 191 333 pd moremessages;
 #X text 47 334 additional messages;
-#N canvas 49 0 392 461 objects 0;
+#N canvas 49 0 394 463 objects 0;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
 -1 0;
 #N canvas 408 1 510 295 fftobjects 0;
@@ -712,7 +712,7 @@ of an object chain;
 #X text 443 434 abs(vasp) >= abs(x);
 #X text 445 403 abs(vasp) <= abs(x);
 #X restore 72 128 pd arithmetic;
-#N canvas 197 195 742 306 generators 0;
+#N canvas 197 195 744 308 generators 0;
 #X obj 389 194 vasp.*cosc;
 #X obj 389 138 vasp.*phasor;
 #X obj 389 110 vasp.*osc;
@@ -832,7 +832,7 @@ one is resampled around a center position;
 #X text 188 90 left part of symmetrical window;
 #X text 190 160 right part of symmetrical window;
 #X text 77 212 multiply...;
-#X restore 72 303 pd window-functions;
+#X restore 71 303 pd window-functions;
 #N canvas 188 241 791 420 utilities 0;
 #X text 156 275 symmetrical resampling;
 #X obj 77 245 vasp.tilt;
@@ -855,7 +855,7 @@ one is resampled around a center position;
 #X obj 78 352 vasp.fix;
 #X obj 255 353 vasp.radio;
 #X obj 382 322 vasp;
-#X restore 72 326 pd utilities;
+#X restore 71 326 pd utilities;
 #N canvas 146 -5 837 696 declaration 0;
 #X obj 68 42 cnv 15 15 15 empty empty declaration 0 10 1 14 -262144
 -1 0;

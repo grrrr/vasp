@@ -1,4 +1,4 @@
-#N canvas 57 40 834 519 10;
+#N canvas 57 40 836 521 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.min 0 10 1 14 -262144 -1
 0;
 #N canvas 40 55 281 170 clear_buffer 0;
@@ -37,18 +37,15 @@
 #X msg 412 380 vasp bufmin bufmin1;
 #X text 162 121 generate a sine wave at 1 Hz;
 #X text 178 251 copy to new buffer;
-#X text 164 306 find absolute values;
-#X obj 72 305 vasp.abs;
 #X obj 72 354 vasp.update;
 #X msg 72 255 vasp bufmin1;
 #X obj 72 281 vasp.= bufmin;
 #X obj 72 328 vasp.min 0.4;
 #X obj 66 460 VASP-HELP;
-#X text 108 460 - vasp overview;
+#X text 177 327 set all values > 0.4 to 0.4;
 #X connect 4 0 5 0;
 #X connect 10 0 4 0;
 #X connect 11 0 1 0;
-#X connect 15 0 19 0;
-#X connect 17 0 18 0;
-#X connect 18 0 15 0;
-#X connect 19 0 16 0;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 17 0 14 0;

@@ -1,4 +1,4 @@
-#N canvas 36 36 879 623 10;
+#N canvas 36 36 881 625 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.rmax 0 10 1 14 -262144 -1
 0;
 #X obj 71 131 filelist \$0;
@@ -65,7 +65,6 @@
 #X obj 60 411 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
 #X obj 50 564 VASP-HELP;
-#X text 92 564 - vasp overview;
 #X connect 6 0 19 0;
 #X connect 8 0 9 0;
 #X connect 9 0 21 0;

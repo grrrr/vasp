@@ -1,4 +1,4 @@
-#N canvas 47 54 889 552 10;
+#N canvas 47 54 891 554 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.fhp 0 10 1 14 -262144 -1
 0;
 #X obj 76 247 vasp.update;
@@ -71,7 +71,6 @@ default 1;
 #X obj 260 319 t b f;
 #X obj 77 366 vasp.fhp 220;
 #X obj 78 503 VASP-HELP;
-#X text 120 503 - vasp overview;
 #X connect 1 0 9 0;
 #X connect 2 0 1 0;
 #X connect 4 0 26 0;
