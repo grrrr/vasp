@@ -171,15 +171,18 @@ public:
 
 	vasp_multi(I argc,t_atom *argv)
 	{
-		I n = 2;
+		I cnt = -1;
 		if(argc) {
-			if(CanbeInt(argv[0])) n = GetAInt(argv[0]);
-			else 
+			if(CanbeInt(argv[0])) cnt = GetAInt(argv[0]);
+			if(cnt <= 1) {
 				post("%s - integer argument invalid: set to 2",thisName());
+				cnt = 2;
+			}
 		}
+		else cnt = 2;
 
 		AddInAnything();
-		AddOutAnything(n);
+		AddOutAnything(cnt);
 		SetupInOut();
 	}
 

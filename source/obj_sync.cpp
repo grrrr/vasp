@@ -36,18 +36,21 @@ public:
 	vasp_sync(I argc,t_atom *argv):
 		autoreset(true),vasponly(false)
 	{
-		I n = 2;
+		I cnt = -1;
 		if(argc) {
-			if(CanbeInt(argv[0])) n = GetAInt(argv[0]);
-			else 
+			if(CanbeInt(argv[0])) cnt = GetAInt(argv[0]);
+			if(cnt <= 1) {
 				post("%s - integer argument invalid: set to 2",thisName());
+				cnt = 2;
+			}
 		}
+		else cnt = 2;
 
-		flags = new BL[n];
-		stored = new Vasp[n-1];
+		flags = new BL[cnt];
+		stored = new Vasp[cnt-1];
 
-		AddInAnything(n);
-		AddOutAnything(n);
+		AddInAnything(cnt);
+		AddOutAnything(cnt);
 		SetupInOut();
 
 		FLEXT_ADDMETHOD_(0,"reset",m_reset);

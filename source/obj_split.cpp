@@ -31,10 +31,20 @@ class vasp_split:
 	FLEXT_HEADER(vasp_split,vasp_op)
 
 public:
-	vasp_split(I n)
+	vasp_split(I argc,t_atom *argv)
 	{
+		I cnt = -1;
+		if(argc) {
+			if(CanbeInt(argv[0])) cnt = GetAInt(argv[0]);
+			if(cnt <= 1) {
+				post("%s - integer argument invalid: set to 2",thisName());
+				cnt = 2;
+			}
+		}
+		else cnt = 2;
+
 		AddInAnything();
-		AddOutAnything(n+1);
+		AddOutAnything(cnt+1);
 		SetupInOut();
 	}
 
@@ -62,7 +72,7 @@ public:
 	virtual V m_help() { post("%s - Split a vasp into its vectors",thisName()); }
 };
 
-FLEXT_LIB_1("vasp, vasp.split",vasp_split,I)
+FLEXT_LIB_V("vasp, vasp.split",vasp_split)
 
 
 /*! \class vasp_join
@@ -88,12 +98,22 @@ class vasp_join:
 	FLEXT_HEADER(vasp_join,vasp_tx)
 
 public:
-	vasp_join(I n):
-		cnt(n),vi(new Vasp *[n-1])
+	vasp_join(I argc,t_atom *argv):
+		cnt(-1),vi(NULL)
 	{
+		if(argc) {
+			if(CanbeInt(argv[0])) cnt = GetAInt(argv[0]);
+			if(cnt <= 1) {
+				post("%s - integer argument invalid: set to 2",thisName());
+				cnt = 2;
+			}
+		}
+		else cnt = 2;
+
+		vi = new Vasp *[cnt-1];
 		for(I i = 0; i < cnt-1; ++i) vi[i] = NULL;
 
-		AddInAnything(n);
+		AddInAnything(cnt);
 		AddOutAnything();
 		SetupInOut();
 
@@ -133,7 +153,7 @@ private:
 	FLEXT_CALLBACK(m_reset)
 };
 
-FLEXT_LIB_1("vasp, vasp.join",vasp_join,I)
+FLEXT_LIB_V("vasp, vasp.join",vasp_join)
 
 
 
