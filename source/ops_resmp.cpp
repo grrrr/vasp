@@ -44,10 +44,10 @@ static V do_tilt(OpParam &p)
 
 	switch(p.tilt.mode) {
 	case 1: {
-		break;
+//		break;
 	}
 	case 2: {
-		break;
+//		break;
 	}
 	case 0: 
 	default: {
