@@ -82,7 +82,8 @@ V BufEntry::DecRef() { --refcnt; tick = libtick; }
 
 static BufEntry *FindInLib(const t_symbol *s) 
 {
-	for(BufEntry *e = libhead; e && e->sym != s; e = e->nxt);
+	BufEntry *e;
+	for(e = libhead; e && e->sym != s; e = e->nxt);
 	return e?e:NULL;
 }
 
