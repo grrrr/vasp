@@ -1,4 +1,4 @@
-#N canvas 25 60 427 363 10;
+#N canvas 25 60 429 365 10;
 #X msg 159 115 10;
 #X obj 159 92 loadbang;
 #X obj 159 137 pow \$1;
