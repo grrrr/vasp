@@ -1,0 +1,101 @@
+# xsample - extended sample objects for Max/MSP and pd (pure data)
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+# Makefile for gcc @ linux
+#
+# usage:
+# to build run "make -f makefile.pd-linux"
+# to install (as root), do "make -f makefile.pd-linux install"
+#
+
+## EDIT ZONE ##################################
+
+# flext path 
+FLEXTPATH=/usr/local/lib/pd/flext
+
+# pd path 
+PDPATH=/usr/local/lib/pd/include
+
+# where to install  
+INSTDIR=/usr/local/lib/pd/extra
+
+###############################################
+
+FLEXTLIB=$(FLEXTPATH)/flext.a
+
+# where to build (temporary)
+TARGDIR=../pd-linux
+
+# compiler stuff
+INCLUDES=$(PDPATH)
+FLAGS=-DPD
+CFLAGS=-O6 -mcpu=pentiumpro -funroll-loops -fmove-all-movables -frerun-loop-opt -finline-functions
+LIBS=m
+
+# ----------------------------------------------
+# the rest can stay untouched
+# ----------------------------------------------
+
+NAME=vasp
+
+# all the source files from the package
+SRCS= \
+main.cpp vasp.cpp vbuffer.cpp vecblk.cpp arg.cpp buflib.cpp classes.cpp env.cpp util.cpp \
+opbase.cpp opvecs.cpp opparam.cpp \
+ops_cplx.cpp ops_wnd.cpp ops_dft.cpp ops_feature.cpp ops_flt.cpp ops_arith.cpp ops_gen.cpp \
+ops_assign.cpp  ops_rearr.cpp ops_carith.cpp  ops_resmp.cpp ops_cmp.cpp ops_trnsc.cpp \
+obj_offs.cpp obj_vasp.cpp obj_part.cpp obj_vecs.cpp obj_peaks.cpp obj_q.cpp obj_radio.cpp \
+obj_size.cpp obj_frames.cpp obj_split.cpp obj_imm.cpp obj_sync.cpp \
+rdx2fft.cpp mixfft.cpp 
+              
+HDRS= \
+vasp.h arg.h  main.h classes.h vbuffer.h vecblk.h env.h  buflib.h util.h \
+opbase.h   ops.h  oppermute.h opdefs.h  opparam.h  \
+ops_carith.h  ops_feature.h  ops_resmp.h ops_cmp.h ops_flt.h ops_trnsc.h \
+ops_arith.h ops_cplx.h ops_gen.h ops_wnd.h ops_assign.h ops_dft.h ops_rearr.h    
+
+
+MAKEFILE=makefile.pd-linux
+TARGET=$(TARGDIR)/$(NAME).pd_linux
+
+# default target
+all: $(TARGDIR) $(TARGET) 
+
+$(SRCS): $(HDRS) $(MAKEFILE)
+	touch $@
+
+$(TARGDIR):
+	mkdir $(TARGDIR)
+
+$(TARGDIR)/%.o : %.cpp 
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(FLEXTPATH)) $< -o $@
+
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) $(FLEXTLIB) 
+	$(CXX) $(LDFLAGS) -shared $^ $(patsubst %,-l%,$(LIBS)) -o $@ 
+	strip --strip-unneeded $@
+	chmod 755 $@
+
+$(INSTDIR):
+	mkdir $(INSTDIR)
+
+install:: $(INSTDIR)
+
+install:: $(TARGET) 
+	cp $^ $(INSTDIR)
+	chown root.root $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+
+.PHONY: clean
+clean:
+	rm -f $(TARGDIR)/*.o $(TARGET)
+	
+
+
+
+
+
+
+
+
+
+
+

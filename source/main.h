@@ -20,7 +20,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #error You need at least flext version 0.3.0
 #endif
 
-#include <typeinfo.h>
+//#ifdef __GNUC__
+#include <typeinfo>
+//#else
+//#include <typeinfo.h>
+//#endif
+
 #include <stdlib.h>
 
 //#include "util.h"
