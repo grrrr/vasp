@@ -51,6 +51,7 @@ vasp_binop::vasp_binop(I argc,t_atom *argv,BL op,UL outcode):
 	FLEXT_ADDMETHOD(1,a_list);
 	FLEXT_ADDMETHOD_(1,"vasp",a_vasp);
 	FLEXT_ADDMETHOD_(1,"float",a_float);
+	FLEXT_ADDMETHOD_(1,"int",a_int);
 	FLEXT_ADDMETHOD_(1,"complex",a_complex);
 	FLEXT_ADDMETHOD_(1,"vector",a_vector);
 }
@@ -86,6 +87,8 @@ V vasp_binop::a_vasp(I argc,t_atom *argv)
 }
 
 V vasp_binop::a_float(F v) { arg.Set(v); }
+
+V vasp_binop::a_int(I v) { arg.Set(v); }
 
 V vasp_binop::a_complex(I argc,t_atom *argv) 
 { 

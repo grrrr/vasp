@@ -65,10 +65,10 @@ Argument &Argument::Parse(I argc,t_atom *argv)
 {
 	if(argc == 0)
 		Clear();
-	else if(argc == 1 && (flext_base::IsFloat(argv[0]) || flext_base::IsInt(argv[0])))
-		Set(flext_base::GetFloat(argv[0]));
+	else if(argc == 1 && (flext_base::IsFloat(argv[0]) || flext_base::IsInt(argv[0]))) 
+		Set(flext_base::GetAFloat(argv[0]));
 	else if(argc == 2 && (flext_base::IsFloat(argv[0]) || flext_base::IsInt(argv[0])) && (flext_base::IsFloat(argv[1]) || flext_base::IsInt(argv[1])))
-		Set(flext_base::GetFloat(argv[1]),flext_base::GetFloat(argv[2]));
+		Set(flext_base::GetAFloat(argv[1]),flext_base::GetAFloat(argv[2]));
 /*
 	else if(argc == 3 && flext_base::IsFloat(argv[0]) && flext_base::IsFloat(argv[1]) && flext_base::IsFloat(argv[2])) {
 		VX *v = new VX(argc,argv);

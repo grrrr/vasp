@@ -1,5 +1,4 @@
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
-version 0.0.5
 
 Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -40,11 +39,14 @@ Goals/features of the package:
 
 Version history:
 
+0.0.6:
+
 0.0.5:
-- fixed sqrt bug in [vasp.rmin?],[vasp.rmax?]
+- fixed lacking sqrt in [vasp.rmin?],[vasp.rmax?]
 - fixed (offs >= frames) bug in [vasp.offs?] 
 - added lacking setup of [vasp.!-] and [vasp.c!-] objects 
 - corrected buggy [vasp.int] code
+- fixed recognition of integer arguments
 
 0.0.4:
 - changed vasp.min/max functions so that a vasp length 0 results in 0
@@ -54,7 +56,7 @@ Version history:
 
 0.0.3:
 - restructured the code for future use of break-point lists as arguments
-- changes some object's names
+- changed some object's names
 - new objects: vasp.min?, vasp.max? and the likes
 - fixed Max problem with connecting vasp.min,vasp.max right outlet to number boxes
 - fixed right inlet problem for generator and filter objects

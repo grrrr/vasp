@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.5a"
+#define VASP_VERSION "0.0.5b"
 
 
 #include <flext.h>
@@ -892,6 +892,7 @@ protected:
 	virtual V a_vasp(I argc,t_atom *argv);
 	virtual V a_list(I argc,t_atom *argv); 
 	virtual V a_float(F f); 
+	virtual V a_int(I f); 
 	virtual V a_complex(I argc,t_atom *argv); 
 	virtual V a_vector(I argc,t_atom *argv); 
 
@@ -904,6 +905,7 @@ private:
 	FLEXT_CALLBACK_G(a_vasp)
 	FLEXT_CALLBACK_G(a_list)
 	FLEXT_CALLBACK_1(a_float,F)
+	FLEXT_CALLBACK_1(a_int,I)
 	FLEXT_CALLBACK_G(a_complex)
 	FLEXT_CALLBACK_G(a_vector)
 };

@@ -70,7 +70,7 @@ int permutation(OpParam &p,int (*origination)(int ij, int n,OpParam &p))
 	n_to_do = n;
 	for(ij = 0; ij < n && n_to_do > 0; ij++,n_to_do--) {
 		/* Test for previously permuted */
-		for (oij = origination(ij,n,p); oij > ij; oij = origination(oij,n,p));
+		for (oij = origination(ij,n,p); oij > ij; oij = origination(oij,n,p)) (void)0;
 
 		if (oij < ij) continue;
 
