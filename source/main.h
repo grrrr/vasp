@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __VASP_H
 
 // enable attributes
-#define FLEXT_ATTRIBUTES
+#define FLEXT_ATTRIBUTES 1
 
 #include <flext.h>
 
