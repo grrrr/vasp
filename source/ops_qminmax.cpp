@@ -38,7 +38,7 @@ class vasp_qmin:
 public:
 	vasp_qmin() { 
 		AddInAnything(); 
-		AddOutFloat(); 
+		AddOutList(); 
 	}
 
 	virtual F do_opt(OpParam &p,CVasp &v) 
@@ -54,11 +54,10 @@ public:
 		if(!ref.Ok()) return;
 
 		AtomList ret(ref.Vectors());
-		CVasp cref(ref);
 		OpParam p(thisName(),0);	
 		
 		for(I i = 0; i < ret.Count(); ++i) {
-			Vasp vasp(cref.Frames(),cref.Vector(i));
+			Vasp vasp(ref.Frames(),ref.Vector(i));
 			CVasp ref(vasp);
 			F v = do_opt(p,ref); 
 			SetFloat(ret[i],v);
@@ -79,7 +78,7 @@ FLEXT_LIB("vasp, vasp.min?",vasp_qmin)
 	\param inlet vasp - is stored and output triggered
 	\param inlet bang - triggers output
 	\param inlet set - vasp to be stored 
-	\retval outlet float - minimum sample value
+	\retval outlet float - minimum absolute sample value
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
@@ -112,7 +111,7 @@ FLEXT_LIB("vasp, vasp.amin?",vasp_qamin)
 	\param inlet vasp - is stored and output triggered
 	\param inlet bang - triggers output
 	\param inlet set - vasp to be stored 
-	\retval outlet float - minimum sample value
+	\retval outlet float - maximum sample value
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
@@ -145,7 +144,7 @@ FLEXT_LIB("vasp, vasp.max?",vasp_qmax)
 	\param inlet vasp - is stored and output triggered
 	\param inlet bang - triggers output
 	\param inlet set - vasp to be stored 
-	\retval outlet float - minimum sample value
+	\retval outlet float - maximum absolute sample value
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
@@ -179,17 +178,22 @@ FLEXT_LIB("vasp, vasp.amax?",vasp_qamax)
 	\param inlet vasp - is stored and output triggered
 	\param inlet bang - triggers output
 	\param inlet set - vasp to be stored 
-	\retval outlet float - minimum sample value
+	\retval outlet list - minimum radius value per complex vector pair
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
 	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qrmin:
-	public vasp_qmin
+	public vasp_op
 {
-	FLEXT_HEADER(vasp_qrmin,vasp_qmin)
+	FLEXT_HEADER(vasp_qrmin,vasp_op)
 public:
+	vasp_qrmin() { 
+		AddInAnything(); 
+		AddOutList(); 
+	}
+
 	virtual F do_opt(OpParam &p,CVasp &v) 
 	{ 
 		p.norm.minmax = BIG;
@@ -198,6 +202,28 @@ public:
 		return sqrt(p.norm.minmax == BIG?0:p.norm.minmax);
 	}
 		
+	virtual V m_bang() 
+	{ 
+		if(!ref.Ok()) return;
+
+		AtomList ret(ref.Vectors()/2);
+		OpParam p(thisName(),0);	
+		
+		for(I i = 0; i < ret.Count(); ++i) {
+			Vasp vasp(ref.Frames(),ref.Vector(i*2));
+			vasp.AddVector(ref.Vector(i*2+1));
+			CVasp ref(vasp);
+			F v = do_opt(p,ref); 
+			SetFloat(ret[i],v);
+		}
+		
+		if(ref.Vectors()%2) {
+			post("%s - omitting dangling vector of complex pairs",thisName());
+		}
+		
+		ToOutList(0,ret);
+	}
+
 	virtual V m_help() { post("%s - Get a vasp's minimum complex radius",thisName()); }
 };
 
@@ -212,7 +238,7 @@ FLEXT_LIB("vasp, vasp.rmin?",vasp_qrmin)
 	\param inlet vasp - is stored and output triggered
 	\param inlet bang - triggers output
 	\param inlet set - vasp to be stored 
-	\retval outlet float - minimum sample value
+	\retval outlet float - maximum radius value per complex vector pair
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
