@@ -26,6 +26,7 @@ warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay 
 - reduce number of warnings for wrong offset, frame size etc.
 
 
+
 objects:
 ---------------------
 - wave object for table-lookup oscs.
@@ -35,7 +36,6 @@ objects:
 
 - slope: frequency distortion with given exponent
 
-- vasp.trigger object... in PD [t a] is ok, what about Max?
 - vasp.expr
 
 - vasp.state.... current vasp, operation, progress meter
