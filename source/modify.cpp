@@ -1,10 +1,48 @@
 #include "main.h"
 
+FLEXT_GIMME("vasp.=",vasp_tx_copy)
+
+V vasp_tx_copy::cb_setup(t_class *c)
+{
+	// assignment functions
+//	FLEXT_ADDMETHOD_G(c,"copy",m_copy);
+}
+
+vasp_tx_copy::vasp_tx_copy(I argc,t_atom *argv)
+{
+	post("%s - copy setup called",thisName());
+
+//	m_set(argc,argv);
+
+	add_in_def();
+	add_in_anything(3);
+	add_out_anything();
+	setup_inout();
+}
+
+vasp_tx_copy::~vasp_tx_copy()
+{
+}
+
+V vasp_tx_copy::m_copy(I argc,t_atom *argv) 
+{ 
+	post("%s - copy method called",thisName());
+}
+
+V vasp_tx_copy::m_methodmain(I inlet,t_symbol *s,I argc,t_atom *argv)
+{
+	post("anything %i method triggered with %i args (symbol %s)",inlet,argc,s?s->s_name:"");
+}
+
+
+
+
+
 FLEXT_GIMME("vasp.tx",vasp_tx)
 
 V vasp_tx::cb_setup(t_class *c)
 {
-	FLEXT_ADDMETHOD_G(c,"set",m_set);
+//	FLEXT_ADDMETHOD_G(c,"set",m_set);
 
 	// assignment functions
 	FLEXT_ADDMETHOD_G(c,"copy",m_copy);

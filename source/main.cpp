@@ -19,6 +19,8 @@ extern "C" {
 FLEXT_EXT V vasp_v_setup();
 FLEXT_EXT V vasp_tx_setup();
 
+FLEXT_EXT V vasp_tx_copy_setup();
+
 // utils
 FLEXT_EXT V vasp_prepend_setup();
 
@@ -32,6 +34,7 @@ FLEXT_EXT V vasp_setup()
 
 	vasp_v_setup();
 	vasp_tx_setup();
+	vasp_tx_copy_setup();
 
 	vasp_prepend_setup();
 }
@@ -249,7 +252,7 @@ t_symbol *const vasp_base::sym_radio = gensym("radio");
 V vasp_base::cb_setup(t_class *c)
 {
 	FLEXT_ADDBANG(c,m_bang);
-//	FLEXT_ADDMETHOD_G(c,"vasp",m_vasp);
+	FLEXT_ADDMETHOD_G(c,"vasp",m_vasp);
 	FLEXT_ADDMETHOD_G(c,"set",m_set);
 
 	FLEXT_ADDMETHOD_G(c,"radio",m_radio);
@@ -266,18 +269,18 @@ vasp_base::~vasp_base()
 {
 }
 
-/*
 I vasp_base::m_set(I argc,t_atom *argv)
 {
+	vasp arg(argc,argv);
 
-	I ret = buf->Set(atom_getsymbolarg(0,argc,argv));
-	if(ret) {
-		m_offset(Offset());
-		m_length(Length());
+	if(argc && !arg.Ok()) {
+		post("%s - invalid vasp detected and ignored",thisName());
 	}
-	return ret;
+	else 
+		ref = arg;
+
+	return 0; 
 }
-*/
 
 V vasp_base::m_bang()
 {

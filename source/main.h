@@ -136,7 +136,7 @@ protected:
 	virtual V m_bang();						// output current vasp
 
 	virtual V m_vasp(I argc,t_atom *argv); // trigger
-	virtual I m_set(I argc,t_atom *argv) = 0;  // non trigger
+	virtual I m_set(I argc,t_atom *argv);  // non trigger
 
 	virtual V m_radio(I argc,t_atom *argv);  // commands for all
 
@@ -269,8 +269,6 @@ private:
 	V fm_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I));
 
 
-	FLEXT_CALLBACK_G(m_set)
-
 	FLEXT_CALLBACK_G(m_copy)
 	FLEXT_CALLBACK_G(m_ccopy)
 	FLEXT_CALLBACK_G(m_mcopy)
@@ -343,5 +341,23 @@ private:
 };
 
 
+class vasp_tx_copy:
+	public flext_base
+{
+	FLEXT_HEADER(vasp_tx_copy,flext_base)
+
+public:
+	vasp_tx_copy(I argc,t_atom *argv);
+	~vasp_tx_copy();
+
+	// assignment functions
+	virtual V m_copy(I argc,t_atom *argv); // copy to (one vec or real)
+
+protected:
+
+	virtual V m_methodmain(I inlet,t_symbol *s,I argc,t_atom *argv);
+
+//	FLEXT_CALLBACK_G(m_copy)
+};
 
 #endif
