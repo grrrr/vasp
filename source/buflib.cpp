@@ -29,7 +29,7 @@ static t_clock *libclk = NULL;
 static flext_base::ThrMutex libmtx;
 #endif
 
-V FreeLibSym(t_symbol *s);
+static V FreeLibSym(t_symbol *s);
 
 
 class BufEntry

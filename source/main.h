@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.6pre"
+#define VASP_VERSION "0.0.6"
 
 
 #include <flext.h>

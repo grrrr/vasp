@@ -102,7 +102,7 @@ public:
 
 	enum xs_fill {
 		xsf__ = -1,  // don't change
-		xsf_zero = 0,xsf_none,xsf_edge
+		xsf_none = 0,xsf_zero,xsf_edge
 	};	
 
 	V m_fill(xs_fill f) { fill = f; }
