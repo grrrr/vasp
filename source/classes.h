@@ -222,12 +222,12 @@ private:
 
 
 #define VASP_UNARY(name,op,to,help)												\
-class vasp__##op:																\
+class vasp_##op:																\
 	public vasp_unop															\
 {																				\
-	FLEXT_HEADER(vasp__##op,vasp_unop)											\
+	FLEXT_HEADER(vasp_##op,vasp_unop)											\
 public:																			\
-	vasp__##op(): vasp_unop(to) {}												\
+	vasp_##op(): vasp_unop(to) {}												\
 protected:																		\
 	virtual Vasp *tx_work()														\
 	{																			\
@@ -236,16 +236,16 @@ protected:																		\
 	}																			\
 	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
-FLEXT_LIB(name,vasp__##op)
+FLEXT_LIB(name,vasp_##op)
 
 
 #define VASP_BINARY(name,op,to,def,help)											\
-class vasp__ ## op:																\
+class vasp_ ## op:																\
 	public vasp_binop															\
 {																				\
-	FLEXT_HEADER(vasp__##op,vasp_binop)											\
+	FLEXT_HEADER(vasp_##op,vasp_binop)											\
 public:																			\
-	vasp__##op(I argc,t_atom *argv): vasp_binop(argc,argv,def,to) {}			\
+	vasp_##op(I argc,t_atom *argv): vasp_binop(argc,argv,def,to) {}			\
 protected:																		\
 	virtual Vasp *tx_work(const Argument &arg)									\
 	{																			\
@@ -254,16 +254,16 @@ protected:																		\
 	}																			\
 	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
-FLEXT_LIB_V(name,vasp__##op)
+FLEXT_LIB_V(name,vasp_##op)
 
 
 #define VASP_ANYOP(name,op,args,to,def,help)									\
-class vasp__ ## op:																\
+class vasp_ ## op:																\
 	public vasp_anyop															\
 {																				\
-	FLEXT_HEADER(vasp__##op,vasp_anyop)											\
+	FLEXT_HEADER(vasp_##op,vasp_anyop)											\
 public:																			\
-	vasp__##op(I argc,t_atom *argv): vasp_anyop(argc,argv,def,to) {}			\
+	vasp_##op(I argc,t_atom *argv): vasp_anyop(argc,argv,def,to) {}			\
 protected:																		\
 	virtual Vasp *tx_work(const Argument &arg)									\
 	{																			\
@@ -272,8 +272,8 @@ protected:																		\
 	}																			\
 	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
-FLEXT_LIB_V(name,vasp__##op)
+FLEXT_LIB_V(name,vasp_##op)
 
-#define VASP__SETUP(op) FLEXT_SETUP(vasp__##op);  
+#define VASP__SETUP(op) FLEXT_SETUP(vasp_##op);  
 
 #endif
