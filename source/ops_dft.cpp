@@ -24,71 +24,69 @@ static I radix2(I size)
   return -1;
 }
 
-V mixfft(I n,F *xRe,F *xIm,F *yRe,F *yIm);
+BL mixfft(I n,F *xRe,F *xIm,F *yRe,F *yIm);
 
 static BL fft_fwd_real_any(I cnt,F *dt) 
 {
-	if(cnt%2 == 1) {
-		post("FFT of uneven data length is not possible");
+	float *im,*tre,*tim;
+	try {
+		im = new float[cnt];
+		tre = new float[cnt];
+		tim = new float[cnt];
+	}
+	catch(...) {
 		return false;
 	}
-	else {
-		float *im,*tre,*tim;
-		try {
-			im = new float[cnt];
-			tre = new float[cnt];
-			tim = new float[cnt];
+
+	I i;
+	for(i = 0; i < cnt; ++i) im[i] = 0;
+
+	BL ret = mixfft(cnt,dt,im,tre,tim);
+
+	if(ret) {
+		F nrm = 1./sqrt(cnt);
+		dt[0] = tre[0]*nrm; 
+		for(i = 1; i < cnt/2; ++i) {
+			dt[i] = tre[i]*nrm;
+			dt[cnt-i] = tim[i]*nrm;
 		}
-		catch(...) {
-			return false;
-		}
-
-		I i;
-		for(i = 0; i < cnt; ++i) im[i] = 0;
-
-		mixfft(cnt,dt,im,tre,tim);
-
-		for(i = 0; i < cnt/2; ++i) {
-			dt[i] = tre[i];
-			dt[i+cnt/2] = tim[i];
-		}
-
-		delete[] im;
-		delete[] tre;
-		delete[] tim;
-		return true;
+		dt[i] = tre[i]*nrm;
 	}
+
+	delete[] im;
+	delete[] tre;
+	delete[] tim;
+	return ret;
 }
 
 static BL fft_inv_real_any(I cnt,F *dt) 
 {
-	if(cnt%2 == 1) {
-		post("IFFT of uneven data length is not possible");
+	float *re,*im,*tim;
+	try {
+		re = new float[cnt];
+		im = new float[cnt];
+		tim = new float[cnt];
+	}
+	catch(...) {
 		return false;
 	}
-	else {
-		float *re,*im,*tim;
-		try {
-			re = new float[cnt];
-			im = new float[cnt];
-			tim = new float[cnt];
-		}
-		catch(...) {
-			return false;
-		}
 
-		for(I i = 0; i < cnt/2; ++i) {
-			re[cnt-i-1] = re[i] = dt[i];
-			im[cnt-i-1] = im[i] = dt[cnt/2+i];
-		}
-
-		mixfft(cnt,re,im,dt,tim);
-
-		delete[] re;
-		delete[] im;
-		delete[] tim;
-		return true;
+	re[0] = dt[0]; re[cnt/2] = dt[cnt/2];
+	im[0] = im[cnt/2] = 0;
+	for(I i = 1; i < cnt/2; ++i) {
+		re[i] = re[cnt-i] = dt[i];
+		im[cnt-i] = -(im[i] = -dt[cnt-i]);
 	}
+
+	BL ret = mixfft(cnt,re,im,dt,tim);
+
+	F nrm = 1./sqrt(cnt);
+	for(i = 0; i < cnt; ++i) dt[i] *= nrm;
+
+	delete[] re;
+	delete[] im;
+	delete[] tim;
+	return ret;
 }
 
 BL fft_fwd_real_radix2(I cnt,F *dt); 
@@ -96,46 +94,38 @@ BL fft_inv_real_radix2(I cnt,F *dt);
 
 static BL fft_fwd_complex_any(I cnt,F *re,F *im) 
 {
-	if(cnt%2 == 1) {
-		post("FFT of uneven data length is not possible");
+	float *tre,*tim;
+	try {
+		tre = new float[cnt];
+		tim = new float[cnt];
+	}
+	catch(...) {
 		return false;
 	}
-	else {
-		float *tre,*tim;
-		try {
-			tre = new float[cnt];
-			tim = new float[cnt];
-		}
-		catch(...) {
-			return false;
-		}
-		mixfft(cnt,re,im,tre,tim);
+	BL ret = mixfft(cnt,re,im,tre,tim);
 
+	if(ret) {
+		F nrm = 1./sqrt(cnt);
 		for(I i = 0; i < cnt; ++i) {
-			re[i] = tre[i];
-			im[i] = tim[i];
+			re[i] = tre[i]*nrm;
+			im[i] = tim[i]*nrm;
 		}
-
-		delete[] tre;
-		delete[] tim;
-		return true;
 	}
+
+	delete[] tre;
+	delete[] tim;
+	return ret;
 }
 
 static BL fft_inv_complex_any(I cnt,F *re,F *im) 
 {
-	if(cnt%2 == 1) {
-		post("IFFT of uneven data length is not possible");
-		return false;
-	}
-	else {
-		I i;
+	I i;
+	for(i = 0; i < cnt; ++i) im[i] = -im[i];
+	BL ret = fft_fwd_complex_any(cnt,re,im);
+	if(ret) {
 		for(i = 0; i < cnt; ++i) im[i] = -im[i];
-		BL ret = fft_fwd_complex_any(cnt,re,im);
-		F nrm = -1./cnt;
-		for(i = 0; i < cnt; ++i) im[i] *= nrm;
-		return ret;
 	}
+	return ret;
 }
 
 BL fft_fwd_complex_radix2(I cnt,F *re,F *im); 

@@ -63,7 +63,7 @@ features:
 - double precision variables?
 
 - check and optimize fft routines
-- optimize (c)osc
+- optimize (c)osc, also with phase and with (real/complex) vasp input
 - wave object for table-lookup oscs.
 - various random distributions for noise
 
