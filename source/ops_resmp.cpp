@@ -69,7 +69,7 @@ static V do_tilt(OpParam &p)
 		case 2: {
 			// linear interpolation
 			for(int i = 0; i < p.frames; ++i) {
-				R pr = (I)(center+(i-center)*p.tilt.factor),v;
+				R pr = center+(i-center)*p.tilt.factor,v;
 				I ip = (I)pr;
 				if(ip >= 0)
 					if(ip < p.frames-1) {
@@ -88,7 +88,7 @@ static V do_tilt(OpParam &p)
 			// 4-point interpolation
 			R f[4];
 			for(int i = 0; i < p.frames; ++i) {
-				R pr = (I)(center+(i-center)*p.tilt.factor);
+				R pr = center+(i-center)*p.tilt.factor;
 				const I ip = (I)pr;
 				const S *t = tmp+ip*rss;
 				const R r = pr-ip;
