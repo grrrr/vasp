@@ -1,12 +1,7 @@
 Thomas' Änderungen:
-- vasp.check: war intern noch vasp.chk
 - vasp.cnorm: Erklärung geändert
-- vasp.cosc: Numberbox für Periodenlänge
-- vasp.plus gelöscht
-- vasp.dif: probier einmal 3.57 als Periode .... wir brauchen größere Bufferlänge!!
 - vasp.equ: die Stufenfunktion sollte besser mit env gemacht werden 
 	(aber vielleicht erst, wenn die env-Transformationsfunktionen existieren)
-- vasp.fhp, vasp.flp: q-Faktor triggert nun pack
 - vasp.frames: der Ausdruck "framesize" ist eigentlich irreführend 
 	... die kann bei verschiedenen Buffern in MaxMSP tatsächlich verschieden sein
 	framesize = sample-Länge*Bufferkanäle !!
@@ -19,5 +14,6 @@ Thomas' Änderungen:
 - restliche files durchchecken. das ist erst eine erste überprüfung...
 - wavedisplay-select überprüfen.
 - die default-längen und resize einstellungen noch einmal überprüfen
+- vasp.cpowi, vasp.csqr und vasp.rpow vorläufig noch mit resize, ...
 
 
