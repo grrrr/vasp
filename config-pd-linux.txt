@@ -5,13 +5,16 @@
 # your c++ compiler (normally g++)
 CXX=g++
 
+# where does the PD installation reside?
+PD=/usr/local/pd
+
 # where are the PD header files?
 # leave it blank if it is a system directory (like /usr/local/include), 
 # 	since gcc 3.2 complains about it
-PDPATH=
+PDINC=
 
 # where do the flext libraries reside?
-FLEXTPATH=/usr/local/lib/pd/flext
+FLEXTPATH=${PD}/flext
 
 # where should flext libraries be built?
 TARGDIR=./pd-linux
@@ -19,9 +22,9 @@ TARGDIR=./pd-linux
 # where should VASP be installed?
 # (leave blank to omit installation)
 # a subfolder "vasp" will be created for the files
-INSTDIR=/usr/local/lib/pd/extra
+INSTDIR=${PD}/extra
 
 # where should the VASP help be installed?
 # (leave blank to omit installation)
 # a subfolder "vasp" will be created for the files
-HELPDIR=/usr/local/lib/pd/doc/5.reference
+HELPDIR=${PD}/doc/5.reference
