@@ -128,8 +128,8 @@ Vasp *VaspOp::m_fhp(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL hp)
 	return ret;
 }
 
-VASP_ANYOP("vasp.flp",flp,1,true,VASP_ARG(),"Passive one pole low pass filter")
-VASP_ANYOP("vasp.fhp",fhp,1,true,VASP_ARG(),"Passive one pole high pass filter")
+VASP_ANYOP("vasp.flp",flp,1,true,VASP_ARG(),"Passive low pass filter")
+VASP_ANYOP("vasp.fhp",fhp,1,true,VASP_ARG(),"Passive high pass filter")
 
 
 // --- integrate/differentiate
