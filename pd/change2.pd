@@ -1,4 +1,4 @@
-#N canvas 216 304 476 263 10;
+#N canvas 216 304 478 265 10;
 #X obj 121 46 inlet;
 #X obj 121 71 unpack;
 #X text 207 41 change for pairs;
@@ -10,6 +10,7 @@
 #X obj 121 133 sel \$1;
 #X obj 162 133 sel \$2;
 #X text 209 57 args: other default values than 0 0;
+#X text 249 240 used in vasp-help-patches;
 #X connect 0 0 1 0;
 #X connect 1 0 5 0;
 #X connect 1 1 4 0;
