@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\..\flext\pd-msvc\flext-pdwin.lib /nologo /dll /machine:I386 /libpath:"c:\programme\audio\pd\bin"
+# ADD LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\flext\pd-msvc\flext-pdwin.lib /nologo /dll /machine:I386 /libpath:"c:\programme\audio\pd\bin"
 # SUBTRACT LINK32 /debug
 
 !ELSEIF  "$(CFG)" == "vasp - Win32 Debug"
@@ -82,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\..\flext\pd-msvc\flext_d-pdwin.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"c:\programme\audio\pd\bin"
+# ADD LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\flext\pd-msvc\flext_d-pdwin.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"c:\programme\audio\pd\bin"
 
 !ELSEIF  "$(CFG)" == "vasp - Win32 Threads Debug"
 
@@ -94,8 +94,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\pd-msvc\td"
-# PROP Intermediate_Dir "..\pd-msvc\td"
+# PROP Output_Dir "pd-msvc\td"
+# PROP Intermediate_Dir "pd-msvc\td"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\max\flext" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PD" /D "NT" /FR /YX /FD /GZ /c
@@ -108,8 +108,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\..\flext\msvc-debug\flext-t-pdwin.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"c:\programme\audio\pd\bin"
-# ADD LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\..\flext\pd-msvc\flext_td-pdwin.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"c:\programme\audio\pd\bin"
+# ADD BASE LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\flext\msvc-debug\flext-t-pdwin.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"c:\programme\audio\pd\bin"
+# ADD LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\flext\pd-msvc\flext_td-pdwin.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"c:\programme\audio\pd\bin"
 
 !ELSEIF  "$(CFG)" == "vasp - Win32 Threads Release"
 
@@ -135,9 +135,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\..\flext\msvc-debug\flext-t-pdwin.lib /nologo /dll /machine:I386 /libpath:"c:\programme\audio\pd\bin"
+# ADD BASE LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\flext\msvc-debug\flext-t-pdwin.lib /nologo /dll /machine:I386 /libpath:"c:\programme\audio\pd\bin"
 # SUBTRACT BASE LINK32 /debug
-# ADD LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\..\flext\pd-msvc\flext_t-pdwin.lib /nologo /dll /machine:I386 /out:"..\pd-msvc/vasp.dll" /libpath:"c:\programme\audio\pd\bin"
+# ADD LINK32 kernel32.lib user32.lib pthreadVC.lib pd.lib ..\flext\pd-msvc\flext_t-pdwin.lib /nologo /dll /machine:I386 /out:"pd-msvc/vasp.dll" /libpath:"c:\programme\audio\pd\bin"
 # SUBTRACT LINK32 /debug
 
 !ENDIF 
@@ -153,23 +153,23 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\changes.txt
+SOURCE=changes.txt
 # End Source File
 # Begin Source File
 
-SOURCE=..\compile.txt
+SOURCE=compile.txt
 # End Source File
 # Begin Source File
 
-SOURCE=..\license.txt
+SOURCE=license.txt
 # End Source File
 # Begin Source File
 
-SOURCE=..\readme.txt
+SOURCE=readme.txt
 # End Source File
 # Begin Source File
 
-SOURCE=..\todo.txt
+SOURCE=todo.txt
 # End Source File
 # End Group
 # Begin Group "vasp"
@@ -177,67 +177,67 @@ SOURCE=..\todo.txt
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\arg.cpp
+SOURCE=source\arg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\arg.h
+SOURCE=source\arg.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\buflib.cpp
+SOURCE=source\buflib.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\buflib.h
+SOURCE=source\buflib.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\classes.cpp
+SOURCE=source\classes.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\classes.h
+SOURCE=source\classes.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\env.cpp
+SOURCE=source\env.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\env.h
+SOURCE=source\env.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\util.cpp
+SOURCE=source\util.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\util.h
+SOURCE=source\util.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp.cpp
+SOURCE=source\vasp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp.h
+SOURCE=source\vasp.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\vbuffer.cpp
+SOURCE=source\vbuffer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vbuffer.h
+SOURCE=source\vbuffer.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\vecblk.cpp
+SOURCE=source\vecblk.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vecblk.h
+SOURCE=source\vecblk.h
 # End Source File
 # End Group
 # Begin Group "ops"
@@ -248,160 +248,160 @@ SOURCE=.\vecblk.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ops_arith.cpp
+SOURCE=source\ops_arith.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_arith.h
+SOURCE=source\ops_arith.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_assign.cpp
+SOURCE=source\ops_assign.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_assign.h
+SOURCE=source\ops_assign.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_carith.cpp
+SOURCE=source\ops_carith.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_carith.h
+SOURCE=source\ops_carith.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_cmp.cpp
+SOURCE=source\ops_cmp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_cmp.h
+SOURCE=source\ops_cmp.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_cplx.cpp
+SOURCE=source\ops_cplx.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_cplx.h
+SOURCE=source\ops_cplx.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_dft.cpp
+SOURCE=source\ops_dft.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_dft.h
+SOURCE=source\ops_dft.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_feature.cpp
+SOURCE=source\ops_feature.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_feature.h
+SOURCE=source\ops_feature.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_flt.cpp
+SOURCE=source\ops_flt.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_flt.h
+SOURCE=source\ops_flt.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_gate.cpp
+SOURCE=source\ops_gate.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_gen.cpp
+SOURCE=source\ops_gen.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_gen.h
+SOURCE=source\ops_gen.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_qminmax.cpp
+SOURCE=source\ops_qminmax.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_rearr.cpp
+SOURCE=source\ops_rearr.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_rearr.h
+SOURCE=source\ops_rearr.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_resmp.cpp
+SOURCE=source\ops_resmp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_resmp.h
+SOURCE=source\ops_resmp.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_search.cpp
+SOURCE=source\ops_search.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_search.h
+SOURCE=source\ops_search.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_trnsc.cpp
+SOURCE=source\ops_trnsc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_trnsc.h
+SOURCE=source\ops_trnsc.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_wnd.cpp
+SOURCE=source\ops_wnd.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops_wnd.h
+SOURCE=source\ops_wnd.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=.\opbase.cpp
+SOURCE=source\opbase.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\opbase.h
+SOURCE=source\opbase.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\opdefs.h
+SOURCE=source\opdefs.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\oploop.h
+SOURCE=source\oploop.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\opparam.cpp
+SOURCE=source\opparam.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\opparam.h
+SOURCE=source\opparam.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\oppermute.h
+SOURCE=source\oppermute.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ops.h
+SOURCE=source\ops.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\opvecs.cpp
+SOURCE=source\opvecs.cpp
 # End Source File
 # End Group
 # Begin Group "dft"
@@ -409,15 +409,15 @@ SOURCE=.\opvecs.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\mixfft.cpp
+SOURCE=source\mixfft.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\rdx2fft.cpp
+SOURCE=source\rdx2fft.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\rvfft.cpp
+SOURCE=source\rvfft.cpp
 # End Source File
 # End Group
 # Begin Group "objs"
@@ -425,64 +425,64 @@ SOURCE=.\rvfft.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\obj_chns.cpp
+SOURCE=source\obj_chns.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_frames.cpp
+SOURCE=source\obj_frames.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_imm.cpp
+SOURCE=source\obj_imm.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_offs.cpp
+SOURCE=source\obj_offs.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_part.cpp
+SOURCE=source\obj_part.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_peaks.cpp
+SOURCE=source\obj_peaks.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_q.cpp
+SOURCE=source\obj_q.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_radio.cpp
+SOURCE=source\obj_radio.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_size.cpp
+SOURCE=source\obj_size.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_split.cpp
+SOURCE=source\obj_split.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_sync.cpp
+SOURCE=source\obj_sync.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_vasp.cpp
+SOURCE=source\obj_vasp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\obj_vecs.cpp
+SOURCE=source\obj_vecs.cpp
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=.\main.cpp
+SOURCE=source\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.h
+SOURCE=source\main.h
 # End Source File
 # End Target
 # End Project
