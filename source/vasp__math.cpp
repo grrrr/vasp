@@ -153,6 +153,7 @@ Vasp *VaspOp::m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
+	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qmin:
 	public vasp_unop
@@ -195,6 +196,7 @@ FLEXT_LIB("vasp.min?",vasp_qmin)
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
+	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qamin:
 	public vasp_qmin
@@ -227,6 +229,7 @@ FLEXT_LIB("vasp.amin?",vasp_qamin)
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
+	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qmax:
 	public vasp_qmin
@@ -259,6 +262,7 @@ FLEXT_LIB("vasp.max?",vasp_qmax)
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
+	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qamax:
 	public vasp_qmax
@@ -290,6 +294,7 @@ FLEXT_LIB("vasp.amax?",vasp_qamax)
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
+	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qrmin:
 	public vasp_unop
@@ -333,6 +338,7 @@ FLEXT_LIB("vasp.rmin?",vasp_qrmin)
 
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
+	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qrmax:
 	public vasp_qrmin
