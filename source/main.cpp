@@ -14,6 +14,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 V lib_setup()
 {
 	post("VASP modular %s - vector assembling signal processor, (C)2002 Thomas Grill",VASP_VERSION);
+#ifdef _DEBUG
+	post("DEBUG MODE");
+#endif
 	post("");
 
 	// call the objects' setup routines

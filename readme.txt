@@ -42,7 +42,7 @@ Version history:
 
 0.0.4:
 - changed vasp.min/max functions so that a vasp length 0 results in 0
-- removed vasp.inv, vasp.cinv.... already replaced by reverse devision
+- removed vasp.inv, vasp.cinv.... already replaced by [vasp.!/ 1]
 - fixed outlet bug in vasp.?
 
 0.0.3:
