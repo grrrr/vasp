@@ -141,8 +141,8 @@ namespace VecOp {
         static V cop(T &rv,T &iv,T ra,T ia,OpParam &p) 
         { 
 	        register const I powi = p.ibin.arg;
-            register T rt,it; f_sqr<T>::cun(rt,it,ra,ia);
-            for(I i = 2; i < powi; ++i) f_mul<T>::cbin(rt,it,rt,it,ra,ia);
+            register T rt,it; VecOp::f_sqr<T>::cun(rt,it,ra,ia);
+            for(I i = 2; i < powi; ++i) VecOp::f_mul<T>::cbin(rt,it,rt,it,ra,ia);
 	        rv = rt,iv = it;
         } 
     };
@@ -445,7 +445,12 @@ namespace VecOp {
 	        }
         } 
     };
+
 }
+
+
+#define DEFOP(T,FUN,OP,KIND) \
+namespace VecOp { inline BL FUN(OpParam &p) { return D__##KIND<T,f_##OP<T> >(p); } }
 
 
 #define DEFVEC_R(T,OP) \
@@ -508,5 +513,7 @@ public:
 
 	DEFVEC_R(T,fix)
 };
+
+
 
 #endif
