@@ -142,6 +142,10 @@ SOURCE=.\vasp__rng.cpp
 
 SOURCE=.\vasp__simple.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\vasp__util.cpp
+# End Source File
 # End Group
 # Begin Source File
 

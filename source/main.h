@@ -23,6 +23,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <typeinfo.h>
 
 #define I int
+#define FI t_flint
 #define L long
 #define F float
 #define D double
@@ -178,11 +179,23 @@ inline V swap(F &a,F &b) { F c = a; a = b; b = c; }
 class Vasp 
 {
 public:
-	struct Ref {
-		t_symbol *Symbol() const { return sym; }
-		I Channel() const { return chn; }
-		I Offset() const { return offs; }
+	class Ref {
+	public:
+		Ref(): sym(NULL) {}
+		Ref(t_symbol *s,I c,I o): sym(s),chn(c),offs(o) {}
 
+		V Clear() { sym = NULL; }
+		BL Ok() const { return sym != NULL; }
+
+		t_symbol *Symbol() const { return sym; }
+		V Symbol(t_symbol *s) { sym = s; }
+		I Channel() const { return chn; }
+		V Channel(I c) { chn = c; }
+		I Offset() const { return offs; }
+		V Offset(I o) { offs = o; }
+		V OffsetD(I o) { offs += o; }
+
+	protected:
 		t_symbol *sym;
 		I chn;
 		I offs; // counted in frames
@@ -191,12 +204,18 @@ public:
 	Vasp();
 	Vasp(I argc,t_atom *argv);
 	Vasp(const Vasp &v);
+	Vasp(I frames,const Ref &r);
 	~Vasp();
 
 	const C *thisName() const { return typeid(*this).name(); }
 
 	Vasp &operator =(const Vasp &v);
 	Vasp &operator ()(I argc,t_atom *argv /*,BL withvasp = false*/);
+
+	// add another vector
+	Vasp &operator +=(const Ref &r);
+	// add vectors of another vasp
+	Vasp &operator +=(const Vasp &v);
 
 	// set used channels to 0
 	Vasp &Clear() { frames = 0; chns = 0; return *this; }
@@ -206,9 +225,18 @@ public:
 
 	// length of the vasp (in frames)
 	I Frames() const { return frames; }
+	// set frame count
+	V Frames(I fr);
+	// set frame count differentially
+	V FramesD(I frd) { Frames(Frames()+frd); }
+
+	// set offset(s)
+	V Offset(I fr);
+	// set offset(s) differentially
+	V OffsetD(I fr);
 
 	BL Ok() const { return ref && Vectors() > 0; }
-	BL IsComplex() const { return ref && Vectors() >= 2 && ref[1].sym != NULL; }
+	BL IsComplex() const { return ref && Vectors() >= 2 && ref[1].Symbol() != NULL; }
 
 	// get any vector - test if in range 0..Vectors()-1!
 	const Ref &Vector(I ix) const { return ref[ix]; }
@@ -352,8 +380,10 @@ public:
 protected:
 	I frames; // length counted in frames
 	I chns; // used channels
-	I refs; // allocated channels
+	I refs; // allocated channels (>= chns)
 	Ref *ref;
+
+	V Resize(I rcnt);
 
 	static I min(I a,I b) { return a < b?a:b; }
 	static I max(I a,I b) { return a > b?a:b; }
@@ -399,24 +429,12 @@ protected:
 	vasp_base();
 	virtual ~vasp_base();
 
-	virtual V m_bang();						// output current Vasp
-
-	virtual V m_vasp(I argc,t_atom *argv); // trigger
-	virtual I m_set(I argc,t_atom *argv);  // non trigger
-
 	virtual V m_radio(I argc,t_atom *argv);  // commands for all
 
 	virtual V m_argchk(BL chk);  // precheck argument on arrival
 	virtual V m_loglvl(I lvl);  // noise level of log messages
-	virtual V m_update(I argc = 0,t_atom *argv = NULL);  // graphics update
 	virtual V m_unit(xs_unit u);  // unit command
 
-	// destination vasp
-	Vasp ref;
-
-	virtual Vasp *x_work() = 0;
-	
-	
 	BL refresh;  // immediate graphics refresh?
 	BL argchk;   // pre-operation argument feasibility check
 	xs_unit unit;  // time units
@@ -429,20 +447,58 @@ protected:
 	static const t_symbol *sym_vector;
 	static const t_symbol *sym_radio;
 
+	BL ToOutVasp(I outlet,Vasp &v);
+
 private:
 	static V setup(t_class *);
 
-	FLEXT_CALLBACK(m_bang)
-	FLEXT_CALLBACK_G(m_vasp)
-	FLEXT_CALLBACK_G(m_set)
-
 	FLEXT_CALLBACK_G(m_radio)
 
-	FLEXT_CALLBACK_G(m_update)
 	FLEXT_CALLBACK_B(m_argchk)
 	FLEXT_CALLBACK_I(m_loglvl)
 	FLEXT_CALLBACK_1(m_unit,xs_unit)
 };
+
+
+class vasp_op:
+	public vasp_base
+{
+	FLEXT_HEADER(vasp_op,vasp_base)
+
+protected:
+	vasp_op();
+
+	virtual V m_bang() = 0;						// do! and output current Vasp
+
+	virtual V m_vasp(I argc,t_atom *argv); // trigger
+	virtual I m_set(I argc,t_atom *argv);  // non trigger
+
+	virtual V m_update(I argc = 0,t_atom *argv = NULL);  // graphics update
+
+	// destination vasp
+	Vasp ref;
+
+private:
+	FLEXT_CALLBACK(m_bang)
+	FLEXT_CALLBACK_G(m_vasp)
+	FLEXT_CALLBACK_G(m_set)
+	FLEXT_CALLBACK_G(m_update)
+};
+
+
+
+class vasp_tx:
+	public vasp_op
+{
+	FLEXT_HEADER(vasp_tx,vasp_op)
+
+protected:
+	virtual V m_bang();						// do! and output current Vasp
+
+	virtual Vasp *x_work() = 0;
+};
+
+
 
 
 #define VASP_SETUP(op) FLEXT_SETUP(vasp_##op);  
@@ -452,9 +508,9 @@ private:
 // base class for unary operations
 
 class vasp_unop:
-	public vasp_base
+	public vasp_tx
 {
-	FLEXT_HEADER(vasp_unop,vasp_base)
+	FLEXT_HEADER(vasp_unop,vasp_tx)
 
 protected:
 	vasp_unop();
@@ -467,9 +523,9 @@ protected:
 // base class for binary operations
 
 class vasp_binop:
-	public vasp_base
+	public vasp_tx
 {
-	FLEXT_HEADER(vasp_binop,vasp_base)
+	FLEXT_HEADER(vasp_binop,vasp_tx)
 
 protected:
 	vasp_binop(I argc,t_atom *argv);
@@ -498,9 +554,9 @@ private:
 // base class for non-parsed (list) arguments
 
 class vasp_anyop:
-	public vasp_base
+	public vasp_tx
 {
-	FLEXT_HEADER(vasp_anyop,vasp_base)
+	FLEXT_HEADER(vasp_anyop,vasp_tx)
 
 protected:
 	vasp_anyop(I argc,t_atom *argv);

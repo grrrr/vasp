@@ -29,13 +29,7 @@ V vasp_base::setup(t_class *c)
 
 vasp_base::vasp_base()
 {
-	FLEXT_ADDBANG(0,m_bang);
-	FLEXT_ADDMETHOD_(0,"vasp",m_vasp);
-	FLEXT_ADDMETHOD_(0,"set",m_set);
-
 	FLEXT_ADDMETHOD_(0,"radio",m_radio);
-
-	FLEXT_ADDMETHOD_(0,"update",m_update);
 	FLEXT_ADDMETHOD_(0,"argchk",m_argchk);
 	FLEXT_ADDMETHOD_(0,"loglvl",m_loglvl);
 	FLEXT_ADDMETHOD_E(0,"unit",m_unit);
@@ -45,7 +39,53 @@ vasp_base::~vasp_base()
 {
 }
 
-I vasp_base::m_set(I argc,t_atom *argv)
+
+V vasp_base::m_radio(I argc,t_atom *argv)
+{
+	if(argc > 0 && IsSymbol(argv[0])) {
+		// send command to self!
+		m_methodmain(0,GetSymbol(argv[0]),argc-1,argv+1);
+
+		// send command to the next objects in line
+		ToOutAnything(0,sym_radio,argc,argv);
+	}
+	else 
+		post("%s - radio message invalid",thisName());
+}
+
+
+V vasp_base::m_unit(xs_unit u) { unit = u; }
+
+V vasp_base::m_argchk(BL chk) {	argchk = chk; }
+
+V vasp_base::m_loglvl(I lvl) { loglvl = lvl; }
+
+
+BL vasp_base::ToOutVasp(I oix,Vasp &v) 
+{
+	AtomList *lst = v.MakeList(false);
+	if(lst) {
+		ToOutAnything(oix,sym_vasp,lst->Count(),lst->Atoms());
+		delete lst;
+		return true;
+	}
+	else return false;
+}
+
+///////////////////////////////////////////////////////////////////////////
+// vasp_op class
+///////////////////////////////////////////////////////////////////////////
+
+vasp_op::vasp_op()
+{
+	FLEXT_ADDBANG(0,m_bang);
+	FLEXT_ADDMETHOD_(0,"vasp",m_vasp);
+	FLEXT_ADDMETHOD_(0,"set",m_set);
+
+	FLEXT_ADDMETHOD_(0,"update",m_update);
+}
+
+I vasp_op::m_set(I argc,t_atom *argv)
 {
 	Vasp arg(argc,argv);
 
@@ -58,7 +98,31 @@ I vasp_base::m_set(I argc,t_atom *argv)
 	return 0; 
 }
 
-V vasp_base::m_bang()
+V vasp_op::m_vasp(I argc,t_atom *argv)
+{
+	m_set(argc,argv);
+	m_bang();
+}
+
+V vasp_op::m_update(I argc,t_atom *argv) 
+{
+	if(argc == 0) 
+		ref.Refresh();
+	else {
+		if(IsFlint(argv[0]))
+			refresh = GetAFlint(argv[0]) != 0;
+		else 
+			post("%s(update) - argument should be omitted or integer",thisName());
+	}
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+// vasp_tx class
+///////////////////////////////////////////////////////////////////////////
+
+V vasp_tx::m_bang()
 {
 	if(ref.Ok()) {
 		Vasp *ret = x_work();
@@ -81,44 +145,4 @@ V vasp_base::m_bang()
 		post("%s - no valid vasp to work with",thisName());
 	}
 }
-
-V vasp_base::m_vasp(I argc,t_atom *argv)
-{
-	m_set(argc,argv);
-	m_bang();
-}
-
-
-V vasp_base::m_radio(I argc,t_atom *argv)
-{
-	if(argc > 0 && IsSymbol(argv[0])) {
-		// send command to self!
-		m_methodmain(0,GetSymbol(argv[0]),argc-1,argv+1);
-
-		// send command to the next objects in line
-		ToOutAnything(0,sym_radio,argc,argv);
-	}
-	else 
-		post("%s - radio message invalid",thisName());
-}
-
-
-V vasp_base::m_unit(xs_unit u) { unit = u; }
-
-V vasp_base::m_update(I argc,t_atom *argv) 
-{
-	if(argc == 0) 
-		ref.Refresh();
-	else {
-		if(IsFlint(argv[0]))
-			refresh = GetAFlint(argv[0]) != 0;
-		else 
-			post("%s(update) - argument should be omitted or integer",thisName());
-	}
-}
-
-V vasp_base::m_argchk(BL chk) {	argchk = chk; }
-
-V vasp_base::m_loglvl(I lvl) { loglvl = lvl; }
-
 

@@ -75,9 +75,31 @@ Vasp::Vasp(const Vasp &v):
 	operator =(v); 
 }
 
+	Vasp::Vasp(I fr,const Ref &r):
+	refs(0),chns(0),ref(NULL),
+	frames(fr) 
+{
+	operator +=(r);
+}
+
+
 Vasp::~Vasp()
 {
 	if(ref) delete[] ref;
+}
+
+
+V Vasp::Resize(I rcnt) {
+	if(!ref) {
+		ref = new Ref[refs = rcnt];
+		chns = 0;
+	}
+	else if(rcnt > refs) {
+		Ref *rnew = new Ref[refs = rcnt];
+		for(I ix = 0; ix < chns; ++ix) rnew[ix] = ref[ix];
+		delete[] ref;
+		ref = rnew; 
+	}
 }
 
 
@@ -103,6 +125,26 @@ Vasp &Vasp::operator =(const Vasp &v)
 }
 
 
+Vasp &Vasp::operator +=(const Ref &r)
+{
+	Resize(chns+1);
+	ref[chns++] = r;
+	return *this;
+}
+
+
+Vasp &Vasp::operator +=(const Vasp &v)
+{
+	if(v.Ok()) {
+		if(Frames() != v.Frames())
+			post("%s - Frame count of joined vasps is different - taking the left one's");
+
+		Resize(Vectors()+v.Vectors());
+		for(I i = 0; i < v.Vectors(); ++i) *this += v.Vector(i);
+	}
+	return *this;
+}
+
 // parse argument list
 Vasp &Vasp::operator ()(I argc,t_atom *argv)
 {
@@ -119,8 +161,8 @@ Vasp &Vasp::operator ()(I argc,t_atom *argv)
 	t_symbol *v = ix < argc?flext_base::GetASymbol(argv[ix]):NULL;
 	if(v && v == vasp_base::sym_vasp) ix++; // if it is "vasp" ignore it
 
-	if(argc > ix && (flext_base::IsFlint(argv[ix]) || flext_base::IsFloat(argv[ix]))) {
-		frames = flext_base::GetAFlint(argv[ix]);
+	if(argc > ix && flext_base::CanbeInt(argv[ix])) {
+		frames = flext_base::GetAInt(argv[ix]);
 		lenset = true;
 		ix++;
 	}
@@ -139,21 +181,21 @@ Vasp &Vasp::operator ()(I argc,t_atom *argv)
 
 		// is a symbol!
 		Ref &r = ref[chns];
-		r.sym = bsym;
+		r.Symbol(bsym);
 
 		if(argc > ix && (flext_base::IsFlint(argv[ix]) || flext_base::IsFloat(argv[ix]))) {
-			r.chn = flext_base::GetAFlint(argv[ix]);
+			r.Channel(flext_base::GetAFlint(argv[ix]));
 			ix++;
 		}
 		else
-			r.chn = 0;
+			r.Channel(0);
 
 		if(argc > ix && (flext_base::IsFlint(argv[ix]) || flext_base::IsFloat(argv[ix]))) {
-			r.offs = flext_base::GetAFlint(argv[ix]);
+			r.Offset(flext_base::GetAFlint(argv[ix]));
 			ix++;
 		}
 		else
-			r.offs = 0;
+			r.Offset(0);
 
 		chns++;
 	}
@@ -193,9 +235,9 @@ AtomList *Vasp::MakeList(BL withvasp)
 
 	for(I ix = 0; ix < Vectors(); ++ix) {
 		Ref &r = Vector(ix);
-		flext_base::SetSymbol((*ret)[voffs+1+ix*3],r.sym);  // buf
-		flext_base::SetFlint((*ret)[voffs+2+ix*3],r.chn);  // chn
-		flext_base::SetFlint((*ret)[voffs+3+ix*3],r.offs);  // offs
+		flext_base::SetSymbol((*ret)[voffs+1+ix*3],r.Symbol());  // buf
+		flext_base::SetFlint((*ret)[voffs+2+ix*3],r.Channel());  // chn
+		flext_base::SetFlint((*ret)[voffs+3+ix*3],r.Offset());  // offs
 	}
 
 	return ret;

@@ -20,11 +20,12 @@ V lib_setup()
 
 	VASP_SETUP(v);
 	VASP_SETUP(split);
+	VASP_SETUP(sync);
 	VASP_SETUP(join);
 	VASP_SETUP(offs);
-//	VASP_SETUP(offs+);
-	VASP_SETUP(len);
-//	VASP_SETUP(len+);
+	VASP_SETUP(doffs);
+	VASP_SETUP(frames);
+	VASP_SETUP(dframes);
 	VASP_SETUP(update);
 
 	VASP_BINARY_SETUP(copy);
