@@ -14,6 +14,8 @@ Version history:
 0.0.7:
 - CHANGE: vasp.m is now called vasp.multi by default
 - CHANGE: vasp.sync and vasp.multi now have a default argument = 2
+- FIX: vasp.phasor - period length now 1 instead of 2 PI
+- FIX: bug in multi mode (more src, one arg vector)
 
 0.0.6:
 - reorganized file structure
