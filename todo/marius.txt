@@ -20,3 +20,9 @@ Thomas' Änderungen:
 - alle unnötigen objekte aus der hilfe rausnehemen.
 
 - alle bevels aus den hilfeobjekten entfernen.
+
+- die neu eingesetzten objekte in der VASP in die richtigen ordner tun
+
+- VASP load_object fehler beheben.
+
+- schauen ob alle abkürzungen angeführt sind...
