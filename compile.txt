@@ -1,4 +1,5 @@
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor
+Object library for Max/MSP and PD
 
 Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
 
