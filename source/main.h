@@ -11,14 +11,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.8pre7"
-
-
 #include <flext.h>
 
 #if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
 #error You need at least flext version 0.4.0
 #endif
+
 
 #include <typeinfo>
 #include <stdlib.h>

@@ -186,7 +186,7 @@ V vasp_tx::m_bang()
 //	ChangePriority(prior);
 #endif
 
-//	if(ref.Ok()) 
+	if(ref.Ok()) 
 	{
 		Vasp *ret = x_work();
 		if(ret) {
@@ -206,11 +206,9 @@ V vasp_tx::m_bang()
 #endif
 		}
 	}
-/*
 	else {
 		post("%s - no valid vasp to work with",thisName());
 	}
-*/
 
 #ifdef FLEXT_THREADS
 	thrid = 0;
