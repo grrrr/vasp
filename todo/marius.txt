@@ -1,5 +1,24 @@
+Thomas' Änderungen:
+- vasp.check: war intern noch vasp.chk
+- vasp.cnorm: Erklärung geändert
+- vasp.cosc: Numberbox für Periodenlänge
+- vasp.plus gelöscht
+- vasp.dif: probier einmal 3.57 als Periode .... wir brauchen größere Bufferlänge!!
+- vasp.equ: die Stufenfunktion sollte besser mit env gemacht werden 
+	(aber vielleicht erst, wenn die env-Transformationsfunktionen existieren)
+- vasp.fhp, vasp.flp: q-Faktor triggert nun pack
+- vasp.frames: der Ausdruck "framesize" ist eigentlich irreführend 
+	... die kann bei verschiedenen Buffern in MaxMSP tatsächlich verschieden sein
+	framesize = sample-Länge*Bufferkanäle !!
+	besser ist frame count
+	Ich frage mich auch, ob wir die Nummernboxen bei Periodenlängen nicht durch ein 
+	paar Standard-float-messages ersetzen sollten (die meisten werden wohl zu kurbeln versuchen....)
+- vasp.gate ... Erklärung geändert
+- vasp.join / vasp.split.... man sollte vielleicht sagen, dass es sich um EInzelvektoren der vasps handelt=======
 - in alle objekte die vasp_main reinsetzen.
 - filelist ändern, dahingehend, dass man auch samples laden kann.
 - restliche files durchchecken. das ist erst eine erste überprüfung...
 - wavedisplay-select überprüfen.
 - die default-längen und resize einstellungen noch einmal überprüfen
+
+

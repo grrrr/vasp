@@ -1,4 +1,4 @@
-#N canvas 108 38 827 589 10;
+#N canvas 108 38 829 591 10;
 #X text 403 160 gather as many vasps as you want and put them out (bang)
 ;
 #X text 71 74 gather several vasps into one;
@@ -30,7 +30,7 @@ of all gathered vasps for the new one!;
 #X msg 167 450 vasp bufgather4;
 #X msg 215 178 vasp bufgather2;
 #X msg 78 178 bang;
-#X msg 78 314;
+#X msg 78 314 vasp 0;
 #X obj 78 291 prepend set;
 #X obj 78 267 vasp.gather;
 #X msg 111 178 vasp bufgather1;

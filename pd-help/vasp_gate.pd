@@ -1,4 +1,4 @@
-#N canvas 32 16 804 580 10;
+#N canvas 32 16 806 582 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.gate 0 10 1 14 -262144 -1
 0;
 #X obj 71 131 filelist \$0;
@@ -45,8 +45,6 @@
 #X obj 60 292 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
 #X text 69 52 gate buffer content with a value;
-#X text 71 66 optional argument/right inlet: value (usually from 0-1
-to gate the soundfile;
 #X obj 419 261 wavedisplay-simple bufgate2 \$0;
 #X obj 419 112 wavedisplay-simple bufgate1 \$0;
 #X msg 60 232 vasp bufgate2;
@@ -62,14 +60,16 @@ to gate the soundfile;
 -1;
 #X text 358 455 play;
 #X obj 337 475 tabplay~ bufgate2;
+#X text 71 66 optional argument/right inlet: value (usually from 0-1
+to gate the soundfile sample for sample (not like a compressor!);
 #X connect 5 0 9 0;
 #X connect 6 0 8 0;
-#X connect 7 0 18 1;
-#X connect 14 0 15 0;
-#X connect 15 0 5 0;
-#X connect 16 0 3 0;
-#X connect 17 0 18 0;
-#X connect 18 0 6 0;
-#X connect 23 0 25 0;
-#X connect 25 0 22 0;
-#X connect 25 0 22 1;
+#X connect 7 0 17 1;
+#X connect 13 0 14 0;
+#X connect 14 0 5 0;
+#X connect 15 0 3 0;
+#X connect 16 0 17 0;
+#X connect 17 0 6 0;
+#X connect 22 0 24 0;
+#X connect 24 0 21 0;
+#X connect 24 0 21 1;
