@@ -20,8 +20,10 @@ Package files:
 - readme.txt: this one
 - gpl.txt,license.txt,mixfft.txt: license stuff
 - changes.txt,todo.txt: additional info
-- pd-help/*: VASP help
-- pd/*: VASP abstractions
+- pd-help/*: VASP help for PD
+- pd/*: VASP abstractions for PD
+- max-help/*: VASP help for Max/MSP (not present)
+- maxmsp/*: VASP abstractions for Max/MSP
 - config-*,build-*,makefile.*,*.cw: Build
 - source/*: VASP sources
 
@@ -55,9 +57,11 @@ IMPORTANT INFORMATION for all MaxMSP users:
 
 It is advisable to put the vasp object library file into the "max-startup" folder. 
 Hence it will be loaded at Max startup.
-
 If you want alternatively to load the vasp library on demand, 
 create a "vasp" object somewhere. The library is then loaded.
+
+If existent, the "max-help" folder should be put into the "max-help" folder of Max/MSP 
+and be renamed to "vasp".
 
 ----------------------------------------------------------------------------
 
@@ -80,6 +84,6 @@ o GCC: edit "config-pd-linux.txt" and run "sh build-pd-linux.sh"
 o GCC: edit "config-pd-darwin.txt" and run "sh build-pd-darwin.sh"
 
 - Max/MSP @ MacOS9:
-o Metrowerks CodeWarrior V6: edit vasp.cw project and build
+o Metrowerks CodeWarrior V6: edit vasp.cw project and build it
 
 
