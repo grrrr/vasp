@@ -365,9 +365,9 @@ static V d_mul(F *dst,const F *src,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] *=
 static V d_mul(F *rdst,F *idst,F re,F im,I cnt) 
 { 
 	for(I i = 0; i < cnt; ++i) {
-		register F re = rdst[i]*re-idst[i]*im;
+		register F r = rdst[i]*re-idst[i]*im;
 		idst[i] = idst[i]*re+rdst[i]*im;
-		rdst[i] = re;
+		rdst[i] = r;
 	}
 }
 
@@ -375,9 +375,9 @@ static V d_mul(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 { 
 	if(isrc) 
 		for(I i = 0; i < cnt; ++i) {
-			register F re = rdst[i]*rsrc[i]-idst[i]*isrc[i];
+			register F r = rdst[i]*rsrc[i]-idst[i]*isrc[i];
 			idst[i] = idst[i]*rsrc[i]+rdst[i]*isrc[i];
-			rdst[i] = re;
+			rdst[i] = r;
 		}
 	else 
 		for(I i = 0; i < cnt; ++i) 
