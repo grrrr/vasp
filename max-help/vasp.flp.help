@@ -36,7 +36,7 @@ max v2;
 #P number 213 261 35 9 1 0 1 3 0 0 0 221 221 221 222 222 222 0 0 0;
 #P flonum 155 261 52 9 0 0 0 3 0 0 0 221 221 221 222 222 222 0 0 0;
 #P newex 155 280 68 196617 pack 0. 0;
-#P comment 46 90 266 196617 second argument: q-factor from 1 - ƒ (integer) default 1;
+#P comment 46 90 266 196617 second argument: q-factor from 1 - ° (integer) default 1;
 #P newex 54 329 61 196617 vasp.update;
 #P message 54 261 54 196617 vasp buflp;
 #P newex 54 307 65 196617 vasp.flp 220;

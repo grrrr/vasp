@@ -142,7 +142,7 @@ max v2;
 #P newex 435 394 75 196617 play~ bufrect3;
 #P newex 61 395 61 196617 vasp.freeze;
 #P comment 118 290 190 196617 polar to cartesian coordinate conversion;
-#P comment 178 235 81 196617 scale to 0 - 2¼;
+#P comment 178 235 81 196617 scale to 0 - 2¹;
 #P comment 149 211 68 196617 random phase;
 #P comment 128 180 116 196617 split amplitude and phase;
 #P comment 123 153 193 196617 cartesian to polar coordinate conversion;
