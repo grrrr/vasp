@@ -1,0 +1,15 @@
+#N canvas 420 247 452 302 12;
+#X obj 28 53 inlet;
+#X obj 28 251 outlet;
+#X obj 28 85 vasp;
+#X obj 28 124 vasp.spit 2;
+#X obj 111 163 vasp.* -1;
+#X obj 28 214 vasp.gather;
+#X text 28 13 complex conjugate;
+#X connect 0 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 3 1 5 1;
+#X connect 3 2 5 0;
+#X connect 4 0 5 1;
+#X connect 5 0 1 0;

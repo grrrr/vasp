@@ -1,0 +1,8 @@
+#N canvas 363 240 312 169 12;
+#X obj 29 73 inlet;
+#X obj 28 128 outlet;
+#X obj 29 101 vasp @defer 1;
+#X text 26 10 defer a vasp message;
+#X text 26 28 (no immediate send);
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;

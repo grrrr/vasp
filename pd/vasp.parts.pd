@@ -1,0 +1,14 @@
+#N canvas 0 0 456 306 12;
+#X obj 40 220 outlet;
+#X obj 41 169 vasp.part \$1;
+#X obj 40 67 inlet;
+#X text 42 15 loop over vasp;
+#X obj 135 68 inlet;
+#X text 45 47 vasp;
+#X text 134 50 length;
+#X obj 71 125 vasp.defer;
+#X connect 1 0 0 0;
+#X connect 1 1 7 0;
+#X connect 2 0 1 0;
+#X connect 4 0 1 1;
+#X connect 7 0 1 0;
