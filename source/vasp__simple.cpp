@@ -24,11 +24,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #else
 
 // template optimization on
-#define TEMPL1(V1) template <I v1>
+#define TEMPL1(V1) template <I V1>
 #define TINIT1(L1,V1) const I L1 = V1?V1:_##L1
 #define TF1(FUN) FUN<0>
 
-#define TEMPL2(V1,V2) template <I v1,I v2>
+#define TEMPL2(V1,V2) template <I V1,I V2>
 #define TINIT2(L1,V1,L2,V2) const I L1 = V1?V1:_##L1,L2 = V2?V2:_##L2
 #define TF2(FUN) FUN<0,0>
 
@@ -335,4 +335,4 @@ static BL d_minmax(I cnt,F *re,I _rstr,F *im,I _istr,F,F)
 	return true; 
 }
 
-Vasp *Vasp::m_minmax() { return fc_arg("minmax",CX(),d_minmax); }
+Vasp *Vasp::m_minmax() { return fc_arg("minmax",CX(),TF2(d_minmax)); }

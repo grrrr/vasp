@@ -154,7 +154,7 @@ public:
 		m_clear();
 	}
 
-	vasp_sync::~vasp_sync()	{ if(flags) delete[] flags; }
+	~vasp_sync()	{ if(flags) delete[] flags; }
 
 	V chkbang(I n) {
 		BL f = flags[n]; 
@@ -214,8 +214,10 @@ public:
 
 	virtual V m_bang() 
 	{ 
-		for(I i = ref.Vectors()-1; i >= 0; --i) 
-			ToOutVasp(i,Vasp(ref.Frames(),ref.Vector(i)));
+		for(I i = ref.Vectors()-1; i >= 0; --i) {
+			Vasp v(ref.Frames(),ref.Vector(i));
+			ToOutVasp(i,v);
+		}
 	}
 
 	virtual V m_help() { post("%s - Split a vasp into its vectors",thisName()); }
@@ -242,7 +244,7 @@ public:
 		FLEXT_ADDMETHOD_(0,"clear",m_clear);
 	}
 
-	vasp_join::~vasp_join()	{ if(vi) delete[] vi; }
+	~vasp_join()	{ if(vi) delete[] vi; }
 
 	virtual Vasp *x_work() { 
 		Vasp *ret = new Vasp(ref);
