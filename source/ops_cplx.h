@@ -16,12 +16,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // Complex functions
 
 namespace VecOp {
-    inline BL d_polar(OpParam &p) { return d__cun<S,f_polar<S> >(p); }
-    inline BL d_rect(OpParam &p) { return d__cun<S,f_rect<S> >(p); }
+    inline BL d_polar(OpParam &p) { return D__cun<S,f_polar<S> >(p); }
+    inline BL d_rect(OpParam &p) { return D__cun<S,f_rect<S> >(p); }
 
-    inline BL d_radd(OpParam &p) { return d__cbin<S,f_radd<S> >(p); }
+    inline BL d_radd(OpParam &p) { return D__cbin<S,f_radd<S> >(p); }
 
-    inline BL d_cnorm(OpParam &p) { return d__cun<S,f_norm<S> >(p); }
+    inline BL d_cnorm(OpParam &p) { return D__cun<S,f_norm<S> >(p); }
 
     inline BL d_cconj(OpParam &p) { return D__cun<S,f_conj<S> >(p); }
 }

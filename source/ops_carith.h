@@ -20,12 +20,12 @@ namespace VecOp {
     inline BL d_csub(OpParam &p) { return D__cbin<S,f_sub<S> >(p); }
     inline BL d_csubr(OpParam &p) { return D__cbin<S,f_subr<S> >(p); }
     inline BL d_cmul(OpParam &p) { return D__cbin<S,f_mul<S> >(p); }
-    inline BL d_cdiv(OpParam &p) { return d__cbin<S,f_div<S> >(p); }
-    inline BL d_cdivr(OpParam &p) { return d__cbin<S,f_divr<S> >(p); }
+    inline BL d_cdiv(OpParam &p) { return D__cbin<S,f_div<S> >(p); }
+    inline BL d_cdivr(OpParam &p) { return D__cbin<S,f_divr<S> >(p); }
 
     inline BL d_csqr(OpParam &p) { return D__cun<S,f_sqr<S> >(p); }
 
-    inline BL d_cpowi(OpParam &p) { return d__cop<S,f_powi<S> >(p); }
+    inline BL d_cpowi(OpParam &p) { return D__cop<S,f_powi<S> >(p); }
 
     inline BL d_cabs(OpParam &p) { return D__cun<S,f_abs<S> >(p); }
 }

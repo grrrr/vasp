@@ -16,14 +16,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // Transcendent math functions
 
 namespace VecOp {
-    inline BL d_pow(OpParam &p) { return d__rbin<S,f_pow<S> >(p); }
-    inline BL d_rpow(OpParam &p) { return d__cbin<S,f_pow<S> >(p); }
+    inline BL d_pow(OpParam &p) { return D__rbin<S,f_pow<S> >(p); }
+    inline BL d_rpow(OpParam &p) { return D__cbin<S,f_pow<S> >(p); }
 
-    inline BL d_sqrt(OpParam &p) { return d__run<S,f_sqrt<S> >(p); }
-    inline BL d_ssqrt(OpParam &p) { return d__run<S,f_ssqrt<S> >(p); }
+    inline BL d_sqrt(OpParam &p) { return D__run<S,f_sqrt<S> >(p); }
+    inline BL d_ssqrt(OpParam &p) { return D__run<S,f_ssqrt<S> >(p); }
 
-    inline BL d_exp(OpParam &p) { return d__run<S,f_exp<S> >(p); }
-    inline BL d_log(OpParam &p) { return d__run<S,f_log<S> >(p); }
+    inline BL d_exp(OpParam &p) { return D__run<S,f_exp<S> >(p); }
+    inline BL d_log(OpParam &p) { return D__run<S,f_log<S> >(p); }
 }
 
 namespace VaspOp {

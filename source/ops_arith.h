@@ -25,7 +25,7 @@ namespace VaspOp {
     inline BL d_mod(OpParam &p) { return VecOp::D__rbin<S,VecOp::f_mod<S> >(p); }
 
     inline BL d_sqr(OpParam &p) { return VecOp::D__run<S,VecOp::f_sqr<S> >(p); }
-    inline BL d_ssqr(OpParam &p) { return VecOp::d__run<S,VecOp::f_ssqr<S> >(p); }
+    inline BL d_ssqr(OpParam &p) { return VecOp::D__run<S,VecOp::f_ssqr<S> >(p); }
 
     inline BL d_sign(OpParam &p) { return VecOp::D__run<S,VecOp::f_sign<S> >(p); }
     inline BL d_abs(OpParam &p) { return VecOp::D__run<S,VecOp::f_abs<S> >(p); }

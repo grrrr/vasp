@@ -97,4 +97,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #endif
 
+#define _DQ_LOOP(UNROLL,VAR,LEN,BODY) { if(UNROLL) _DE_LOOP(VAR,LEN,BODY) else _DF_LOOP(VAR,LEN,BODY) }
+
 #endif

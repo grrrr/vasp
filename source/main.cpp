@@ -14,8 +14,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 const C *VASP_VERSION = "0.1.3pre1";
 
+#include "opfuns.h"
+
 V lib_setup()
 {
+	S a[6],b[6] = {1,2,3,4,5,6},c[6] = {4,7,1,3,2,1};
+	const I dim = 1;	
+	I dims[dim] = {6};
+    VecFun<S>::v_add(dim,dims,1,a,b,c);
+    post("%f %f %f %f %f %f",a[0],a[1],a[2],a[3],a[4],a[5]);
+
 	post("");
 	post("-----------------------------------------");
 	post("           VASP modular %s            ",VASP_VERSION);
