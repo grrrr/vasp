@@ -1,5 +1,5 @@
-#N canvas 0 0 547 581 10;
-#N canvas 49 0 330 397 objects 0;
+#N canvas 0 0 549 583 10;
+#N canvas 49 0 334 401 objects 0;
 #N canvas 306 143 429 271 vasp.displace 0;
 #X text 158 165 rotate buffer content symmetrically;
 #X obj 80 164 vasp.xrot;
@@ -16,7 +16,7 @@
 #X obj 35 22 cnv 15 15 15 empty empty vasp_displace 0 10 1 14 -262144
 -1 0;
 #X restore 72 214 pd vasp.displace;
-#N canvas 407 1 536 680 define_vasps 0;
+#N canvas 407 1 538 682 define_vasps 0;
 #X obj 74 626 vasp.part;
 #X obj 74 595 vasp.gather;
 #X obj 74 564 vasp.spit;
@@ -52,13 +52,13 @@
 #X text 161 627 output vasps with different lengths and offsets;
 #X obj 35 22 cnv 15 15 15 empty empty define_vasps 0 10 1 14 -262144
 -1 0;
-#X obj 74 158 vasp.sync 2;
-#X obj 74 221 vasp.m 2;
 #X obj 74 314 vasp.offset;
 #X obj 74 346 vasp.offset+;
 #X obj 74 377 vasp.offset?;
 #X obj 74 502 vasp.split 2;
 #X obj 74 533 vasp.join 2;
+#X obj 74 221 vasp.multi;
+#X obj 74 158 vasp.sync;
 #X restore 72 78 pd define_vasps;
 #N canvas 183 315 768 326 vasp.utilities 0;
 #X msg 76 274 vasp.xtilt;
@@ -189,7 +189,7 @@
 #X obj 35 22 cnv 15 15 15 empty empty vasp_arithmetic 0 10 1 14 -262144
 -1 0;
 #X restore 72 131 pd vasp.arithmetic;
-#N canvas 408 1 504 289 vasp.fftobjects 0;
+#N canvas 408 1 506 291 vasp.fftobjects 0;
 #X obj 281 103 vasp.r!fft;
 #X obj 281 71 vasp.rfft;
 #X obj 77 160 vasp.polar;
@@ -197,10 +197,10 @@
 #X obj 77 71 vasp.cfft;
 #X text 145 160 changes between cartesian and polar representation
 ;
-#X text 344 103 inverse real fft;
+#X text 358 103 inverse real fft;
 #X text 145 71 complex fft;
 #X text 145 103 inverse complex fft;
-#X text 344 71 real fft;
+#X text 358 71 real fft;
 #X text 145 213 changes between polar and cartesian representation
 ;
 #X obj 77 212 vasp.rect;

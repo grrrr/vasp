@@ -1,0 +1,23 @@
+#N canvas 262 131 448 404 10;
+#X text 51 63 outputs a vasp multiple times;
+#X obj 43 28 cnv 15 15 15 empty empty vasp.multi 0 10 1 14 -262144
+-1 0;
+#X obj 56 111 table bufm 88200;
+#X obj 56 190 cnv 15 74 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X obj 223 232 prepend set;
+#X obj 56 232 prepend set;
+#X msg 56 156 vasp 22050 bufm 44100 0;
+#X msg 56 257;
+#X msg 223 257;
+#X obj 56 190 vasp.multi 2;
+#X text 51 80 argument: number of outlets (default 2);
+#X obj 58 311 cnv 15 38 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X obj 58 311 vasp.m;
+#X text 109 312 abbreviation;
+#X connect 4 0 8 0;
+#X connect 5 0 7 0;
+#X connect 6 0 9 0;
+#X connect 9 0 5 0;
+#X connect 9 1 4 0;

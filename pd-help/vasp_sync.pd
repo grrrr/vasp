@@ -1,4 +1,4 @@
-#N canvas 91 83 850 566 10;
+#N canvas 91 83 852 568 10;
 #N canvas 92 108 403 405 inside 0;
 #X obj 87 206 soundfiler;
 #X obj 105 290 s \$0-sample-length;
@@ -32,7 +32,6 @@
 #X obj 75 32 cnv 15 15 15 empty empty vasp.sync 0 10 1 14 -262144 -1
 0;
 #X text 53 64 syncs two or more vasps;
-#X text 55 111 argument: number of vasps to be synced;
 #X msg 61 253 vasp bufsync1 bufsync2;
 #X obj 61 284 vasp.cfft;
 #X obj 122 335 vasp.= 0;
@@ -67,16 +66,17 @@ and then outputs them and resets its status;
 #X obj 334 416 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X text 356 413 play;
-#X connect 6 0 7 0;
-#X connect 7 0 15 0;
-#X connect 7 0 21 0;
-#X connect 8 0 21 1;
-#X connect 9 0 11 0;
-#X connect 10 0 11 1;
-#X connect 12 0 14 0;
-#X connect 15 0 8 0;
+#X text 55 111 argument: number of vasps to be synced (default 2);
+#X connect 5 0 6 0;
+#X connect 6 0 14 0;
+#X connect 6 0 20 0;
+#X connect 7 0 20 1;
+#X connect 8 0 10 0;
+#X connect 9 0 10 1;
+#X connect 11 0 13 0;
+#X connect 14 0 7 0;
+#X connect 15 0 11 0;
 #X connect 16 0 12 0;
-#X connect 17 0 13 0;
-#X connect 21 0 16 0;
-#X connect 25 0 10 0;
-#X connect 25 0 9 0;
+#X connect 20 0 15 0;
+#X connect 24 0 9 0;
+#X connect 24 0 8 0;

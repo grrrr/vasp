@@ -1,4 +1,4 @@
-#N canvas 91 83 880 564 10;
+#N canvas 91 83 882 566 10;
 #N canvas 92 108 407 409 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 84 238 s \$0-sample-length;
@@ -33,7 +33,7 @@
 0;
 #X obj 304 113 filelist \$0;
 #X text 71 53 complex fourier transformation (giant);
-#X text 67 92 cfft needs two buffers;
+#X text 70 68 cfft needs two buffers;
 #X msg 67 113 vasp bufre;
 #X obj 67 136 vasp.noise;
 #X text 151 112 generate white noise or;
