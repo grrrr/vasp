@@ -123,5 +123,17 @@ SOURCE=.\modify.cpp
 
 SOURCE=.\util.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\vasp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp_base.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp_copy.cpp
+# End Source File
 # End Target
 # End Project

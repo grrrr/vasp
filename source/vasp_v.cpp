@@ -12,6 +12,8 @@ public:
 
 	virtual I m_set(I argc,t_atom *argv); // non-triggering set
 
+	virtual V x_work() {}
+
 /*
 	virtual V m_length(F len);  // length in units
 	virtual V m_channel(FI chn);
@@ -31,27 +33,15 @@ private:
 */
 };
 
-FLEXT_GIMME("vasp.v",vasp_v)
-
-
-/*
-V vasp_v::cb_setup(t_class *c)
-{
-	FLEXT_ADDMETHOD_1(c,"offset",m_offset,F);
-	FLEXT_ADDMETHOD_1(c,"length",m_length,F);
-	FLEXT_ADDMETHOD_2(c,"part",m_part,F,F);
-}
-*/
-
+FLEXT_NEW_G("vasp",vasp_v)
 
 vasp_v::vasp_v(I argc,t_atom *argv)
-	//:buf(NULL)
 {
 	m_set(argc,argv);
 
-	add_in_anything();
-	add_out_anything();
-	setup_inout();
+	AddInAnything();
+	AddOutAnything();
+	SetupInOut();
 
 /*
 	FLEXT_ADDMETHOD_1(0,"offset",m_offset,F);
@@ -70,10 +60,11 @@ I vasp_v::m_set(I argc,t_atom *argv)
 {
 	ref(argc,argv);
 
-	if(!ref.Ok()) {
+	if(argc && !ref.Ok()) {
 		post("%s - invalid vasp detected and ignored",thisName());
 	}
 
 	return 0; //Set(v.Length(),v.Sym(),v.Channel(),v.Offset());
 }
+
 

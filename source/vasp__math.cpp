@@ -1,15 +1,15 @@
 #include "main.h"
 #include <math.h>
 
-inline F sgn(F x) { return x < 0.?-1.F:1.F; }
-
 #define PI 3.1415926535897932385
 
+inline F sgn(F x) { return x < 0.?-1.F:1.F; }
+
 // just transform real vectors
-V vasp_tx::fr_transf(const C *op,F v,V (*dofunR)(F *,F,I))
+V vasp::fr_transf(const C *op,F v,V (*dofunR)(F *,F,I))
 {
-	for(I ci = 0; ci < ref.Vectors(); ++ci) {
-		vbuffer *bref = ref.Buffer(ci);		
+	for(I ci = 0; ci < this->Vectors(); ++ci) {
+		vbuffer *bref = this->Buffer(ci);		
 		if(!bref->Data())
 			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
 		else {
@@ -23,32 +23,32 @@ V vasp_tx::fr_transf(const C *op,F v,V (*dofunR)(F *,F,I))
 }
 
 // just transform complex vector pairs
-V vasp_tx::fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F,I))
+V vasp::fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F,I))
 {
 	F vr,vi = 0;
 	if(argc > 0 && 
 		(
-			(argc == 1 && is_float(argv[0])) || 
-			(argc == 2 && is_float(argv[0]) && is_float(argv[1]))
+			(argc == 1 && flx::IsFloat(argv[0])) || 
+			(argc == 2 && flx::IsFloat(argv[0]) && flx::IsFloat(argv[1]))
 		)
 	) {
 		// complex (or real) input
 
-		vr = get_float(argv[0]);
-		vi = argc >= 2?get_float(argv[1]):0; 
+		vr = flx::GetFloat(argv[0]);
+		vi = argc >= 2?flx::GetFloat(argv[1]):0; 
 	}
 	else if(argc >= 0) {
 		post("%s(%s) - invalid argument",thisName(),op);
 		return;
 	}
 
-	if(ref.Vectors()%2 != 0) {
+	if(this->Vectors()%2 != 0) {
 		post("%s(%s) - number of dst vectors is odd - omitting last vector",thisName(),op);
 		// clear superfluous vector?
 	}
 
-	for(I ci = 0; ci < ref.Vectors()/2; ++ci) {
-		vbuffer *bre = ref.Buffer(ci*2),*bim = ref.Buffer(ci*2+1); // complex channels
+	for(I ci = 0; ci < this->Vectors()/2; ++ci) {
+		vbuffer *bre = this->Buffer(ci*2),*bim = this->Buffer(ci*2+1); // complex channels
 
 		if(!bre->Data())
 			post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,bre->Name());
@@ -77,14 +77,14 @@ V vasp_tx::fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F,I))
 
 
 // for real values or single real vector
-V vasp_tx::fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I),V (*dofunR)(F *,F,I))
+V vasp::fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I),V (*dofunR)(F *,F,I))
 {
-	if(argc == 1 && is_float(argv[0])) {
+	if(argc == 1 && flx::IsFloat(argv[0])) {
 		// real input
-		F v = get_float(argv[0]);
+		F v = flx::GetFloat(argv[0]);
 
-		for(I ci = 0; ci < ref.Vectors(); ++ci) {
-			vbuffer *bref = ref.Buffer(ci);		
+		for(I ci = 0; ci < this->Vectors(); ++ci) {
+			vbuffer *bref = this->Buffer(ci);		
 			if(!bref->Data())
 				post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
 			else {
@@ -115,8 +115,8 @@ V vasp_tx::fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I
 		else {
 			I frms = barg->Frames();
 
-			for(I ci = 0; ci < ref.Vectors(); ++ci) {
-				vbuffer *bref = ref.Buffer(ci);		
+			for(I ci = 0; ci < this->Vectors(); ++ci) {
+				vbuffer *bref = this->Buffer(ci);		
 
 				if(!bref->Data())
 					post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
@@ -144,24 +144,24 @@ V vasp_tx::fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I
 }
 
 // for complex values or complex vector pair
-V vasp_tx::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const F *,const F *,I),V (*dofunC)(F *,F *,F,F,I))
+V vasp::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const F *,const F *,I),V (*dofunC)(F *,F *,F,F,I))
 {
 	if(
-		(argc == 1 && is_float(argv[0])) || 
-		(argc == 2 && is_float(argv[0]) && is_float(argv[1]))
+		(argc == 1 && flx::IsFloat(argv[0])) || 
+		(argc == 2 && flx::IsFloat(argv[0]) && flx::IsFloat(argv[1]))
 	) {
 		// complex (or real) input
 
-		F vr = get_float(argv[0]);
-		F vi = argc >= 2?get_float(argv[1]):0; // is zero if lacking
+		F vr = flx::GetFloat(argv[0]);
+		F vi = argc >= 2?flx::GetFloat(argv[1]):0; // is zero if lacking
 
-		if(ref.Vectors()%2 != 0) {
+		if(this->Vectors()%2 != 0) {
 			post("%s(%s) - number of src vectors is odd - omitting last vector",thisName(),op);
 			// clear superfluous vector?
 		}
 
-		for(I ci = 0; ci < ref.Vectors()/2; ++ci) {
-			vbuffer *bre = ref.Buffer(ci*2),*bim = ref.Buffer(ci*2+1); // complex channels
+		for(I ci = 0; ci < this->Vectors()/2; ++ci) {
+			vbuffer *bre = this->Buffer(ci*2),*bim = this->Buffer(ci*2+1); // complex channels
 
 			if(!bre->Data())
 				post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,bre->Name());
@@ -215,13 +215,13 @@ V vasp_tx::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const 
 				frms = min(frms,biarg->Frames());
 			}
 
-			if(ref.Vectors()%2 != 0) {
+			if(this->Vectors()%2 != 0) {
 				post("%s(%s) - number of dst vectors is odd - omitting last vector",thisName(),op);
 				// clear superfluous vector?
 			}
 
-			for(I ci = 0; ci < ref.Vectors()/2; ++ci) {
-				vbuffer *brref = ref.Buffer(ci*2),*biref = ref.Buffer(ci*2+1);		
+			for(I ci = 0; ci < this->Vectors()/2; ++ci) {
+				vbuffer *brref = this->Buffer(ci*2),*biref = this->Buffer(ci*2+1);		
 
 				if(!brref->Data())
 					post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,brref->Name());
@@ -253,7 +253,7 @@ V vasp_tx::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const 
 }
 
 // for multiple vectors
-V vasp_tx::fm_assign(const C *op,I argc,t_atom *argv,V (*dofun)(F *,const F *,I))
+V vasp::fm_assign(const C *op,I argc,t_atom *argv,V (*dofun)(F *,const F *,I))
 {
 	vasp arg(argc,argv);
 	if(!arg.Ok()) {
@@ -261,12 +261,12 @@ V vasp_tx::fm_assign(const C *op,I argc,t_atom *argv,V (*dofun)(F *,const F *,I)
 		return;
 	}
 
-	if(!ref.Ok()) {
+	if(!this->Ok()) {
 		post("%s(%s) - invalid dst vasp",thisName(),op);
 		return;
 	}
 
-	I vecs = ref.Vectors();
+	I vecs = this->Vectors();
 	if(vecs != arg.Vectors()) {
 		post("%s(%s) - unequal src/dst vector count - using minimum",thisName(),op);
 
@@ -278,7 +278,7 @@ V vasp_tx::fm_assign(const C *op,I argc,t_atom *argv,V (*dofun)(F *,const F *,I)
 
 	// do
 	for(I ci = 0; ci < vecs; ++ci) {
-		vbuffer *bref = ref.Buffer(ci),*barg = arg.Buffer(ci);
+		vbuffer *bref = this->Buffer(ci),*barg = arg.Buffer(ci);
 
 		if(!bref->Data())
 			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
@@ -320,9 +320,9 @@ static V d_copy(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 		for(I i = 0; i < cnt; ++i) rdst[i] = rsrc[i],idst[i] = 0.; 
 }
 
-V vasp_tx::m_copy(I argc,t_atom *argv) { fr_assign("copy",argc,argv,d_copy,d_copy); }
-V vasp_tx::m_ccopy(I argc,t_atom *argv) { fc_assign("ccopy",argc,argv,d_copy,d_copy); }
-V vasp_tx::m_mcopy(I argc,t_atom *argv) { fm_assign("mcopy",argc,argv,d_copy); }
+V vasp::m_copy(I argc,t_atom *argv) { fr_assign("copy",argc,argv,d_copy,d_copy); }
+V vasp::m_ccopy(I argc,t_atom *argv) { fc_assign("ccopy",argc,argv,d_copy,d_copy); }
+V vasp::m_mcopy(I argc,t_atom *argv) { fm_assign("mcopy",argc,argv,d_copy); }
 
 
 static V d_add(F *dst,F v,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] += v; }
@@ -337,9 +337,9 @@ static V d_add(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 		for(I i = 0; i < cnt; ++i) rdst[i] += rsrc[i]; 
 }
 
-V vasp_tx::m_add(I argc,t_atom *argv) { fr_assign("add",argc,argv,d_add,d_add); }
-V vasp_tx::m_cadd(I argc,t_atom *argv) { fc_assign("cadd",argc,argv,d_add,d_add); }
-V vasp_tx::m_madd(I argc,t_atom *argv) { fm_assign("madd",argc,argv,d_add); }
+V vasp::m_add(I argc,t_atom *argv) { fr_assign("add",argc,argv,d_add,d_add); }
+V vasp::m_cadd(I argc,t_atom *argv) { fc_assign("cadd",argc,argv,d_add,d_add); }
+V vasp::m_madd(I argc,t_atom *argv) { fm_assign("madd",argc,argv,d_add); }
 
 
 static V d_sub(F *dst,F v,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] -= v; }
@@ -354,9 +354,9 @@ static V d_sub(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 		for(I i = 0; i < cnt; ++i) rdst[i] -= rsrc[i]; 
 }
 
-V vasp_tx::m_sub(I argc,t_atom *argv) { fr_assign("sub",argc,argv,d_sub,d_sub); }
-V vasp_tx::m_csub(I argc,t_atom *argv) { fc_assign("csub",argc,argv,d_sub,d_sub); }
-V vasp_tx::m_msub(I argc,t_atom *argv) { fm_assign("msub",argc,argv,d_sub); }
+V vasp::m_sub(I argc,t_atom *argv) { fr_assign("sub",argc,argv,d_sub,d_sub); }
+V vasp::m_csub(I argc,t_atom *argv) { fc_assign("csub",argc,argv,d_sub,d_sub); }
+V vasp::m_msub(I argc,t_atom *argv) { fm_assign("msub",argc,argv,d_sub); }
 
 
 static V d_mul(F *dst,F v,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] *= v; }
@@ -384,9 +384,9 @@ static V d_mul(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 			rdst[i] *= rsrc[i],idst[i] *= rsrc[i];
 }
 
-V vasp_tx::m_mul(I argc,t_atom *argv) { fr_assign("mul",argc,argv,d_mul,d_mul); }
-V vasp_tx::m_cmul(I argc,t_atom *argv) { fc_assign("cmul",argc,argv,d_mul,d_mul); }
-V vasp_tx::m_mmul(I argc,t_atom *argv) { fm_assign("mmul",argc,argv,d_mul); }
+V vasp::m_mul(I argc,t_atom *argv) { fr_assign("mul",argc,argv,d_mul,d_mul); }
+V vasp::m_cmul(I argc,t_atom *argv) { fc_assign("cmul",argc,argv,d_mul,d_mul); }
+V vasp::m_mmul(I argc,t_atom *argv) { fm_assign("mmul",argc,argv,d_mul); }
 
 
 // how about div by 0?
@@ -419,9 +419,9 @@ static V d_div(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 		for(I i = 0; i < cnt; ++i) rdst[i] /= rsrc[i],idst[i] /= rsrc[i];
 }
 
-V vasp_tx::m_div(I argc,t_atom *argv) { fr_assign("div",argc,argv,d_div,d_div); }
-V vasp_tx::m_cdiv(I argc,t_atom *argv) { fc_assign("cdiv",argc,argv,d_div,d_div); }
-V vasp_tx::m_mdiv(I argc,t_atom *argv) { fm_assign("mdiv",argc,argv,d_div); }
+V vasp::m_div(I argc,t_atom *argv) { fr_assign("div",argc,argv,d_div,d_div); }
+V vasp::m_cdiv(I argc,t_atom *argv) { fc_assign("cdiv",argc,argv,d_div,d_div); }
+V vasp::m_mdiv(I argc,t_atom *argv) { fm_assign("mdiv",argc,argv,d_div); }
 
 
 
@@ -436,9 +436,9 @@ static V d_min(F *dst,const F *src,I cnt)
 	for(I i = 0; i < cnt; ++i,++dst,++src) if(*dst > *src) *dst = *src;
 }
 
-V vasp_tx::m_min(I argc,t_atom *argv) { fr_assign("min",argc,argv,d_min,d_min); }
-//V vasp_tx::m_cmin(I argc,t_atom *argv) { fc_assign(argc,argv,d_min,d_min); }
-V vasp_tx::m_mmin(I argc,t_atom *argv) { fm_assign("mmin",argc,argv,d_min); }
+V vasp::m_min(I argc,t_atom *argv) { fr_assign("min",argc,argv,d_min,d_min); }
+//V vasp::m_cmin(I argc,t_atom *argv) { fc_assign(argc,argv,d_min,d_min); }
+V vasp::m_mmin(I argc,t_atom *argv) { fm_assign("mmin",argc,argv,d_min); }
 
 
 
@@ -452,9 +452,9 @@ static V d_max(F *dst,const F *src,I cnt)
 	for(I i = 0; i < cnt; ++i,++dst,++src) if(*dst < *src) *dst = *src;
 }
 
-V vasp_tx::m_max(I argc,t_atom *argv) { fr_assign("max",argc,argv,d_max,d_max); }
-//V vasp_tx::m_cmax(I argc,t_atom *argv) { fc_assign(argc,argv,d_max,d_max); }
-V vasp_tx::m_mmax(I argc,t_atom *argv) { fm_assign("mmax",argc,argv,d_max); }
+V vasp::m_max(I argc,t_atom *argv) { fr_assign("max",argc,argv,d_max,d_max); }
+//V vasp::m_cmax(I argc,t_atom *argv) { fc_assign(argc,argv,d_max,d_max); }
+V vasp::m_mmax(I argc,t_atom *argv) { fm_assign("mmax",argc,argv,d_max); }
 
 
 
@@ -494,14 +494,14 @@ static V d_ssqrt(F *dst,F,I cnt)
 	for(I i = 0; i < cnt; ++i,++dst) *dst = (F)sqrt(fabs(*dst))*sgn(*dst);
 }
 
-V vasp_tx::m_pow(F arg) { fr_transf("pow",arg,d_pow); }
-//V vasp_tx::m_cpow(I argc,t_atom *argv) { fm_assign("cpow",argc,argv,d_max); }
-V vasp_tx::m_sqr() { fr_transf("sqr",0,d_sqr); }
-V vasp_tx::m_ssqr() { fr_transf("ssqr",0,d_ssqr); }
-V vasp_tx::m_csqr() { fc_transf("csqr",-1,NULL,d_csqr); }
-V vasp_tx::m_root(F arg) { fr_transf("root",arg,d_root); }
-V vasp_tx::m_sqrt() { fr_transf("sqrt",0,d_sqrt); }
-V vasp_tx::m_ssqrt() { fr_transf("ssqrt",0,d_ssqrt); }
+V vasp::m_pow(F arg) { fr_transf("pow",arg,d_pow); }
+//V vasp::m_cpow(I argc,t_atom *argv) { fm_assign("cpow",argc,argv,d_max); }
+V vasp::m_sqr() { fr_transf("sqr",0,d_sqr); }
+V vasp::m_ssqr() { fr_transf("ssqr",0,d_ssqr); }
+V vasp::m_csqr() { fc_transf("csqr",-1,NULL,d_csqr); }
+V vasp::m_root(F arg) { fr_transf("root",arg,d_root); }
+V vasp::m_sqrt() { fr_transf("sqrt",0,d_sqrt); }
+V vasp::m_ssqrt() { fr_transf("ssqrt",0,d_ssqrt); }
 
 
 static V d_exp(F *dst,F,I cnt) { for(I i = 0; i < cnt; ++i,++dst) *dst = (F)exp(*dst); }
@@ -509,8 +509,8 @@ static V d_exp(F *dst,F,I cnt) { for(I i = 0; i < cnt; ++i,++dst) *dst = (F)exp(
 // how about numbers <= 0?
 static V d_log(F *dst,F,I cnt) { for(I i = 0; i < cnt; ++i,++dst) *dst = (F)log(*dst); }
 
-V vasp_tx::m_exp() { fr_transf("exp",0,d_exp); }
-V vasp_tx::m_log() { fr_transf("log",0,d_log); }
+V vasp::m_exp() { fr_transf("exp",0,d_exp); }
+V vasp::m_log() { fr_transf("log",0,d_log); }
 
 
 static V d_inv(F *dst,F,I cnt) { for(I i = 0; i < cnt; ++i,++dst) *dst = 1./ *dst; }
@@ -523,8 +523,8 @@ static V d_cinv(F *re,F *im,F,F,I cnt)
 	}
 }
 
-V vasp_tx::m_inv() { fr_transf("inv",0,d_inv); }
-V vasp_tx::m_cinv() { fc_transf("cinv",-1,NULL,d_cinv); }
+V vasp::m_inv() { fr_transf("inv",0,d_inv); }
+V vasp::m_cinv() { fc_transf("cinv",-1,NULL,d_cinv); }
 
 
 
@@ -559,10 +559,10 @@ static V d_cart(F *re,F *im,F,F,I cnt)
 	}
 }
 
-V vasp_tx::m_abs() { fr_transf("inv",0,d_inv); }
-V vasp_tx::m_sign() { fr_transf("sign",0,d_sign); }
-V vasp_tx::m_polar() { fc_transf("polar",-1,NULL,d_polar); }
-V vasp_tx::m_cart() { fc_transf("cart",-1,NULL,d_cart); }
+V vasp::m_abs() { fr_transf("inv",0,d_inv); }
+V vasp::m_sign() { fr_transf("sign",0,d_sign); }
+V vasp::m_polar() { fc_transf("polar",-1,NULL,d_polar); }
+V vasp::m_cart() { fc_transf("cart",-1,NULL,d_cart); }
 
 
 
@@ -589,8 +589,8 @@ static V d_cnorm(F *re,F *im,F,F,I cnt)
 	for(i = 0; i < cnt; ++i) re[i] *= v,im[i] *= v;
 }
 
-V vasp_tx::m_norm() { fr_transf("norm",0,d_norm); }
-V vasp_tx::m_cnorm() { fc_transf("cnorm",-1,NULL,d_cnorm); }
+V vasp::m_norm() { fr_transf("norm",0,d_norm); }
+V vasp::m_cnorm() { fc_transf("cnorm",-1,NULL,d_cnorm); }
 
 
 
@@ -601,8 +601,8 @@ static V d_cswap(F *re,F *im,F,F,I cnt)
 
 static V d_cconj(F *,F *im,F,F,I cnt) { for(I i = 0; i < cnt; ++i) *im *= -1.; }
 
-V vasp_tx::m_cswap() { fc_transf("cswap",-1,NULL,d_cswap); }
-V vasp_tx::m_cconj() { fc_transf("cconj",-1,NULL,d_cconj); }
+V vasp::m_cswap() { fc_transf("cswap",-1,NULL,d_cswap); }
+V vasp::m_cconj() { fc_transf("cconj",-1,NULL,d_cconj); }
 
 
 
@@ -720,11 +720,11 @@ static V d_xmirr(F *dt,F,I cnt)
 }
 
 
-V vasp_tx::m_shift(F u) { fr_transf("shift",u,d_shift); }
-V vasp_tx::m_xshift(F u) { fr_transf("xshift",u,d_xshift); }
-V vasp_tx::m_rot(F u) { fr_transf("rot",u,d_rot); }
-V vasp_tx::m_xrot(F u) { fr_transf("xrot",u,d_xrot); }
-V vasp_tx::m_mirr() { fr_transf("mirr",0,d_mirr); }
-V vasp_tx::m_xmirr() { fr_transf("xmirr",0,d_xmirr); } 
+V vasp::m_shift(F u) { fr_transf("shift",u,d_shift); }
+V vasp::m_xshift(F u) { fr_transf("xshift",u,d_xshift); }
+V vasp::m_rot(F u) { fr_transf("rot",u,d_rot); }
+V vasp::m_xrot(F u) { fr_transf("xrot",u,d_xrot); }
+V vasp::m_mirr() { fr_transf("mirr",0,d_mirr); }
+V vasp::m_xmirr() { fr_transf("xmirr",0,d_xmirr); } 
 
 

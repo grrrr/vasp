@@ -1,14 +1,8 @@
 #include "main.h"
 
-FLEXT_GIMME("vasp.=",vasp_tx_copy)
+#if 0
 
-/*
-V vasp_tx_copy::cb_setup(t_class *c)
-{
-	// assignment functions
-//	FLEXT_ADDMETHOD_G(c,"copy",m_copy);
-}
-*/
+FLEXT_NEW_G("vasp.=",vasp_tx_copy)
 
 vasp_tx_copy::vasp_tx_copy(I argc,t_atom *argv)
 {
@@ -16,9 +10,9 @@ vasp_tx_copy::vasp_tx_copy(I argc,t_atom *argv)
 
 //	m_set(argc,argv);
 
-	add_in_anything(4);
-	add_out_anything();
-	setup_inout();
+	AddInAnything(4);
+	AddOutAnything();
+	SetupInOut();
 
 	FLEXT_ADDMETHOD_(0,"copy",m_copy);
 }
@@ -37,16 +31,16 @@ V vasp_tx_copy::m_copy(I argc,t_atom *argv)
 
 
 
-FLEXT_GIMME("vasp.tx",vasp_tx)
+FLEXT_NEW_G("vasp.tx",vasp_tx)
 
 
 vasp_tx::vasp_tx(I argc,t_atom *argv)
 {
 	m_set(argc,argv);
 
-	add_in_anything();
-	add_out_anything();
-	setup_inout();
+	AddInAnything();
+	AddOutAnything();
+	SetupInOut();
 
 
 //	FLEXT_ADDMETHOD_G(c,"set",m_set);
@@ -146,3 +140,4 @@ I vasp_tx::m_set(I argc,t_atom *argv)
 	return 0; 
 }
 
+#endif

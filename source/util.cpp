@@ -16,7 +16,7 @@ private:
 	FLEXT_CALLBACK_G(m_set)
 };
 
-FLEXT_GIMME("vasp.prepend",vasp_prepend)
+FLEXT_NEW_G("vasp.prepend",vasp_prepend)
 
 
 vasp_prepend::vasp_prepend(I argc,t_atom *argv)
