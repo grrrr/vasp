@@ -1,4 +1,4 @@
-#N canvas 152 40 818 594 10;
+#N canvas 152 40 820 596 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.peaks 0 10 1 14 -262144
 -1 0;
 #X obj 71 131 filelist \$0;
