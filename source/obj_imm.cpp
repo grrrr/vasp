@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\brief Definitions for immediate vasps
 */
 
-
+#include "main.h"
 #include "classes.h"
 #include "util.h"
 #include "buflib.h"

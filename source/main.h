@@ -52,7 +52,7 @@ class vector;
 	typedef vector VX;
 #endif
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 // buffers are never interleaved - special optimizations may occur
 // attention: possibly obsolete when immediate file access is implemented
 #define VASP_CHN1  

@@ -8,6 +8,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
+#include "main.h"
 #include "classes.h"
 //#include <stdarg.h>
 
@@ -215,7 +216,7 @@ V vasp_tx::m_bang()
 			delete ret;
 		}
 		else {
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 			post("%s - no valid return",thisName());
 #endif
 		}

@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\brief objects for radio messages.
 */
 
-
+#include "main.h"
 #include "classes.h"
 
 
