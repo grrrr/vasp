@@ -18,11 +18,11 @@ BL VecOp::d_search(OpParam &p)
 	const S val = p.srch.val;
 	const R cur = p.rsdt[off];
 
-	I ol = -1,or = -1;
-
+	I i,ofl = -1,ofr = -1;
+	
 	if(p.srch.dir <= 0) {
 		BL y = cur >= val;
-		for(I i = off-1; i >= 0; --i) {
+		for(i = off-1; i >= 0; --i) {
 			BL y2 = p.rsdt[i] >= val;
 			if(y != y2) {
 				if(p.srch.slope <= 0 && y2) break;
@@ -31,12 +31,12 @@ BL VecOp::d_search(OpParam &p)
 			y = y2;
 		}
 
-		if(i >= 0) ol = i;
+		if(i >= 0) ofl = i;
 	}
 
 	if(p.srch.dir >= 0) {
 		BL y = cur >= val;
-		for(I i = off+1; i < p.frames; ++i) {
+		for(i = off+1; i < p.frames; ++i) {
 			BL y2 = p.rsdt[i] >= val;
 			if(y != y2) {
 				if(p.srch.slope <= 0 && !y2) break;
@@ -45,21 +45,21 @@ BL VecOp::d_search(OpParam &p)
 			y = y2;
 		}
 
-		if(i < p.frames) or = i;
+		if(i < p.frames) ofr = i;
 	}
 
 	if(!p.srch.dir) {
-		if(ol >= 0) {
-			p.srch.dif = ol-off;
-			if(or >= 0 && abs(p.srch.dif) < abs(or-off)) p.srch.dif = or-off;
+		if(ofl >= 0) {
+			p.srch.dif = ofl-off;
+			if(ofr >= 0 && abs(p.srch.dif) < abs(ofr-off)) p.srch.dif = ofr-off;
 		}
 		else 
-			p.srch.dif = or >= 0?or-off:0;
+			p.srch.dif = ofr >= 0?ofr-off:0;
 	}
 	else if(p.srch.dir > 0) 
-		p.srch.dif = or >= 0?or-off:0;
+		p.srch.dif = ofr >= 0?ofr-off:0;
 	else
-		p.srch.dif = ol >= 0?ol-off:0;
+		p.srch.dif = ofl >= 0?ofl-off:0;
 
 	return true;
 }

@@ -194,14 +194,14 @@ Vasp &Vasp::operator ()(I argc,const t_atom *argv)
 		r.Symbol(VSymbol(bsym));
 
 		if(argc > ix && (flext_base::IsFlint(argv[ix]) || flext_base::IsFloat(argv[ix]))) {
-			r.Offset(flext_base::GetAFlint(argv[ix]));
+			r.Offset((I)flext_base::GetAFlint(argv[ix]));
 			ix++;
 		}
 		else
 			r.Offset(0);
 
 		if(argc > ix && (flext_base::IsFlint(argv[ix]) || flext_base::IsFloat(argv[ix]))) {
-			r.Channel(flext_base::GetAFlint(argv[ix]));
+			r.Channel((I)flext_base::GetAFlint(argv[ix]));
 			ix++;
 		}
 		else
