@@ -1,4 +1,4 @@
-#N canvas 15 40 882 566 10;
+#N canvas 15 40 884 568 10;
 #N canvas 92 108 409 411 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 84 238 s \$0-sample-length;
@@ -65,7 +65,6 @@
 #X msg 59 314 vasp bufpol1 bufpol2;
 #X obj 59 337 vasp.polar;
 #X obj 59 522 VASP-HELP;
-#X text 101 522 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
 #X connect 12 0 3 0;

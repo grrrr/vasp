@@ -1,4 +1,4 @@
-#N canvas 47 54 865 460 10;
+#N canvas 47 54 867 462 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.pow 0 10 1 14 -262144 -1
 0;
 #N canvas 0 0 410 286 init 0;
@@ -35,7 +35,6 @@
 #X floatatom 144 279 5 0 0;
 #X text 202 278 exponent;
 #X obj 79 397 VASP-HELP;
-#X text 121 397 - vasp overview;
 #X connect 7 0 9 0;
 #X connect 8 0 2 0;
 #X connect 9 0 10 0;

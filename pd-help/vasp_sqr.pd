@@ -1,4 +1,4 @@
-#N canvas 47 54 798 407 10;
+#N canvas 47 54 800 409 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.sqr 0 10 1 14 -262144 -1
 0;
 #N canvas 0 0 412 288 init 0;
@@ -31,7 +31,6 @@
 #X obj 77 271 vasp.sqr;
 #X msg 77 246 vasp bufsqr;
 #X obj 45 375 VASP-HELP;
-#X text 87 375 - vasp overview;
 #X connect 5 0 3 0;
 #X connect 7 0 5 0;
 #X connect 9 0 2 0;

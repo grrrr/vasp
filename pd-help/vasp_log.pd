@@ -1,4 +1,4 @@
-#N canvas 47 54 890 460 10;
+#N canvas 47 54 892 462 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.log 0 10 1 14 -262144 -1
 0;
 #N canvas 40 55 247 122 clear_buffer 0;
@@ -13,7 +13,7 @@
 #X text 170 281 calculate the natural logarithm;
 #X msg 494 314 vasp buflog;
 #X text 167 184 draw a line from 1 to a value (def 1001);
-#X text 185 127 value;
+#X text 193 127 value;
 #N canvas 0 0 450 300 graph1 0;
 #X array buflog 100 float 0;
 #X coords 0 1 99 -1 300 100 1;
@@ -30,21 +30,21 @@
 #X obj 69 329 vasp.update;
 #X obj 69 305 vasp.opt;
 #X obj 69 282 vasp.log;
-#X obj 69 208 vasp.bevel;
 #X msg 69 185 vasp buflog;
 #X obj 69 232 vasp.* 1000;
 #X obj 69 258 vasp.+ 1;
-#X floatatom 133 127 5 0 0;
 #X obj 133 147 t b f;
 #X obj 70 405 VASP-HELP;
-#X text 112 405 - vasp overview;
+#X obj 69 207 vasp.window lin;
+#X obj 133 129 nbx 5 14 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+10 -24198 -1 -1 1 256;
 #X connect 5 0 1 0;
 #X connect 12 0 11 0;
 #X connect 13 0 12 0;
-#X connect 14 0 16 0;
-#X connect 15 0 14 0;
-#X connect 16 0 17 0;
-#X connect 17 0 13 0;
-#X connect 18 0 19 0;
+#X connect 14 0 19 0;
+#X connect 15 0 16 0;
+#X connect 16 0 13 0;
+#X connect 17 0 14 0;
+#X connect 17 1 15 1;
 #X connect 19 0 15 0;
-#X connect 19 1 16 1;
+#X connect 20 0 17 0;

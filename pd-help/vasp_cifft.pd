@@ -1,4 +1,4 @@
-#N canvas 81 48 888 608 10;
+#N canvas 81 48 890 610 10;
 #N canvas 92 108 396 316 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 192 209 s \$0-sample-length;
@@ -74,7 +74,6 @@ use 3 more times vasp.cfft or just once vasp.c!fft;
 #X obj 527 263 wavedisplay-simple bufimi \$0;
 #X text 59 538 related objects:;
 #X obj 59 574 VASP-HELP;
-#X text 101 573 - vasp overview;
 #X obj 371 539 vasp.r!fft;
 #X obj 288 539 vasp.rfft;
 #X obj 202 539 vasp.cfft;
