@@ -20,17 +20,38 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \brief Corrects for the common vector frame count
 	\param frms frame count to correct
-	\param nfr reference frame count
+	\param bl new frame count
 	\return true if a correction was made
 */
-static BL corrlen(I &frms,I nfr) 
+static BL corrlen(I &frms,I bl,I bf = -1,I bo = 0) 
 {
-	if(frms != nfr) {
-		BL init = frms < 0;
-		if(frms < 0 || (nfr >= 0 && nfr < frms)) frms = nfr;
-		return !init;
+	if(bf < 0) bf = bl;
+
+	BL corr = false;
+	BL all = frms < 0;
+	if(all)
+		frms = bl;
+	else if(frms > bl) {
+		// longer than vector length -> correct
+		frms = bl;
+		corr = true;
 	}
-	else return false;
+
+	if(bo+frms > bf) {
+		// now check if buffer size is exceeded
+//			post("%s - %s vector (%s) exceeds buffer size: cropped",op,bli == 0?"src":"dst",bref->Name());
+		frms = bf-bo;
+		if(frms < 0) frms = 0;
+		corr = true;
+	}
+
+	return corr;
+}
+
+
+inline BL corrlen(I &frms,VBuffer &b) 
+{
+	return corrlen(frms,b.Length(),b.Frames(),b.Offset());
 }
 
 
@@ -69,7 +90,7 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
 					ok = false; 
 				}
 				else
-					dlens = dlens || corrlen(tfrms,bref->Length());
+					dlens = dlens || corrlen(tfrms,*bref);
 			}
 			
 			if(bli == 0) 
@@ -138,8 +159,12 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
 				}
 
 				// check against common vector length
-				if(bre) dlens = dlens || corrlen(tfrms,bre->Length());
-				if(bim)	dlens = dlens || corrlen(tfrms,bim->Length());
+				if(bre) {
+					dlens = dlens || corrlen(tfrms,*bre);
+				}
+				if(bim)	{
+					dlens = dlens || corrlen(tfrms,*bim);
+				}
 
 			}
 
@@ -222,11 +247,11 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 		}
 	
 		// check src/dst frame lengths
-		dlens = dlens || corrlen(tfrms,bref->Length());
-		if(bdst) dlens = dlens || corrlen(tfrms,bdst->Length());
+		dlens = dlens || corrlen(tfrms,*bref);
+		if(bdst) dlens = dlens || corrlen(tfrms,*bdst);
 
 		// check arg frame length
-		if(barg) dalens = dalens || corrlen(afrms,barg->Length());
+		if(barg) dalens = dalens || corrlen(afrms,*barg);
 
 		ret->Src(ci,bref);
 		if(bdst) ret->Dst(ci,bdst);
@@ -334,8 +359,8 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 			}
 
 			// check against common arg length
-			if(brarg) dalens = dalens || corrlen(afrms,brarg->Length());
-			if(biarg) dalens = dalens || corrlen(afrms,biarg->Length());
+			if(brarg) dalens = dalens || corrlen(afrms,*brarg);
+			if(biarg) dalens = dalens || corrlen(afrms,*biarg);
 
 			// --- src/dst stuff ----------------
 
@@ -353,10 +378,10 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 				ok = false; break; // really break?
 			}
 			else {
-				dlens = dlens || corrlen(tfrms,brref->Length());
-				if(biref) dlens = dlens || corrlen(tfrms,biref->Length());
-				if(brdst) dlens = dlens || corrlen(tfrms,brdst->Length());
-				if(bidst) dlens = dlens || corrlen(tfrms,bidst->Length());
+				dlens = dlens || corrlen(tfrms,*brref);
+				if(biref) dlens = dlens || corrlen(tfrms,*biref);
+				if(brdst) dlens = dlens || corrlen(tfrms,*brdst);
+				if(bidst) dlens = dlens || corrlen(tfrms,*bidst);
 			}
 
 			ret->Src(ci,brref,biref);

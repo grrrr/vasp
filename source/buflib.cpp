@@ -215,20 +215,23 @@ static I reuse_maxloseabs = REUSE_MAXLOSEABS;
 
 BufEntry *BufLib::Resize(BufEntry *e,I fr,BL keep)
 { 
-	if(fr >= e->alloc*(1-reuse_maxloserel) && fr >= (e->alloc-reuse_maxloseabs)) {
+	if(e->alloc >= fr && fr >= e->alloc*(1-reuse_maxloserel) && fr >= (e->alloc-reuse_maxloseabs)) {
 		// reuse buffer
 		e->len = fr;
-		return e;
 	}
 	else {
-		BufEntry *ret = NewImm(fr);
+		S *nd = new S[fr];
 		if(keep) {
-			I l = ret->len;
+			I l = fr;
 			if(e->len < l) l = e->len;
-			flext::CopyMem(e->data,ret->data,l);
+			flext::CopyMem(e->data,nd,l);
 		}
-		return  ret;
+
+		delete[] e->data;
+		e->data = nd;
+		e->len = e->alloc = fr;
 	}
+	return e;
 }
 
 
