@@ -170,7 +170,7 @@ t_symbol *ImmBuf::Symbol() const { return entry->sym; }
 
 I ImmBuf::Frames() const { return entry->len; }
 
-V ImmBuf::Frames(I fr,BL keep) {}
+V ImmBuf::Frames(I fr,BL keep) { post("vasp immbuf - sorry not implemented!"); }
 
 S *ImmBuf::Data() { return entry->data; }
 

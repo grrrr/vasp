@@ -82,8 +82,8 @@ class SysBuf:
 	public VBuffer
 {
 public:
-	SysBuf(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
-	virtual ~SysBuf();
+	SysBuf(t_symbol *s,I chn = 0,I len = -1,I offs = 0): Set(s,c,l,o) {}
+	virtual ~SysBuf() {}
 
 	virtual BL Ok() const { return buf.Ok(); }
 	virtual V Dirty() { buf.Dirty(true); }
