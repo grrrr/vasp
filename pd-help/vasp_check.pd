@@ -1,4 +1,4 @@
-#N canvas 219 135 651 494 10;
+#N canvas 219 135 653 496 10;
 #X text 250 113 buffer length = 88200 samples;
 #X text 67 72 checks the dimensions of a vasp and corrects them;
 #X obj 70 32 cnv 15 15 15 empty empty vasp.check 0 10 1 14 -262144
@@ -15,7 +15,6 @@
 #X text 139 333 abbreviation;
 #X text 64 363 related objects:;
 #X obj 67 393 VASP-HELP;
-#X text 109 392 - vasp overview;
 #X text 52 226 *;
 #X text 62 432 * prepend-object from iemlib2 (http://pd.iem.at/iemlib)
 ;

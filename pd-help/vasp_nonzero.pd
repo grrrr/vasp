@@ -1,4 +1,4 @@
-#N canvas 96 126 846 575 10;
+#N canvas 96 126 848 577 10;
 #X obj 62 32 cnv 15 15 15 empty empty vasp.?? 0 10 1 14 -262144 -1
 0;
 #X text 64 66 outputs all samples of a vasp that are unequal zero;
@@ -148,7 +148,6 @@
 #X msg 62 415;
 #X msg 99 481;
 #X obj 34 521 VASP-HELP;
-#X text 76 521 - vasp overview;
 #X connect 5 0 4 0;
 #X connect 19 0 23 0;
 #X connect 20 0 19 0;

@@ -1,4 +1,4 @@
-#N canvas 190 73 661 565 10;
+#N canvas 190 73 663 567 10;
 #X text 62 76 spit out vectors of a vasp (one vector after the other)
 ;
 #X text 62 92 argument: number of outlets (if more than 1 \, outputs
@@ -28,7 +28,9 @@ left;
 #X obj 63 429 vasp.spit 2;
 #X obj 174 459 print ready;
 #X obj 50 519 VASP-HELP;
-#X text 92 519 - vasp overview;
+#X obj 487 483 table bufspit1;
+#X obj 487 504 table bufspit2;
+#X obj 487 525 table bufspit3;
 #X connect 6 0 5 0;
 #X connect 6 1 4 0;
 #X connect 6 2 8 0;

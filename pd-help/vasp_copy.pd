@@ -1,4 +1,4 @@
-#N canvas 21 60 969 576 10;
+#N canvas 21 60 971 578 10;
 #X obj 62 33 cnv 15 15 15 empty empty vasp.-> 0 10 1 14 -262144 -1
 0;
 #X text 55 81 optional argument/right inlet: value/vasp;
@@ -60,6 +60,7 @@
 #X text 66 351 or the other way round:;
 #X text 164 254 copy;
 #X text 55 99 left outlet: original \, right outlet: copy !!!;
+#X text 377 330 clear buffer 2 and 3;
 #X connect 12 0 18 0;
 #X connect 14 0 3 0;
 #X connect 16 0 2 0;

@@ -1,12 +1,9 @@
-#N canvas 213 175 701 497 10;
+#N canvas 213 175 703 499 10;
 #X msg 62 292 vasp bufup;
 #X obj 62 313 vasp.= 0;
 #X text 145 226 update the graphics;
 #X text 136 125 generate a sine wave;
 #X obj 62 185 vasp.osc 22050;
-#X text 57 69 updates the graphics of a patcher (e.g. waveform);
-#X text 140 291 use vasp.update at the end of a chain of vasp operations
-\, although most vasp objects are updating automatically;
 #X obj 58 41 cnv 15 15 15 empty empty vasp.update 0 10 1 14 -262144
 -1 0;
 #N canvas 0 0 450 300 graph1 0;
@@ -25,11 +22,15 @@
 #X obj 62 227 vasp.update;
 #X msg 62 125 vasp bufup;
 #X obj 62 374 vasp.u;
-#X text 119 374 abbreviation;
 #X msg 62 351 vasp bufup;
 #X obj 57 424 VASP-HELP;
-#X text 99 424 - vasp overview;
+#X text 58 92 use vasp.update at the end of a chain of vasp operations
+;
+#X text 57 69 updates the graphic display of the array;
+#X text 145 291 set the buffer to zero;
+#X text 147 345 and display the changes;
+#X text 114 374 (abbreviation);
 #X connect 0 0 1 0;
-#X connect 4 0 10 0;
-#X connect 11 0 4 0;
-#X connect 14 0 12 0;
+#X connect 4 0 8 0;
+#X connect 9 0 4 0;
+#X connect 11 0 10 0;

@@ -1,4 +1,4 @@
-#N canvas 95 103 852 568 10;
+#N canvas 95 103 854 570 10;
 #N canvas 92 108 403 405 inside 0;
 #X obj 87 206 soundfiler;
 #X obj 105 290 s \$0-sample-length;
@@ -66,7 +66,6 @@ and then outputs them and resets its status;
 #X text 356 413 play;
 #X text 55 111 argument: number of vasps to be synced (default 2);
 #X obj 48 525 VASP-HELP;
-#X text 90 525 - vasp overview;
 #X connect 5 0 6 0;
 #X connect 6 0 14 0;
 #X connect 6 0 19 0;
