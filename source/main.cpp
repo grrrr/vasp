@@ -14,60 +14,83 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifdef PD
 // Initialization for pd xsample library
 
-extern "C" {
-// base classes
-FLEXT_EXT V vasp_v_setup();
-FLEXT_EXT V vasp_b_copy_setup();
-FLEXT_EXT V vasp_b_ccopy_setup();
-FLEXT_EXT V vasp_b_mcopy_setup();
-
-FLEXT_EXT V vasp_b_add_setup();
-FLEXT_EXT V vasp_b_cadd_setup();
-FLEXT_EXT V vasp_b_madd_setup();
-
-FLEXT_EXT V vasp_b_sub_setup();
-FLEXT_EXT V vasp_b_csub_setup();
-FLEXT_EXT V vasp_b_msub_setup();
-
-FLEXT_EXT V vasp_b_mul_setup();
-FLEXT_EXT V vasp_b_cmul_setup();
-FLEXT_EXT V vasp_b_mmul_setup();
-
-FLEXT_EXT V vasp_b_div_setup();
-FLEXT_EXT V vasp_b_cdiv_setup();
-FLEXT_EXT V vasp_b_mdiv_setup();
-
-
-
-FLEXT_EXT V vasp_setup()
+extern "C" FLEXT_EXT V vasp_setup()
 {
 	post("VASP modular %s - vector assembling signal processor, (C)2002 Thomas Grill",VASP_VERSION);
 	post("");
 
 	// call the objects' setup routines
 
-	vasp_v_setup();
+	VASP_SETUP(v);
 
-	vasp_b_copy_setup();
-	vasp_b_ccopy_setup();
-	vasp_b_mcopy_setup();
+	VASP_BINARY_SETUP(copy);
+	VASP_BINARY_SETUP(ccopy);
+	VASP_BINARY_SETUP(mcopy);
 
-	vasp_b_add_setup();
-	vasp_b_cadd_setup();
-	vasp_b_madd_setup();
+	VASP_BINARY_SETUP(add);
+	VASP_BINARY_SETUP(cadd);
+	VASP_BINARY_SETUP(madd);
 
-	vasp_b_sub_setup();
-	vasp_b_csub_setup();
-	vasp_b_msub_setup();
+	VASP_BINARY_SETUP(sub);
+	VASP_BINARY_SETUP(csub);
+	VASP_BINARY_SETUP(msub);
 
-	vasp_b_mul_setup();
-	vasp_b_cmul_setup();
-	vasp_b_mmul_setup();
+	VASP_BINARY_SETUP(mul);
+	VASP_BINARY_SETUP(cmul);
+	VASP_BINARY_SETUP(mmul);
 
-	vasp_b_div_setup();
-	vasp_b_cdiv_setup();
-	vasp_b_mdiv_setup();
-}
+	VASP_BINARY_SETUP(div);
+	VASP_BINARY_SETUP(cdiv);
+	VASP_BINARY_SETUP(mdiv);
+
+	VASP_BINARY_SETUP(min)
+	VASP_BINARY_SETUP(mmin)
+
+	VASP_BINARY_SETUP(max)
+	VASP_BINARY_SETUP(mmax)
+
+
+	VASP_UNARY_SETUP(sqr) 
+	VASP_UNARY_SETUP(ssqr) 
+	VASP_UNARY_SETUP(csqr) 
+	VASP_UNARY_SETUP(sqrt) 
+	VASP_UNARY_SETUP(ssqrt) 
+	VASP_BINARY_SETUP(pow) 
+	VASP_BINARY_SETUP(root) 
+
+	VASP_UNARY_SETUP(exp) 
+	VASP_UNARY_SETUP(log) 
+
+	VASP_UNARY_SETUP(inv) 
+	VASP_UNARY_SETUP(cinv) 
+
+	VASP_UNARY_SETUP(abs) 
+	VASP_UNARY_SETUP(sign) 
+	VASP_UNARY_SETUP(polar) 
+	VASP_UNARY_SETUP(cart) 
+
+	VASP_UNARY_SETUP(norm)
+	VASP_UNARY_SETUP(cnorm)
+
+	VASP_UNARY_SETUP(cswap)
+	VASP_UNARY_SETUP(cconj)
+
+	VASP_BINARY_SETUP(shift)
+	VASP_BINARY_SETUP(xshift)
+	VASP_BINARY_SETUP(rot)
+	VASP_BINARY_SETUP(xrot)
+	VASP_UNARY_SETUP(mirr)
+	VASP_UNARY_SETUP(xmirr)
+
+	VASP_BINARY_SETUP(osc)
+	VASP_BINARY_SETUP(cosc)
+	VASP_UNARY_SETUP(noise)
+	VASP_UNARY_SETUP(cnoise)
+
+	VASP_UNARY_SETUP(rfft)
+	VASP_UNARY_SETUP(rifft)
+	VASP_UNARY_SETUP(cfft)
+	VASP_UNARY_SETUP(cifft)
 }
 #endif
 

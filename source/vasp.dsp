@@ -99,26 +99,9 @@ SOURCE=..\license.txt
 SOURCE=..\readme.txt
 # End Source File
 # End Group
-# Begin Source File
+# Begin Group "vasp"
 
-SOURCE=.\assign.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\bufref.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\main.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\main.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\util.cpp
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\vasp.cpp
@@ -137,7 +120,28 @@ SOURCE=.\vasp__gen.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\vasp__math.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\vasp__rng.cpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\imp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\main.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\main.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\util.cpp
 # End Source File
 # Begin Source File
 
@@ -145,11 +149,11 @@ SOURCE=.\vasp_base.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp_copy.cpp
+SOURCE=.\vasp_op.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp_tx.cpp
+SOURCE=.\vasp_v.cpp
 # End Source File
 # End Target
 # End Project

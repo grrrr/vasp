@@ -318,6 +318,10 @@ void fft_fwd_real_any(int size,float *real)
   float *imag = new float[size]; // should be aligned
   for(i=0;i<size;i++) imag[i]=(float)0;
   fft_fwd_complex_any(size,real,imag);
+  for(i = size/2-1; i >= 0; --i) {
+	  real[2*i]=real[i];
+	  real[2*i+1]=imag[i];
+  }
   delete[] imag;
 }
 
@@ -327,6 +331,10 @@ void fft_inv_real_any(int size,float *real)
 {
   float *imag = new float[size]; // should be aligned
   int i,j,spectrumsize;
+  for(i = 0; i < size/2; ++i) {
+	  imag[i]=real[2*i+1];
+	  real[i]=real[2*i];
+  }
   spectrumsize=fft_freq_domain_size(size);
   for(i=1;i<spectrumsize;i++)
   {

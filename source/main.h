@@ -292,8 +292,9 @@ public:
 	Vasp *m_xmirr();  // mirror buffer (symmetrically)
 
 	// Generator functions 
-	Vasp *m_osc(const Argument &arg);  // real osc
-	Vasp *m_cosc(const Argument &arg);  // complex osc (phase rotates)
+	Vasp *m_osc(const Argument &arg,F ph = 0);  // real osc
+	Vasp *m_cosc(const Argument &arg,F ph = 0);  // complex osc (phase rotates)
+	Vasp *m_phasor(const Argument &arg,F ph = 0);  // phasor
 	Vasp *m_noise();  // real noise
 	Vasp *m_cnoise(); // complex noise (arg and abs random)
 
@@ -457,6 +458,7 @@ private:
 	FLEXT_CALLBACK_G(a_vector)
 };
 
+#define VASP_SETUP(op) FLEXT_SETUP(vasp_##op);  
 
 #define VASP_UNARY(name,op)														\
 class vasp_u_##op:																\
@@ -469,6 +471,8 @@ protected:																		\
 	virtual Vasp *tx_work() { return ref.m_##op(); }							\
 };																				\
 FLEXT_NEW(name,vasp_u_##op)
+
+#define VASP_UNARY_SETUP(op) FLEXT_SETUP(vasp_u_##op);  
 
 
 #define VASP_BINARY(name,op)													\
@@ -483,5 +487,6 @@ protected:																		\
 };																				\
 FLEXT_NEW_G(name,vasp_b_##op)
 
+#define VASP_BINARY_SETUP(op) FLEXT_SETUP(vasp_b_##op);  
 
 #endif
