@@ -12,7 +12,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __VASP__H
 
 #include "vbuffer.h"
-#include "atoms.h"
 
 class Vasp 
 {
@@ -105,7 +104,7 @@ public:
 	VBuffer *ImBuffer() const { return Buffer(1); }
 
 	// prepare and reference t_atom list for output
-	AtomList *MakeList(BL withvasp = true);
+	flext_base::AtomList *MakeList(BL withvasp = true);
 
 	// make a graphical update of all buffers in vasp
 	V Refresh();

@@ -12,8 +12,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __VASP_ARG_H
 
 #include "vasp.h"
-#include "atoms.h"
-
 
 class Argument
 {
@@ -60,7 +58,7 @@ public:
 	BL CanbeVector() const { return tp == tp_vx || CanbeComplex(); }
 
 	const Vasp &GetVasp() const { return *dt.v; }
-	const AtomList &GetList() const { return *dt.atoms; }
+	const flext_base::AtomList &GetList() const { return *dt.atoms; }
 	I GetInt() const { return dt.i; }
 	I GetAInt() const;
 	F GetFloat() const { return dt.f; }
@@ -79,7 +77,7 @@ protected:
 
 	union {
 		Vasp *v;
-		AtomList *atoms;
+		flext_base::AtomList *atoms;
 		F f;
 		D d;
 		I i;

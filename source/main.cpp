@@ -15,7 +15,7 @@ V lib_setup()
 {
 	post("VASP modular %s - vector assembling signal processor, (C)2002 Thomas Grill",VASP_VERSION);
 #ifdef _DEBUG
-	post("DEBUG MODE");
+	post("DEBUG BUILD - " __DATE__ " " __TIME__);
 #endif
 	post("");
 

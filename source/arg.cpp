@@ -79,7 +79,7 @@ Argument &Argument::Set(Vasp *v)
 Argument &Argument::Set(I argc,t_atom *argv)
 {
 	if(tp != tp_none) Clear();
-	dt.atoms = new AtomList(argc,argv); tp = tp_list;
+	dt.atoms = new flext_base::AtomList(argc,argv); tp = tp_list;
 	return *this;
 }
 

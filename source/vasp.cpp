@@ -187,11 +187,11 @@ VBuffer *Vasp::Buffer(I ix) const
 }
 
 // generate Vasp list of buffer references
-AtomList *Vasp::MakeList(BL withvasp)
+flext_base::AtomList *Vasp::MakeList(BL withvasp)
 {
 	I voffs = withvasp?1:0;
 	I needed = voffs+1+Vectors()*3;
-	AtomList *ret = new AtomList(needed);
+	flext_base::AtomList *ret = new flext_base::AtomList(needed);
 
 	if(withvasp) 
 		flext_base::SetSymbol((*ret)[0],vasp_base::sym_vasp);  // VASP
