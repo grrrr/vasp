@@ -232,14 +232,14 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 			nvecs = arg.Vectors();
 			post("%s - too few arg vectors, operating on only first %i vectors",op,nvecs);
 		}
-		ret = new RVecBlock(nvecs,nvecs);
+		ret = new RVecBlock(nvecs,nvecs,1);
 		for(I i = 0; i < nvecs; ++i) ret->Arg(i,arg.Buffer(i));
 	}
 	else {
 		if(arg.Vectors() > 1) {
 			post("%s - using only first arg vector for all operations",op);
 		}
-		ret = new RVecBlock(nvecs,1);
+		ret = new RVecBlock(nvecs,1,1);
 		ret->Arg(0,arg.Buffer(0));
 	}
 
@@ -334,14 +334,14 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 			pairs = apairs;
 			post("%s - too few arg vectors, operating on only first %i vector pairs",op,pairs);
 		}
-		ret = new CVecBlock(pairs,pairs);
+		ret = new CVecBlock(pairs,pairs,1);
 		for(I i = 0; i < pairs; ++i) ret->Arg(i,arg.Buffer(i*2),arg.Buffer(i*2+1));
 	}
 	else {
 		if(arg.Vectors() > 2) {
 			post("%s - using only first arg vector pair for all operations",op);
 		}
-		ret = new CVecBlock(pairs,1);
+		ret = new CVecBlock(pairs,1,1);
 		ret->Arg(0,arg.Buffer(0),arg.Buffer(1));
 	}
 
@@ -432,6 +432,12 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 {
 	BL ok = true;
+
+	if(vecs->ArgBlks() && (!p.arg || p.args < vecs->ArgBlks())) {
+		post("%s - not enough argument blocks",p.opname);
+		ok = false;
+	}
+
 	const I scnt = symm?2:1;
 	for(I i = 0; ok && i < vecs->Vecs(); ++i) 
 		for(I si = 0; ok && si < scnt; ++si) {
@@ -444,6 +450,8 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 			else p.rddt = p.rsdt,p.rds = p.rss;
 
 			for(I bi = 0; bi < vecs->ArgBlks(); ++bi) {
+				VBuffer *a = vecs->Arg(i,bi);
+				p.arg[bi].SetV(a?a->Pointer():NULL,a?a->Channels():0);
 //				p.radt = a->Pointer(),p.ras = a->Channels();
 			}
 		
@@ -522,6 +530,12 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 {
 	BL ok = true;
+
+	if(vecs->ArgBlks() && (!p.arg || p.args < vecs->ArgBlks())) {
+		post("%s - not enough argument blocks",p.opname);
+		ok = false;
+	}
+
 	const I scnt = symm?2:1;
 	for(I i = 0; ok && i < vecs->Pairs(); ++i) 
 		for(I si = 0; ok && si < scnt; ++si) {
@@ -541,14 +555,19 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 				p.rddt = p.rsdt,p.rds = p.rss,p.iddt = p.isdt,p.ids = p.iss;
 			}
 			
-			VBuffer *rav = vecs->ReArg(i),*iav = vecs->ImArg(i);
-			if(rav) {
-				p.radt = rav->Pointer(),p.ras = rav->Channels();
-				if(iav) p.iadt = iav->Pointer(),p.ias = iav->Channels();
-				else p.iadt = NULL; //,p.ias = 0;
-			}
-			else { 
-				p.radt = NULL,p.iadt = NULL;
+			for(I bi = 0; bi < vecs->ArgBlks(); ++bi) {
+				VBuffer *rav = vecs->ReArg(i,bi),*iav = vecs->ImArg(i,bi);
+				p.arg[bi].SetV(rav?rav->Pointer():NULL,rav?rav->Channels():0,iav?iav->Pointer():NULL,iav?iav->Channels():0);
+/*
+				if(rav) {
+					p.radt = rav->Pointer(),p.ras = rav->Channels();
+					if(iav) p.iadt = iav->Pointer(),p.ias = iav->Channels();
+					else p.iadt = NULL; //,p.ias = 0;
+				}
+				else { 
+					p.radt = NULL,p.iadt = NULL;
+				}
+*/
 			}
 
 			if(!symm) 

@@ -13,22 +13,24 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <math.h>
 
+#define BIG 1.e10
+
 
 Vasp *VaspOp::m_opt(OpParam &p,Vasp &src,Vasp *dst) 
 { 
 	Vasp *ret = NULL;
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		p.norm.fnorm = 0;
-		ret = DoOp(vecs,VecOp::d_optq,p);
+		p.norm.minmax = 0;
+		ret = DoOp(vecs,VecOp::d_maxq,p);
 		if(ret) {
 			delete ret;
 
-			if(p.norm.fnorm && p.norm.fnorm != 1) {
-				R f = p.norm.fnorm; // save for later
+			if(p.norm.minmax && p.norm.minmax != 1) {
+				R f = p.norm.minmax; // save for later
 				p.rbin.arg = 1/f;
 				ret = DoOp(vecs,VecOp::d_mul,p);
-				p.norm.fnorm = f;  // return to object
+				p.norm.minmax = f;  // return to object
 			}
 			else
 				ret = DoOp(vecs,VecOp::d_copy,p);
@@ -55,12 +57,12 @@ Vasp *VaspOp::m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 			p.norm.scl = 1;
 		}
 
-		p.norm.fnorm = 0;
-		ret = DoOp(vecs,VecOp::d_optq,p);
+		p.norm.minmax = 0;
+		ret = DoOp(vecs,VecOp::d_amaxq,p);
 		if(ret) {
 			delete ret;
 
-			if(p.norm.fnorm)
+			if(p.norm.minmax)
 				ret = DoOp(vecs,VecOp::d_optf,p);
 			else
 				ret = DoOp(vecs,VecOp::d_copy,p);
@@ -86,7 +88,7 @@ public:
 	{ 
 		OpParam p(thisName(),0);													
 		Vasp *ret = do_opt(p);
-		ToOutFloat(1,p.norm.fnorm);
+		ToOutFloat(1,p.norm.minmax);
 		return ret;
 	}
 
@@ -101,16 +103,16 @@ Vasp *VaspOp::m_ropt(OpParam &p,Vasp &src,Vasp *dst)
 	Vasp *ret = NULL;
 	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 	if(vecs) {
-		p.norm.fnorm = 0;
-		ret = DoOp(vecs,VecOp::d_roptq,p);
+		p.norm.minmax = 0;
+		ret = DoOp(vecs,VecOp::d_rmaxq,p);
 		if(ret) {
 			delete ret;
 
-			if(p.norm.fnorm && p.norm.fnorm != 1) {
-				R f = sqrt(p.norm.fnorm); // save for later
+			if(p.norm.minmax && p.norm.minmax != 1) {
+				R f = sqrt(p.norm.minmax); // save for later
 				p.rbin.arg = 1/f;
 				ret = DoOp(vecs,VecOp::d_cmul,p);
-				p.norm.fnorm = f;  // return to object
+				p.norm.minmax = f;  // return to object
 			}
 			else
 				ret = DoOp(vecs,VecOp::d_ccopy,p);
@@ -147,12 +149,12 @@ Vasp *VaspOp::m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 			p.norm.scl = 1;
 		}
 
-		p.norm.fnorm = 0;
-		ret = DoOp(vecs,VecOp::d_roptq,p);
+		p.norm.minmax = 0;
+		ret = DoOp(vecs,VecOp::d_rmaxq,p);
 		if(ret) {
 			delete ret;
 
-			if(p.norm.fnorm) 
+			if(p.norm.minmax) 
 				ret = DoOp(vecs,VecOp::d_roptf,p);
 			else
 				ret = DoOp(vecs,VecOp::d_ccopy,p);
@@ -295,8 +297,6 @@ Vasp *VaspOp::m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 
 
 
-
-
 /*! \class vasp_qmin
 	\remark \b vasp.min?
 	\brief Get minimum sample value
@@ -317,13 +317,17 @@ class vasp_qmin:
 public:
 	vasp_qmin(): vasp_unop(true,1) {}
 
-	virtual Vasp *do_opt(OpParam &p) { return VaspOp::m_qmin(p,ref); }
+	virtual Vasp *do_opt(OpParam &p) 
+	{ 
+		p.norm.minmax = BIG;
+		return VaspOp::m_qmin(p,ref); 
+	}
 		
 	virtual Vasp *tx_work() 
 	{ 
 		OpParam p(thisName(),0);													
 		Vasp *ret = do_opt(p);
-		ToOutFloat(1,p.norm.fnorm);
+		ToOutFloat(1,p.norm.minmax);
 		return ret;
 	}
 
@@ -331,6 +335,35 @@ public:
 };
 
 FLEXT_LIB("vasp.min?",vasp_qmin)
+
+
+/*! \class vasp_qamin
+	\remark \b vasp.amin?
+	\brief Get minimum absolute sample value
+	\since 0.0.2
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet float - minimum sample value
+
+	\todo Should we provide a cmdln default vasp?
+	\todo Should we inhibit output for invalid vasps?
+*/
+class vasp_qamin:
+	public vasp_qmin
+{
+	FLEXT_HEADER(vasp_qamin,vasp_qmin)
+public:
+	virtual Vasp *do_opt(OpParam &p) 
+	{ 
+		p.norm.minmax = BIG;
+		return VaspOp::m_qamin(p,ref); 
+	}
+
+	virtual V m_help() { post("%s - Get a vasp's minimum absolute sample value",thisName()); }
+};
+
+FLEXT_LIB("vasp.amin?",vasp_qamin)
 
 
 
@@ -351,11 +384,46 @@ class vasp_qmax:
 {
 	FLEXT_HEADER(vasp_qmax,vasp_qmin)
 public:
-	virtual Vasp *do_opt(OpParam &p) { return VaspOp::m_qmax(p,ref); }
+	virtual Vasp *do_opt(OpParam &p) 
+	{ 
+		p.norm.minmax = -BIG;
+		return VaspOp::m_qmax(p,ref); 
+	}
+
 	virtual V m_help() { post("%s - Get a vasp's maximum sample value",thisName()); }
 };
 
 FLEXT_LIB("vasp.max?",vasp_qmax)
+
+
+
+/*! \class vasp_qamax
+	\remark \b vasp.amax?
+	\brief Get minimum absolute sample value
+	\since 0.0.2
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet float - minimum sample value
+
+	\todo Should we provide a cmdln default vasp?
+	\todo Should we inhibit output for invalid vasps?
+*/
+class vasp_qamax:
+	public vasp_qmax
+{
+	FLEXT_HEADER(vasp_qamax,vasp_qmax)
+public:
+	virtual Vasp *do_opt(OpParam &p) 
+	{ 
+		p.norm.minmax = 0;
+		return VaspOp::m_qamax(p,ref); 
+	}
+
+	virtual V m_help() { post("%s - Get a vasp's maximum absolute sample value",thisName()); }
+};
+
+FLEXT_LIB("vasp.amax?",vasp_qamax)
 
 
 

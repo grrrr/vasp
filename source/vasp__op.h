@@ -108,16 +108,38 @@ template<class T> V f_rgate(T &rv,T &iv,T ra,T ia,T rb,T)
 	else rv = iv = 0;
 } 
 
-template<class T> V f_optq(T &,T ra,OpParam &p) 
+template<class T> V f_maxq(T &,T ra,OpParam &p) 
 { 
-	register T s = fabs(ra); 
-	if(s > p.norm.fnorm) p.norm.fnorm = s; 
+	if(ra > p.norm.minmax) p.norm.minmax = ra; 
 } 
 
-template<class T> V f_roptq(T &,T &,T ra,T ia,OpParam &p) 
+template<class T> V f_minq(T &,T ra,OpParam &p) 
+{ 
+	if(ra < p.norm.minmax) p.norm.minmax = ra; 
+} 
+
+template<class T> V f_amaxq(T &,T ra,OpParam &p) 
+{ 
+	register T s = fabs(ra); 
+	if(s > p.norm.minmax) p.norm.minmax = s; 
+} 
+
+template<class T> V f_aminq(T &,T ra,OpParam &p) 
+{ 
+	register T s = fabs(ra); 
+	if(s < p.norm.minmax) p.norm.minmax = s; 
+} 
+
+template<class T> V f_rmaxq(T &,T &,T ra,T ia,OpParam &p) 
 { 
 	register T s = sqabs(ra,ia); 
-	if(s > p.norm.fnorm) p.norm.fnorm = s; 
+	if(s > p.norm.minmax) p.norm.minmax = s; 
+} 
+
+template<class T> V f_rminq(T &,T &,T ra,T ia,OpParam &p) 
+{ 
+	register T s = sqabs(ra,ia); 
+	if(s < p.norm.minmax) p.norm.minmax = s; 
 } 
 
 template<class T> V f_optf(T &rv,T ra,OpParam &p) 

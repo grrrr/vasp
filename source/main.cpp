@@ -112,6 +112,8 @@ V lib_setup()
 
 	VASP_SETUP(qmin)
 	VASP_SETUP(qmax)
+	VASP_SETUP(qamin)
+	VASP_SETUP(qamax)
 
 	VASP__SETUP(cnorm)
 //	VASP__SETUP(cswap)

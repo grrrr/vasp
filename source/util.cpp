@@ -230,7 +230,7 @@ Argument &Argument::Add(VX *vec) { Argument *a = new Argument; a->Set(vec); retu
 
 
 VecBlock::VecBlock(BL cx,I msrc,I mdst,I marg,I blarg):
-	cplx(cx),asrc(msrc),aarg(marg*blarg),adst(mdst)
+	cplx(cx),asrc(msrc),barg(blarg),aarg(marg*blarg),adst(mdst)
 {
 	I i,all = asrc+aarg*blarg+adst;
 	vecs = new VBuffer *[all];
@@ -299,6 +299,36 @@ V OpArg::Clear()
 	}
 	argtp = arg_;
 }
+
+OpArg &OpArg::SetX(S r,S i)
+{
+	Clear();
+	argtp = arg_x;
+	x.r = r,x.i = i;
+	return *this;
+}
+
+OpArg &OpArg::SetV(S *r,I rs,S *i,I is)
+{
+	Clear();
+	argtp = arg_v;
+	v.rdt = r,v.rs = rs;
+	v.idt = i,v.is = is;
+	return *this;
+}
+
+OpArg &OpArg::SetL(I pts,R *r,R *i)
+{
+	Clear();
+	argtp = arg_l;
+	l.pts = pts;
+	l.r = new R[pts];
+	l.i = new R[pts];
+	for(I ix = 0; ix < pts; ix) 
+		l.r[ix] = r[ix],l.i[ix] = i[ix];
+	return *this;
+}
+
 
 
 /*

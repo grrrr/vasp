@@ -220,6 +220,10 @@ public:
 
 	OpArg &operator =(const OpArg &op);
 
+	OpArg &SetX(S r,S i = 0);
+	OpArg &SetV(S *r,I rs,S *i = NULL,I is = 0);
+	OpArg &SetL(I pts,R *r,R *i);
+
 	enum { arg_ = 0,arg_x,arg_v,arg_l } argtp;
 	union {
 		struct { S r,i; } x;
@@ -237,6 +241,7 @@ public:
 	V Frames(I fr) { frms = fr; }
 	I ArgFrames() const { return afrms; }
 	V ArgFrames(I fr) { afrms = fr; }
+	I ArgBlks() const { return barg; }
 
 	BL Complex() { return cplx; }
 
@@ -255,7 +260,6 @@ protected:
 
 	VBuffer *_Arg(I ix,I bl = 0) { return vecs[asrc+bl*aarg+ix]; }
 	V _Arg(I ix,VBuffer *v,I bl = 0) { vecs[asrc+bl*aarg+ix] = v; }
-	I ArgBlks() const { return barg; }
 
 private:
 	BL cplx;
@@ -269,7 +273,7 @@ class RVecBlock:
 	public VecBlock
 {
 public:
-	RVecBlock(I _n,I _a = 0,I _ba = 1): VecBlock(false,_n,_n,_a,_ba),n(_n),a(_a) {}
+	RVecBlock(I _n,I _a = 0,I _ba = 0): VecBlock(false,_n,_n,_a,_ba),n(_n),a(_a) {}
 
 	VBuffer *Src(I ix) { return _Src(ix); }
 	VBuffer *Dst(I ix) { return _Dst(ix); }
@@ -294,7 +298,7 @@ class CVecBlock:
 	public VecBlock
 {
 public:
-	CVecBlock(I _np,I _ap = 0,I _bap = 1): VecBlock(true,_np*2,_np*2,_ap*2,_bap),np(_np),ap(_ap) {}
+	CVecBlock(I _np,I _ap = 0,I _bap = 0): VecBlock(true,_np*2,_np*2,_ap*2,_bap),np(_np),ap(_ap) {}
 
 	VBuffer *ReSrc(I ix) { return _Src(ix*2); }
 	VBuffer *ImSrc(I ix) { return _Src(ix*2+1); }
@@ -378,7 +382,7 @@ public:
 		struct { R cur,inc; } bvl;
 		struct { R sh; I ish; } sh;
 		struct { I wndtp; } wnd;
-		struct { R fnorm,scl; } norm;
+		struct { R minmax,scl; } norm;
 		struct { R arg; } rbin; 
 		struct { R rarg,iarg; } cbin; 
 	};
@@ -446,8 +450,12 @@ namespace VecOp {
 	BL d_inv(OpParam &p); 
 	BL d_abs(OpParam &p); 
 	BL d_sign(OpParam &p); 
-	BL d_optq(OpParam &p); 
+//	BL d_optq(OpParam &p); 
 	BL d_optf(OpParam &p); 
+	BL d_minq(OpParam &p); 
+	BL d_maxq(OpParam &p); 
+	BL d_aminq(OpParam &p); 
+	BL d_amaxq(OpParam &p); 
 
 	BL d_csqr(OpParam &p); 
 	BL d_cinv(OpParam &p); 
@@ -456,8 +464,10 @@ namespace VecOp {
 	BL d_cconj(OpParam &p); 
 	BL d_polar(OpParam &p); 
 	BL d_cart(OpParam &p); 
-	BL d_roptq(OpParam &p); 
+//	BL d_roptq(OpParam &p); 
 	BL d_roptf(OpParam &p); 
+	BL d_rminq(OpParam &p); 
+	BL d_rmaxq(OpParam &p); 
 	BL d_cnorm(OpParam &p); 
 
 	BL d_gate(OpParam &p); 
@@ -550,8 +560,12 @@ namespace VaspOp {
 	Vasp *m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // scaling across max
 	Vasp *m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius scaling across max
 
-	Vasp *m_qmin(OpParam &p,Vasp &src); // get minimum sample value
-	Vasp *m_qmax(OpParam &p,Vasp &src); // get maximum sample value
+	inline Vasp *m_qmin(OpParam &p,Vasp &src) { return m_run(p,src,NULL,VecOp::d_minq); } // get minimum sample value
+	inline Vasp *m_qamin(OpParam &p,Vasp &src) { return m_run(p,src,NULL,VecOp::d_aminq); } // get minimum sample value
+	inline Vasp *m_qrmin(OpParam &p,Vasp &src) { return m_cun(p,src,NULL,VecOp::d_rminq); } // get minimum sample value
+	inline Vasp *m_qmax(OpParam &p,Vasp &src) { return m_run(p,src,NULL,VecOp::d_maxq); } // get maximum sample value
+	inline Vasp *m_qamax(OpParam &p,Vasp &src) { return m_run(p,src,NULL,VecOp::d_amaxq); } // get maximum sample value
+	inline Vasp *m_qrmax(OpParam &p,Vasp &src) { return m_cun(p,src,NULL,VecOp::d_rmaxq); } // get maximum sample value
 
 	inline Vasp *m_minmax(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_minmax); } // min/max 
 

@@ -48,10 +48,16 @@ BL VecOp::d_radd(OpParam &p) { return d__cbin(f_radd<S>,p); }
 
 BL VecOp::d_gate(OpParam &p) { D__rbin(f_gate<S>,p); }
 BL VecOp::d_rgate(OpParam &p) { return d__cbin(f_rgate<S>,p); }
-BL VecOp::d_optq(OpParam &p) { D__rop(f_optq<S>,p); }
-BL VecOp::d_roptq(OpParam &p) { return d__cop(f_roptq<S>,p); }
+//BL VecOp::d_optq(OpParam &p) { D__rop(f_optq<S>,p); }
+//BL VecOp::d_roptq(OpParam &p) { return d__cop(f_roptq<S>,p); }
 BL VecOp::d_optf(OpParam &p) { return d__rop(f_optf<S>,p); }
 BL VecOp::d_roptf(OpParam &p) { return d__cop(f_roptf<S>,p); }
+BL VecOp::d_minq(OpParam &p) { D__rop(f_minq<S>,p); }
+BL VecOp::d_maxq(OpParam &p) { D__rop(f_maxq<S>,p); }
+BL VecOp::d_aminq(OpParam &p) { D__rop(f_aminq<S>,p); }
+BL VecOp::d_amaxq(OpParam &p) { D__rop(f_amaxq<S>,p); }
+BL VecOp::d_rminq(OpParam &p) { return d__cop(f_rminq<S>,p); }
+BL VecOp::d_rmaxq(OpParam &p) { return d__cop(f_rmaxq<S>,p); }
 
 BL VecOp::d_sqr(OpParam &p) { D__run(f_rsqr<S>,p); }
 BL VecOp::d_ssqr(OpParam &p) { return d__run(f_rssqr<S>,p); }
