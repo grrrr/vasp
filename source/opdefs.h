@@ -463,7 +463,7 @@ template<class T,class CL> inline BL _D__cop(OpParam &p) { return V__cop<T,OpPar
 	#define D__rbin(T,CL,p) ( CL::rbin_opt()?_D__rbin(T,CL,p):_d__rbin<T>(CL::rbin,p) )
 	#define D__cbin(T,CL,p) ( CL::cbin_opt()?_D__cbin(T,CL,p):_d__cbin<T>(CL::cbin,p) )
 	#define D__rop(T,CL,p) ( CL::rop_opt()?_D__rop(T,CL,p):_d__rop<T>(CL::rop,p) )
-	#define D__cop(T,CL,p) ( CL::cop_opt()?_D__cop<T,CL,p):_d__cop<T>(CL::cop,p) )
+	#define D__cop(T,CL,p) ( CL::cop_opt()?_D__cop(T,CL,p):_d__cop<T>(CL::cop,p) )
 #endif
 
 
