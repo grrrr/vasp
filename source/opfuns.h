@@ -161,6 +161,8 @@ namespace VecOp {
 	        else
 		        rv = iv = 0;
         } 
+    protected:
+        static T sgn(T x) { return x?(x > 0?1:-1):0; }
     };
 
     template<class T> class f_sqrt {
