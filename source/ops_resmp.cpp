@@ -10,6 +10,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \file vasp__resmp.cpp
 	\brief Routines for resampling
+
+	\todo check for src/dst overlap
+	\todo support negative tilt factors
 */
 
 #include "ops_resmp.h"
@@ -34,59 +37,79 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\todo symmetric operation!
 	\todo flag for filling remaining space
 */
+
+static V do_tilt(OpParam &p)
+{
+	const I icenter = p.tilt.center;
+
+	switch(p.tilt.mode) {
+	case 1: {
+		break;
+	}
+	case 2: {
+		break;
+	}
+	case 0: 
+	default: {
+		if(p.rsdt != p.rddt) p.rddt[icenter*p.rds] = p.rsdt[icenter*p.rss];
+
+		if(p.tilt.factor > 1) {
+			I i;
+			for(i = 1; i <= icenter; ++i) {
+				R sp = icenter-i*p.tilt.factor;
+				p.rddt[(icenter-i)*p.rds] = sp >= 0 && sp < p.frames?p.rsdt[(I)sp*p.rss]:0;
+			}
+			for(i = 1; i < p.frames-icenter; ++i) {
+				R sp = icenter+i*p.tilt.factor;
+				p.rddt[(icenter+i)*p.rds] = sp >= 0 && sp < p.frames?p.rsdt[(I)sp*p.rss]:0;
+			}
+		}
+		else {
+			I i;
+			for(i = icenter; i > 0; --i) {
+				R sp = icenter-i*p.tilt.factor;
+				p.rddt[(icenter-i)*p.rds] = p.rsdt[(I)sp*p.rss];
+			}
+			for(i = p.frames-1-icenter; i > 0; --i) {
+				R sp = icenter+i*p.tilt.factor;
+				p.rddt[(icenter+i)*p.rds] = p.rsdt[(I)sp*p.rss];
+			}
+		}
+		break;
+	}
+	}
+}
+
+
 BL VecOp::d_tilt(OpParam &p) 
 { 
 	if(p.frames <= 1 || p.tilt.factor == 1) return true;
 
-	if(p.tilt.factor == 0) {
-		post("%s - invalid factor value",p.opname);
-		return false;
-	}
-
-	if(p.symm >= 0) {
-		post("%s - Sorry, symmetric operation not implemented yet",p.opname);
+	if(p.tilt.factor <= 0) {
+		post("%s - invalid factor value (%f)",p.opname,p.tilt.factor);
 		return false;
 	}
 
 	I icenter = (I)p.tilt.center;
-
-	if(p.tilt.center != icenter)
+	if(p.tilt.center != icenter) {
+		p.tilt.center = icenter;
 		post("tilt: center position truncated to integer sample");
+	}
 
-	if(icenter < 0) {
+	if(p.tilt.center < 0) {
 		post("tilt: center position < 0 -> set to 0");
-		icenter = 0;
+		p.tilt.center = 0;
 	}
-	else if(icenter >= p.frames) {
+	else if(p.tilt.center >= p.frames) {
 		post("tilt: center position >= buffer length -> set to max. position");
-		icenter = p.frames;
+		p.tilt.center = p.frames;
 	}
 
+	// symmetric operation
+	if(p.symm == 1) 
+		p.tilt.center = p.frames-1-p.tilt.center;
 
-	// !lacking interpolation
-	if(p.tilt.factor > 1) {
-		I i;
-//		I pl = (I)(icenter/factor),ql = (I)((cnt-icenter)/factor);
-		for(i = 1; i <= icenter; ++i) {
-			R sp = icenter-i*p.tilt.factor;
-			p.rddt[(icenter-i)*p.rds] = sp >= 0 && sp < p.frames?p.rsdt[(I)sp*p.rss]:0;
-		}
-		for(i = 1; i < p.frames-icenter; ++i) {
-			R sp = icenter+i*p.tilt.factor;
-			p.rddt[(icenter+i)*p.rds] = sp >= 0 && sp < p.frames?p.rsdt[(I)sp*p.rss]:0;
-		}
-	}
-	else {
-		I i;
-		for(i = icenter; i > 0; --i) {
-			R sp = icenter-i*p.tilt.factor;
-			p.rddt[(icenter-i)*p.rds] = p.rsdt[(I)sp*p.rss];
-		}
-		for(i = p.frames-1-icenter; i > 0; --i) {
-			R sp = icenter+i*p.tilt.factor;
-			p.rddt[(icenter+i)*p.rds] = p.rsdt[(I)sp*p.rss];
-		}
-	}
+	do_tilt(p); 
 
 	return true;
 }
@@ -101,8 +124,6 @@ BL VecOp::d_tilt(OpParam &p)
 	\param symm true for symmetric operation
 	\param mode interpolation mode
 	\return normalized destination vasp
-	
-	\todo symmetric stuff
 */
 Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm,I mode) 
 { 
