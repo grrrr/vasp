@@ -1,8 +1,8 @@
-#N canvas 27 56 971 550 10;
+#N canvas 27 56 975 554 10;
 #X obj 519 287 wavedisplay-simple bufsetb \$0;
 #X obj 519 265 r bufsetb-length;
 #X obj 71 125 filelist \$0;
-#N canvas 92 108 425 345 inside 0;
+#N canvas 92 108 429 349 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 84 238 s \$0-sample-length;
 #X obj 66 208 s \$0-draw_display;
@@ -13,8 +13,10 @@
 #X msg 66 78 2;
 #X msg 66 132 read -resize \$1 bufseta;
 #X obj 214 237 s bufseta;
+#X obj 279 238 s bufsetb;
 #X connect 0 0 5 0;
 #X connect 3 0 9 0;
+#X connect 3 0 10 0;
 #X connect 4 0 7 0;
 #X connect 5 0 2 0;
 #X connect 5 1 1 0;
@@ -50,10 +52,10 @@
 #X obj 107 47 inlet;
 #X obj 107 309 outlet;
 #X obj 200 75 unpack;
-#X floatatom 190 112 12 0 0;
-#X floatatom 278 112 12 0 0;
-#X floatatom 194 149 12 0 0;
-#X floatatom 282 149 12 0 0;
+#X floatatom 190 112 12 0 0 0 - - -;
+#X floatatom 278 112 12 0 0 0 - - -;
+#X floatatom 194 149 12 0 0 0 - - -;
+#X floatatom 282 149 12 0 0 0 - - -;
 #X connect 1 0 11 0;
 #X connect 1 0 17 0;
 #X connect 1 1 6 1;
