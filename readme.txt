@@ -16,6 +16,9 @@ Version history:
 - CHANGE: vasp.sync and vasp.multi now have a default argument = 2
 - FIX: vasp.phasor - period length now 1 instead of 2 PI
 - FIX: bug in multi mode (more src, one arg vector)
+- ADD: path specification for help symbols
+- CHANGE: rewrote vasp.imm implementation (still very inefficient!!)
+- ADD: prior message defines differential priority for detached operations
 
 0.0.6:
 - reorganized file structure
@@ -119,7 +122,6 @@ bugs:
 ---------------------
 - vasp.(!)(c)fft can't handle strided data
 - vasp.xtilt nonfunctional
-- immediates - do bind(), not steal s_thing directly!!
 
 tests:
 ---------------------

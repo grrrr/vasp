@@ -20,17 +20,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define LIBMAGIC 12349876L // magic number for s_thing data check
 
 
-static BufEntry *libhead = NULL,*libtail = NULL;
-static t_symbol *freehead = NULL,*freetail = NULL;
-static I libcnt = 0,libtick = 0;
-static t_clock *libclk = NULL;
+class FreeEntry
+{
+public:
+	FreeEntry(t_symbol *s): sym(s),nxt(NULL) {}
 
-#ifdef FLEXT_THREADS
-static flext_base::ThrMutex libmtx;
-#endif
-
-static V FreeLibSym(t_symbol *s);
-
+	t_symbol *sym;
+	FreeEntry *nxt;
+};
 
 class BufEntry
 {
@@ -41,7 +38,7 @@ public:
 	V IncRef();
 	V DecRef();
 
-	UL magic;
+//	UL magic;
 	t_symbol *sym;
 	I refcnt,tick;
 	BufEntry *nxt;
@@ -51,13 +48,27 @@ public:
 };
 
 
+static BufEntry *libhead = NULL,*libtail = NULL;
+static FreeEntry *freehead = NULL,*freetail = NULL;
+static I libcnt = 0,libtick = 0;
+static t_clock *libclk = NULL;
+
+#ifdef FLEXT_THREADS
+static flext_base::ThrMutex libmtx;
+#endif
+
+static V FreeLibSym(t_symbol *s);
+
+
+
+
 BufEntry::BufEntry(t_symbol *s,I fr): 
-	sym(s),magic(LIBMAGIC),
+	sym(s), //magic(LIBMAGIC),
 	alloc(fr),len(fr),data(new S[fr]),
 	refcnt(0),nxt(NULL) 
 {
-	ASSERT(!flext_base::GetThing(sym));
-	flext_base::SetThing(sym,this);
+//	ASSERT(!flext_base::GetThing(sym));
+//	flext_base::SetThing(sym,this);
 }
 
 BufEntry::~BufEntry()
@@ -71,8 +82,8 @@ V BufEntry::DecRef() { --refcnt; tick = libtick; }
 
 static BufEntry *FindInLib(const t_symbol *s) 
 {
-	BufEntry *e = (BufEntry *)flext_base::GetThing(s);
-	return e && e->magic == LIBMAGIC?e:NULL;
+	for(BufEntry *e = libhead; e && e->sym != s; e = e->nxt);
+	return e?e:NULL;
 }
 
 VBuffer *BufLib::Get(const VSymbol &s,I chn,I len,I offs)
@@ -87,18 +98,16 @@ VBuffer *BufLib::Get(const VSymbol &s,I chn,I len,I offs)
 V BufLib::IncRef(t_symbol *s) 
 { 
 	if(s) {
-		BufEntry *e = (BufEntry *)flext_base::GetThing(s);
-		if(e && e->magic == LIBMAGIC) 
-			e->IncRef();
+		BufEntry *e = FindInLib(s);
+		if(e) e->IncRef();
 	}
 }
 
 V BufLib::DecRef(t_symbol *s)
 { 
 	if(s) {
-		BufEntry *e = (BufEntry *)flext_base::GetThing(s);
-		if(e && e->magic == LIBMAGIC) 
-			e->DecRef();
+		BufEntry *e = FindInLib(s);
+		if(e) e->DecRef();
 	}
 }
 
@@ -106,11 +115,12 @@ static t_symbol *GetLibSym()
 {
 	if(freehead) {
 		// reuse from free-list
-		t_symbol *r = freehead;
-		freehead = (t_symbol *)flext_base::GetThing(r);
+		FreeEntry *r = freehead;
+		freehead = r->nxt;
 		if(!freehead) freetail = NULL;
-		flext_base::SetThing(r,NULL);
-		return r;
+		t_symbol *s = r->sym;
+		delete r;
+		return s;
 	}
 	else {
 		// allocate new symbol
@@ -128,10 +138,10 @@ static t_symbol *GetLibSym()
 
 static V FreeLibSym(t_symbol *sym)
 {
-	flext_base::SetThing(sym,NULL);
-	if(!freehead) freehead = sym;
-	else flext_base::SetThing(freetail,sym);
-	freetail = sym;
+	FreeEntry *f = new FreeEntry(sym);
+	if(!freehead) freehead = f;
+	else freetail->nxt = f;
+	freetail = f;
 }
 
 static V LibTick(V *)
@@ -178,10 +188,9 @@ BufEntry *BufLib::NewImm(I fr)
 	}
 
 	t_symbol *s = NULL;
-	for(;;) {
+//	do {
 		s = GetLibSym();
-		if(!s->s_thing) break;
-	}
+//	} while(s->s_thing);
 
 	BufEntry *entry = new BufEntry(s,fr);
 
@@ -200,7 +209,7 @@ BufEntry *BufLib::NewImm(I fr)
 	return entry;
 }
 
-static F reuse_maxloserel = REUSE_MAXLOSEREL;
+static F reuse_maxloserel = (F)REUSE_MAXLOSEREL;
 static I reuse_maxloseabs = REUSE_MAXLOSEABS;
 
 BufEntry *BufLib::Resize(BufEntry *e,I fr,BL keep)

@@ -11,13 +11,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.7pre"
+#define VASP_VERSION "0.0.7pre2"
 
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
-#error You need at least flext version 0.3.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 302)
+#error You need at least flext version 0.3.2
 #endif
 
 //#ifdef __GNUC__

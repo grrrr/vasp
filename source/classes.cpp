@@ -35,16 +35,12 @@ V vasp_base::setup(t_class *c)
 
 vasp_base::vasp_base():
 	refresh(false),argchk(false),
-	unit(xsu_sample),loglvl(0),
-	detach(false),prior(xsp_lower)
+	unit(xsu_sample),loglvl(0)
 {
 	FLEXT_ADDMETHOD_(0,"radio",m_radio);
 	FLEXT_ADDMETHOD_(0,"argchk",m_argchk);
 	FLEXT_ADDMETHOD_(0,"loglvl",m_loglvl);
 	FLEXT_ADDMETHOD_E(0,"unit",m_unit);
-	FLEXT_ADDMETHOD_(0,"detach",m_detach);
-	FLEXT_ADDMETHOD_(0,"stop",m_stop);
-	FLEXT_ADDMETHOD_E(0,"prior",m_prior);
 }
 
 vasp_base::~vasp_base() {}
@@ -67,9 +63,6 @@ V vasp_base::m_radio(I argc,t_atom *argv)
 V vasp_base::m_unit(xs_unit u) { unit = u; }
 V vasp_base::m_argchk(BL chk) {	argchk = chk; }
 V vasp_base::m_loglvl(I lvl) { loglvl = lvl; }
-V vasp_base::m_detach(BL thr) { detach = thr; }
-V vasp_base::m_prior(xs_prior p) { prior = p; }
-V vasp_base::m_stop() {}
 
 
 BL vasp_base::ToOutVasp(I oix,Vasp &v) 
@@ -87,7 +80,9 @@ BL vasp_base::ToOutVasp(I oix,Vasp &v)
 // vasp_op class
 ///////////////////////////////////////////////////////////////////////////
 
-vasp_op::vasp_op(BL op)
+vasp_op::vasp_op(BL op):
+	detach(false),prior(0),
+	thrid(0)
 {
 	FLEXT_ADDBANG(0,m_dobang);
 	FLEXT_ADDMETHOD_(0,"vasp",m_vasp);
@@ -95,12 +90,17 @@ vasp_op::vasp_op(BL op)
 	if(op) FLEXT_ADDMETHOD_(0,"to",m_to);
 
 	FLEXT_ADDMETHOD_(0,"update",m_update);
+
+	FLEXT_ADDMETHOD_(0,"detach",m_detach);
+	FLEXT_ADDMETHOD_(0,"stop",m_stop);
+	FLEXT_ADDMETHOD_(0,"prior",m_prior);
 }
 
 V vasp_op::m_dobang()
 {
 #ifdef FLEXT_THREADS
-	if(detach) FLEXT_CALLMETHOD(m_bang);
+	if(detach) 
+		FLEXT_CALLMETHOD(m_bang);
 	else
 #endif
 		m_bang();
@@ -149,6 +149,21 @@ V vasp_op::m_update(I argc,t_atom *argv)
 	}
 }
 
+V vasp_op::m_detach(BL thr) 
+{ 
+#ifdef FLEXT_THREADS
+	detach = thr; 
+#endif
+}
+
+V vasp_op::m_prior(I p) 
+{ 
+#ifdef FLEXT_THREADS
+	if(thrid) ChangePriority(prior = p);
+#endif
+}
+
+V vasp_op::m_stop() {}
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -161,6 +176,11 @@ V vasp_tx::m_bang()
 {
 	// Thread has to wait until previous is finished
 	Lock(); 
+
+#ifdef FLEXT_THREADS
+	thrid = GetThreadId();
+	ChangePriority(prior);
+#endif
 
 //	if(ref.Ok()) 
 	{
@@ -188,6 +208,7 @@ V vasp_tx::m_bang()
 	}
 */
 
+	thrid = 0;
 	Unlock();
 }
 

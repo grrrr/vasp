@@ -23,8 +23,8 @@ public:
 	BL Ok() const { return sym != NULL; }
 	V Clear() { Dec(); sym = NULL; }
 
-	V *Thing() { return sym?flext_base::GetThing(sym):NULL; }
-	V Thing(V *th) { if(sym) flext_base::GetThing(sym); }
+//	V *Thing() { return sym?flext_base::GetThing(sym):NULL; }
+//	V Thing(V *th) { if(sym) flext_base::GetThing(sym); }
 	
 	VSymbol &operator =(const VSymbol &s) { Dec(); sym = s.sym; Inc(); return *this; }
 	

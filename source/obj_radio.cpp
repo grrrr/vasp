@@ -38,7 +38,7 @@ public:
 		FLEXT_ADDMETHOD(0,m_any);
 	}
 
-	virtual V m_any(t_symbol *s,I argc,t_atom *argv);
+	virtual V m_any(const t_symbol *s,I argc,t_atom *argv);
 
 	virtual V m_help() { post("%s - lets only radio messages pass through",thisName()); }
 private:
@@ -48,7 +48,7 @@ private:
 FLEXT_LIB("vasp.radio",vasp_radio)
 
 
-V vasp_radio::m_any(t_symbol *s,I argc,t_atom *argv) 
+V vasp_radio::m_any(const t_symbol *s,I argc,t_atom *argv) 
 {
 	if(s == vasp_base::sym_radio) ToOutAnything(0,s,argc,argv);
 }
