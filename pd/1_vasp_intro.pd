@@ -1,8 +1,4 @@
-#N canvas 71 74 878 585 10;
-#X text 86 89 vasp works "out-of-time" \, it does not relay on the
-usual blocksizes of Pd. A vasp algorithm can be assigned to any buffersize
-according to your own definition \, for example the whole sound-data
-of an array.;
+#N canvas 71 74 880 587 10;
 #X text 88 260 How to use:;
 #X obj 294 318 bng 15 250 50 0 1displays 1displayr empty 0 -6 192 8
 -225271 -1 -1;
@@ -61,3 +57,13 @@ you may want to update the graphic display.;
 and there is a reference-patch for every vasp-object.;
 #X obj 88 207 VASP;
 #X text 127 207 <-- vasp overview;
+#X text 86 89 vasp works "out-of-time" \, it does not relay on the
+usual blocksizes of Pd. A vasp algorithm can be assigned to any buffer
+size according to your own definition \, for example the whole sound-data
+of an array.;
+#X msg 130 310 vasp buffer1;
+#X obj 130 360 vasp.shift 100;
+#X msg 130 410 vasp buffer1;
+#X obj 130 440 vasp.update;
+#X connect 13 0 14 0;
+#X connect 15 0 16 0;

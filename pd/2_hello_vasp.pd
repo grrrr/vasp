@@ -1,4 +1,4 @@
-#N canvas 108 98 752 510 10;
+#N canvas 108 98 754 512 10;
 #X msg 208 220 vasp buffer1;
 #N canvas 40 55 255 173 clear_buffer 0;
 #X obj 59 79 vasp.update;
@@ -26,13 +26,13 @@
 #X text 73 349 update the display;
 #X text 82 218 appoint a buffer;
 #X text 66 284 specify the process;
-#X text 306 221 <-- to generate click;
 #X text 291 350 4) the data is displayed in the array;
 #X text 290 250 1) the "vasp buffer1" message (reference) is sent to
 the vasp.noise-object.;
 #X text 289 285 2) noise is calculated into the array.;
 #X text 292 320 3) a vasp message (reference) is passed to the next
 object;
+#X text 306 221 <-- to generate CLICK HERE;
 #X connect 0 0 5 0;
 #X connect 4 0 1 0;
 #X connect 5 0 6 0;
