@@ -1,5 +1,5 @@
-#N canvas 247 154 644 374 10;
-#X obj 56 30 cnv 15 15 15 empty empty vasp.offset? 0 10 1 14 -262144
+#N canvas 307 266 646 376 10;
+#X obj 44 28 cnv 15 15 15 empty empty vasp.offset? 0 10 1 14 -262144
 -1 0;
 #X text 42 59 get a single vectored vasp's offset;
 #X text 52 278 abbreviation;

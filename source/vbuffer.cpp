@@ -30,7 +30,7 @@ SysBuf &SysBuf::Set(const VSymbol &s,I c,I l,I o)
 	len = l >= 0?l:Frames();
 	if(offs+len > Frames()) {
 		I len1 = Frames()-offs;
-		post("vasp - buffer %s: Length (%i) is out of range, corrected to %i",s.Name(),len,len1);
+		if(l >= 0) post("vasp - buffer %s: Length (%i) is out of range, corrected to %i",s.Name(),len,len1);
 		len = len1;
 	}
 
