@@ -19,10 +19,13 @@ public:
 	vasp_copy(I argc,t_atom *argv);
 
 protected:
+	virtual V tx_list(I argc,t_atom *argv);
+/*
 	virtual V tx_vasp(const vasp &v);
 	virtual V tx_float(F v);
 	virtual V tx_complex(const CX &v);
 	virtual V tx_vector(const VX &v);
+*/
 };
 
 
@@ -31,12 +34,20 @@ FLEXT_NEW_G("vasp.=",vasp_copy)
 vasp_copy::vasp_copy(I argc,t_atom *argv):
 	vasp_tx(argc,argv)
 {
-	post("%s - copy setup called",thisName());
+//	post("%s - copy setup called",thisName());
 }
 
+V vasp_copy::tx_list(I argc,t_atom *argv)
+{
+	post("%s - work with list",thisName());
+
+}
+
+/*
 V vasp_copy::tx_vasp(const vasp &v)
 {
 	post("%s - work with vasp",thisName());
+
 }
 
 V vasp_copy::tx_float(F v)
@@ -46,4 +57,4 @@ V vasp_copy::tx_float(F v)
 
 V vasp_copy::tx_complex(const CX &v) {}
 V vasp_copy::tx_vector(const VX &v) {}
-
+*/

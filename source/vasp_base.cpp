@@ -16,11 +16,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 const t_symbol *vasp_base::sym_radio;
 const t_symbol *vasp_base::sym_vasp;
+const t_symbol *vasp_base::sym_complex;
+const t_symbol *vasp_base::sym_vector;
 
 V vasp_base::setup(t_class *c)
 {
 	sym_radio = gensym("radio");
 	sym_vasp = gensym("vasp");
+	sym_complex = gensym("complex");
+	sym_vector = gensym("vector");
 }
 
 vasp_base::vasp_base()
@@ -111,7 +115,7 @@ V vasp_base::m_update(I argc,t_atom *argv)
 
 
 vasp_tx::vasp_tx(I argc,t_atom *argv):
-	argtp(at_none)
+	at_hdr(NULL),at_cnt(0),at_lst(NULL)
 {
 	m_set(argc,argv);
 
@@ -119,6 +123,7 @@ vasp_tx::vasp_tx(I argc,t_atom *argv):
 	AddOutAnything();
 	SetupInOut();
 
+	FLEXT_ADDMETHOD(1,a_list);
 	FLEXT_ADDMETHOD_(1,"vasp",a_vasp);
 	FLEXT_ADDMETHOD_(1,"float",a_float);
 	FLEXT_ADDMETHOD_(1,"complex",a_complex);
@@ -127,22 +132,44 @@ vasp_tx::vasp_tx(I argc,t_atom *argv):
 
 vasp_tx::~vasp_tx()
 {
+	if(at_lst) delete[] at_lst;
+}
+
+static t_atom *Dup(I argc,t_atom *argv)
+{
+	t_atom *ret = new t_atom[argc];
+
+	// duplicate each atom in list
+	// #############################
+	return ret;
+}
+
+V vasp_tx::a_list(I argc,t_atom *argv) 
+{ 
+//	post("%s - vasp method called",thisName());
+
+	if(at_lst) delete[] at_lst;
+	at_hdr = sym_list;
+	at_lst = Dup(at_cnt = argc,argv);
 }
 
 V vasp_tx::a_vasp(I argc,t_atom *argv) 
 { 
 //	post("%s - vasp method called",thisName());
 
-	argtp = at_vasp;
-	arg_V(argc,argv);
+	if(at_lst) delete[] at_lst;
+	at_hdr = sym_vasp;
+	at_lst = Dup(at_cnt = argc,argv);
 }
 
 V vasp_tx::a_float(F v) 
 { 
 //	post("%s - float method called",thisName());
 
-	argtp = at_float;
-	arg_F = v;
+	if(at_lst) delete[] at_lst;
+	at_hdr = sym_float;
+	at_lst = new t_atom[at_cnt = 1];
+	SetFloat(at_lst[0],v);
 }
 
 V vasp_tx::a_complex(I argc,t_atom *argv) 
@@ -153,10 +180,11 @@ V vasp_tx::a_complex(I argc,t_atom *argv)
 		(argc == 1 && IsFloat(argv[0])) || 
 		(argc == 2 && IsFloat(argv[0]) && IsFloat(argv[1]))
 	) {
-		argtp = at_complex;
-		
-		arg_CX.real = GetAFloat(argv[0]);
-		arg_CX.imag = GetAFloat(argv[1]);
+		if(at_lst) delete[] at_lst;
+		at_hdr = sym_complex;
+		at_lst = new t_atom[at_cnt = 1];
+		SetFloat(at_lst[0],GetAFloat(argv[0]));
+		SetFloat(at_lst[1],GetAFloat(argv[1]));
 	}
 	else 
 		post("%s - complex argument is invalid (-> ignored)",thisName());
@@ -170,21 +198,7 @@ V vasp_tx::a_vector(I argc,t_atom *argv)
 
 V vasp_tx::x_work() 
 {
-//	post("%s: supposed to do work",thisName());
+	post("%s: supposed to do work",thisName());
 
-	switch(argtp) {
-		case at_none: tx_none(); break;
-		case at_vasp: tx_vasp(arg_V); break;
-		case at_float: tx_float(arg_F); break;
-		case at_complex: tx_complex(arg_CX); break;
-		case at_vector:	tx_vector(arg_VX); break;
-		default:
-			post("%s - argument type not handled",thisName());
-	}
 }
 
-V vasp_tx::tx_none() {}
-V vasp_tx::tx_vasp(const vasp &v) { post("%s - vasp argument is not handled",thisName()); }
-V vasp_tx::tx_float(F v) { post("%s - float argument is not handled",thisName()); }
-V vasp_tx::tx_complex(const CX &v) { post("%s - complex argument is not handled",thisName()); }
-V vasp_tx::tx_vector(const VX &v) { post("%s - vector argument is not handled",thisName()); }

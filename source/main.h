@@ -16,8 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 201)
-#error You need at least flext version 0.2.1
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 202)
+#error You need at least flext version 0.2.2
 #endif
 
 #include <typeinfo.h>
@@ -199,6 +199,17 @@ public:
 	V m_cifft();
 */
 
+	struct nop_funcs {
+		V (*funR)(F *,F,I);
+		V (*funC)(F *,F *,F,F,I);
+	};
+
+	struct arg_funcs {
+		V (*funR)(F *,F,I);
+		V (*funC)(F *,F *,F,F,I);
+		V (*funV)(F *,const F *,I);
+		V (*funCV)(F *,F *,const F *,const F *,I);
+	};
 
 protected:
 	I frames; // length counted in frames
@@ -212,14 +223,37 @@ protected:
 	static I min(I a,I b) { return a < b?a:b; }
 	static I max(I a,I b) { return a > b?a:b; }
 
+	static BL IsFloat(I argc,t_atom *argv) { return argc == 1 && flx::IsFloat(argv[0]); }
+	static BL IsComplex(I argc,t_atom *argv) { return argc == 2 && flx::IsFloat(argv[0]) && flx::IsFloat(argv[1]); }
+	static BL IsVector(I argc,t_atom *argv) { return argc >= 3 && flx::IsFloat(argv[0]) && flx::IsFloat(argv[1]) && flx::IsFloat(argv[3]) ; }
+
 private:
 	typedef flext_base flx;
 
-	V fr_transf(const C *op,F v,V (*dofunR)(F *,F,I));
-	V fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F,I));
-	V fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I),V (*dofunR)(F *,F,I));
-	V fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const F *,const F *,I),V (*dofunC)(F *,F *,F,F,I));
-	V fm_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I));
+/*
+	V fr_nop(const C *op,F v,V (*dofunR)(F *,F,I));
+	V fc_nop(const C *op,F vr,F vi,V (*dofunC)(F *,F *,F,F,I));
+	V fc_nop(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F,I));
+	V fr_arg(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I),V (*dofunR)(F *,F,I));
+	V fc_arg(const C *op,F vr,F vi,V (*dofunC)(F *,F *,F,F,I));
+	V fc_arg(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const F *,const F *,I),V (*dofunC)(F *,F *,F,F,I));
+	V fm_arg(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I));
+*/
+//	V f_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f);
+	V fr_nop(const C *op,F v,V (*f)(F *,F,I));
+	V fr_nop(const C *op,F v,const nop_funcs &f) { fr_nop(op,v,f.funR); }
+	V fc_nop(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I));
+	V fc_nop(const C *op,F vr,F vi,const nop_funcs &f) { fc_nop(op,vr,vi,f.funC); }
+	V fc_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f);
+
+//	V f_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
+	V fr_arg(const C *op,F v,V (*f)(F *,F,I));
+	V fr_arg(const C *op,F v,const arg_funcs &f) { fr_arg(op,v,f.funR); }
+	V fr_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
+	V fc_arg(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I));
+	V fc_arg(const C *op,F vr,F vi,const arg_funcs &f) { fc_arg(op,vr,vi,f.funC); }
+	V fc_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
+	V fm_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
 };
 
 
@@ -261,6 +295,8 @@ protected:
 	friend class vasp;
 
 	static const t_symbol *sym_vasp;
+	static const t_symbol *sym_complex;
+	static const t_symbol *sym_vector;
 	static const t_symbol *sym_radio;
 
 private:
@@ -291,11 +327,13 @@ public:
 
 	// assignment functions
 	virtual V a_vasp(I argc,t_atom *argv); 
+	virtual V a_list(I argc,t_atom *argv); 
 	virtual V a_float(F f); 
 	virtual V a_complex(I argc,t_atom *argv); 
 	virtual V a_vector(I argc,t_atom *argv); 
 
 	FLEXT_CALLBACK_G(a_vasp)
+	FLEXT_CALLBACK_G(a_list)
 	FLEXT_CALLBACK_1(a_float,F)
 	FLEXT_CALLBACK_G(a_complex)
 	FLEXT_CALLBACK_G(a_vector)
@@ -303,20 +341,9 @@ public:
 protected:
 	virtual V x_work();
 
-	virtual V tx_none();
-	virtual V tx_vasp(const vasp &v);
-	virtual V tx_float(F v);
-	virtual V tx_complex(const CX &v);
-	virtual V tx_vector(const VX &v);
-
-	enum {
-		at_none,at_vasp,at_float,at_complex,at_vector
-	} argtp;
-
-	vasp arg_V;
-	F arg_F;
-	CX arg_CX;
-	VX arg_VX;
+	const t_symbol *at_hdr;
+	I at_cnt;
+	t_atom *at_lst;
 };
 
 
