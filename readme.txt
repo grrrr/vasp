@@ -21,7 +21,7 @@ Package files:
 - gpl.txt,license.txt,mixfft.txt: license stuff
 - changes.txt,todo.txt: additional info
 - pd-help/*: VASP help for PD
-- pd/*: VASP abstractions for PD
+- pd/*: VASP abstractions and documentation for PD
 - max-help/*: VASP help for Max/MSP (not present)
 - maxmsp/*: VASP abstractions for Max/MSP
 - config-*,build-*,makefile.*,*.cw: Build
@@ -50,6 +50,10 @@ PD command line like
 
 Linux/OSX: pd -path /usr/local/lib/pd/extra/vasp/pd -lib vasp/vasp
 Windows:  pd -path c:\audio\pd\extra\vasp\pd -lib vasp\vasp
+
+
+The main help file "VASP-HELP.pd" resides in the "pd" sub-folder along with some 
+handy abstractions. Every help file is accessible from VASP-HELP.PD and vice versa.
 
 
 IMPORTANT INFORMATION for all MaxMSP users:
