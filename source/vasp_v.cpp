@@ -34,14 +34,14 @@ private:
 FLEXT_GIMME("vasp.v",vasp_v)
 
 
+/*
 V vasp_v::cb_setup(t_class *c)
 {
-/*
 	FLEXT_ADDMETHOD_1(c,"offset",m_offset,F);
 	FLEXT_ADDMETHOD_1(c,"length",m_length,F);
 	FLEXT_ADDMETHOD_2(c,"part",m_part,F,F);
-*/
 }
+*/
 
 
 vasp_v::vasp_v(I argc,t_atom *argv)
@@ -49,9 +49,15 @@ vasp_v::vasp_v(I argc,t_atom *argv)
 {
 	m_set(argc,argv);
 
-	add_in_def();
+	add_in_anything();
 	add_out_anything();
 	setup_inout();
+
+/*
+	FLEXT_ADDMETHOD_1(0,"offset",m_offset,F);
+	FLEXT_ADDMETHOD_1(0,"length",m_length,F);
+	FLEXT_ADDMETHOD_2(0,"part",m_part,F,F);
+*/
 }
 
 vasp_v::~vasp_v()

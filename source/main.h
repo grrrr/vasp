@@ -16,8 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 102)
-#error You need at least flext version 0.1.2 
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 200)
+#error You need at least flext version 0.2.0 
 #endif
 
 
@@ -103,9 +103,6 @@ public:
 	I Atoms() const { return atoms; }
 	t_atom *AtomList() { return atomlist; }
 
-	// gensym("vasp")
-	static t_symbol *const sym_vasp;
-
 protected:
 	I frames; // length counted in frames
 	I chns; // used channels
@@ -122,7 +119,7 @@ protected:
 class vasp_base:
 	public flext_base
 {
-	FLEXT_HEADER(vasp_base,flext_base)
+	FLEXT_HEADER_S(vasp_base,flext_base)
 
 	enum xs_unit {
 		xsu__ = -1,  // don't change
@@ -152,9 +149,13 @@ protected:
 	static I min(I a,I b) { return a < b?a:b; }
 	static I max(I a,I b) { return a > b?a:b; }
 
+
+	friend class vasp;
+
+	static const t_symbol *sym_vasp;
+	static const t_symbol *sym_radio;
+
 private:
-	
-	static t_symbol *const sym_radio;
 
 	xs_unit unit;
 	BL log;
@@ -355,9 +356,7 @@ public:
 
 protected:
 
-	virtual V m_methodmain(I inlet,t_symbol *s,I argc,t_atom *argv);
-
-//	FLEXT_CALLBACK_G(m_copy)
+	FLEXT_CALLBACK_G(m_copy)
 };
 
 #endif

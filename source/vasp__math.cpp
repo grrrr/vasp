@@ -28,14 +28,14 @@ V vasp_tx::fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F,I))
 	F vr,vi = 0;
 	if(argc > 0 && 
 		(
-			(argc == 1 && ISFLOAT(argv[0])) || 
-			(argc == 2 && ISFLOAT(argv[0]) && ISFLOAT(argv[1]))
+			(argc == 1 && is_float(argv[0])) || 
+			(argc == 2 && is_float(argv[0]) && is_float(argv[1]))
 		)
 	) {
 		// complex (or real) input
 
-		vr = atom_getfloatarg(1,argc,argv);
-		vi = atom_getfloatarg(2,argc,argv); // is zero if absent
+		vr = get_float(argv[0]);
+		vi = argc >= 2?get_float(argv[1]):0; 
 	}
 	else if(argc >= 0) {
 		post("%s(%s) - invalid argument",thisName(),op);
@@ -79,9 +79,9 @@ V vasp_tx::fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F,I))
 // for real values or single real vector
 V vasp_tx::fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I),V (*dofunR)(F *,F,I))
 {
-	if(argc == 1 && ISFLOAT(argv[0])) {
+	if(argc == 1 && is_float(argv[0])) {
 		// real input
-		F v = atom_getfloatarg(0,argc,argv);
+		F v = get_float(argv[0]);
 
 		for(I ci = 0; ci < ref.Vectors(); ++ci) {
 			vbuffer *bref = ref.Buffer(ci);		
@@ -146,11 +146,14 @@ V vasp_tx::fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I
 // for complex values or complex vector pair
 V vasp_tx::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const F *,const F *,I),V (*dofunC)(F *,F *,F,F,I))
 {
-	if((argc == 1 && ISFLOAT(argv[0])) || (argc == 2 && ISFLOAT(argv[0]) && ISFLOAT(argv[1]))) {
+	if(
+		(argc == 1 && is_float(argv[0])) || 
+		(argc == 2 && is_float(argv[0]) && is_float(argv[1]))
+	) {
 		// complex (or real) input
 
-		F vr = atom_getfloatarg(1,argc,argv);
-		F vi = atom_getfloatarg(2,argc,argv); // is zero if lacking
+		F vr = get_float(argv[0]);
+		F vi = argc >= 2?get_float(argv[1]):0; // is zero if lacking
 
 		if(ref.Vectors()%2 != 0) {
 			post("%s(%s) - number of src vectors is odd - omitting last vector",thisName(),op);

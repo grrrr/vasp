@@ -86,9 +86,6 @@ vbuffer &vbuffer::Set(t_symbol *s,I c,I l,I o)
 // vasp class
 ///////////////////////////////////////////////////////////////////////////
 
-t_symbol *const vasp::sym_vasp = gensym("vasp");
-
-
 vasp::vasp(): 
 	atoms(0),atomlist(NULL),
 	refs(0),chns(0),ref(NULL),
@@ -155,10 +152,10 @@ vasp &vasp::operator ()(I argc,t_atom *argv)
 	}
 
 	t_symbol *v = atom_getsymbolarg(ix,argc,argv);
-	if(v && v == sym_vasp) ix++; // if it is "vasp" ignore it
+	if(v && v == vasp_base::sym_vasp) ix++; // if it is "vasp" ignore it
 
-	if(argc > ix && (ISFLINT(argv[ix]) || ISFLOAT(argv[ix]))) {
-		frames = atom_getflintarg(ix,argc,argv);
+	if(argc > ix && (flext_base::is_flint(argv[ix]) || flext_base::is_float(argv[ix]))) {
+		frames = flext_base::geta_flint(argv[ix]);
 		lenset = true;
 		ix++;
 	}
@@ -167,7 +164,7 @@ vasp &vasp::operator ()(I argc,t_atom *argv)
 
 	chns = 0;
 	while(argc > ix) {
-		t_symbol *bsym = atom_getsymbolarg(ix,argc,argv);
+		t_symbol *bsym = flext_base::get_symbol(argv[ix]);
 		if(!bsym || !bsym->s_name || !*bsym->s_name) {  // expect a symbol
 			Clear();
 			return *this;
@@ -179,15 +176,15 @@ vasp &vasp::operator ()(I argc,t_atom *argv)
 		Ref &r = ref[chns];
 		r.sym = bsym;
 
-		if(argc > ix && (ISFLINT(argv[ix]) || ISFLOAT(argv[ix]))) {
-			r.chn = atom_getflintarg(ix,argc,argv);
+		if(argc > ix && (flext_base::is_flint(argv[ix]) || flext_base::is_float(argv[ix]))) {
+			r.chn = flext_base::geta_flint(argv[ix]);
 			ix++;
 		}
 		else
 			r.chn = 0;
 
-		if(argc > ix && (ISFLINT(argv[ix]) || ISFLOAT(argv[ix]))) {
-			r.offs = atom_getflintarg(ix,argc,argv);
+		if(argc > ix && (flext_base::is_flint(argv[ix]) || flext_base::is_float(argv[ix]))) {
+			r.offs = flext_base::geta_flint(argv[ix]);
 			ix++;
 		}
 		else
@@ -218,15 +215,15 @@ vasp &vasp::MakeList(BL withvasp)
 	}
 
 	if(withvasp)
-		SETSYMBOL(&atomlist[0],sym_vasp);  // VASP
+		flext_base::set_symbol(atomlist[0],vasp_base::sym_vasp);  // VASP
 
-	SETFLINT(&atomlist[voffs],frames);  // frames
+	flext_base::set_flint(atomlist[voffs],frames);  // frames
 
 	for(I ix = 0; ix < Vectors(); ++ix) {
 		Ref &r = Vector(ix);
-		SETSYMBOL(&atomlist[voffs+1+ix*3],r.sym);  // buf
-		SETFLINT(&atomlist[voffs+2+ix*3],r.chn);  // chn
-		SETFLINT(&atomlist[voffs+3+ix*3],r.offs);  // offs
+		flext_base::set_symbol(atomlist[voffs+1+ix*3],r.sym);  // buf
+		flext_base::set_flint(atomlist[voffs+2+ix*3],r.chn);  // chn
+		flext_base::set_flint(atomlist[voffs+3+ix*3],r.offs);  // offs
 	}
 
 	return *this;
@@ -247,22 +244,25 @@ vbuffer *vasp::Buffer(I ix) const
 // vasp_base class
 ///////////////////////////////////////////////////////////////////////////
 
-t_symbol *const vasp_base::sym_radio = gensym("radio");
+const t_symbol *vasp_base::sym_radio;
+const t_symbol *vasp_base::sym_vasp;
 
 V vasp_base::cb_setup(t_class *c)
 {
-	FLEXT_ADDBANG(c,m_bang);
-	FLEXT_ADDMETHOD_G(c,"vasp",m_vasp);
-	FLEXT_ADDMETHOD_G(c,"set",m_set);
-
-	FLEXT_ADDMETHOD_G(c,"radio",m_radio);
-
-	FLEXT_ADDMETHOD_E(c,"update",m_update);
-	FLEXT_ADDMETHOD_E(c,"unit",m_unit);
+	sym_radio = gensym("radio");
+	sym_vasp = gensym("vasp");
 }
 
 vasp_base::vasp_base()
 {
+	FLEXT_ADDBANG(0,m_bang);
+	FLEXT_ADDMETHOD_(0,"vasp",m_vasp);
+	FLEXT_ADDMETHOD_(0,"set",m_set);
+
+	FLEXT_ADDMETHOD_(0,"radio",m_radio);
+
+	FLEXT_ADDMETHOD_E(0,"update",m_update);
+	FLEXT_ADDMETHOD_E(0,"unit",m_unit);
 }
 
 vasp_base::~vasp_base()
@@ -286,7 +286,7 @@ V vasp_base::m_bang()
 {
 	if(ref.Ok()) {
 		ref.MakeList(false);
-		to_out_anything(0,vasp::sym_vasp,ref.Atoms(),ref.AtomList());
+		to_out_anything(0,sym_vasp,ref.Atoms(),ref.AtomList());
 	}
 }
 
@@ -322,8 +322,8 @@ V vasp_base::m_update(I argc,t_atom *argv)
 		}
 	}
 	else {
-		if(ISFLINT(argv[0]))
-			refresh = atom_getflintarg(0,argc,argv) != 0;
+		if(is_flint(argv[0]))
+			refresh = geta_flint(argv[0]) != 0;
 		else 
 			post("%s(update) - argument should be omitted or integer",thisName());
 	}

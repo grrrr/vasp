@@ -17,14 +17,9 @@ private:
 FLEXT_GIMME("vasp.prepend",vasp_prepend)
 
 
-V vasp_prepend::cb_setup(t_class *c)
-{
-	FLEXT_ADDMETHOD_G(c,"set",m_set);
-}
-
-
 vasp_prepend::vasp_prepend(I argc,t_atom *argv)
 {
+	FLEXT_ADDMETHOD_(0,"set",m_set);
 }
 
 V vasp_prepend::m_set(I argc,t_atom *argv)
