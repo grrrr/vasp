@@ -16,4 +16,5 @@ Thomas' Änderungen:
 - die default-längen und resize einstellungen noch einmal überprüfen
 - vasp.cpowi, vasp.csqr und vasp.rpow vorläufig noch mit resize, ...
 
+-vasp.radio nicht vergessen
 
