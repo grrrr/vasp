@@ -68,7 +68,7 @@ protected:
 
 };
 
-FLEXT_LIB("vasp.imm vasp.!",vasp_imm)
+FLEXT_LIB("vasp, vasp.imm vasp.!",vasp_imm)
 
 
 

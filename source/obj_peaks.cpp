@@ -105,7 +105,7 @@ private:
 	FLEXT_CALLBACK_I(m_peaks);
 };
 
-FLEXT_LIB_V("vasp.peaks?",vasp_qpeaks)
+FLEXT_LIB_V("vasp, vasp.peaks?",vasp_qpeaks)
 
 
 

@@ -62,7 +62,7 @@ public:
 	virtual V m_help() { post("%s - Split a vasp into its vectors",thisName()); }
 };
 
-FLEXT_LIB_1("vasp.split",vasp_split,I)
+FLEXT_LIB_1("vasp, vasp.split",vasp_split,I)
 
 
 /*! \class vasp_join
@@ -133,7 +133,7 @@ private:
 	FLEXT_CALLBACK(m_reset)
 };
 
-FLEXT_LIB_1("vasp.join",vasp_join,I)
+FLEXT_LIB_1("vasp, vasp.join",vasp_join,I)
 
 
 
@@ -191,7 +191,7 @@ public:
 	virtual V m_help() { post("%s - Spit out vectors of a vasp",thisName()); }
 };
 
-FLEXT_LIB_V("vasp.spit",vasp_spit)
+FLEXT_LIB_V("vasp, vasp.spit",vasp_spit)
 
 
 /*! \class vasp_gather
@@ -262,7 +262,7 @@ private:
 	FLEXT_CALLBACK_V(m_add)
 };
 
-FLEXT_LIB_V("vasp.gather",vasp_gather)
+FLEXT_LIB_V("vasp, vasp.gather",vasp_gather)
 
 
 

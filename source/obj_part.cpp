@@ -97,7 +97,7 @@ protected:
 	FLEXT_CALLBACK_V(m_part)
 };
 
-FLEXT_LIB_V("vasp.part",vasp_part)
+FLEXT_LIB_V("vasp, vasp.part",vasp_part)
 
 
 

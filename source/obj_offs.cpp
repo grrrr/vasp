@@ -69,7 +69,7 @@ private:
 	FLEXT_CALLBACK_F(m_offs);
 };
 
-FLEXT_LIB_V("vasp.offset vasp.o",vasp_offset)
+FLEXT_LIB_V("vasp, vasp.offset vasp.o",vasp_offset)
 
 
 
@@ -105,7 +105,7 @@ public:
 	virtual V m_help() { post("%s - Shift a vasp's offset(s) into the vector buffers",thisName()); }
 };
 
-FLEXT_LIB_V("vasp.offset+ vasp.o+",vasp_doffset)
+FLEXT_LIB_V("vasp, vasp.offset+ vasp.o+",vasp_doffset)
 
 
 
@@ -169,5 +169,5 @@ public:
 	virtual V m_help() { post("%s - Get a single vectored vasp's offset into the buffer",thisName()); }
 };
 
-FLEXT_LIB("vasp.offset? vasp.o?",vasp_qoffset)
+FLEXT_LIB("vasp, vasp.offset? vasp.o?",vasp_qoffset)
 
