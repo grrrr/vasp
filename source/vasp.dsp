@@ -373,6 +373,10 @@ SOURCE=.\opdefs.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\oploop.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\opparam.cpp
 # End Source File
 # Begin Source File
