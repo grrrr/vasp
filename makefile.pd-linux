@@ -38,7 +38,7 @@ TARGET=$(TARGDIR)/$(NAME).pd_linux
 # default target
 all: $(TARGDIR) $(TARGET) 
 
-$(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) # $(MAKEFILE)
+$(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(MAKEFILE)
 	touch $(patsubst %,$(SRCDIR)/%,$(SRCS))
 
 $(TARGDIR):
