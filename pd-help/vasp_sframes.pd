@@ -1,4 +1,4 @@
-#N canvas 39 37 927 622 10;
+#N canvas 39 37 929 624 10;
 #X obj 58 31 cnv 15 15 15 empty empty vasp.frames= 0 10 1 14 -262144
 -1 0;
 #N canvas 0 0 450 300 graph1 0;
@@ -25,23 +25,20 @@
 #X restore 545 227 graph;
 #X text 56 87 argument/right inlet: value in samples;
 #X obj 57 442 vasp.f+;
-#X obj 57 495 VASP-HELP;
+#X obj 55 559 VASP-HELP;
 #X obj 57 378 vasp.noise;
 #X obj 58 200 vasp.update;
 #X msg 58 153 vasp bufsfram1;
 #X msg 57 261 vasp bufsfram1;
 #X obj 57 284 vasp.frames= 0.7;
 #X obj 58 176 vasp.= env -1 0 1 44100 -1 88200;
-#X floatatom 148 305 12 0 0;
-#X text 56 56 searches for a value (starting at the end) and sets the
-length of the vasp according to it;
+#X floatatom 148 305 12 0 0 0 - - -;
 #X text 57 104 right outlet: frames relatively to the starting point
 of the search;
 #X text 147 319 since the search runs from the end to the left \, this
 value is negative;
 #X obj 57 356 vasp.-> bufsfram2;
-#X text 275 444 related object:;
-#X obj 381 443 vasp.o=;
+#X obj 57 502 vasp.o=;
 #X obj 190 148 bng 15 250 50 0 empty empty empty 0 -6 0 8 -24198 -1
 -1;
 #X text 222 148 1 generate a ramp;
@@ -67,7 +64,7 @@ value is negative;
 #X obj 210 111 bng 15 250 50 0 \$0-clear empty empty 0 -6 1152 8 -262144
 -1 -1;
 #X text 228 111 (clear);
-#X floatatom 234 175 12 0 0;
+#X floatatom 234 175 12 0 0 0 - - -;
 #X msg 126 336 slope 1;
 #X msg 110 367 slope 0;
 #X msg 97 399 slope -1;
@@ -75,7 +72,7 @@ value is negative;
 #X obj 264 376 bng 15 250 50 0 \$0-clear empty empty 0 -6 1152 8 -262144
 -1 -1;
 #X text 282 376 (clear);
-#X floatatom 300 423 12 0 0;
+#X floatatom 300 423 12 0 0 0 - - -;
 #X text 29 290 find values with positive and/or negative slope;
 #X obj 185 197 vasp.-> bufsfram2;
 #X obj 239 481 vasp.noise;
@@ -122,13 +119,18 @@ value is negative;
 #X connect 4 0 5 0;
 #X restore 562 490 pd clear;
 #X text 537 398 3 more features!;
+#X text 56 56 search for a value (starting at the end) and set the
+length of the vasp according to it;
+#X text 55 482 related objects:;
+#X obj 139 502 vasp.f;
+#X obj 204 502 vasp.s;
 #X connect 9 0 3 0;
 #X connect 11 0 14 0;
 #X connect 12 0 13 0;
-#X connect 13 0 19 0;
+#X connect 13 0 18 0;
 #X connect 13 1 15 0;
 #X connect 14 0 10 0;
-#X connect 19 1 9 0;
-#X connect 22 0 11 0;
-#X connect 24 0 12 0;
-#X connect 29 0 30 0;
+#X connect 18 1 9 0;
+#X connect 20 0 11 0;
+#X connect 22 0 12 0;
+#X connect 27 0 28 0;
