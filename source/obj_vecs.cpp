@@ -59,7 +59,7 @@ private:
 	FLEXT_CALLBACK_I(m_ix);
 };
 
-FLEXT_LIB_G("vasp.vector",vasp_vector)
+FLEXT_LIB_V("vasp.vector vasp.n",vasp_vector)
 
 
 
@@ -99,7 +99,7 @@ public:
 	virtual V m_help() { post("%s - Get number of vectors of a vasp",thisName()); }
 };
 
-FLEXT_LIB("vasp.vectors?",vasp_qvectors)
+FLEXT_LIB("vasp.vectors? vasp.n?",vasp_qvectors)
 
 
 

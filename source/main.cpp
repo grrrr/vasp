@@ -24,8 +24,8 @@ V lib_setup()
 	VASP_SETUP(v); // vasp
 	VASP_SETUP(m); // vasp.m
 
-	VASP_SETUP(chk);  // vasp.chk
-	VASP_SETUP(update);  // vasp.upd
+	VASP_SETUP(check);  // vasp.check
+	VASP_SETUP(update);  // vasp.update
 
 	VASP_SETUP(sync);  // vasp.sync
 
@@ -36,9 +36,9 @@ V lib_setup()
 	VASP_SETUP(dsize);  // vasp.size+ 
 	VASP_SETUP(qsize);  // vasp.size?
 
-	VASP_SETUP(offs);  // vasp.offs
-	VASP_SETUP(doffs); // vasp.offs+
-	VASP_SETUP(qoffs);  // vasp.offs?
+	VASP_SETUP(offset);  // vasp.offset
+	VASP_SETUP(doffset); // vasp.offset+
+	VASP_SETUP(qoffset);  // vasp.offset?
 	VASP_SETUP(frames);  // vasp.frames
 	VASP_SETUP(dframes);  // vasp.frames+
 	VASP_SETUP(qframes);  // vasp.frames?
@@ -49,10 +49,10 @@ V lib_setup()
 	VASP_SETUP(gather);
 	VASP_SETUP(part);
 
-	VASP_SETUP(q);
-	VASP_SETUP(qq);
+	VASP_SETUP(list);
+	VASP_SETUP(nonzero);
 
-	VASP_SETUP(i); // vasp.imm - NOT FUNCTIONAL
+	VASP_SETUP(imm); // vasp.imm - NOT FUNCTIONAL
 
 //	VASP__SETUP(copy);
 //	VASP__SETUP(ccopy);

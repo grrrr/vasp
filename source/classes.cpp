@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 const t_symbol *vasp_base::sym_radio;
 const t_symbol *vasp_base::sym_vasp;
+const t_symbol *vasp_base::sym_bpts;
 const t_symbol *vasp_base::sym_complex;
 const t_symbol *vasp_base::sym_vector;
 
@@ -25,6 +26,7 @@ V vasp_base::setup(t_class *c)
 {
 	sym_radio = gensym("radio");
 	sym_vasp = gensym("vasp");
+	sym_bpts = gensym("bpts");
 	sym_complex = gensym("complex");
 	sym_vector = gensym("vector");
 }
@@ -35,11 +37,11 @@ vasp_base::vasp_base()
 	FLEXT_ADDMETHOD_(0,"argchk",m_argchk);
 	FLEXT_ADDMETHOD_(0,"loglvl",m_loglvl);
 	FLEXT_ADDMETHOD_E(0,"unit",m_unit);
+	FLEXT_ADDMETHOD_(0,"detach",m_detach);
+	FLEXT_ADDMETHOD_(0,"stop",m_stop);
 }
 
-vasp_base::~vasp_base()
-{
-}
+vasp_base::~vasp_base() {}
 
 
 V vasp_base::m_radio(I argc,t_atom *argv)
@@ -57,10 +59,10 @@ V vasp_base::m_radio(I argc,t_atom *argv)
 
 
 V vasp_base::m_unit(xs_unit u) { unit = u; }
-
 V vasp_base::m_argchk(BL chk) {	argchk = chk; }
-
 V vasp_base::m_loglvl(I lvl) { loglvl = lvl; }
+V vasp_base::m_detach(BL thr) { detach = thr; }
+V vasp_base::m_stop() {}
 
 
 BL vasp_base::ToOutVasp(I oix,Vasp &v) 
@@ -205,6 +207,7 @@ vasp_binop::vasp_binop(I argc,t_atom *argv,BL op,UL outcode):
 
 	FLEXT_ADDMETHOD(1,a_list);
 	FLEXT_ADDMETHOD_(1,"vasp",a_vasp);
+	FLEXT_ADDMETHOD_(1,"bpts",a_bpts);
 	FLEXT_ADDMETHOD_(1,"float",a_float);
 	FLEXT_ADDMETHOD_(1,"int",a_int);
 	FLEXT_ADDMETHOD_(1,"complex",a_complex);
@@ -238,6 +241,21 @@ V vasp_binop::a_vasp(I argc,t_atom *argv)
 	else {
 		post("%s - invalid argument vasp (ignored)",thisName());
 		delete v;
+	}
+}
+
+V vasp_binop::a_bpts(I argc,t_atom *argv) 
+{ 
+	Bpts *bp = new Bpts(argc,argv);
+	if(bp->Ok()) {
+		arg.Set(bp);
+		if(argchk) {
+			// check argument feasibility
+		}
+	}
+	else {
+		post("%s - invalid argument vasp (ignored)",thisName());
+		delete bp;
 	}
 }
 

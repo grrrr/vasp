@@ -33,15 +33,19 @@ protected:
 	virtual V m_argchk(BL chk);  // precheck argument on arrival
 	virtual V m_loglvl(I lvl);  // noise level of log messages
 	virtual V m_unit(xs_unit u);  // unit command
+	virtual V m_detach(BL thr);				// detached thread
+	virtual V m_stop();				// stop working
 
 	BL refresh;  // immediate graphics refresh?
 	BL argchk;   // pre-operation argument feasibility check
 	xs_unit unit;  // time units
 	I loglvl;	// noise level for log messages
+	BL detach;	// detached operation?
 
 	friend class Vasp;
 
 	static const t_symbol *sym_vasp;
+	static const t_symbol *sym_bpts;
 	static const t_symbol *sym_complex;
 	static const t_symbol *sym_vector;
 	static const t_symbol *sym_radio;
@@ -51,11 +55,13 @@ protected:
 private:
 	static V setup(t_class *);
 
-	FLEXT_CALLBACK_G(m_radio)
+	FLEXT_CALLBACK_V(m_radio)
 
 	FLEXT_CALLBACK_B(m_argchk)
 	FLEXT_CALLBACK_I(m_loglvl)
 	FLEXT_CALLBACK_1(m_unit,xs_unit)
+	FLEXT_CALLBACK(m_stop)
+	FLEXT_CALLBACK_B(m_detach)
 };
 
 
@@ -78,12 +84,12 @@ protected:
 	// destination vasp
 	Vasp ref,dst;
 
-	FLEXT_CALLBACK_G(m_to)
+	FLEXT_CALLBACK_V(m_to)
 
 	FLEXT_CALLBACK(m_bang)
-	FLEXT_CALLBACK_G(m_vasp)
-	FLEXT_CALLBACK_G(m_set)
-	FLEXT_CALLBACK_G(m_update)
+	FLEXT_CALLBACK_V(m_vasp)
+	FLEXT_CALLBACK_V(m_set)
+	FLEXT_CALLBACK_V(m_update)
 };
 
 
@@ -134,8 +140,9 @@ protected:
 	vasp_binop(I argc,t_atom *argv,BL withto = false,UL outcode = 0);
 
 	// assignment functions
-	virtual V a_vasp(I argc,t_atom *argv);
 	virtual V a_list(I argc,t_atom *argv); 
+	virtual V a_vasp(I argc,t_atom *argv);
+	virtual V a_bpts(I argc,t_atom *argv);
 	virtual V a_float(F f); 
 	virtual V a_int(I f); 
 	virtual V a_complex(I argc,t_atom *argv); 
@@ -147,12 +154,13 @@ protected:
 	Argument arg;
 
 private:
-	FLEXT_CALLBACK_G(a_vasp)
-	FLEXT_CALLBACK_G(a_list)
+	FLEXT_CALLBACK_V(a_list)
+	FLEXT_CALLBACK_V(a_vasp)
+	FLEXT_CALLBACK_V(a_bpts)
 	FLEXT_CALLBACK_1(a_float,F)
 	FLEXT_CALLBACK_1(a_int,I)
-	FLEXT_CALLBACK_G(a_complex)
-	FLEXT_CALLBACK_G(a_vector)
+	FLEXT_CALLBACK_V(a_complex)
+	FLEXT_CALLBACK_V(a_vector)
 };
 
 
@@ -175,7 +183,7 @@ protected:
 	Argument arg;
 
 private:
-	FLEXT_CALLBACK_G(a_list)
+	FLEXT_CALLBACK_V(a_list)
 };
 
 
@@ -213,7 +221,7 @@ protected:																		\
 	}																			\
 	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
-FLEXT_LIB_G(name,vasp__##op)
+FLEXT_LIB_V(name,vasp__##op)
 
 
 #define VASP_ANYOP(name,op,args,to,help)										\
@@ -231,7 +239,7 @@ protected:																		\
 	}																			\
 	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
-FLEXT_LIB_G(name,vasp__##op)
+FLEXT_LIB_V(name,vasp__##op)
 
 #define VASP__SETUP(op) FLEXT_SETUP(vasp__##op);  
 

@@ -83,8 +83,24 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 						fun(*dr,*sr,*ar);							\
 			break;												\
 		}														\
-		case OpParam::Arg::arg_l: {							\
+		case OpParam::Arg::arg_bp: {							\
 			post("%s - Sorry, not implemented yet",p.opname);	\
+			OpParam::Arg::bp_t &bp = p.arg[0].bp;				\
+			R v =  bp.pts?bp.val[0]:0;							\
+			if(p.rsdt == p.rddt)									\
+				if(p.rds == 1)										\
+					for(I i = 0; i < p.frames; ++i,dr++)			\
+						fun(*dr,*dr,v);								\
+				else												\
+					for(I i = 0; i < p.frames; ++i,dr += p.rds) 	\
+						fun(*dr,*dr,v);								\
+			else													\
+				if(p.rss == 1 && p.rds == 1)						\
+					for(I i = 0; i < p.frames; ++i,sr++,dr++)		\
+						fun(*dr,*sr,v);								\
+				else												\
+					for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds) 	\
+						fun(*dr,*sr,v);							\
 			break;												\
 		}														\
 		case OpParam::Arg::arg_x: {							\
@@ -157,8 +173,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 						fun(*dr,*di,*sr,*si,*ar,0);					\
 			break;												\
 		}														\
-		case OpParam::Arg::arg_l: {									\
+		case OpParam::Arg::arg_bp: {									\
 			post("%s - Sorry, not implemented yet",p.opname);	\
+			OpParam::Arg::bp_t &bp = p.arg[0].bp;				\
+			R ar =  bp.pts?bp.val[0]:0;							\
+			if(sr == dr && si == di)							\
+				if(p.rds == 1 && p.ids == 1) \
+					for(I i = 0; i < p.frames; ++i,dr++,di++) \
+						fun(*dr,*di,*dr,*di,ar,0);			\
+				else											\
+					for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
+						fun(*dr,*di,*dr,*di,ar,0);			\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
+					fun(*dr,*di,*sr,*si,ar,0);				\
 			break;												\
 		}														\
 		case OpParam::Arg::arg_x: {									\

@@ -17,8 +17,20 @@ class Bpts
 {
 public:
 	Bpts(I argc,t_atom *argv);
+//	Bpts(const Bpts &p);
 	~Bpts();
 
+	V Clear();
+
+	BL Ok() const { return pos != NULL && val != NULL; }
+
+	I Count() const { return cnt; }
+	const R *Pos() const { return pos; }
+	const R *Val() const { return val; }
+
+protected:
+	I cnt;
+	R *pos,*val;
 };
 
 #endif

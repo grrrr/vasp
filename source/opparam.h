@@ -65,24 +65,28 @@ public:
 	{
 	public:
 		Arg(): argtp(arg_) {}
-		Arg(const Arg &op) { operator =(op); }
+//		Arg(const Arg &op) { operator =(op); }
 		~Arg() { Clear(); }
 		V Clear();
 
 		BL Is() const { return argtp != arg_; }
 
-		Arg &operator =(const Arg &op);
-		Arg &operator =(const Argument &arg);
+//		Arg &operator =(const Arg &op);
+//		Arg &operator =(const Argument &arg);
 
 		Arg &SetX(S r,S i = 0);
 		Arg &SetV(S *r,I rs,S *i = NULL,I is = 0);
-		Arg &SetL(I pts,R *r,R *i);
+		Arg &SetB(const Bpts &bp);
 
-		enum { arg_ = 0,arg_x,arg_v,arg_l } argtp;
+		typedef struct bp_t { I pts; const R *pos,*val; };
+		typedef	struct v_t { S *rdt,*idt; I rs,is; };
+		typedef struct x_t { R r,i; };
+
+		enum { arg_ = 0,arg_x,arg_v,arg_bp } argtp;
 		union {
-			struct { R r,i; } x;
-			struct { S *rdt,*idt; I rs,is; } v;
-			struct { I pts; R *r,*i; } l;
+			x_t x;
+			v_t v;
+			bp_t bp;
 		};
 	};
 

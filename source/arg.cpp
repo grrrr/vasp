@@ -40,11 +40,14 @@ Argument &Argument::Clear()
 	switch(tp) {
 	case tp_none:
 		break;
+	case tp_list:
+		if(dt.atoms) { delete dt.atoms; dt.atoms = NULL; }
+		break;
 	case tp_vasp:
 		if(dt.v) { delete dt.v; dt.v = NULL; }
 		break;
-	case tp_list:
-		if(dt.atoms) { delete dt.atoms; dt.atoms = NULL; }
+	case tp_bpts:
+		if(dt.bp) { delete dt.bp; dt.bp = NULL; }
 		break;
 	case tp_vx:
 		if(dt.vx) { delete dt.vx; dt.vx = NULL; }
@@ -73,6 +76,13 @@ Argument &Argument::Set(Vasp *v)
 {
 	if(tp != tp_none) Clear();
 	dt.v = v; tp = tp_vasp;
+	return *this;
+}
+
+Argument &Argument::Set(Bpts *bp)
+{
+	if(tp != tp_none) Clear();
+	dt.bp = bp; tp = tp_bpts;
 	return *this;
 }
 
@@ -160,6 +170,8 @@ Argument &Argument::Next(I i)
 }
 
 Argument &Argument::Add(Vasp *v) { Argument *a = new Argument; a->Set(v); return Add(a); }
+
+Argument &Argument::Add(Bpts *bp) { Argument *a = new Argument; a->Set(bp); return Add(a); }
 
 Argument &Argument::Add(I argc,t_atom *argv) { Argument *a = new Argument; a->Set(argc,argv); return Add(a); }
 

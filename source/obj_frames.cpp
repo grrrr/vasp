@@ -68,7 +68,7 @@ private:
 	FLEXT_CALLBACK_F(m_frms);
 };
 
-FLEXT_LIB_G("vasp.frames",vasp_frames)
+FLEXT_LIB_V("vasp.frames vasp.f",vasp_frames)
 
 
 
@@ -104,7 +104,7 @@ public:
 	virtual V m_help() { post("%s - Raise/lower a vasp's frame count",thisName()); }
 };
 
-FLEXT_LIB_G("vasp.frames+",vasp_dframes)
+FLEXT_LIB_V("vasp.frames+ vasp.f+",vasp_dframes)
 
 
 
@@ -142,7 +142,7 @@ public:
 	virtual V m_help() { post("%s - Get a vasp's frame count",thisName()); }
 };
 
-FLEXT_LIB("vasp.frames?",vasp_qframes)
+FLEXT_LIB("vasp.frames? vasp.f?",vasp_qframes)
 
 
 

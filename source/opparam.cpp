@@ -1,6 +1,7 @@
 #include "opparam.h"
 //#include <math.h>
 
+/*
 // Duplication of breakpoint lists should be avoided
 OpParam::Arg &OpParam::Arg::operator =(const Arg &op)
 {
@@ -9,26 +10,22 @@ OpParam::Arg &OpParam::Arg::operator =(const Arg &op)
 	switch(argtp = op.argtp) {
 	case arg_x:	x = op.x; break;
 	case arg_v:	v = op.v; break;
-	case arg_l:	{
-		// Copy breakpoint list (find a different way...)
-		l.pts = op.l.pts;
-		l.r = new R[l.pts];
-		l.i = new R[l.pts];
-		for(I i = 0; i < l.pts; ++i) 
-			l.r[i] = op.l.r[i],l.i[i] = op.l.i[i];
+	case arg_bp:	{
+		// Copy breakpoint list (find a different way, e.g. store them in a pool)
+		bp.pts = op.bp.pts;
+		bp.pt = new R[bp.pts];
+		for(I i = 0; i < bp.pts; ++i) 
+			bp.pt[i] = op.bp.pt[i];
 		break;
 	}
 	}
 
 	return *this;
 }
-
+*/
 V OpParam::Arg::Clear()
 {
-	if(argtp == arg_l) {
-		if(l.r) delete[] l.r;	
-		if(l.i) delete[] l.i;	
-	}
+//	if(argtp == arg_bp && bp.pt) delete[] bp.pt;	
 	argtp = arg_;
 }
 
@@ -49,18 +46,27 @@ OpParam::Arg &OpParam::Arg::SetV(S *r,I rs,S *i,I is)
 	return *this;
 }
 
-OpParam::Arg &OpParam::Arg::SetL(I pts,R *r,R *i)
+/*
+OpParam::Arg &OpParam::Arg::SetB(I pts,const R *pt)
 {
 	Clear();
-	argtp = arg_l;
-	l.pts = pts;
-	l.r = new R[pts];
-	l.i = new R[pts];
-	for(I ix = 0; ix < pts; ix) 
-		l.r[ix] = r[ix],l.i[ix] = i[ix];
+	argtp = arg_bp;
+	bp.pts = pts;
+	bp.pt = new R[pts];
+	for(I ix = 0; ix < pts; ix) bp.pt[ix] = pt[ix];
 	return *this;
 }
+*/
 
+OpParam::Arg &OpParam::Arg::SetB(const Bpts &b)
+{
+	Clear();
+	argtp = arg_bp;
+	bp.pts = b.Count();
+	bp.pos = b.Pos();
+	bp.val = b.Val();
+	return *this;
+}
 
 
 /*

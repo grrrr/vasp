@@ -11,8 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "util.h"
 
-/*! \class vasp_offs
-	\remark \b vasp.offs
+/*! \class vasp_offset
+	\remark \b vasp.offset
 	\brief Sets offset of vasp vectors.
 	\since 0.0.1
 	\param cmdln.1 [_time=0] - offset into buffer(s)
@@ -25,13 +25,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\attention Normally vasp vectors have individual offsets - this operations sets all the offsets to equal values.
 	\todo Implement unit processing.
 */
-class vasp_offs:
+class vasp_offset:
 	public vasp_tx
 {
-	FLEXT_HEADER(vasp_offs,vasp_tx)
+	FLEXT_HEADER(vasp_offset,vasp_tx)
 
 public:
-	vasp_offs(I argc,t_atom *argv):
+	vasp_offset(I argc,t_atom *argv):
 		offs(0),seto(false)
 	{
 		if(argc >= 1 && CanbeFloat(argv[0]))
@@ -69,13 +69,13 @@ private:
 	FLEXT_CALLBACK_F(m_offs);
 };
 
-FLEXT_LIB_G("vasp.offs",vasp_offs)
+FLEXT_LIB_V("vasp.offset vasp.o",vasp_offset)
 
 
 
 
-/*! \class vasp_doffs
-	\remark \b vasp.offs+
+/*! \class vasp_doffset
+	\remark \b vasp.offset+
 	\brief Sets offset of vasp vectors differentially.
 	\since 0.0.1
 	\param cmdln.1 [_time=0] - increase offset of into buffer(s)
@@ -87,13 +87,13 @@ FLEXT_LIB_G("vasp.offs",vasp_offs)
 
 	\todo Implement unit processing
 */
-class vasp_doffs:
-	public vasp_offs
+class vasp_doffset:
+	public vasp_offset
 {
-	FLEXT_HEADER(vasp_doffs,vasp_offs)
+	FLEXT_HEADER(vasp_doffset,vasp_offset)
 
 public:
-	vasp_doffs(I argc,t_atom *argv): vasp_offs(argc,argv) {}
+	vasp_doffset(I argc,t_atom *argv): vasp_offset(argc,argv) {}
 
 	virtual Vasp *x_work() 
 	{ 
@@ -105,12 +105,12 @@ public:
 	virtual V m_help() { post("%s - Shift a vasp's offset(s) into the vector buffers",thisName()); }
 };
 
-FLEXT_LIB_G("vasp.offs+",vasp_doffs)
+FLEXT_LIB_V("vasp.offset+ vasp.o+",vasp_doffset)
 
 
 
-/*! \class vasp_qoffs
-	\remark \b vasp.offs?
+/*! \class vasp_qoffset
+	\remark \b vasp.offset?
 	\brief Get offset of singled vector vasp.
 	\since 0.0.1
 	\param inlet vasp - is stored and output triggered
@@ -125,14 +125,14 @@ FLEXT_LIB_G("vasp.offs+",vasp_doffs)
 	\todo Should we provide a cmdln default vasp?
 	\todo Should we inhibit output for invalid vasps?
 */
-class vasp_qoffs:
+class vasp_qoffset:
 	public vasp_op
 {
-	FLEXT_HEADER(vasp_qoffs,vasp_op)
+	FLEXT_HEADER(vasp_qoffset,vasp_op)
 
 public:
 
-	vasp_qoffs()
+	vasp_qoffset()
 	{
 		AddInAnything();
 //		AddOutAnything();
@@ -169,5 +169,5 @@ public:
 	virtual V m_help() { post("%s - Get a single vectored vasp's offset into the buffer",thisName()); }
 };
 
-FLEXT_LIB("vasp.offs?",vasp_qoffs)
+FLEXT_LIB("vasp.offset? vasp.o?",vasp_qoffset)
 

@@ -69,7 +69,7 @@ private:
 	FLEXT_CALLBACK_F(m_size);
 };
 
-FLEXT_LIB_G("vasp.size",vasp_size)
+FLEXT_LIB_V("vasp.size vasp.s",vasp_size)
 
 
 
@@ -105,7 +105,7 @@ public:
 	virtual V m_help() { post("%s - Increase the size of the vector buffers",thisName()); }
 };
 
-FLEXT_LIB_G("vasp.size+",vasp_dsize)
+FLEXT_LIB_V("vasp.size+ vasp.s+",vasp_dsize)
 
 
 
@@ -164,5 +164,5 @@ public:
 	virtual V m_help() { post("%s - Get the buffer size of a vector",thisName()); }
 };
 
-FLEXT_LIB("vasp.size?",vasp_qsize)
+FLEXT_LIB("vasp.size? vasp.s?",vasp_qsize)
 

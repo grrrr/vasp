@@ -42,7 +42,13 @@ Vasp *VaspOp::m_rbin(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,VecOp::o
 
 	RVecBlock *vecs = argvasp?GetRVecs(p.opname,src,arg.GetVasp(),dst):GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		if(!argvasp) p.rbin.arg = arg.GetADouble(); // if no arg vasp
+		if(arg.CanbeDouble()) p.rbin.arg = arg.GetADouble(); 
+		else if(arg.IsBpts()) {
+			if(p.args != 1)
+				ERRINTERNAL();
+			else 
+				p.arg[0].SetB(arg.GetBpts());
+		}
 	
 		ret = DoOp(vecs,fun,p);
 		delete vecs;
@@ -58,10 +64,16 @@ Vasp *VaspOp::m_cbin(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,VecOp::o
 
 	CVecBlock *vecs = argvasp?GetCVecs(p.opname,src,arg.GetVasp(),dst):GetCVecs(p.opname,src,dst);
 	if(vecs) {
-		if(!argvasp) {
+		if(arg.CanbeComplex()) {
 			CX z = arg.GetAComplex();
 			p.cbin.rarg = z.real; 
 			p.cbin.iarg = z.imag; 
+		}
+		else if(arg.IsBpts()) {
+			if(p.args != 1)
+				ERRINTERNAL();
+			else 
+				p.arg[0].SetB(arg.GetBpts());
 		}
 
 		ret = DoOp(vecs,fun,p);

@@ -12,6 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __VASP_ARG_H
 
 #include "vasp.h"
+#include "bpts.h"
 
 class Argument
 {
@@ -24,6 +25,7 @@ public:
 	Argument &ClearAll();
 
 	Argument &Set(Vasp *v);
+	Argument &Set(Bpts *bp);
 	Argument &Set(I argc,t_atom *argv);
 	Argument &Set(I i);
 	Argument &Set(F f);
@@ -36,6 +38,7 @@ public:
 	Argument &Add(Argument *a);
 
 	Argument &Add(Vasp *v);
+	Argument &Add(Bpts *bp);
 	Argument &Add(I argc,t_atom *argv);
 	Argument &Add(I i);
 	Argument &Add(F f);
@@ -44,8 +47,9 @@ public:
 	Argument &Add(VX *vec);
 
 	BL IsNone() const { return tp == tp_none; }
-	BL IsVasp() const { return tp == tp_vasp; }
 	BL IsList() const { return tp == tp_list; }
+	BL IsVasp() const { return tp == tp_vasp; }
+	BL IsBpts() const { return tp == tp_bpts; }
 	BL IsInt() const { return tp == tp_int; }
 	BL CanbeInt() const { return tp == tp_int || tp == tp_float || tp_double; }
 	BL IsFloat() const { return tp == tp_float; }
@@ -57,8 +61,9 @@ public:
 	BL IsVector() const { return tp == tp_vx; }
 	BL CanbeVector() const { return tp == tp_vx || CanbeComplex(); }
 
-	const Vasp &GetVasp() const { return *dt.v; }
 	const flext_base::AtomList &GetList() const { return *dt.atoms; }
+	const Vasp &GetVasp() const { return *dt.v; }
+	const Bpts &GetBpts() const { return *dt.bp; }
 	I GetInt() const { return dt.i; }
 	I GetAInt() const;
 	F GetFloat() const { return dt.f; }
@@ -72,11 +77,12 @@ public:
 
 protected:
 	enum {
-		tp_none,tp_vasp,tp_list,tp_int,tp_float,tp_double,tp_cx,tp_vx
+		tp_none,tp_vasp,tp_bpts,tp_list,tp_int,tp_float,tp_double,tp_cx,tp_vx
 	} tp;
 
 	union {
 		Vasp *v;
+		Bpts *bp;
 		flext_base::AtomList *atoms;
 		F f;
 		D d;

@@ -13,22 +13,26 @@ Version history:
 
 0.0.6:
 - reorganized file structure
-- changed name of vasp.n and vasp.n? to vasp.vector and vasp.vectors?, respectively
-- added vasp.size, vasp.size+, vasp.size? for buffer size manipulation
-- added vasp.peaks? for extremum extraction
+- ADD: main names of vasp.n and vasp.n? are now vasp.vector and vasp.vectors?, respectively
+- ADD: main names of vasp.? and vasp.?? are now vasp.list and vasp.nonzero, respectively
+- NEW: vasp.size, vasp.size+, vasp.size? (vasp.s,vasp.s+,vasp.s?) for buffer size manipulation
+- NEW: vasp.peaks? for extremum extraction
+- ADD: shortcuts for vasp.frames,vasp.frames+,vasp.frames? -> vasp.f,vasp.f+,vasp.f?
+- CHANGE: changed vasp.offs,vasp.offs+,vasp.offs? to vasp.offset,vasp.offset+,vasp.offset?
+- ADD: shortcuts for vasp.offset,vasp.offset+,vasp.offset? -> vasp.o,vasp.o+,vasp.o?
 
 0.0.5:
-- fixed lacking sqrt in [vasp.rmin?],[vasp.rmax?]
-- fixed (offs >= frames) bug in [vasp.offs?] 
-- added lacking setup of [vasp.!-] and [vasp.c!-] objects 
-- corrected buggy [vasp.int] code
-- fixed recognition of integer arguments
+- FIXED: lacking sqrt in [vasp.rmin?],[vasp.rmax?]
+- FIXED: (offs >= frames) bug in [vasp.offs?] 
+- ADD: lacking setup of [vasp.!-] and [vasp.c!-] objects 
+- FIXED: buggy [vasp.int] code
+- FIXED: recognition of integer arguments
 
 0.0.4:
-- changed vasp.min/max functions so that a vasp length 0 results in 0
-- removed [vasp.inv], [vasp.cinv].... already replaced by [vasp.!/ 1]
-- fixed outlet bug in [vasp.?]
-- added right inlet to [vasp]... just like in [float] etc.
+- CHANGE: vasp.min/max functions so that a vasp length 0 results in 0
+- REMOVED: [vasp.inv], [vasp.cinv].... already replaced by [vasp.!/ 1]
+- FIXED: outlet bug in [vasp.?]
+- ADD: right inlet to [vasp]... just like in [float] etc.
 
 0.0.3:
 - restructured the code for future use of break-point lists as arguments
@@ -56,11 +60,11 @@ Version history:
 TODO list:
 
 features:
+---------------------
 - introduce several log levels (for warning posts)
 - flags how to handle special situations (div/0, log(<0) etc.)
 - how handle symmetric data operations (x*): leave 0 and n-1 bin, odd remainder bin?
 - progress % - outlet?
-- filter object for radio commands
 - asynchrone operations (multithreading, re-triggering) and interruptibility 
 	- this implies a message queue at the inlet!
 - grab (and recompose) signals for granular vasp usage
@@ -78,6 +82,7 @@ features:
 warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay on last frame
 
 objects:
+---------------------
 - wave object for table-lookup oscs.
 - various random distributions for noise
 
@@ -85,14 +90,30 @@ objects:
 
 - envelopes
 - gliss,slope -> stretch factor
-- slope: frequence distortion with given exponent
+- slope: frequency distortion with given exponent
+
+- vasp.trigger object
+- vasp.expr
+
+- vasp.noradio vasp.!radio: filter object for radio commands
+
 
 bugs:
-
+---------------------
+- vasp.(!)(c)fft can't handle strided data
 
 tests:
+---------------------
 - vasp.size always keeps the data... do we want that? -> flag if yes/no
 
 
 premature thoughts:
+---------------------
 - interface to scripting language (python)
+
+
+
+documentation:
+---------------------
+- have all the objects written in their full names
+- no special characters!

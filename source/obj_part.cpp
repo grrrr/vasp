@@ -94,10 +94,10 @@ public:
 protected:
 	I parts,*part;
 
-	FLEXT_CALLBACK_G(m_part)
+	FLEXT_CALLBACK_V(m_part)
 };
 
-FLEXT_LIB_G("vasp.part",vasp_part)
+FLEXT_LIB_V("vasp.part",vasp_part)
 
 
 

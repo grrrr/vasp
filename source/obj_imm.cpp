@@ -8,8 +8,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-/*! \file vasp_v.cpp
-	\brief Definitions of basic vasp objects.
+/*! \file vasp_imm.cpp
+	\brief Definitions for immediate vasps
 */
 
 
@@ -17,24 +17,24 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "util.h"
 
 
-/*! \class vasp_i
-	\remark \b vasp.!
+/*! \class vasp_imm
+	\remark \b vasp.imm
 	\brief Get vasp immediate.
-	\since 0.0.1
+	\since 0.0.6
 	\param inlet vasp - is stored and output triggered
 	\param inlet bang - triggers output
 	\param inlet set - vasp to be stored 
 	\retval outlet vasp! - vasp immediate
 
 */
-class vasp_i:
+class vasp_imm:
 	public vasp_op
 {
-	FLEXT_HEADER(vasp_i,vasp_op)
+	FLEXT_HEADER(vasp_imm,vasp_op)
 
 public:
 
-	vasp_i()
+	vasp_imm()
 	{
 		AddInAnything();
 		AddOutAnything();
@@ -49,7 +49,7 @@ public:
 	virtual V m_help() { post("%s - Get immediate vasp vectors",thisName()); }
 };
 
-FLEXT_LIB("vasp.!",vasp_i)
+FLEXT_LIB("vasp.imm vasp.!",vasp_imm)
 
 
 

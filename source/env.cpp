@@ -11,13 +11,35 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "bpts.h"
 
 Bpts::Bpts(I argc,t_atom *argv):
-	cnt(argc),pts(new R[argc])
+	cnt(argc/2)
 {
-	for(I i = 0; i < cnt; ++i)
-		pts[i] = GetAFloat(argv[i]);
+	pos = new R[cnt];
+	val = new R[cnt];
+
+	R prev = 0;
+	BL ok = true;
+	for(I i = 0; i < cnt; ++i) {
+		pos[i] = flext_base::GetAFloat(argv[i*2]);
+		if(pos[i] < prev) ok = false;
+		prev = pos[i];
+		val[i] = flext_base::GetAFloat(argv[i*2+1]);
+	}
+
+	if(!ok) Clear();
 }
 
-Bpts::~Bpts()
+/*
+Bpts::Bpts(const Bpts &s):
+	cnt(s.cnt),pos(new R[s.cnt]),val(new R[s.cnt])
 {
-	if(pts) delete[] pts;
+	for(I i = 0; i < cnt; ++i) pos[i] = s.pos[i],val[i] = s.val[i];
+}
+*/
+
+Bpts::~Bpts() { Clear(); }
+
+V Bpts::Clear()
+{
+	if(pos) delete[] pos;
+	if(val) delete[] val;
 }

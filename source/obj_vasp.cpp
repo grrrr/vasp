@@ -54,7 +54,7 @@ public:
 	virtual V m_help() { post("%s - Store and output a vasp",thisName()); }
 };
 
-FLEXT_LIB_G("vasp",vasp_v)
+FLEXT_LIB_V("vasp",vasp_v)
 
 
 
@@ -87,12 +87,12 @@ public:
 	virtual V m_help() { post("%s - Update graphics of a vasp",thisName()); }
 };
 
-FLEXT_LIB("vasp.update",vasp_update)
+FLEXT_LIB("vasp.update vasp.u",vasp_update)
 
 
 
-/*! \class vasp_chk
-	\remark \b vasp.chk
+/*! \class vasp_check
+	\remark \b vasp.check
 	\brief Check vasp dimensions.
 	\since 0.0.1
 	\param inlet vasp - is stored and output
@@ -103,13 +103,13 @@ FLEXT_LIB("vasp.update",vasp_update)
 	\remark checks and corrects frame count
 	\remark checks channel index... no correction, no output on error!
 */
-class vasp_chk:
+class vasp_check:
 	public vasp_tx
 {
-	FLEXT_HEADER(vasp_chk,vasp_tx)
+	FLEXT_HEADER(vasp_check,vasp_tx)
 
 public:
-	vasp_chk()
+	vasp_check()
 	{
 		AddInAnything();
 		AddOutAnything();
@@ -141,7 +141,7 @@ public:
 	virtual V m_help() { post("%s - Check vasp dimensions",thisName()); }
 };
 
-FLEXT_LIB("vasp.chk",vasp_chk)
+FLEXT_LIB("vasp.check vasp.chk",vasp_check)
 
 
 
