@@ -152,7 +152,7 @@ public:
 			p.peaks.density = GetAFloat(arg.GetList()[0]);
 		}
 		else {
-			if(!arg.IsNone()) post("%s - invalid desity argument -> set to 1",p.opname);
+			if(!arg.IsNone()) post("%s - invalid density argument -> set to 1",p.opname);
 			p.peaks.density = 1;
 		}
 		
@@ -161,7 +161,7 @@ public:
 		return ret;
 	}
 };																				
-FLEXT_LIB_V("vasp.peaks",vasp_peaks)
+FLEXT_LIB_V("vasp, vasp.peaks",vasp_peaks)
 
 
 class vasp_valleys:
@@ -172,7 +172,7 @@ public:
 	vasp_valleys(I argc,t_atom *argv): vasp_peaks(argc,argv) {}
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_valleys(p,ref,&dst); }
 };																				
-FLEXT_LIB_V("vasp.valleys",vasp_valleys)
+FLEXT_LIB_V("vasp, vasp.valleys",vasp_valleys)
 
 
 class vasp_rpeaks:
@@ -183,7 +183,7 @@ public:
 	vasp_rpeaks(I argc,t_atom *argv): vasp_peaks(argc,argv) {}
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_rpeaks(p,ref,&dst); }
 };																				
-FLEXT_LIB_V("vasp.rpeaks",vasp_rpeaks)
+FLEXT_LIB_V("vasp, vasp.rpeaks",vasp_rpeaks)
 
 
 class vasp_rvalleys:
@@ -194,5 +194,5 @@ public:
 	vasp_rvalleys(I argc,t_atom *argv): vasp_peaks(argc,argv) {}
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_rvalleys(p,ref,&dst); }
 };																				
-FLEXT_LIB_V("vasp.rvalleys",vasp_rvalleys)
+FLEXT_LIB_V("vasp, vasp.rvalleys",vasp_rvalleys)
 

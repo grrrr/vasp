@@ -70,7 +70,7 @@ static BL fft_fwd_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds)
 		const F nrm = 1./sqrt(cnt);
 		const I n2 = cnt/2;
 
-#ifndef VASP_SMALL
+#ifndef VASP_COMPACT
 		if(rds == 1) {
 			for(i = 0; i <= n2; ++i) rddt[i] = rdtmp[i]*nrm;
 			for(i = 1; i < cnt-n2; ++i) rddt[i+n2] = idtmp[i]*nrm;
@@ -138,7 +138,7 @@ static BL fft_inv_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds)
 
 	if(ret) {
 		const F nrm = 1./sqrt(cnt);
-#ifndef VASP_SMALL
+#ifndef VASP_COMPACT
 		if(rds == 1)
 			for(i = 0; i < cnt; ++i) 
 				rddt[i] = rdtmp[i]*nrm;
@@ -202,7 +202,7 @@ static BL fft_fwd_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 	if(ret) {
 		const F nrm = 1./sqrt(cnt);
 
-#ifdef VASP_SMALL
+#ifdef VASP_COMPACT
 		for(i = 0; i < cnt; ++i) {
 			rddt[i*rds] = rdtmp[i]*nrm;
 			iddt[i*ids] = idtmp[i]*nrm;
@@ -231,8 +231,8 @@ static BL fft_fwd_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 				for(i = 0; i < cnt; ++i) iddt[i*ids] *= nrm;
 			else
 				for(i = 0; i < cnt; ++i) iddt[i] *= nrm;
-	}
 #endif
+	}
 
 	if(rst) delete[] rstmp;
 	if(ist) delete[] istmp;
@@ -256,7 +256,7 @@ static BL fft_inv_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 	const I rds = _rds,ids = _ids,rss = _rss,iss = _iss;
 #endif
 
-#ifndef VASP_SMALL
+#ifndef VASP_COMPACT
 	if(iss == 1)
 		for(i = 0; i < cnt; ++i) isdt[i] = -isdt[i];
 	else
@@ -266,7 +266,7 @@ static BL fft_inv_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 	BL ret = fft_fwd_complex_any(cnt,rsdt,rss,isdt,iss,rddt,rds,iddt,ids);
 
 	if(ret) {
-#ifndef VASP_SMALL
+#ifndef VASP_COMPACT
 		if(ids == 1)
 			for(i = 0; i < cnt; ++i) iddt[i] = -iddt[i];
 		else
@@ -276,7 +276,7 @@ static BL fft_inv_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 
 	// reverse minus on input
 	if(isdt != iddt) {
-#ifndef VASP_SMALL
+#ifndef VASP_COMPACT
 		if(iss == 1)
 			for(i = 0; i < cnt; ++i) isdt[i] = -isdt[i];
 		else
@@ -331,7 +331,7 @@ static BL fft_complex_radix2(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,
 	if(ret) {
 		const F nrm = 1./sqrt(cnt);
 
-#ifndef VASP_SMALL
+#ifndef VASP_COMPACT
 		if(rtmp == rddt)
 			for(i = 0; i < cnt; ++i) rddt[i] *= nrm;
 		else if(rds == 1)
@@ -340,7 +340,7 @@ static BL fft_complex_radix2(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,
 #endif
 			for(i = 0; i < cnt; ++i) rddt[i*rds] = rtmp[i]*nrm;
 
-#ifndef VASP_SMALL
+#ifndef VASP_COMPACT
 		if(itmp == iddt)
 			for(i = 0; i < cnt; ++i) iddt[i] *= nrm;
 		else if(ids == 1)
@@ -433,7 +433,7 @@ BL fft_fwd_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 		realfft_split(stmp,cnt);
 
 		if(sstr == 1) {
-#ifdef VASP_SMALL
+#ifdef VASP_COMPACT
 			if(dstr == 1) {
 				for(i = 0; i <= n2; ++i) dst[i] = stmp[i]*fn;
 				for(i = 1; i < n2; ++i) dst[n2+i] = stmp[cnt-i]*fn;
@@ -484,7 +484,7 @@ BL fft_inv_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 		else {
 			stmp = new F[cnt];
 
-#ifdef VASP_SMALL
+#ifdef VASP_COMPACT
 			if(sstr == 1) {
 				for(i = 0; i <= n2; ++i) stmp[i] = src[i]*fn;
 				for(i = 1; i < n2; ++i) stmp[cnt-i] = src[n2+i]*fn;
@@ -509,7 +509,7 @@ BL fft_inv_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 
 		if(dstr == 1) {
 			stmp = dst;
-#ifdef VASP_SMALL
+#ifdef VASP_COMPACT
 			if(sstr == 1) {
 				for(i = 0; i <= n2; ++i) stmp[i] = src[i]*fn;
 				for(i = 1; i < n2; ++i) stmp[cnt-i] = src[n2+i]*fn;

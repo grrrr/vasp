@@ -20,8 +20,9 @@ Version history:
 - CHANGE: rewrote vasp.imm implementation (still very inefficient!!)
 - ADD: prior message defines differential priority for detached operations
 - ADD: full DFT implementation (radix-2/radix-n) - also support of "to" message
-- ADD: full implementation of tilt/xtilt with several interpolation methods
+- ADD: full implementation of vasp.(x)tilt with several interpolation methods
 - CHANGE: vasp.split and vasp.join now have default argument = 2
+- ADD: vasp.offset= and vasp.frames=: search for sample values (eg. zero crossings)
 
 0.0.6:
 - reorganized file structure

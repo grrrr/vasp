@@ -94,7 +94,6 @@ public:
 
 	Arg *arg;
 	
-//	S **radt,**iadt; I *ras,*ias;
 	union {
 		struct { R coef,carry; I rep; } flt;
 		struct { R carry; I rep; } intdif;
@@ -109,6 +108,7 @@ public:
 		struct { R arg; } rbin; 
 		struct { R rarg,iarg; } cbin; 
 		struct { I *order; } perm;
+		struct { R val; I offs,dif,dir,slope; } srch;
 	};
 
 private:

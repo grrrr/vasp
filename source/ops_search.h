@@ -16,12 +16,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // Sample search functions
 
 namespace VecOp {
+	BL d_search(OpParam &p); //! find values
 }
 
 namespace VaspOp {
 	// search functions
-	Vasp *m_soffset(OpParam &p,Vasp &src,Vasp *dst = NULL); //! find values
-	Vasp *m_sframes(OpParam &p,Vasp &src,Vasp *dst = NULL); //! find values
+	Vasp *m_search(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL st); //! find values
+	inline Vasp *m_soffset(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_search(p,src,arg,dst,true); }
+	inline Vasp *m_sframes(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_search(p,src,arg,dst,false); }
 }
 
 #endif

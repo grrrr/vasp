@@ -205,7 +205,7 @@ public:
 	
 	vasp_tilt(I argc,t_atom *argv): 
 		vasp_anyop(argc,argv,VASP_ARG_R(1),true),
-		fill(xtf_zero),inter(xti_none)
+		fill(xtf_zero),inter(xti_4p)
 	{
 		FLEXT_ADDMETHOD_E(0,"fill",m_fill);
 		FLEXT_ADDMETHOD_E(0,"inter",m_inter);

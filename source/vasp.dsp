@@ -304,11 +304,19 @@ SOURCE=.\ops_flt.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ops_gate.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ops_gen.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ops_gen.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_qminmax.cpp
 # End Source File
 # Begin Source File
 
@@ -325,6 +333,14 @@ SOURCE=.\ops_resmp.cpp
 # Begin Source File
 
 SOURCE=.\ops_resmp.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_search.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_search.h
 # End Source File
 # Begin Source File
 

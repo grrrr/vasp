@@ -83,3 +83,6 @@ Vasp *VaspOp::m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 VASP_ANYOP("vasp.gate",gate,1,true,VASP_ARG_R(1),"") 
 VASP_ANYOP("vasp.rgate",rgate,1,true,VASP_ARG_R(1),"") 
 
+
+// --------------------------------------------------------------
+

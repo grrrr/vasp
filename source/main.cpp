@@ -178,6 +178,9 @@ V lib_setup()
 	VASP__SETUP(tilt)
 	VASP__SETUP(xtilt)
 
+	VASP__SETUP(soffset)
+	VASP__SETUP(sframes)
+
 	VASP__SETUP(rfft)
 	VASP__SETUP(rifft)
 	VASP__SETUP(cfft)
