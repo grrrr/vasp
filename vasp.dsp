@@ -157,10 +157,6 @@ SOURCE=changes.txt
 # End Source File
 # Begin Source File
 
-SOURCE=compile.txt
-# End Source File
-# Begin Source File
-
 SOURCE=license.txt
 # End Source File
 # Begin Source File
