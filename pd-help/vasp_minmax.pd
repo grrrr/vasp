@@ -1,0 +1,53 @@
+#N canvas 43 34 873 567 10;
+#X obj 71 32 cnv 15 15 15 empty empty vasp.minmax 0 10 1 14 -262144
+-1 0;
+#X obj 67 306 cnv 15 68 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#N canvas 0 0 450 300 graph1 0;
+#X array bufmm1 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 441 81 graph;
+#N canvas 0 0 406 282 init 0;
+#X obj 33 19 loadbang;
+#X msg 33 45 symbol bufmm1 \, symbol bufmm2 \, symbol bufmm3;
+#X msg 33 73 \; \$1 xticks 0 4410 10 \; \$1 yticks 0 0.25 2 \; \$1
+ylabel 94000 -1 -0.5 0 0.5 1;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X restore 723 496 pd init;
+#N canvas 40 55 247 122 clear_buffer 0;
+#X obj 54 79 vasp.update;
+#X obj 54 56 vasp.= 0;
+#X obj 54 26 inlet;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X restore 64 451 pd clear_buffer;
+#X obj 77 183 vasp.update;
+#X text 71 63 splits a vasp into positive and negative valued vasps
+;
+#N canvas 0 0 450 300 graph1 0;
+#X array bufmm2 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 441 222 graph;
+#N canvas 0 0 450 300 graph1 0;
+#X array bufmm3 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 442 366 graph;
+#X msg 77 127 vasp bufmm1;
+#X obj 77 156 vasp.osc 44100;
+#X text 175 125 generate a sine wave at 1 Hz;
+#X msg 64 428 vasp bufmm1 bufmm2 bufmm3;
+#X obj 67 327 vasp.update;
+#X msg 67 249 vasp bufmm2 bufmm3;
+#X obj 67 283 vasp.= bufmm1;
+#X text 205 248 copy to new buffer;
+#X obj 67 306 vasp.minmax;
+#X text 709 60 source;
+#X text 652 202 negative values;
+#X text 649 346 positive values;
+#X connect 9 0 10 0;
+#X connect 10 0 5 0;
+#X connect 12 0 4 0;
+#X connect 14 0 15 0;
+#X connect 15 0 17 0;
+#X connect 17 0 13 0;

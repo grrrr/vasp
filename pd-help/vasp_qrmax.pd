@@ -1,0 +1,100 @@
+#N canvas 32 16 877 621 10;
+#X obj 71 32 cnv 15 15 15 empty empty vasp.rmax? 0 10 1 14 -262144
+-1 0;
+#X obj 289 135 filelist \$0;
+#N canvas 92 108 406 371 inside 0;
+#X obj 66 154 soundfiler;
+#X obj 84 238 s \$0-sample-length;
+#X obj 66 208 s \$0-draw_display;
+#X msg 214 206 resize \$1;
+#X obj 66 50 loadbang;
+#X obj 66 178 t b f f;
+#X obj 66 98 filelisthandler \$0;
+#X msg 66 76 2;
+#X obj 214 228 s bufqrmax1;
+#X obj 225 250 s bufqrmax2;
+#X msg 66 130 read \$1 bufqrmax1;
+#X obj 215 121 loadbang;
+#X msg 215 146 88200;
+#X connect 0 0 5 0;
+#X connect 3 0 8 0;
+#X connect 3 0 9 0;
+#X connect 4 0 7 0;
+#X connect 5 0 2 0;
+#X connect 5 1 1 0;
+#X connect 5 2 3 0;
+#X connect 6 0 10 0;
+#X connect 7 0 6 0;
+#X connect 10 0 0 0;
+#X connect 11 0 12 0;
+#X connect 12 0 5 0;
+#X restore 719 546 pd inside;
+#X text 70 75 right outlet: calculated value;
+#X text 70 92 needs two vectors;
+#N canvas 40 55 281 170 clear_buffers 0;
+#X obj 54 79 vasp.update;
+#X obj 54 56 vasp.= 0;
+#X obj 54 26 inlet;
+#X obj 54 108 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X connect 0 0 3 0;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X restore 520 545 pd clear_buffers;
+#X obj 373 544 dac~;
+#X obj 373 501 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 395 498 play;
+#X text 72 58 maximum value of the radius values of a complex vasp
+;
+#X obj 465 130 wavedisplay-simple bufqrmax1 \$0;
+#X obj 465 267 wavedisplay-simple bufqrmax2 \$0;
+#X msg 520 522 vasp bufqrmax1 bufqrmax2;
+#X obj 53 254 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X floatatom 108 309 5 0 0;
+#X obj 53 327 vasp./;
+#X obj 53 347 vasp.update;
+#X obj 53 367 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 51 538 vasp.update;
+#X obj 51 558 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 53 162 vasp.cfft;
+#X obj 53 182 vasp.update;
+#X obj 53 202 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 53 142 vasp bufqrmax1 bufqrmax2;
+#X obj 53 254 vasp.rmax?;
+#X text 150 308 -> current maximum;
+#X text 136 346 use it to optimise radius;
+#X msg 53 234 vasp bufqrmax1 bufqrmax2;
+#X obj 53 432 vasp.update;
+#X obj 53 452 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 53 392 vasp bufqrmax1 bufqrmax2;
+#X obj 53 412 vasp.c!fft;
+#X text 49 482 or use vasp.ropt which does the same;
+#X msg 51 498 vasp bufqrmax1 bufqrmax2;
+#X obj 51 518 vasp.ropt;
+#X obj 373 521 tabplay~ bufqrmax1;
+#X msg 53 282 vasp bufqrmax1 bufqrmax2;
+#X connect 7 0 35 0;
+#X connect 12 0 5 0;
+#X connect 14 0 15 1;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 18 0 19 0;
+#X connect 20 0 21 0;
+#X connect 21 0 22 0;
+#X connect 23 0 20 0;
+#X connect 24 1 14 0;
+#X connect 27 0 24 0;
+#X connect 28 0 29 0;
+#X connect 30 0 31 0;
+#X connect 31 0 28 0;
+#X connect 33 0 34 0;
+#X connect 34 0 18 0;
+#X connect 35 0 6 0;
+#X connect 35 0 6 1;
+#X connect 36 0 15 0;

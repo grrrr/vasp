@@ -1,0 +1,57 @@
+#N canvas 53 20 875 418 10;
+#X obj 71 32 cnv 15 15 15 empty empty vasp.amin? 0 10 1 14 -262144
+-1 0;
+#X obj 73 238 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X obj 428 309 dac~;
+#X obj 428 265 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 450 264 play;
+#N canvas 40 55 281 170 clear_buffer 0;
+#X obj 54 79 vasp.update;
+#X obj 54 56 vasp.= 0;
+#X obj 54 26 inlet;
+#X obj 54 108 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X connect 0 0 3 0;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X restore 560 309 pd clear_buffer;
+#X obj 74 116 filelist \$0;
+#N canvas 92 108 398 363 inside 0;
+#X obj 66 154 soundfiler;
+#X obj 84 238 s \$0-sample-length;
+#X obj 66 208 s \$0-draw_display;
+#X msg 214 206 resize \$1;
+#X obj 66 50 loadbang;
+#X obj 66 178 t b f f;
+#X obj 66 98 filelisthandler \$0;
+#X msg 66 130 read -resize \$1 bufamin;
+#X obj 214 228 s bufamin;
+#X msg 66 76 3;
+#X connect 0 0 5 0;
+#X connect 3 0 8 0;
+#X connect 4 0 9 0;
+#X connect 5 0 2 0;
+#X connect 5 1 1 0;
+#X connect 5 2 3 0;
+#X connect 6 0 7 0;
+#X connect 7 0 0 0;
+#X connect 9 0 6 0;
+#X restore 719 310 pd inside;
+#X text 72 58 min-value of the absolute values of a vasp;
+#X text 70 75 right outlet: calculated value;
+#X msg 73 215 vasp bufamin;
+#X obj 73 238 vasp.amin?;
+#X floatatom 128 272 5 0 0;
+#X obj 449 118 wavedisplay-simple bufamin \$0;
+#X obj 428 286 tabplay~ bufamin;
+#X msg 560 286 vasp bufamin;
+#X text 166 216 find the absolute minimum of this soundfile;
+#X text 171 271 -> current absolute minimum;
+#X connect 3 0 14 0;
+#X connect 10 0 11 0;
+#X connect 11 1 12 0;
+#X connect 14 0 2 0;
+#X connect 14 0 2 1;
+#X connect 15 0 5 0;
