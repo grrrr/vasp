@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.7pre3"
+#define VASP_VERSION "0.0.7pre4"
 
 
 #include <flext.h>
@@ -42,6 +42,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define R double // type for internal calculations
 #define CX complex
 #define VX vector
+
+
+#ifdef PD
+
+// buffers are never interleaved - special optimizations may occur
+#define VASP_CHN1  
+
+#endif
 
 class complex 
 { 

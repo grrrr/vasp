@@ -80,9 +80,11 @@ BL vasp_base::ToOutVasp(I oix,Vasp &v)
 // vasp_op class
 ///////////////////////////////////////////////////////////////////////////
 
-vasp_op::vasp_op(BL op):
-	detach(false),prior(-2),
+vasp_op::vasp_op(BL op)
+#ifdef FLEXT_THREADS
+	:detach(false),prior(-2),
 	thrid(0)
+#endif
 {
 	FLEXT_ADDBANG(0,m_dobang);
 	FLEXT_ADDMETHOD_(0,"vasp",m_vasp);
@@ -156,10 +158,14 @@ V vasp_op::m_detach(BL thr)
 #endif
 }
 
-V vasp_op::m_prior(I p) { prior = p; }
+V vasp_op::m_prior(I p) 
+{ 
+#ifdef FLEXT_THREADS
+	prior = p; 
+#endif
+}
 
 V vasp_op::m_stop() {}
-
 
 ///////////////////////////////////////////////////////////////////////////
 // vasp_tx class
@@ -202,7 +208,9 @@ V vasp_tx::m_bang()
 	}
 */
 
+#ifdef FLEXT_THREADS
 	thrid = 0;
+#endif
 	Unlock();
 }
 

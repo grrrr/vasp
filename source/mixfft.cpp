@@ -3,20 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "oppermute.h"
-
-#define REAL float
-
-/************************************************************************
-
-	changes by Thomas Grill:
-
-	- introduced REAL type for numbers
-	- made functions static
-	- threw fft_n functions out of twiddleTransf
-	- changed LOG prints (to post)
-
-************************************************************************/
+#ifdef _MSC_VER
+#pragma warning(disable: 4244)
+#endif
 
 /************************************************************************
   fft(int n, double xRe[], double xIm[], double yRe[], double yIm[])
@@ -99,6 +88,23 @@
       fft_odd         :  length n DFT, n odd.
 *************************************************************************/
 
+/************************************************************************
+
+	changes by Thomas Grill:
+
+	- introduced REAL type for numbers
+	- made functions static
+	- threw fft_n functions out of twiddleTransf
+	- changed LOG prints (to post)
+
+************************************************************************/
+
+#define REAL float
+extern "C" void post(const char *c,...);
+
+/************************************************************************/
+
+
 #define  maxPrimeFactor        500
 #define  maxPrimeFactorDiv2    (maxPrimeFactor+1)/2
 #define  maxFactorCount        100
@@ -125,8 +131,6 @@ static REAL zRe[maxPrimeFactor], zIm[maxPrimeFactor];
 static REAL   vRe[maxPrimeFactorDiv2], vIm[maxPrimeFactorDiv2];
 static REAL   wRe[maxPrimeFactorDiv2], wIm[maxPrimeFactorDiv2];
 
-// T.Grill:
-//extern "C" void post(const char *c,...);
 
 static void factorize(int n, int *nFact, int fact[])
 {
@@ -261,7 +265,10 @@ static void permute(int nPoint, int nFact,
     yRe[nPoint-1]=xRe[nPoint-1];
     yIm[nPoint-1]=xIm[nPoint-1];
 }   /* permute */
-#else
+
+#else 
+// CAUTION: the permutation does not work correctly for some values (like 21)
+
 static int permfun(int ij, int n,OpParam &p) { return p.perm.order[ij]; }
 
 static void permute(int nPoint, int nFact,

@@ -19,6 +19,7 @@ Version history:
 - ADD: path specification for help symbols
 - CHANGE: rewrote vasp.imm implementation (still very inefficient!!)
 - ADD: prior message defines differential priority for detached operations
+- ADD: full DFT implementation (radix-2/radix-n) - also support of "to" message
 
 0.0.6:
 - reorganized file structure
@@ -89,7 +90,6 @@ features:
 
 - complex power operations - delta phase
 
-- check and optimize fft routines
 - optimize (c)osc with table lookup, phasor with Höldrichs code (in pd)
 
 - clear samples outside transform domain (e.g. tilt)?
@@ -101,7 +101,7 @@ warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay 
 - better algorithm for vasp.fix
 
 - make loops granular and interruptible
-- make in place rotation more efficient
+- make in place rotation more efficient (use temporary space)
 
 - introduce default values (2) for vasp.split and vasp.join
 
@@ -120,14 +120,12 @@ objects:
 
 bugs:
 ---------------------
-- vasp.(!)(c)fft can't handle strided data
 - vasp.xtilt nonfunctional
 
 tests:
 ---------------------
 - vasp.size always keeps the data... do we want that? -> flag if yes/no
 - in-place operation (src == dst), test if strides are equal!
-- check results of rfft!
 
 
 premature thoughts:

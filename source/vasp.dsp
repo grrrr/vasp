@@ -387,6 +387,10 @@ SOURCE=.\mixfft.cpp
 
 SOURCE=.\rdx2fft.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\rvfft.cpp
+# End Source File
 # End Group
 # Begin Group "objs"
 
