@@ -1,4 +1,4 @@
-#N canvas 17 40 918 587 10;
+#N canvas 17 40 875 570 10;
 #X obj 61 33 cnv 15 15 15 empty empty vasp.= 0 10 1 14 -262144 -1 0
 ;
 #X obj 56 385 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
@@ -53,7 +53,7 @@ mouse+spacebar (select) or mouse+"s" (shift).;
 #X msg 56 315 vasp bufset;
 #X text 134 314 set all samples to zero;
 #X text 136 339 set selected samples to zero;
-#N canvas 0 0 413 295 clear_buffer 0;
+#N canvas 0 0 261 214 clear_buffer 0;
 #X obj 49 73 vasp.= 0;
 #X obj 49 49 inlet;
 #X obj 49 97 vasp.u;
@@ -64,9 +64,9 @@ mouse+spacebar (select) or mouse+"s" (shift).;
 #X connect 2 0 3 0;
 #X restore 559 465 pd clear_buffer;
 #X msg 559 439 vasp bufset;
-#X obj 53 473 vaspset-examples;
 #X text 177 472 <-- click to open more examples;
 #X text 57 138 use vasp.= to clear a buffer;
+#X obj 53 473 vaspset_examples;
 #X connect 4 0 5 0;
 #X connect 5 0 6 0;
 #X connect 6 0 8 0;

@@ -1,4 +1,4 @@
-#N canvas 189 164 760 380 10;
+#N canvas 189 164 762 382 10;
 #N canvas 40 55 247 122 clear_buffer 0;
 #X obj 45 79 vasp.update;
 #X obj 45 56 vasp.= 0;
@@ -19,8 +19,8 @@
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X restore 655 282 pd init;
-#X obj 51 19 cnv 15 15 15 empty empty vasp.!- 0 10 1 14 -262144 -1
-0;
+#X obj 51 19 cnv 15 15 15 empty empty vasp./ 0 10 1 14 -262144 -1 0
+;
 #X obj 51 231 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
 #X text 149 140 generate a sine wave at 1Hz;
