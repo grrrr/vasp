@@ -25,10 +25,10 @@ Env::Env(I argc,const t_atom *argv)
 	R prev = -BIG;
 	BL ok = true;
 	for(I i = 0; i < cnt; ++i) {
+		val[i] = flext_base::GetAFloat(argv[ix++]);
 		pos[i] = flext_base::GetAFloat(argv[ix++]);
 		if(pos[i] < prev) ok = false;
 		prev = pos[i];
-		val[i] = flext_base::GetAFloat(argv[ix++]);
 	}
 
 	if(ix < argc) {

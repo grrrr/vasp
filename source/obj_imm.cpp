@@ -57,8 +57,14 @@ public:
 
 	virtual V m_bang() 
 	{ 
-		if(!ref.Ok())
-			post("%s - Invalid vasp!",thisName());
+		if(!ref.Ok()) {
+			if(!frms) 
+				post("%s - No length defined!",thisName());
+			else {
+				Vasp ret(frms,Vasp::Ref(ImmBuf(frms)));
+				ToOutVasp(0,ret);
+			}
+		}
 		else if(ref.Vectors() > 1) 
 			post("%s - More than one vector in vasp!",thisName());
 		else {
