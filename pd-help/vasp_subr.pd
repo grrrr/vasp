@@ -1,4 +1,4 @@
-#N canvas 193 184 764 384 10;
+#N canvas 193 184 770 390 10;
 #N canvas 40 55 247 122 clear_buffer 0;
 #X obj 45 79 vasp.update;
 #X obj 45 56 vasp.= 0;
@@ -26,14 +26,23 @@
 #X obj 51 19 cnv 15 15 15 empty empty vasp.!- 0 10 1 14 -262144 -1
 0;
 #X obj 52 236 vasp.update;
-#X obj 52 213 vasp.!- 0.2;
-#X obj 52 168 vasp.osc 44100;
-#X obj 52 191 vasp.* 0.5;
 #X msg 52 136 vasp bufsubr;
 #X obj 50 321 VASP-HELP;
-#X text 92 321 - vasp overview;
+#X obj 52 168 vasp.osc 4410;
+#X obj 182 135 nbx 5 14 -50 50 0 1 empty empty empty 0 -6 0 10 -24198
+-1 -1 0 256;
+#X obj 182 154 * 0.01;
+#X obj 182 193 t b f;
+#X obj 52 213 vasp.!-;
+#X floatatom 182 175 5 0 0;
+#X obj 52 191 vasp.* 0.5;
 #X connect 6 0 0 0;
-#X connect 9 0 8 0;
-#X connect 10 0 11 0;
-#X connect 11 0 9 0;
-#X connect 12 0 10 0;
+#X connect 9 0 11 0;
+#X connect 11 0 17 0;
+#X connect 12 0 13 0;
+#X connect 13 0 16 0;
+#X connect 14 0 9 0;
+#X connect 14 1 15 1;
+#X connect 15 0 8 0;
+#X connect 16 0 14 0;
+#X connect 17 0 15 0;

@@ -1,4 +1,4 @@
-#N canvas 181 1 656 683 10;
+#N canvas 181 1 658 685 10;
 #X obj 104 47 cnv 15 15 15 empty empty vasp_modular 0 10 1 14 -262144
 -1 0;
 #X obj 61 37 cnv 2 2 2 empty 2-1-r empty 20 12 64 14 -225271 -262144
@@ -629,7 +629,7 @@ of an object chain;
 #X connect 79 0 80 0;
 #X restore 192 353 pd moremessages;
 #X text 48 351 additional messages;
-#N canvas 49 0 390 459 objects 0;
+#N canvas 49 0 392 461 objects 0;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
 -1 0;
 #N canvas 408 1 510 295 fftobjects 0;
@@ -650,10 +650,10 @@ of an object chain;
 #X obj 35 22 cnv 15 15 15 empty empty fftobjects 0 10 1 14 -262144
 -1 0;
 #X restore 71 206 pd fftobjects;
-#N canvas 386 9 599 629 arithmetic 0;
+#N canvas 386 9 601 631 arithmetic 0;
 #X obj 301 137 vasp.c!-;
 #X text 150 135 reverse subtraction;
-#X obj 74 134 vasp.!-;
+#X obj 76 134 vasp.!-;
 #X text 151 527 integral function;
 #X text 151 555 differential function;
 #X obj 76 554 vasp.dif;
@@ -680,8 +680,8 @@ of an object chain;
 #X obj 76 248 vasp.=;
 #X obj 76 191 vasp./;
 #X obj 76 160 vasp.*;
-#X obj 74 110 vasp.-;
-#X obj 74 84 vasp.+;
+#X obj 76 110 vasp.-;
+#X obj 76 84 vasp.+;
 #X text 151 365 vasp >= x;
 #X text 151 336 vasp >= x;
 #X text 151 307 vasp > x;
@@ -904,7 +904,7 @@ one is resampled around a center position;
 #X text 184 461 change a vasp's frame count by searching for a value
 ;
 #X restore 72 78 pd declaration;
-#N canvas 238 51 540 556 basics 0;
+#N canvas 238 51 542 558 basics 0;
 #X text 173 122 check vasp dimensions;
 #X obj 73 122 vasp.check;
 #X text 173 162 sync 2 or more vasps;

@@ -1,4 +1,4 @@
-#N canvas 28 239 961 379 10;
+#N canvas 28 239 963 381 10;
 #N canvas 44 75 276 122 clear_buffer 0;
 #X obj 54 79 vasp.update;
 #X obj 54 56 vasp.= 0;
@@ -43,7 +43,6 @@
 #X obj 380 166 vasp.* 0.5;
 #X msg 380 112 vasp bufsub;
 #X obj 61 313 VASP-HELP;
-#X text 103 313 - vasp overview;
 #X connect 11 0 10 0;
 #X connect 12 0 13 0;
 #X connect 13 0 11 0;
