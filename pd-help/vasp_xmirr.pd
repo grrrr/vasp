@@ -1,0 +1,87 @@
+#N canvas 36 14 776 612 10;
+#N canvas 92 108 411 413 inside 0;
+#X obj 66 154 soundfiler;
+#X obj 84 238 s \$0-sample-length;
+#X obj 66 208 s \$0-draw_display;
+#X msg 214 206 resize \$1;
+#X obj 67 53 loadbang;
+#X obj 66 178 t b f f;
+#X obj 67 101 filelisthandler \$0;
+#X msg 67 133 read -resize \$1 bufxmirr1;
+#X obj 214 228 s bufxmirr1;
+#X obj 224 252 s bufxmirr2;
+#X msg 67 79 4;
+#X connect 0 0 5 0;
+#X connect 3 0 8 0;
+#X connect 3 0 9 0;
+#X connect 4 0 10 0;
+#X connect 5 0 2 0;
+#X connect 5 1 1 0;
+#X connect 5 2 3 0;
+#X connect 6 0 7 0;
+#X connect 7 0 0 0;
+#X connect 10 0 6 0;
+#X restore 643 547 pd inside;
+#X obj 62 423 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X obj 79 100 filelist \$0;
+#X obj 62 228 vasp.cfft;
+#X obj 62 248 vasp.update;
+#X obj 62 269 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 327 546 dac~;
+#N canvas 0 0 413 295 clear_buffers 0;
+#X obj 49 73 vasp.= 0;
+#X obj 49 49 inlet;
+#X obj 49 97 vasp.u;
+#X obj 49 118 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X restore 461 546 pd clear_buffers;
+#X obj 327 503 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 349 500 play;
+#X text 461 501 clear;
+#X obj 75 32 cnv 15 15 15 empty empty vasp.xmirr 0 10 1 14 -262144
+-1 0;
+#X text 75 52 mirrors a vasp symmetrical;
+#X obj 355 297 wavedisplay-simple bufxmirr2 \$0;
+#X obj 355 144 wavedisplay-simple bufxmirr1 \$0;
+#X msg 62 207 vasp bufxmirr1 bufxmirr2;
+#X obj 62 355 vasp.update;
+#X obj 62 376 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 62 292 vasp bufxmirr1 bufxmirr2;
+#X obj 62 334 vasp.= 0;
+#X obj 62 313 vasp.upper;
+#X msg 461 523 vasp bufxmirr1 bufxmirr2;
+#X obj 62 444 vasp.update;
+#X obj 62 465 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 62 402 vasp bufxmirr1 bufxmirr2;
+#X obj 62 423 vasp.xmirr;
+#X obj 62 535 vasp.update;
+#X obj 62 558 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 62 491 vasp bufxmirr1 bufxmirr2;
+#X obj 62 512 vasp.cfft;
+#X obj 327 523 tabplay~ bufxmirr1;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 8 0 30 0;
+#X connect 15 0 3 0;
+#X connect 16 0 17 0;
+#X connect 18 0 20 0;
+#X connect 19 0 16 0;
+#X connect 20 0 19 0;
+#X connect 21 0 7 0;
+#X connect 22 0 23 0;
+#X connect 24 0 25 0;
+#X connect 25 0 22 0;
+#X connect 26 0 27 0;
+#X connect 28 0 29 0;
+#X connect 29 0 26 0;
+#X connect 30 0 6 0;
+#X connect 30 0 6 1;

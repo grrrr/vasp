@@ -1,0 +1,61 @@
+#N canvas 20 55 895 497 10;
+#X obj 75 32 cnv 15 15 15 empty empty vasp.shift 0 10 1 14 -262144
+-1 0;
+#X obj 329 388 dac~;
+#X obj 329 345 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 351 342 play;
+#X text 463 343 clear;
+#X obj 69 121 filelist \$0;
+#N canvas 0 0 413 295 clear_buffer 0;
+#X obj 49 73 vasp.= 0;
+#X obj 49 49 inlet;
+#X obj 49 97 vasp.u;
+#X obj 49 118 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X restore 463 388 pd clear_buffer;
+#X obj 68 306 cnv 15 98 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X obj 68 333 vasp.update;
+#X obj 68 356 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X text 71 60 shifts buffer content to a sample index;
+#X text 72 73 optional argument/right inlet: value;
+#X obj 379 128 wavedisplay-simple bufshift \$0;
+#X msg 68 231 vasp bufshift;
+#X obj 329 365 tabplay~ bufshift;
+#X msg 463 365 vasp bufshift;
+#N canvas 92 108 375 316 inside 0;
+#X obj 66 154 soundfiler;
+#X obj 84 238 s \$0-sample-length;
+#X obj 66 208 s \$0-draw_display;
+#X msg 214 206 resize \$1;
+#X obj 67 53 loadbang;
+#X obj 66 178 t b f f;
+#X obj 67 101 filelisthandler \$0;
+#X obj 214 228 s bufshift;
+#X msg 67 79 1;
+#X msg 67 133 read -resize \$1 bufshift;
+#X connect 0 0 5 0;
+#X connect 3 0 7 0;
+#X connect 4 0 8 0;
+#X connect 5 0 2 0;
+#X connect 5 1 1 0;
+#X connect 5 2 3 0;
+#X connect 6 0 9 0;
+#X connect 8 0 6 0;
+#X connect 9 0 0 0;
+#X restore 642 381 pd inside;
+#X obj 68 306 vasp.shift 10000;
+#X floatatom 159 278 8 0 0;
+#X connect 2 0 14 0;
+#X connect 8 0 9 0;
+#X connect 13 0 17 0;
+#X connect 14 0 1 0;
+#X connect 14 0 1 1;
+#X connect 15 0 6 0;
+#X connect 17 0 8 0;
+#X connect 18 0 17 1;
