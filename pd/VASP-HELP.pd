@@ -1,4 +1,4 @@
-#N canvas 11 4 598 622 10;
+#N canvas 211 19 600 624 10;
 #N canvas 49 0 350 417 objects 0;
 #N canvas 306 143 558 381 vasp.displace 0;
 #X text 158 163 rotate buffer content symmetrically;
@@ -245,7 +245,7 @@ one is resampled around a center position;
 #X restore 192 357 pd objects;
 #X text 54 169 vasp objects are using a specialized message syntax
 for all objects to refer to a buffer or a part of it.;
-#N canvas 6 13 970 650 syntax 0;
+#N canvas 6 13 972 652 syntax 0;
 #X text 76 52 the vasp message:;
 #X obj 75 20 cnv 15 15 15 empty empty vasp_syntax 0 10 1 14 -262144
 -1 0;
@@ -289,8 +289,6 @@ symbol buf7 \, symbol buf8 \, symbol buf9;
 #X array buf1 88200 float 0;
 #X coords 0 1 88199 -1 300 100 1;
 #X restore 498 403 graph;
-#X text 438 324 refering to buffer buf1 from 0.5 sec to 1.5 sec on
-channel 0;
 #X msg 287 323 vasp 44100 buf1 22050 0;
 #X text 110 325 one vectored vasp message:;
 #X obj 73 582 cnv 15 800 480 empty empty empty 20 12 0 14 -241339 -66577
@@ -303,8 +301,6 @@ channel 0;
 #X obj 274 816 vasp.osc 22050;
 #X text 139 993 a vasp message can contain as many vectors as you like
 \, but all vectors have the same length;
-#X text 469 684 refering to buffer buf1 from 0 sec to 1 sec on channel
-0 and buffer buf2 from 0.5 sec to 1.5 sec on channel 0;
 #X msg 274 688 vasp 44100 buf2 0 0 buf3 22050;
 #X text 110 689 two vectored vasp message:;
 #X text 110 633 all vectors have the same length \, but the vectors
@@ -324,14 +320,22 @@ can differ in the buffers and offsets;
 or as pairs for complex operations respectively.;
 #X obj 860 1077 cnv 15 15 15 empty empty empty 20 12 0 14 -262144 -66577
 0;
+#X text 438 324 referring to buffer buf1 from 0.5 sec to 1.5 sec on
+channel 0;
+#X text 313 339 (CLICK HERE);
+#X text 345 451 (CLICK HERE);
+#X text 318 703 (CLICK HERE);
+#X text 469 684 referring to buffer buf1 from 0 sec to 1 sec on channel
+0 and buffer buf2 from 0.5 sec to 1.5 sec on channel 0;
+#X text 363 912 (CLICK HERE);
 #X connect 21 0 23 0;
 #X connect 23 0 22 0;
 #X connect 25 0 24 0;
-#X connect 28 0 25 0;
-#X connect 32 0 34 0;
-#X connect 34 0 33 0;
-#X connect 36 0 35 0;
-#X connect 39 0 36 0;
+#X connect 27 0 25 0;
+#X connect 31 0 33 0;
+#X connect 33 0 32 0;
+#X connect 35 0 34 0;
+#X connect 37 0 35 0;
 #X restore 192 276 pd syntax;
 #X text 49 553 vasp.help patches by florian bogner and oliver grimm
 - ©2002 patcherboys - www.patcherboys.com;
@@ -804,7 +808,7 @@ elements per frame;
 #X restore 192 430 pd glossary;
 #X text 54 90 vasp modular - vector assembling signal processor ©2002
 thomas grill;
-#N canvas 59 5 942 684 moremessages 0;
+#N canvas 26 0 948 690 moremessages 0;
 #X obj 58 57 cnv 15 800 350 empty empty empty 20 12 0 14 -241339 -66577
 0;
 #X obj 330 342 vasp.* 0.5;
@@ -845,31 +849,28 @@ thomas grill;
 #X obj 621 903 vasp.update;
 #X obj 392 752 random 10;
 #X obj 392 778 * 0.1;
-#X obj 361 806 vasp.=;
 #X msg 621 877 vasp buf7;
 #X obj 361 716 t a b;
-#X obj 60 975 cnv 15 800 260 empty empty empty 20 12 0 14 -241339 -66577
+#X obj 60 975 cnv 15 800 290 empty empty empty 20 12 0 14 -241339 -66577
 0;
 #X text 134 998 - detach:;
 #X text 233 839 with argument 1 or 0 you can turn automatic display-update
 on or off (default is off).;
-#X text 233 875 if automatic update is turned off \, you explecitly
-have to update the display with the object vasp.update;
 #N canvas 0 0 450 300 graph1 0;
 #X array buf8 88200 float 0;
 #X coords 0 1 88199 -1 300 100 1;
 #X restore 525 1088 graph;
-#X obj 385 1191 vasp.u;
-#X obj 385 1165 vasp.opt;
-#X obj 385 1139 vasp.rfft;
-#X msg 385 1087 vasp buf8;
-#X msg 240 1087 detach 1;
+#X obj 297 1231 vasp.u;
+#X obj 297 1205 vasp.opt;
+#X obj 297 1178 vasp.rfft;
+#X msg 297 1074 vasp buf8;
+#X msg 225 1095 detach 1;
 #X text 238 998 use multithreading;
-#X msg 307 1087 detach 0;
-#X obj 59 1252 cnv 15 800 300 empty empty empty 20 12 0 14 -241339
+#X msg 162 1095 detach 0;
+#X obj 61 1290 cnv 15 800 300 empty empty empty 20 12 0 14 -241339
 -66577 0;
-#X text 131 1269 - radio:;
-#X obj 845 1566 cnv 15 15 15 empty empty empty 20 12 0 14 -262144 -66577
+#X text 131 1299 - radio:;
+#X obj 845 1596 cnv 15 15 15 empty empty empty 20 12 0 14 -262144 -66577
 0;
 #X obj 59 430 cnv 15 800 210 empty empty empty 20 12 0 14 -241339 -66577
 0;
@@ -877,33 +878,40 @@ have to update the display with the object vasp.update;
 #X msg 335 556 vasp buf5 buf6;
 #X obj 335 608 vasp.update;
 #X obj 335 582 vasp.= 0;
-#X text 66 493 and modulate the noise with a 4Hz sine wave;
 #X msg 335 467 to vasp buf6 \, vasp buf5;
 #X obj 335 519 vasp.update;
-#X obj 335 493 vasp.*osc 11025;
 #X text 160 469 sets the target buffer buf6;
 #N canvas 0 0 450 300 graph1 0;
 #X array buf6 88200 float 0;
 #X coords 0 1 88199 -1 300 100 1;
 #X restore 515 515 graph;
 #X text 113 448 - to:;
-#X msg 196 1485 radio update 1;
-#X msg 191 1334 radio detach 1;
-#X obj 301 1375 vasp.rfft;
-#X obj 301 1422 vasp.r!fft;
-#X obj 301 1399 vasp.exp;
-#X text 153 1484 also:;
-#X obj 301 1445 vasp.u;
-#X text 239 1021 this very useful switch can put the vasp-calculation
-into the background and avoids dropouts in the Pd-DSP-processing. 1
-= on \, 0 = off.;
-#X text 239 1269 radio messages are passed to all objects of an object-chain
-;
+#X msg 196 1515 radio update 1;
+#X msg 191 1364 radio detach 1;
+#X text 153 1514 also:;
+#X obj 301 1475 vasp.u;
 #N canvas 0 0 450 300 graph1 0;
 #X array buf9 88200 float 0;
 #X coords 0 1 88199 -1 300 100 1;
-#X restore 530 1346 graph;
-#X msg 301 1311 vasp buf9;
+#X restore 530 1376 graph;
+#X msg 301 1345 vasp buf9;
+#X obj 335 493 vasp.*osc 22100;
+#X text 66 493 and modulate the noise with a 2Hz sine wave;
+#X text 233 875 if automatic update is turned off \, you explicitely
+have to update the display with the object vasp.update;
+#X obj 361 806 vasp.=;
+#X text 237 1019 this very useful switch can put the vasp-calculation
+into the background and (try to) avoid dropouts in the Pd-DSP-processing.
+1 = on \, 0 = off.;
+#X obj 297 1125 vasp.noise;
+#X obj 297 1149 vasp.flp 100;
+#X text 377 1148 low pass filter;
+#X text 368 1126 generate noise;
+#X text 239 1299 radio messages are passed to/through all vasp objects
+of an object chain;
+#X obj 301 1427 vasp.- 1;
+#X obj 301 1452 vasp.sqr;
+#X obj 301 1403 vasp.xwindow lin;
 #X connect 1 0 3 0;
 #X connect 4 0 1 0;
 #X connect 5 0 7 0;
@@ -912,31 +920,33 @@ into the background and avoids dropouts in the Pd-DSP-processing. 1
 #X connect 10 0 4 0;
 #X connect 13 0 9 0;
 #X connect 17 0 9 0;
-#X connect 21 0 28 0;
-#X connect 22 0 28 0;
-#X connect 23 0 30 0;
+#X connect 21 0 63 0;
+#X connect 22 0 63 0;
+#X connect 23 0 29 0;
 #X connect 26 0 27 0;
-#X connect 27 0 28 1;
-#X connect 29 0 25 0;
-#X connect 30 0 28 0;
-#X connect 30 1 26 0;
-#X connect 37 0 36 0;
-#X connect 38 0 37 0;
-#X connect 39 0 38 0;
-#X connect 40 0 38 0;
-#X connect 40 0 37 0;
+#X connect 27 0 63 1;
+#X connect 28 0 25 0;
+#X connect 29 0 63 0;
+#X connect 29 1 26 0;
+#X connect 35 0 34 0;
+#X connect 36 0 35 0;
+#X connect 37 0 65 0;
+#X connect 38 0 36 0;
+#X connect 38 0 66 0;
+#X connect 38 0 65 0;
 #X connect 40 0 36 0;
-#X connect 42 0 38 0;
-#X connect 42 0 37 0;
-#X connect 42 0 36 0;
-#X connect 48 0 50 0;
-#X connect 50 0 49 0;
-#X connect 52 0 54 0;
-#X connect 54 0 53 0;
-#X connect 59 0 60 0;
-#X connect 60 0 62 0;
-#X connect 61 0 64 0;
-#X connect 62 0 61 0;
-#X connect 68 0 60 0;
+#X connect 40 0 66 0;
+#X connect 40 0 65 0;
+#X connect 46 0 48 0;
+#X connect 48 0 47 0;
+#X connect 49 0 60 0;
+#X connect 55 0 72 0;
+#X connect 59 0 72 0;
+#X connect 60 0 50 0;
+#X connect 65 0 66 0;
+#X connect 66 0 36 0;
+#X connect 70 0 71 0;
+#X connect 71 0 57 0;
+#X connect 72 0 70 0;
 #X restore 192 315 pd moremessages;
 #X text 48 313 additional messages;
