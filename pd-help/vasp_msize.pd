@@ -1,8 +1,6 @@
-#N canvas 85 111 907 542 10;
+#N canvas 85 111 836 513 10;
 #X obj 58 31 cnv 15 15 15 empty empty vasp.size/ 0 10 1 14 -262144
 -1 0;
-#X obj 58 481 VASP;
-#X text 100 480 - vasp overview;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufmsize 100 float 0;
 #X coords 0 1 99 -1 300 100 1;
@@ -32,8 +30,9 @@
 #X obj 176 416 vasp.s+;
 #X msg 62 152 vasp bufmsize;
 #X msg 177 152 vasp bufmsize;
-#X connect 9 0 15 0;
-#X connect 10 0 15 0;
-#X connect 15 0 6 0;
-#X connect 19 0 9 0;
-#X connect 20 0 10 0;
+#X obj 58 481 VASP-HELP;
+#X connect 7 0 13 0;
+#X connect 8 0 13 0;
+#X connect 13 0 4 0;
+#X connect 17 0 7 0;
+#X connect 18 0 8 0;
