@@ -15,6 +15,7 @@ Version history:
 - NEW: vasp.a<, vasp.a>, vasp.a<=, vasp.a>= for absolute comparisons
 - CHANGE: clear stored vasp of an object if a "set" message with an invalid vasp is received
 - CHANGE: cleaned up the process loops (with thread yield) and fixed a corresponding bug in vasp.peaks/valleys
+- CHANGE: warn - but don't stop - on large FFT prime factors
 
 0.0.8:
 - CHANGE: vasp.radio got right outlet for non-radio messages
@@ -23,7 +24,7 @@ Version history:
 - NEW: vasp.window, vasp.*window, vasp.!window, vasp.*!window, vasp.xwindow, vasp.*xwindow
 - REMOVE: vasp.bevel, vasp.!bevel... obsolete due to new vasp.window objects
 - REMOVE: vasp.noradio (vasp.!radio)... can easily be an abstraction of vasp.radio
-_ ADD: minimum length parameter for immediate vasps
+- ADD: minimum length parameter for immediate vasps
 - NEW: vasp.channel? (vasp.c?), vasp.channel (vasp.c) for set/query of buffer channel
 - CHANGE: env - reversed time/value pairs to value/time pairs
 - FIX: vasp.! with length arg outputs its reference on bang

@@ -106,7 +106,7 @@ extern "C" void post(const char *c,...);
 /************************************************************************/
 
 
-#define  maxPrimeFactor        500
+#define  maxPrimeFactor        1000
 #define  maxPrimeFactorDiv2    (maxPrimeFactor+1)/2
 #define  maxFactorCount        100
 
@@ -215,8 +215,8 @@ static bool transTableSetup(int sofar[], int actual[], int remain[],
     if (actual[1] > maxPrimeFactor)
     {
 		// T.Grill - replaced the printfs by a post
-        post("Prime factor of FFT length too large : %d",actual[1]);
-        return false;
+        post("Warning - Prime factor of FFT length is large (%d) - calculation may take a while",actual[1]);
+//        return false;
     }
     remain[0]=*nPoints;
     sofar[1]=1;
