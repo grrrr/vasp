@@ -216,7 +216,9 @@ protected:
 	VecBlock(I msrc,I marg,I mdst);
 	~VecBlock();
 
+	Vasp *_SrcVasp(I n);
 	Vasp *_DstVasp(I n);
+	Vasp *_ResVasp(I n); // either Dst or Src
 
 	VBuffer *_Src(I ix) { return vecs[ix]; }
 	VBuffer *_Arg(I ix) { return vecs[asrc+ix]; }
@@ -248,7 +250,9 @@ public:
 	I Vecs() const { return n; }
 	I Args() const { return a; }
 
+	Vasp *SrcVasp() { return _SrcVasp(n); }
 	Vasp *DstVasp() { return _DstVasp(n); }
+	Vasp *ResVasp() { return _ResVasp(n); }
 
 protected:
 	I n,a;
@@ -273,7 +277,9 @@ public:
 	I Pairs() const { return np; }
 	I Args() const { return ap; }
 
+	Vasp *SrcVasp() { return _SrcVasp(np*2); }
 	Vasp *DstVasp() { return _DstVasp(np*2); }
+	Vasp *ResVasp() { return _ResVasp(np*2); }
 
 protected:
 	I np,ap;
@@ -447,20 +453,20 @@ public:
 	Vasp *m_xmirr(Vasp *dst = NULL) { return m_mirr(dst,true); } //! mirror buffer (symmetrically)
 
 	// Generator functions 
-	Vasp *m_osc(const Argument &arg);  // real osc
-	Vasp *m_mosc(const Argument &arg);  // * real osc
-	Vasp *m_cosc(const Argument &arg);  // complex osc (phase rotates)
-	Vasp *m_mcosc(const Argument &arg);  // * complex osc (phase rotates)
-	Vasp *m_phasor(const Argument &arg);  // phasor
-	Vasp *m_mphasor(const Argument &arg);  // * phasor
+	Vasp *m_osc(const Argument &arg,BL mul = false);  // real osc
+	Vasp *m_mosc(const Argument &arg) { return m_osc(arg,true); }   // * real osc
+	Vasp *m_cosc(const Argument &arg,BL mul = false);  // complex osc (phase rotates)
+	Vasp *m_mcosc(const Argument &arg) { return m_cosc(arg,true); }  // * complex osc (phase rotates)
+	Vasp *m_phasor(const Argument &arg,BL mul = false);  // phasor
+	Vasp *m_mphasor(const Argument &arg) { return m_phasor(arg,true); }  // * phasor
 	Vasp *m_noise();  // real noise
 	Vasp *m_cnoise(); // complex noise (arg and abs random)
-	Vasp *m_bevelup();  // bevel up 
-	Vasp *m_mbevelup();  // * bevel up (fade in)
-	Vasp *m_beveldn();  // bevel down
-	Vasp *m_mbeveldn();  // * bevel down (fade out)
-	Vasp *m_window(const Argument &arg);  // window curve
-	Vasp *m_mwindow(const Argument &arg);  // * window curve
+	Vasp *m_bevelup(BL up = true,BL mul = false);  // bevel up 
+	Vasp *m_mbevelup() { return m_bevelup(true,true); }   // * bevel up (fade in)
+	Vasp *m_beveldn() { return m_bevelup(false,false); }  // bevel down
+	Vasp *m_mbeveldn() { return m_bevelup(false,true); }   // * bevel down (fade out)
+	Vasp *m_window(const Argument &arg,BL mul = false);  // window curve
+	Vasp *m_mwindow(const Argument &arg) { return m_window(arg,true); }  // * window curve
 
 	// Filter transforms 
 	Vasp *m_fhp(const Argument &arg); // time-domain high pass
@@ -472,10 +478,10 @@ public:
 	Vasp *m_xtilt(const Argument &arg,Vasp *dst = NULL,I mode = 0) { return m_tilt(arg,dst,true,mode); }
 
 	// Fourier transforms 
-	Vasp *m_rfft();  // real forward
-	Vasp *m_rifft(); // real inverse
-	Vasp *m_cfft(); // complex forward
-	Vasp *m_cifft(); // complex inverse
+	Vasp *m_rfft(Vasp *dst = NULL,BL inv = false);  // real forward
+	Vasp *m_rifft(Vasp *dst = NULL) { return m_rfft(dst,true); } // real inverse
+	Vasp *m_cfft(Vasp *dst = NULL,BL inv = false); // complex forward
+	Vasp *m_cifft(Vasp *dst = NULL) { return m_cfft(dst,true); } // complex inverse
 
 	// --------------------------------------------------------------------
 
@@ -515,9 +521,9 @@ private:
 	typedef flext_base flx;
 
 	static RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp *dst = NULL);
-	static CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp *dst = NULL);
+	static CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp *dst = NULL,BL full = false);
 	static RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst = NULL,I multi = -1);
-	static CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst = NULL,I multi = -1);
+	static CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst = NULL,I multi = -1,BL full = false);
 
 
 	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_arg(op,v,f.funR); }

@@ -13,80 +13,110 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- osc ---------------------------------------
 
-static BL d_osc(I cnt,S *dt,I str,Argument &a) 
+static BL d_osc(I cnt,S *dt,I str,R perln,R ph) 
 { 
-	// frq and phase defined by complex frequency
-	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt = cos(cph);
+	R phinc = 2*PI/perln; 
+	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt = cos(ph);
 	return true;
 }
 
-static BL d_cosc(I cnt,S *re,I rstr,S *im,I istr,Argument &a) 
+static BL d_cosc(I cnt,S *re,I rstr,S *im,I istr,R perln,R ph) 
 { 
-	// frq and phase defined by complex frequency
-	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,cph += phinc,re += rstr,im += istr) *re = cos(cph),*im = sin(cph);
+	R phinc = 2*PI/perln; 
+	for(I i = 0; i < cnt; ++i,ph += phinc,re += rstr,im += istr) 
+		*re = cos(ph),*im = sin(ph);
 	return true;
 }
 
-static BL d_mosc(I cnt,S *dt,I str,Argument &a) 
+static BL d_mosc(I cnt,S *dt,I str,R perln,R ph) 
 { 
-	// frq and phase defined by complex frequency
-	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt *= cos(cph);
+	R phinc = 2*PI/perln; 
+	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= cos(ph);
 	return true;
 }
 
-static BL d_mcosc(I cnt,S *re,I rstr,S *im,I istr,Argument &a) 
+static BL d_mcosc(I cnt,S *re,I rstr,S *im,I istr,R perln,R ph) 
 { 
-	// frq and phase defined by complex frequency
-	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,cph += phinc,re += rstr,im += istr) {
-		*re = cos(cph),*im = sin(cph);
+	R phinc = 2*PI/perln; 
+	for(I i = 0; i < cnt; ++i,ph += phinc,re += rstr,im += istr) {
+		R zre = cos(ph),zim = sin(ph);
+
+		register const R r = *re * zre - *im * zim;
+		*im = *im * zre + *re * zim;
+		*re = r;
 	}
 	return true;
 }
 
-Vasp *Vasp::m_osc(const Argument &arg) 
+
+/*! \brief Generator for real (cos) oscillations.
+
+	\param arg argument list 
+	\param arg.perlen Period length (in samples)
+	\param arg.stph Starting phase
+	\param mul true for multiplication to exisiting date
+	\return normalized destination vasp
+
+	\todo Replace period length by frequency specification
+*/
+Vasp *Vasp::m_osc(const Argument &arg,BL mul) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
-		return fr_prm("osc",d_osc,params); 
+		// period length
+		R perlen = flx::GetAFloat(arg.GetList()[0]);
+		// starting phase
+		R stph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+
+		RVecBlock *vecs = GetRVecs(mul?"*osc":"osc",*this);
+		if(vecs) {
+			BL ok = true;
+			for(I i = 0; ok && i < vecs->Vecs(); ++i) {
+				VBuffer *s = vecs->Src(i);
+				if(mul)
+					ok = d_mosc(vecs->Frames(),s->Pointer(),s->Channels(),perlen,stph);
+				else
+					ok = d_osc(vecs->Frames(),s->Pointer(),s->Channels(),perlen,stph);
+			}
+			return ok?vecs->ResVasp():NULL;
+		}
+		else
+			return NULL;
 	}
 	else return NULL;
 }
 
-Vasp *Vasp::m_cosc(const Argument &arg) 
-{ 
-	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
-		return fc_prm("cosc",d_cosc,params); 
-	}
-	else return NULL;
-}
+/*! \brief Generator for complex (cos+i sin) oscillations.
 
-Vasp *Vasp::m_mosc(const Argument &arg) 
-{ 
-	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
-		return fr_prm("*osc",d_mosc,params); 
-	}
-	else return NULL;
-}
+	\param arg argument list 
+	\param arg.perlen Period length (in samples)
+	\param arg.stph Starting phase
+	\param mul true for multiplication to exisiting date
+	\return normalized destination vasp
 
-Vasp *Vasp::m_mcosc(const Argument &arg) 
+	\todo Replace period length by frequency specification
+*/
+Vasp *Vasp::m_cosc(const Argument &arg,BL mul) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
-		return fc_prm("*cosc",d_mcosc,params);
+		// period length
+		R perlen = flx::GetAFloat(arg.GetList()[0]);
+		// starting phase
+		R stph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+
+		CVecBlock *vecs = GetCVecs(mul?"*cosc":"cosc",*this);
+		if(vecs) {
+			BL ok = true;
+			for(I i = 0; ok && i < vecs->Pairs(); ++i) {
+				VBuffer *re = vecs->ReSrc(i),*im = vecs->ImSrc(i);
+				if(mul)
+					ok = d_mcosc(vecs->Frames(),re->Pointer(),re->Channels(),im?im->Pointer():NULL,im?im->Channels():0,perlen,stph);
+				else
+					ok = d_cosc(vecs->Frames(),re->Pointer(),re->Channels(),im?im->Pointer():NULL,im?im->Channels():0,perlen,stph);
+			}
+			return ok?vecs->ResVasp():NULL;
+		}
+		else
+			return NULL;
 	}
 	else return NULL;
 }
@@ -96,40 +126,54 @@ Vasp *Vasp::m_mcosc(const Argument &arg)
 
 // ! look up Höldrich's pd phasor code
 
-static BL d_phasor(I cnt,S *dt,I str,Argument &a) 
+static BL d_phasor(I cnt,S *dt,I str,R perln,R ph) 
 { 
 	// frq and phase defined by complex frequency
-	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt = fmod(cph,1.F);
+	R phinc = 2*PI/perln; 
+	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt = fmod(ph,1.F);
 	return true;
 }
 
-static BL d_mphasor(I cnt,S *dt,I str,Argument &a) 
+static BL d_mphasor(I cnt,S *dt,I str,R perln,R ph) 
 { 
 	// frq and phase defined by complex frequency
-	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt *= fmod(cph,1.F);
+	R phinc = 2*PI/perln; 
+	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= fmod(ph,1.F);
 	return true;
 }
 
-Vasp *Vasp::m_phasor(const Argument &arg) 
-{ 
-	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
-		return fr_prm("phasor",d_phasor,params); 
-	}
-	else return NULL;
-}
+/*! \brief Generator for sawtooth oscillations.
 
-Vasp *Vasp::m_mphasor(const Argument &arg) 
+	\param arg argument list 
+	\param arg.perlen Period length (in samples)
+	\param arg.stph Starting phase
+	\param mul true for multiplication to exisiting date
+	\return normalized destination vasp
+
+	\todo Replace period length by frequency specification
+*/
+Vasp *Vasp::m_phasor(const Argument &arg,BL mul) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
-		return fr_prm("*phasor",d_mphasor,params); 
+		// period length
+		R perlen = flx::GetAFloat(arg.GetList()[0]);
+		// starting phase
+		R stph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+
+		RVecBlock *vecs = GetRVecs(mul?"*phasor":"phasor",*this);
+		if(vecs) {
+			BL ok = true;
+			for(I i = 0; ok && i < vecs->Vecs(); ++i) {
+				VBuffer *s = vecs->Src(i);
+				if(mul)
+					ok = d_mphasor(vecs->Frames(),s->Pointer(),s->Channels(),perlen,stph);
+				else
+					ok = d_phasor(vecs->Frames(),s->Pointer(),s->Channels(),perlen,stph);
+			}
+			return ok?vecs->ResVasp():NULL;
+		}
+		else
+			return NULL;
 	}
 	else return NULL;
 }
@@ -145,13 +189,13 @@ static F rnd()
 	return ret;
 }
 
-static BL d_noise(I cnt,S *dt,I str,F) 
+static BL d_noise(I cnt,S *dt,I str) 
 { 
 	for(I i = 0; i < cnt; ++i,dt += str) *dt = rnd();
 	return true;
 }
 
-static BL d_cnoise(I cnt,S *re,I rstr,S *im,I istr,F,F) 
+static BL d_cnoise(I cnt,S *re,I rstr,S *im,I istr) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
 		S amp = rnd();
@@ -162,42 +206,110 @@ static BL d_cnoise(I cnt,S *re,I rstr,S *im,I istr,F,F)
 	return true;
 }
 
-Vasp *Vasp::m_noise() { return fr_arg("noise",0,d_noise); }
-Vasp *Vasp::m_cnoise() { return fc_arg("cnoise",0,d_cnoise); }
+
+/*! \brief Generator for real valued noise.
+
+	\return normalized destination vasp
+
+	\todo Replace period length by frequency specification
+*/
+Vasp *Vasp::m_noise() 
+{ 
+	RVecBlock *vecs = GetRVecs("noise",*this);
+	if(vecs) {
+		BL ok = true;
+		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
+			VBuffer *s = vecs->Src(i);
+			ok = d_noise(vecs->Frames(),s->Pointer(),s->Channels());
+		}
+		return ok?vecs->ResVasp():NULL;
+	}
+	else
+		return NULL;
+}
+
+/*! \brief Generator for complex noise (complex abs, complex arg).
+
+	\return normalized destination vasp
+
+	\todo Replace period length by frequency specification
+*/
+Vasp *Vasp::m_cnoise() 
+{ 
+	CVecBlock *vecs = GetCVecs("cnoise",*this);
+	if(vecs) {
+		BL ok = true;
+		for(I i = 0; ok && i < vecs->Pairs(); ++i) {
+			VBuffer *re = vecs->ReSrc(i),*im = vecs->ImSrc(i);
+			ok = d_cnoise(vecs->Frames(),re->Pointer(),re->Channels(),im->Pointer(),im->Channels());
+		}
+		return ok?vecs->ResVasp():NULL;
+	}
+	else
+		return NULL;
+}
+
 
 // --- bevel --------------------------
 
 // Should bevels start from 0 or .5/cnt ??  -> 0!
 
-static BL d_bevelup(I cnt,S *dt,I str,F) 
+static BL d_bevelup(I cnt,S *dt,I str) 
 { 
 	for(I i = 0; i < cnt; ++i,dt += str) *dt = (i+.5)/cnt;
 	return true;
 }
 
-static BL d_mbevelup(I cnt,S *dt,I str,F) 
+static BL d_mbevelup(I cnt,S *dt,I str) 
 { 
 	for(I i = 0; i < cnt; ++i,dt += str) *dt *= (i+.5)/cnt;
 	return true;
 }
 
-static BL d_beveldn(I cnt,S *dt,I str,F) 
+static BL d_beveldn(I cnt,S *dt,I str) 
 { 
 	for(I i = cnt-1; i >= 0; --i,dt += str) *dt = (i+.5)/cnt;
 	return true;
 }
 
-static BL d_mbeveldn(I cnt,S *dt,I str,F) 
+static BL d_mbeveldn(I cnt,S *dt,I str) 
 { 
 	for(I i = cnt-1; i >= 0; --i,dt += str) *dt *= (i+.5)/cnt;
 	return true;
 }
 
-Vasp *Vasp::m_bevelup() { return fr_arg("bevel",0,d_bevelup); }
-Vasp *Vasp::m_beveldn() { return fr_arg("bevel-",0,d_beveldn); }
-Vasp *Vasp::m_mbevelup() { return fr_arg("*bevel",0,d_mbevelup); }
-Vasp *Vasp::m_mbeveldn() { return fr_arg("*bevel-",0,d_mbeveldn); }
 
+/*! \brief Generator for bevel ups or downs.
+
+	\param up true if bevel should rise
+	\param mul true for multiplcation on existing data (aka fading)
+	\return normalized destination vasp
+
+	\todo Replace period length by frequency specification
+*/
+Vasp *Vasp::m_bevelup(BL up,BL mul) 
+{ 
+	RVecBlock *vecs = GetRVecs(up?(mul?"*bevel":"bevel"):(mul?"*bevel-":"bevel-"),*this);
+	if(vecs) {
+		BL ok = true;
+		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
+			VBuffer *s = vecs->Src(i);
+			if(up)
+				if(mul)
+					ok = d_mbevelup(vecs->Frames(),s->Pointer(),s->Channels());
+				else
+					ok = d_bevelup(vecs->Frames(),s->Pointer(),s->Channels());
+			else
+				if(mul)
+					ok = d_mbeveldn(vecs->Frames(),s->Pointer(),s->Channels());
+				else
+					ok = d_bevelup(vecs->Frames(),s->Pointer(),s->Channels());
+		}
+		return ok?vecs->ResVasp():NULL;
+	}
+	else
+		return NULL;
+}
 
 // --- window --------------------------
 
@@ -238,6 +350,7 @@ static BL d_vmwindow(I cnt,S *dst,I dstr,const F *src,I sstr)
 }
 
 
+/*
 Vasp *Vasp::m_window(const Argument &arg) 
 { 
 	if(arg.CanbeInt())
@@ -254,6 +367,24 @@ Vasp *Vasp::m_mwindow(const Argument &arg)
 	else if(arg.IsVasp())
 		return fv_arg("*window",arg.GetVasp(),d_vmwindow);
 	else return NULL; 
+}
+
+*/
+
+Vasp *Vasp::m_window(const Argument &arg,BL mul) 
+{ 
+	
+	RVecBlock *vecs = GetRVecs(mul?"*window":"window",*this);
+	if(vecs) {
+		BL ok = true;
+		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
+			VBuffer *s = vecs->Src(i);
+			ok = d_noise(vecs->Frames(),s->Pointer(),s->Channels());
+		}
+		return ok?vecs->ResVasp():NULL;
+	}
+	else
+		return NULL;
 }
 
 

@@ -256,3 +256,11 @@ Vasp *VecBlock::_DstVasp(I n)
 	return ret;
 }
 
+Vasp *VecBlock::_SrcVasp(I n)
+{
+	Vasp *ret = new Vasp;
+	ret->Frames(Frames());
+	for(I i = 0; i < n; ++i) *ret += Vasp::Ref(*_Src(i));
+	return ret;
+}
+

@@ -16,9 +16,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 
 
-//! return vector block for real data
-RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp * /*dst*/)
+/*! \brief Make real vector block for unary operations.
+
+	\param op operation name
+	\param src source vasp
+	\param dst optional destination vasp
+	\return struct with vector data 
+
+	\todo Support dst vasp
+*/
+RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
 {
+	if(dst) {
+		error("%s - sorry, out-of-place operation not supported yet");
+		return NULL;
+	}
+
 	RVecBlock *ret = new RVecBlock(src.Vectors());
 
 	BL ok = true,frlim = false;
@@ -47,16 +60,35 @@ RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp * /*dst*/)
 	else { delete ret; return NULL;	}
 }
 
-CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp * /*dst*/)
-{
-	I pairs = src.Vectors()/2;
-	CVecBlock *ret = new CVecBlock(pairs);
+/*! \brief Make real vector block for unary operations.
 
-	if(src.Vectors() != pairs*2) {
-		post("%s - number of src vectors is odd - omitting last vector",op);
-		// clear superfluous vector?
+	\param op operation name
+	\param src source vasp
+	\param dst optional destination vasp
+	\param full true if imaginary part is compulsory
+	\return struct with vector data 
+
+	\todo Support dst vasp
+*/
+CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
+{
+	if(dst) {
+		error("%s - sorry, out-of-place operation not supported yet");
+		return NULL;
 	}
 
+	I pairs = src.Vectors()/2;
+
+	if(src.Vectors() != pairs*2) 
+		if(full) {
+			post("%s - number of src vectors is odd - not allowed",op);
+			return NULL;
+		}
+		else {
+			post("%s - number of src vectors is odd - omitting last vector",op);
+		}
+
+	CVecBlock *ret = new CVecBlock(pairs);
 	BL ok = true,frlim = false;
 	I tfrms = -1;
 
@@ -93,8 +125,25 @@ CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp * /*dst*/)
 	else { delete ret; return NULL;	}
 }
 
-RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp * /*dst*/,I multi)
+
+/*! \brief Make real vector block for binary operations.
+
+	\param op operation name
+	\param src source vasp
+	\param arg argument vasp
+	\param dst optional destination vasp
+	\param multi 0 off/1 on/-1 auto... controls whether argument vector is single- or multi-vectored
+	\return struct with vector data 
+
+	\todo Support dst vasp
+*/
+RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi)
 {
+	if(dst) {
+		error("%s - sorry, out-of-place operation not supported yet");
+		return NULL;
+	}
+
 	if(!arg.Ok()) {
 		post("%s - invalid argument vasp detected and ignored",op);
 		return NULL;
@@ -161,8 +210,25 @@ RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp * /*dst*/,I multi
 }
 
 
-CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp * /*dst*/,I multi)
+/*! \brief Make real complex block for binary operations.
+
+	\param op operation name
+	\param src source vasp
+	\param arg argument vasp
+	\param dst optional destination vasp
+	\param multi 0 off/1 on/-1 auto... controls whether argument vector is single- or multi-vectored
+	\param full true if imaginary part is compulsory
+	\return struct with vector data 
+
+	\todo Support dst vasp
+*/
+CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi,BL full)
 {
+	if(dst) {
+		error("%s - sorry, out-of-place operation not supported yet");
+		return NULL;
+	}
+
 	if(!arg.Ok()) {
 		post("%s - invalid argument vasp detected and ignored",op);
 		return NULL;
@@ -177,10 +243,15 @@ CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp * /*dst*/,I multi
 
 	if(multi) {
 		I apairs = arg.Vectors()/2;
-		if(arg.Vectors() != apairs*2) {
-			post("%s - number of arg vectors is odd - assuming complex part as 0",op);
-			++apairs;
-		}
+		if(arg.Vectors() != apairs*2) 
+			if(full) {
+				post("%s - number of arg vectors is odd - not allowed",op);
+				return NULL;
+			}
+			else {
+				post("%s - number of arg vectors is odd - assuming complex part as 0",op);
+				++apairs;
+			}
 
 		if(apairs < pairs) {
 			pairs = apairs;

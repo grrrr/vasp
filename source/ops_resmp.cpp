@@ -93,6 +93,8 @@ static BL d_tilt(I cnt,S *src,I sstr,S *dst,I dstr,R factor,R center,I mode = 0)
 	\param symm true for symmetric operation
 	\param mode interpolation mode
 	\return normalized destination vasp
+
+	\todo src/dst returned vasp
 */
 Vasp *Vasp::m_tilt(const Argument &arg,Vasp *dst,BL symm,I mode) 
 { 
@@ -100,26 +102,27 @@ Vasp *Vasp::m_tilt(const Argument &arg,Vasp *dst,BL symm,I mode)
 		R factor = flx::GetAFloat(arg.GetList()[0]);
 		R center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 
-		RVecBlock *vecs = GetRVecs("tilt",*this,dst);
+		RVecBlock *vecs = GetRVecs(symm?"xtilt":"tilt",*this,dst);
 		if(vecs) {
 			BL ok = true;
 			for(I i = 0; ok && i < vecs->Vecs(); ++i) {
 				VBuffer *s = vecs->Src(i),*d = vecs->Dst(i);
 				if(!d) d = s; // if there's no dst, take src
 
+				I cnt = vecs->Frames();
+				I sc = s->Channels(),dc = d->Channels();
 				if(symm) {
 					// symmetric mode
-					I cnt = vecs->Frames(),hcnt = cnt/2;
-					I sc = s->Channels(),dc = d->Channels();
+					I hcnt = cnt/2;
 					ok = 
 						d_tilt(hcnt,s->Pointer(),sc,d->Pointer(),dc,factor,center) &&
 						d_tilt(hcnt,s->Pointer()+(cnt-hcnt),sc,d->Pointer()+(cnt-hcnt),dc,factor,hcnt-1-center);
 				}
 				else
 					// normal mode
-					ok = d_tilt(vecs->Frames(),s->Pointer(),s->Channels(),d->Pointer(),d->Channels(),factor,center);
+					ok = d_tilt(cnt,s->Pointer(),sc,d->Pointer(),dc,factor,center);
 			}
-			return ok?vecs->DstVasp():NULL;
+			return ok?vecs->ResVasp():NULL;
 		}
 		else
 			return NULL;

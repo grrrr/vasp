@@ -134,7 +134,7 @@ BL fft_inv_complex_radix2(I cnt,F *re,F *im);
 
 ///////////////////////////////////////////////////////////////
 
-static BL d_rfft(I cnt,S *dt,I str,F) 
+static BL d_rfft(I cnt,S *dt,I str) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -145,7 +145,7 @@ static BL d_rfft(I cnt,S *dt,I str,F)
 		return true;
 }
 
-static BL d_rifft(I cnt,S *dt,I str,F) 
+static BL d_rifft(I cnt,S *dt,I str) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -156,11 +156,12 @@ static BL d_rifft(I cnt,S *dt,I str,F)
 		return true;
 }
 
+/*
 Vasp *Vasp::m_rfft() { return fr_arg("rfft",0,d_rfft); }
 Vasp *Vasp::m_rifft() { return fr_arg("rifft",0,d_rifft); }
+*/
 
-
-static BL d_cfft(I cnt,S *re,I rstr,S *im,I istr,F,F) 
+static BL d_cfft(I cnt,S *re,I rstr,S *im,I istr) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -171,7 +172,7 @@ static BL d_cfft(I cnt,S *re,I rstr,S *im,I istr,F,F)
 		return true;
 }
 
-static BL d_cifft(I cnt,S *re,I rstr,S *im,I istr,F,F) 
+static BL d_cifft(I cnt,S *re,I rstr,S *im,I istr) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -182,7 +183,50 @@ static BL d_cifft(I cnt,S *re,I rstr,S *im,I istr,F,F)
 		return true;
 }
 
-Vasp *Vasp::m_cfft() { return fc_arg("cfft",0,d_cfft); }
-Vasp *Vasp::m_cifft() { return fc_arg("cifft",0,d_cifft); } 
 
 
+Vasp *Vasp::m_rfft(Vasp *dst,BL inv) 
+{ 
+	if(dst) {
+		error("rfft: out-of-place operation not implemented yet");
+		return NULL;
+	}
+
+	RVecBlock *vecs = GetRVecs(inv?"rfft-":"rfft",*this,dst);
+	if(vecs) {
+		BL ok = true;
+		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
+			VBuffer *s = vecs->Src(i);
+			if(inv)
+				ok = d_rifft(vecs->Frames(),s->Pointer(),s->Channels());
+			else
+				ok = d_rfft(vecs->Frames(),s->Pointer(),s->Channels());
+		}
+		return ok?vecs->ResVasp():NULL;
+	}
+	else
+		return NULL;
+}
+
+Vasp *Vasp::m_cfft(Vasp *dst,BL inv) 
+{ 
+	if(dst) {
+		error("rfft: out-of-place operation not implemented yet");
+		return NULL;
+	}
+
+	CVecBlock *vecs = GetCVecs(inv?"cfft-":"cfft",*this,dst,true);
+	if(vecs) {
+		BL ok = true;
+		for(I i = 0; ok && i < vecs->Pairs(); ++i) {
+			VBuffer *re = vecs->ReSrc(i),*im = vecs->ImSrc(i);
+			if(inv)
+				ok = d_cifft(vecs->Frames(),re->Pointer(),re->Channels(),im?im->Pointer():NULL,im?im->Channels():0);
+			else
+				ok = d_cfft(vecs->Frames(),re->Pointer(),re->Channels(),im?im->Pointer():NULL,im?im->Channels():0);
+		}
+		return ok?vecs->ResVasp():NULL;
+	}
+	else
+		return NULL;
+}
