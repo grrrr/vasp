@@ -1,0 +1,46 @@
+#N canvas 70 107 927 511 10;
+#X text 55 80 argument/right inlet: value;
+#X obj 58 27 cnv 15 15 15 empty empty vasp.offset= 0 10 1 14 -262144
+-1 0;
+#X text 57 323 abbreviation;
+#X obj 124 254 prepend set;
+#X obj 148 320 vasp.o+;
+#X obj 58 365 VASP;
+#X text 100 365 - vasp overview;
+#N canvas 0 0 450 300 graph1 0;
+#X array bufsoffs1 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 520 81 graph;
+#N canvas 466 356 383 247 init 0;
+#X obj 33 19 loadbang;
+#X msg 33 71 \; \$1 xticks 0 4410 10 \; \$1 xlabel 1.1 0 22050 44100
+66150 88200 \; \$1 yticks 0 0.25 2 \; \$1 ylabel 94000 -1 -0.5 0 0.5
+1;
+#X msg 33 45 symbol bufsoffs1;
+#X msg 151 45 symbol bufsoffs2;
+#X connect 0 0 2 0;
+#X connect 0 0 3 0;
+#X connect 2 0 1 0;
+#X connect 3 0 1 0;
+#X restore 714 408 pd init;
+#N canvas 0 0 450 300 graph1 0;
+#X array bufsoffs2 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 520 200 graph;
+#X text 55 63 set the offset to a point \, where a special value appears
+;
+#X obj 58 218 vasp.offset= 0;
+#X obj 257 224 vasp.u;
+#X obj 58 281 vasp.u;
+#X obj 257 198 vasp.window lin;
+#X msg 257 171 vasp bufsoffs1;
+#X msg 58 174 vasp bufsoffs1;
+#X msg 124 287;
+#X msg 160 193 0.04;
+#X connect 3 0 17 0;
+#X connect 11 0 3 0;
+#X connect 11 0 13 0;
+#X connect 14 0 12 0;
+#X connect 15 0 14 0;
+#X connect 16 0 11 0;
+#X connect 18 0 11 1;
