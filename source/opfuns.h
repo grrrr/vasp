@@ -396,6 +396,8 @@ namespace VecOp {
     public:
     	static I cun_opt() { return 0; }
         static V cun(T &rv,T &iv,T ra,T ia) { rv = sqrt(sqabs(ra,ia)),iv = arg(ra,ia); }
+    protected:
+        static T sqabs(T re,T im) { return re*re+im*im; }
     };
 
     template<class T> class f_rect {
@@ -446,7 +448,8 @@ namespace VecOp {
 
 #define DEFVEC_R(T,OP) \
     static BL r_##OP (I len,T *dr,I rds,const T *sr,I rss) { return VecOp::V__rbin<T,VecOp::f_##OP <T> >(sr,rss,dr,rds,len); } \
-    static BL v_##OP (I dim,const I *dims,I layers,T *dr,const T *sr,const T *ar) { return VecOp::V__vmulti<T>(VecOp::V__vbin<T,VecOp::f_##OP <T> >,layers,sr,dr,ar,dim,dims); }
+    static BL v_##OP##_(I layers,const T *sr,T *dr,const T *ar,I len) { return VecOp::V__vbin<T,VecOp::f_##OP <T> >(layers,sr,dr,ar,len); } \
+    static BL v_##OP (I dim,const I *dims,I layers,T *dr,const T *sr,const T *ar) { return VecOp::V__vmulti<T>(v_##OP##_,layers,sr,dr,ar,dim,dims); }
 
 #define DEFVEC_C(T,OP) \
     static BL c_##OP (I len,T *dr,T *di,I rds,I ids,const T *sr,I rss,I iss) { return VecOp::V__cbin<T,VecOp::f_##OP <T> >(sr,rss,iss,dr,rds,ids,len); }

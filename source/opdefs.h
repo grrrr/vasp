@@ -25,36 +25,30 @@ namespace VecOp {
 
 // multi-layer templates
 
-class layer_n { public: static I l(I n) { return n; } };
-class layer_1 { public: static I l(I n) { return 1; } };
-class layer_2 { public: static I l(I n) { return 2; } };
-class layer_3 { public: static I l(I n) { return 3; } };
-class layer_4 { public: static I l(I n) { return 4; } };
-
-template<class T,class OP,class LR>
+template<class T,class OP,int LR>
 inline BL vec_un(T *v,const T *a,I n = 0) { 
-    const I _n = LR::l(n);
+    const I _n = LR?LR:n;
     for(I i = 0; i < _n; ++i) OP::run(v[i],a[i]); 
     return true;
 }
 
-template<class T,class OP,class LR>
+template<class T,class OP,int LR>
 inline BL vec_un(T *v,T a,I n = 0) { 
-    const I _n = LR::l(n);
+    const I _n = LR?LR:n;
     for(I i = 0; i < _n; ++i) OP::run(v[i],a); 
     return true;
 }
 
-template<class T,class OP,class LR>
-inline BL vec_bin(T *v,const T *a,const T *b,I n = 0) { 
-    const I _n = LR::l(n);
+template<class T,class TR,class OP,int LR>
+inline BL vec_bin(T *v,const T *a,const TR *b,I n = 0) { 
+    const I _n = LR?LR:n;
     for(I i = 0; i < _n; ++i) OP::rbin(v[i],a[i],b[i]); 
     return true;
 }
 
-template<class T,class TR,class OP,class LR>
+template<class T,class TR,class OP,int LR>
 inline BL vec_bin(T *v,const T *a,TR b,I n = 0) { 
-    const I _n = LR::l(n);
+    const I _n = LR?LR:n;
     for(I i = 0; i < _n; ++i) OP::rbin(v[i],a[i],b); 
     return true;
 }
@@ -104,16 +98,16 @@ template<class T,class OP> BL V__vun(I layers,register const T *sr,register T *d
             V__run<T,OP>(sr,1,dr,1,frames); 
             break;
     case 2: 
-			_DF_LOOP(i,frames, ( vec_un<T,OP,layer_2>(dr,sr), sr += 2, dr += 2) )
+			_DF_LOOP(i,frames, ( vec_un<T,OP,2>(dr,sr,2), sr += 2, dr += 2) )
             break;
     case 3: 
-			_DF_LOOP(i,frames, ( vec_un<T,OP,layer_3>(dr,sr), sr += 3, dr += 3) )
+			_DF_LOOP(i,frames, ( vec_un<T,OP,3>(dr,sr,3), sr += 3, dr += 3) )
             break;
     case 4: 
-			_DF_LOOP(i,frames, ( vec_un<T,OP,layer_4>(dr,sr), sr += 4, dr += 4) )
+			_DF_LOOP(i,frames, ( vec_un<T,OP,4>(dr,sr,4), sr += 4, dr += 4) )
             break;
     default:
-			_DF_LOOP(i,frames, ( vec_un<T,OP,layer_n>(dr,sr,layers), sr += layers, dr += layers) )
+			_DF_LOOP(i,frames, ( vec_un<T,OP,0>(dr,sr,layers), sr += layers, dr += layers) )
             break;
     }
     return true;
@@ -205,16 +199,16 @@ template<class T,class TA,class TR,class OP,class EVARG> BL Vx__vbin(I layers,re
             Vx__rbin<T,TA,TR,OP,EVARG>(sr,1,dr,1,ar,frames); 
             break;
     case 2: 
-			_DF_LOOP(i,frames, ( vec_bin<T,TR,OP,layer_2>(dr,sr,EVARG::ev(ar,i,2)), sr += 2, dr += 2) )
+			_DF_LOOP(i,frames, ( vec_bin<T,TR,OP,2>(dr,sr,EVARG::ev(ar,i,2),2), sr += 2, dr += 2) )
             break;
     case 3: 
-			_DF_LOOP(i,frames, ( vec_bin<T,TR,OP,layer_3>(dr,sr,EVARG::ev(ar,i,3)), sr += 3, dr += 3) )
+			_DF_LOOP(i,frames, ( vec_bin<T,TR,OP,3>(dr,sr,EVARG::ev(ar,i,3),3), sr += 3, dr += 3) )
             break;
     case 4: 
-			_DF_LOOP(i,frames, ( vec_bin<T,TR,OP,layer_4>(dr,sr,EVARG::ev(ar,i,4)), sr += 4, dr += 4) )
+			_DF_LOOP(i,frames, ( vec_bin<T,TR,OP,4>(dr,sr,EVARG::ev(ar,i,4),4), sr += 4, dr += 4) )
             break;
     default:
-			_DF_LOOP(i,frames, ( vec_bin<T,TR,OP,layer_n>(dr,sr,EVARG::ev(ar,i,layers),layers), sr += layers, dr += layers) )
+			_DF_LOOP(i,frames, ( vec_bin<T,TR,OP,0>(dr,sr,EVARG::ev(ar,i,layers),layers), sr += layers, dr += layers) )
             break;
     }
     return true;
@@ -431,12 +425,12 @@ template<class T> BL _d__cop(V fun(T &rv,T &iv,T ra,T ia,OpParam &p),OpParam &p)
 
 
 #ifdef VASP_COMPACT
-	template<class T,class CL> inline BL D__run(OpParam &p) { return _d__run<T,CL>(p); }
-	template<class T,class CL> inline BL D__cun(OpParam &p) { return _d__cun<T,CL>(p); }
-	template<class T,class CL> inline BL D__rbin(OpParam &p) { return _d__rbin<T,CL>(p); }
-	template<class T,class CL> inline BL D__cbin(OpParam &p) { return _d__cbin<T,CL>(p); }
-	template<class T,class CL> inline BL D__rop(OpParam &p) { return _d__rop<T,CL>(p); }
-	template<class T,class CL> inline BL D__cop(OpParam &p) { return _d__cop<T,CL>(p); }
+    template<class T,class CL> inline BL D__run(OpParam &p) { return _d__run<T>(CL::run,p); }
+    template<class T,class CL> inline BL D__cun(OpParam &p) { return _d__cun<T>(CL::cun,p); }
+    template<class T,class CL> inline BL D__rbin(OpParam &p) { return _d__rbin<T>(CL::rbin,p); }
+    template<class T,class CL> inline BL D__cbin(OpParam &p) { return _d__cbin<T>(CL::cbin,p); }
+	template<class T,class CL> inline BL D__rop(OpParam &p) { return _d__rop<T>(CL::rop,p); }
+	template<class T,class CL> inline BL D__cop(OpParam &p) { return _d__cop<T>(CL::cop,p); }
 #else
 	template<class T,class CL> inline BL D__run(OpParam &p) { return CL::run_opt()?_D__run<T,CL>(p):_d__run<T>(CL::run,p); }
 	template<class T,class CL> inline BL D__cun(OpParam &p) { return CL::cun_opt()?_D__cun<T,CL>(p):_d__cun<T>(CL::cun,p); }
@@ -461,7 +455,7 @@ template<class T> inline BL V__vmulti(BL vbin(I layers,const T *sr,T *dr,const T
 		const I dimn = dims[i];
 		
 		for(s = i = 0; i < dimn; ++i,s += str)
-			V__vmulti(vbin,layers,sr+s,dr+s,ar+s,dim-1,dims+1);
+			V__vmulti(vbin,layers,sr+s,dr+s,ar+s,dim-1,dims);
 		return true;
 	}
 	else

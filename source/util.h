@@ -22,12 +22,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 R arg(R re,R im);
 inline R arg(const CX &c) { return arg(c.real,c.imag); }
-inline F sqabs(F re,F im) { return re*re+im*im; }
+//inline F sqabs(F re,F im) { return re*re+im*im; }
 inline F sqabs(const CX &c) { return sqabs(c.real,c.imag); }
-inline F sgn(F x) { return x < 0.?-1.F:1.F; }
-inline V swap(F &a,F &b) { F c = a; a = b; b = c; }
+//inline F sgn(F x) { return x < 0.?-1.F:1.F; }
 
-inline I min(I a,I b) { return a < b?a:b; }
-inline I max(I a,I b) { return a > b?a:b; }
+template<class T>
+inline V swap(T &a,T &b) { T c = a; a = b; b = c; }
+
+template<class T>
+inline T min(T a,T b) { return a < b?a:b; }
+
+template<class T>
+inline T max(T a,T b) { return a > b?a:b; }
 
 #endif
