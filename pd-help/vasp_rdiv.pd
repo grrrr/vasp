@@ -1,4 +1,4 @@
-#N canvas 193 184 762 382 10;
+#N canvas 193 184 764 384 10;
 #N canvas 40 55 247 122 clear_buffer 0;
 #X obj 45 79 vasp.update;
 #X obj 45 56 vasp.= 0;
@@ -26,15 +26,15 @@
 #X text 44 82 optional argument/right inlet: denominator;
 #X obj 49 219 vasp.update;
 #X msg 49 124 vasp bufrdiv;
-#X obj 49 149 vasp.bevel;
 #X text 137 124 generate a ramp from 1 to 2;
 #X obj 49 194 vasp.!/ 1;
 #X text 136 191 1/x;
 #X obj 49 171 vasp.+ 1;
 #X obj 43 321 VASP;
 #X text 85 321 - vasp overview;
+#X obj 49 149 vasp.window lin;
 #X connect 4 0 0 0;
-#X connect 8 0 9 0;
-#X connect 9 0 13 0;
-#X connect 11 0 7 0;
-#X connect 13 0 11 0;
+#X connect 8 0 15 0;
+#X connect 10 0 7 0;
+#X connect 12 0 10 0;
+#X connect 15 0 12 0;

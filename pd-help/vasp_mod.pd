@@ -1,4 +1,4 @@
-#N canvas 35 127 918 427 10;
+#N canvas 35 127 920 429 10;
 #N canvas 40 55 178 120 clear_buffer 0;
 #X obj 54 79 vasp.update;
 #X obj 54 56 vasp.= 0;
@@ -9,7 +9,6 @@
 #X text 366 125 ramp from 0-1;
 #X obj 286 174 vasp.update;
 #X obj 51 173 vasp.update;
-#X obj 286 148 vasp.bevel;
 #X text 132 126 a sine wave at 1Hz or;
 #X obj 51 149 vasp.osc 44100;
 #X text 54 77 optional argument/right inlet: divisor;
@@ -39,11 +38,12 @@
 #X msg 100 219 vasp bufmod;
 #X obj 53 388 VASP;
 #X text 95 388 - vasp overview;
-#X connect 4 0 2 0;
-#X connect 6 0 3 0;
-#X connect 12 0 6 0;
-#X connect 13 0 0 0;
-#X connect 14 0 4 0;
-#X connect 16 0 17 1;
-#X connect 17 0 15 0;
-#X connect 19 0 17 0;
+#X obj 286 148 vasp.window lin;
+#X connect 5 0 3 0;
+#X connect 11 0 5 0;
+#X connect 12 0 0 0;
+#X connect 13 0 21 0;
+#X connect 15 0 16 1;
+#X connect 16 0 14 0;
+#X connect 18 0 16 0;
+#X connect 21 0 2 0;
