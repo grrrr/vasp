@@ -152,7 +152,10 @@ vasp_tx::vasp_tx(BL to): vasp_op(to) {}
 
 V vasp_tx::m_bang()
 {
-	LowerPriority();
+#ifdef FLEXT_THREADS
+	// lower the thread priority
+	if(detach) LowerPriority();
+#endif
 
 //	if(ref.Ok()) 
 	{
@@ -179,6 +182,11 @@ V vasp_tx::m_bang()
 		post("%s - no valid vasp to work with",thisName());
 	}
 */
+
+#ifdef FLEXT_THREADS
+	// back to normal
+	NormalPriority();
+#endif
 }
 
 

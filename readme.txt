@@ -108,6 +108,7 @@ objects:
 bugs:
 ---------------------
 - vasp.(!)(c)fft can't handle strided data
+- how to set thread priority?
 
 tests:
 ---------------------
