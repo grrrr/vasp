@@ -95,7 +95,8 @@
 	- introduced REAL type for numbers
 	- made functions static
 	- threw fft_n functions out of twiddleTransf
-	- changed LOG prints (to post)
+	  if feasible, these will be inlined by the compiler
+	- changed log prints (to post)
 
 ************************************************************************/
 
@@ -213,8 +214,7 @@ static bool transTableSetup(int sofar[], int actual[], int remain[],
     factorize(*nPoints, nFact, actual);
     if (actual[1] > maxPrimeFactor)
     {
-//        printf("\nPrime factor of FFT length too large : %6d",actual[1]);
-//        printf("\nPlease modify the value of maxPrimeFactor in mixfft.c");
+		// T.Grill - replaced the printfs by a post
         post("Prime factor of FFT length too large : %d",actual[1]);
         return false;
     }
@@ -235,7 +235,6 @@ static bool transTableSetup(int sofar[], int actual[], int remain[],
   normal order.
  ****************************************************************************/
 
-#if 1
 static void permute(int nPoint, int nFact,
              int fact[], int remain[],
              REAL xRe[], REAL xIm[],
@@ -266,77 +265,6 @@ static void permute(int nPoint, int nFact,
     yIm[nPoint-1]=xIm[nPoint-1];
 }   /* permute */
 
-#else 
-// CAUTION: the permutation does not work correctly for some values (like 21)
-
-static int permfun(int ij, int n,OpParam &p) { return p.perm.order[ij]; }
-
-static void permute(int nPoint, int nFact,
-             int fact[], int remain[],
-             REAL xRe[], REAL xIm[],
-             REAL yRe[], REAL yIm[])
-
-{
-	int i,j,k;
-
-	if(xRe == yRe && xIm == yIm) {
-		// in-place
-		OpParam p("mixfft",0);
-		I *perm = new I[nPoint-1];
-		p.perm.order = perm;
-
-		int count[maxFactorCount]; 
-
-		for (i=1; i<=nFact; i++) count[i]=0;
-		k=0;
-		for (i=0; i<=nPoint-2; i++)
-		{
-			perm[i] = k;
-
-			j=1;
-			k=k+remain[j];
-			count[1] = count[1]+1;
-			while (count[j] >= fact[j])
-			{
-				count[j]=0;
-				k=k-remain[j-1]+remain[j+1];
-				j=j+1;
-				count[j]=count[j]+1;
-			}
-		}
-
-		p.frames = nPoint-1;
-		p.rsdt = xRe; p.rddt = yRe; p.rss = 1; p.rds = 1;
-		p.isdt = xIm; p.iddt = yIm; p.iss = 1; p.ids = 1;
-		PERMUTATION(REAL,2,p,permfun);
-
-		delete[] perm;
-	}
-	else {
-		int count[maxFactorCount]; 
-
-		for (i=1; i<=nFact; i++) count[i]=0;
-		k=0;
-		for (i=0; i<=nPoint-2; i++)
-		{
-			yRe[i] = xRe[k];
-			yIm[i] = xIm[k];
-			j=1;
-			k=k+remain[j];
-			count[1] = count[1]+1;
-			while (count[j] >= fact[j])
-			{
-				count[j]=0;
-				k=k-remain[j-1]+remain[j+1];
-				j=j+1;
-				count[j]=count[j]+1;
-			}
-		}
-		yRe[nPoint-1]=xRe[nPoint-1];
-		yIm[nPoint-1]=xIm[nPoint-1];
-	}
-}   /* permute */
-#endif
 
 /****************************************************************************
   Twiddle factor multiplications and transformations are performed on a
@@ -560,14 +488,6 @@ static void twiddleTransf(int sofarRadix, int radix, int remainRadix,
 
 {   /* twiddleTransf */ 
     double cosw, sinw, gem;
-#if 0
-    REAL t1_re,t1_im; //, t2_re,t2_im, t3_re,t3_im;
-//    REAL  t4_re,t4_im, t5_re,t5_im;
-    REAL  m2_re,m2_im; //, m3_re,m3_im, m4_re,m4_im;
-    REAL  m1_re,m1_im; //, m5_re,m5_im;
-    REAL  s1_re,s1_im; //, s2_re,s2_im, s3_re,s3_im;
-//    REAL  s4_re,s4_im, s5_re,s5_im;
-#endif
 
     initTrig(radix);
     omega = 2*pi/(double)(sofarRadix*radix);
@@ -622,22 +542,7 @@ static void twiddleTransf(int sofarRadix, int radix, int remainRadix,
                    adr=adr+sofarRadix;
                 }
             switch(radix) {
-			/*
-              case  2  : gem=zRe[0] + zRe[1];
-                         zRe[1]=zRe[0] -  zRe[1]; zRe[0]=gem;
-                         gem=zIm[0] + zIm[1];
-                         zIm[1]=zIm[0] - zIm[1]; zIm[0]=gem;
-                         break;
-              case  3  : t1_re=zRe[1] + zRe[2]; t1_im=zIm[1] + zIm[2];
-                         zRe[0]=zRe[0] + t1_re; zIm[0]=zIm[0] + t1_im;
-                         m1_re=c3_1*t1_re; m1_im=c3_1*t1_im;
-                         m2_re=c3_2*(zIm[1] - zIm[2]); 
-                         m2_im=c3_2*(zRe[2] -  zRe[1]);
-                         s1_re=zRe[0] + m1_re; s1_im=zIm[0] + m1_im;
-                         zRe[1]=s1_re + m2_re; zIm[1]=s1_im + m2_im;
-                         zRe[2]=s1_re - m2_re; zIm[2]=s1_im - m2_im;
-                         break;
-			 */
+			// T.Grill - replaced the inlined code by their function counterparts
 			  case  2  : fft_2(zRe,zIm); break;
 			  case  3  : fft_3(zRe,zIm); break;
               case  4  : fft_4(zRe,zIm); break;
