@@ -78,11 +78,26 @@ Vasp *VaspOp::m_search(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL st)
 		I fr = src.ChkFrames();
 		I o = src.Vector(0).Offset();
 		I sz = src.Buffer(0)->Frames();
-		p.srch.offs = o+(st?0:fr);
 
 		Vasp all(src);
-		all.Offset(0);
-		all.Frames(sz);  // all frames of buffer
+		if(st) {
+			// search start point
+			p.srch.offs = o;
+
+			// set bounds of search buffer
+			all.Offset(0);
+			all.Frames(fr+o);  // all frames of buffer
+		}
+		else {
+			// search end point
+			p.srch.offs = o+fr;
+			// check if current offset is past buffer
+			if(p.srch.offs >= sz) p.srch.offs = sz-1;
+
+			// set bounds of search buffer
+			all.Offset(o);
+			all.Frames(sz-o);  // all frames of buffer			
+		}
 
 		RVecBlock *vecs = GetRVecs(p.opname,all,dst);
 		if(vecs) {

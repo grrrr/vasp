@@ -1,4 +1,4 @@
-#N canvas 32 38 952 599 10;
+#N canvas 32 38 954 601 10;
 #X text 55 80 argument/right inlet: value;
 #X obj 58 27 cnv 15 15 15 empty empty vasp.offset= 0 10 1 14 -262144
 -1 0;
@@ -33,9 +33,8 @@
 #X msg 63 130 vasp bufsoffs1;
 #X msg 64 223 vasp bufsoffs1;
 #X obj 67 447 vasp.offset= 0;
-#X msg 67 419 vasp bufsoffs1;
 #X obj 67 394 t b f;
-#X floatatom 146 470 5 0 0;
+#X floatatom 146 470 10 0 0;
 #X msg 67 513 vasp 52920 bufsoffs1 35280 0;
 #X obj 64 250 vasp.offset= 0.4;
 #X text 189 127 1 generate a ramp;
@@ -44,7 +43,7 @@
 #X text 54 98 right outlet: offset position in samples;
 #X msg 155 272 vasp bufsoffs2 \$1;
 #X obj 67 368 nbx 5 14 0 1 0 0 empty empty empty 0 -6 0 10 -24198 -1
--1 0 256;
+-1 0.5 256;
 #X text 163 382 test values 0 - 1;
 #N canvas 0 0 261 214 clear_buffer 0;
 #X obj 49 73 vasp.= 0;
@@ -61,17 +60,16 @@
 #X text 205 236 where the ramp is at 0.4;
 #X obj 165 568 vasp.o=;
 #X text 685 511 clear second buffer;
-#X connect 3 0 18 0;
+#X msg 67 419 vasp 30000 bufsoffs1 20000;
 #X connect 11 0 10 0;
 #X connect 12 0 11 0;
-#X connect 13 0 19 0;
-#X connect 14 0 3 0;
-#X connect 14 1 17 0;
-#X connect 15 0 14 0;
-#X connect 16 0 15 0;
-#X connect 16 1 14 1;
-#X connect 19 1 24 0;
-#X connect 21 0 22 0;
-#X connect 24 0 21 0;
-#X connect 25 0 16 0;
-#X connect 28 0 27 0;
+#X connect 13 0 18 0;
+#X connect 14 1 16 0;
+#X connect 15 0 32 0;
+#X connect 15 1 14 1;
+#X connect 18 1 23 0;
+#X connect 20 0 21 0;
+#X connect 23 0 20 0;
+#X connect 24 0 15 0;
+#X connect 27 0 26 0;
+#X connect 32 0 14 0;
