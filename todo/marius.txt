@@ -1,0 +1,5 @@
+- in alle objekte die vasp_main reinsetzen.
+- filelist ändern, dahingehend, dass man auch samples laden kann.
+- restliche files durchchecken. das ist erst eine erste überprüfung...
+- wavedisplay-select überprüfen.
+- die default-längen und resize einstellungen noch einmal überprüfen

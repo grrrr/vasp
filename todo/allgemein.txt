@@ -1,1 +1,4 @@
 - Hilfe-Seite mit Abkürzungen
+- neue objekte in die "vasp_main" aufnehmen und entsprechend "gruppieren"
+- genau überlegen, ob noch "standard-soundfiles" hinzugefügt werden sollen
+- bitte die wavedisplays nicht ändern, das ist relativ kompliziert wegen graph on parent einstellungen... 
