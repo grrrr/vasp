@@ -29,7 +29,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define C char
 #define BL bool
 #define V void
-#define S t_sample
+#define S t_sample // type for samples
+#define R double // type for internal calculations
 #define CX complex
 #define VX vector
 
@@ -466,9 +467,9 @@ public:
 	Vasp *m_flp(const Argument &arg); // time-domain low pass
 
 	// Resampling (around center sample)
-	Vasp *m_tilt(const Argument &arg,Vasp *dst = NULL,BL symm = false); 
+	Vasp *m_tilt(const Argument &arg,Vasp *dst = NULL,BL symm = false,I mode = 0); 
 	// Symmetric resampling (around center sample)
-	Vasp *m_xtilt(const Argument &arg,Vasp *dst = NULL) { return m_tilt(arg,dst,true); }
+	Vasp *m_xtilt(const Argument &arg,Vasp *dst = NULL,I mode = 0) { return m_tilt(arg,dst,true,mode); }
 
 	// Fourier transforms 
 	Vasp *m_rfft();  // real forward

@@ -8,13 +8,31 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
+/*! \file vasp__resmp.cpp
+	\brief Routines for resampling
+*/
+
 #include "main.h"
 
 
 // --- resample ---------------------
 
-//! \todo check src/dst overlap!
-static BL d_tilt(I cnt,S *src,I sstr,S *dst,I dstr,D factor,D center) 
+/*! \brief Subroutine for resampling.
+
+	\param cnt frame count
+	\param src source data
+	\param sstr source data stride
+	\param dst destination data
+	\param dstr destination data stride
+	\param factor resampling factor
+	\param center resampling center (this will remain untouched by the transformation)
+	\param mode interpolation mode
+	\return true on success
+
+	\todo implement more interpolation methods
+	\todo check src/dst overlap!
+*/
+static BL d_tilt(I cnt,S *src,I sstr,S *dst,I dstr,R factor,R center,I mode = 0) 
 { 
 	if(cnt <= 1 || factor == 1) return true;
 
@@ -42,22 +60,22 @@ static BL d_tilt(I cnt,S *src,I sstr,S *dst,I dstr,D factor,D center)
 		I i;
 //		I pl = (I)(icenter/factor),ql = (I)((cnt-icenter)/factor);
 		for(i = 1; i <= icenter; ++i) {
-			F sp = icenter-i*factor;
+			R sp = icenter-i*factor;
 			dst[(icenter-i)*dstr] = sp >= 0 && sp < cnt?src[(I)sp*sstr]:0;
 		}
 		for(i = 1; i < cnt-icenter; ++i) {
-			F sp = icenter+i*factor;
+			R sp = icenter+i*factor;
 			dst[(icenter+i)*dstr] = sp >= 0 && sp < cnt?src[(I)sp*sstr]:0;
 		}
 	}
 	else {
 		I i;
 		for(i = icenter; i > 0; --i) {
-			F sp = icenter-i*factor;
+			R sp = icenter-i*factor;
 			dst[(icenter-i)*dstr] = src[(I)sp*sstr];
 		}
 		for(i = cnt-1-icenter; i > 0; --i) {
-			F sp = icenter+i*factor;
+			R sp = icenter+i*factor;
 			dst[(icenter+i)*dstr] = src[(I)sp*sstr];
 		}
 	}
@@ -65,11 +83,22 @@ static BL d_tilt(I cnt,S *src,I sstr,S *dst,I dstr,D factor,D center)
 	return true;
 }
 
-Vasp *Vasp::m_tilt(const Argument &arg,Vasp *dst,BL symm) 
+
+/*! \brief Does vasp resampling.
+
+	\param arg argument list 
+	\param arg.factor factor for resampling 
+	\param arg.center center of resampling
+	\param dst destination vasp (NULL for in-place operation)
+	\param symm true for symmetric operation
+	\param mode interpolation mode
+	\return normalized destination vasp
+*/
+Vasp *Vasp::m_tilt(const Argument &arg,Vasp *dst,BL symm,I mode) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		D factor = flx::GetAFloat(arg.GetList()[0]);
-		D center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+		R factor = flx::GetAFloat(arg.GetList()[0]);
+		R center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 
 		RVecBlock *vecs = GetRVecs("tilt",*this,dst);
 		if(vecs) {
