@@ -150,13 +150,131 @@ private:
 };
 
 
-class vasp_dsp:
-	public flext_dsp
+class vasp_modify:
+	public vasp_msg
 {
-	FLEXT_HEADER(vasp_dsp,flext_dsp)
+	FLEXT_HEADER(vasp_modify,vasp_msg)
 
-protected:
+public:
+	vasp_modify(I argc,t_atom *argv);
+	~vasp_modify();
 
+	virtual I m_set(I argc,t_atom *argv); // set destination (non-triggering)
+
+	// assignment functions
+	virtual V m_copy(I argc,t_atom *argv); // copy to (one vec or real/complex)
+	virtual V m_mcopy(I argc,t_atom *argv); // copy to (multi-channel)
+//	virtual V m_mix(I argc,t_atom *argv); // mix in (one vec or real/complex)
+//	virtual V m_mmix(I argc,t_atom *argv); // mix in (multi-channel)
+
+	// binary functions
+	virtual V m_add(I argc,t_atom *argv); // add to (one vec or real/complex)
+	virtual V m_madd(I argc,t_atom *argv); // add to (multi-channel)
+	virtual V m_sub(I argc,t_atom *argv); // sub from (one vec or real/complex)
+	virtual V m_msub(I argc,t_atom *argv); // sub from (multi-channel)
+	virtual V m_mul(I argc,t_atom *argv); // mul with (one vec or real/complex)
+	virtual V m_mmul(I argc,t_atom *argv); // mul with (multi-channel)
+	virtual V m_div(I argc,t_atom *argv); // div by (one vec or real/complex)
+	virtual V m_mdiv(I argc,t_atom *argv); // div by (multi-channel)
+
+	virtual V m_min(I argc,t_atom *argv); // min (one vec or real)
+	virtual V m_mmin(I argc,t_atom *argv); // min (multi-channel)
+	virtual V m_max(I argc,t_atom *argv); // max (one vec or real)
+	virtual V m_mmax(I argc,t_atom *argv); // max (multi-channel)
+
+	// "unary" functions
+	virtual V m_pow(F v); // power
+	virtual V m_cpow(I argc,t_atom *argv); // complex power (with each two channels)
+	virtual V m_sqr();   // square
+	virtual V m_csqr();  // complex square (with each two channels)
+	virtual V m_root(F v); // real root
+	virtual V m_sqrt();  // square root
+
+	virtual V m_inv();  // invert buffer values
+	virtual V m_cinv(); // complex invert buffer values (each two)
+
+	virtual V m_abs();  // absolute values
+	virtual V m_polar(); // cartesian -> polar (each two)
+	virtual V m_cart(); // polar -> cartesian (each two)
+
+	virtual V m_norm();  // normalize
+	virtual V m_cnorm(); // complex normalize
+
+	// Rearrange buffer
+	virtual V m_shift(F u);  // shift buffer
+	virtual V m_xshift(F u);  // shift buffer (symmetrically)
+	virtual V m_rot(F u);  // rotate buffer
+	virtual V m_xrot(F u);  // rotate buffer (symmetrically)
+	virtual V m_mirr();  // mirror buffer
+	virtual V m_xmirr();  // mirror buffer (symmetrically)
+
+	// Generator functions
+	virtual V m_osc(I argc,t_atom *argv);  // real osc
+	virtual V m_cosc(I argc,t_atom *argv);  // complex osc (phase rotates)
+	virtual V m_noise(I argc,t_atom *argv);  // real noise
+	virtual V m_cnoise(I argc,t_atom *argv); // complex noise (arg and abs random)
+
+	// Fourier transforms
+	virtual V m_rfft();
+	virtual V m_rifft();
+	virtual V m_cfft();
+	virtual V m_cifft();
+
+private:
+	FLEXT_CALLBACK_G(m_set)
+
+	FLEXT_CALLBACK_G(m_copy)
+	FLEXT_CALLBACK_G(m_mcopy)
+//	FLEXT_CALLBACK_G(m_mix)
+//	FLEXT_CALLBACK_G(m_mmix)
+
+	FLEXT_CALLBACK_G(m_add)
+	FLEXT_CALLBACK_G(m_madd)
+	FLEXT_CALLBACK_G(m_sub)
+	FLEXT_CALLBACK_G(m_msub)
+	FLEXT_CALLBACK_G(m_mul)
+	FLEXT_CALLBACK_G(m_mmul)
+	FLEXT_CALLBACK_G(m_div)
+	FLEXT_CALLBACK_G(m_mdiv)
+
+	FLEXT_CALLBACK_G(m_min)
+	FLEXT_CALLBACK_G(m_mmin)
+	FLEXT_CALLBACK_G(m_max)
+	FLEXT_CALLBACK_G(m_mmax)
+
+	FLEXT_CALLBACK_1(m_pow,F)
+	FLEXT_CALLBACK_G(m_cpow)
+	FLEXT_CALLBACK(m_sqr)
+	FLEXT_CALLBACK(m_csqr)
+	FLEXT_CALLBACK_1(m_root,F)
+	FLEXT_CALLBACK(m_sqrt)
+
+	FLEXT_CALLBACK(m_inv)
+	FLEXT_CALLBACK(m_cinv)
+
+	FLEXT_CALLBACK(m_abs)
+	FLEXT_CALLBACK(m_polar)
+	FLEXT_CALLBACK(m_cart)
+
+	FLEXT_CALLBACK(m_norm)
+	FLEXT_CALLBACK(m_cnorm)
+
+	FLEXT_CALLBACK_1(m_shift,F)
+	FLEXT_CALLBACK_1(m_xshift,F)
+	FLEXT_CALLBACK_1(m_rot,F)
+	FLEXT_CALLBACK_1(m_xrot,F)
+	FLEXT_CALLBACK(m_mirr)
+	FLEXT_CALLBACK(m_xmirr)
+
+	FLEXT_CALLBACK_G(m_osc)
+	FLEXT_CALLBACK_G(m_cosc)
+	FLEXT_CALLBACK_G(m_noise)
+	FLEXT_CALLBACK_G(m_cnoise)
+
+	FLEXT_CALLBACK(m_rfft)
+	FLEXT_CALLBACK(m_rifft)
+	FLEXT_CALLBACK(m_cfft)
+	FLEXT_CALLBACK(m_cifft)
 };
 
 

@@ -105,6 +105,10 @@ SOURCE=.\main.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\modify.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\util.cpp
 # End Source File
 # End Target
