@@ -41,6 +41,7 @@ V lib_setup()
 	VASP_SETUP(part);
 
 	VASP_SETUP(q);
+	VASP_SETUP(qq);
 	VASP_SETUP(i);
 
 //	VASP__SETUP(copy);

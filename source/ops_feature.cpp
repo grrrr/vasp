@@ -108,8 +108,8 @@ static BL d_vlpk(OpParam &p,BL cmpf(S a,S b))
 		S *rdst = p.rddt,*rsrc = p.rsdt;
 		S *idst = p.iddt,*isrc = p.isdt;
 		
-		if(!idst) idst = rdst,p.ids = p.rds;
-		if(!isrc) isrc = rsrc,p.iss = p.rss;
+		if(!p.peaks.cx || !idst) idst = rdst,p.ids = p.rds;
+		if(!p.peaks.cx || !isrc) isrc = rsrc,p.iss = p.rss;
 
 		// preset sample values
 		S d1 = -1,d0 = -1,dn = -1;
@@ -173,6 +173,7 @@ Vasp *VaspOp::m_peaks(OpParam &p,Vasp &src,Vasp *dst,BL inv)
 	Vasp *ret = NULL;
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
+		p.peaks.cx = false;
 		ret = DoOp(vecs,inv?d_valleys:d_peaks,p);
 		delete vecs;
 	}
@@ -194,6 +195,7 @@ Vasp *VaspOp::m_rpeaks(OpParam &p,Vasp &src,Vasp *dst,BL inv)
 	Vasp *ret = NULL;
 	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 	if(vecs) {
+		p.peaks.cx = true;
 		ret = DoOp(vecs,inv?d_rvalleys:d_rpeaks,p);
 		delete vecs;
 	}
@@ -207,13 +209,14 @@ class vasp_peaks:
 	FLEXT_HEADER(vasp_peaks,vasp_anyop)
 public:			
 	
+	// \todo should have float outlet to connect to number box!!
 	vasp_peaks(I argc,t_atom *argv): vasp_anyop(argc,argv,true,1) {}
 
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_peaks(p,ref,&dst); }
 		
 	virtual Vasp *tx_work(const Argument &arg) 
 	{ 
-		OpParam p(thisName());													
+		OpParam p(thisName(),0);													
 		
 		if(arg.IsList() && arg.GetList().Count() >= 1 && CanbeFloat(arg.GetList()[0])) {
 			p.peaks.density = GetAFloat(arg.GetList()[0]);

@@ -84,7 +84,7 @@ public:
 		
 	virtual Vasp *tx_work() 
 	{ 
-		OpParam p(thisName());													
+		OpParam p(thisName(),0);													
 		Vasp *ret = do_opt(p);
 		ToOutFloat(1,p.norm.fnorm);
 		return ret;

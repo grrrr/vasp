@@ -56,12 +56,13 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
 
 	Vasp *vbl[2] = {&src,dst};
 
+/*
 	for(I bli = 0; bli < 2; ++bli)
 		if(vbl[bli] && vbl[bli]->Ok())
 			for(I ci = 0; ok && ci < nvecs; ++ci) {
 				VBuffer *bref = vbl[bli]->Buffer(ci);		
 				if(!bref->Data()) {
-					post("%s - %s vector (%s) is invalid",op,bli?"dst":"src",bref->Name());
+					post("%s - %s vector (%s) is invalid",op,bli == 0?"src":"dst",bref->Name());
 					ok = false; break; // really break?
 				}
 				else {
@@ -73,6 +74,27 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
 					dlens = dlens || corrlen(tfrms,bref->Length());
 				}
 			}
+*/
+
+	for(I bli = 0; bli < 2; ++bli)
+		for(I ci = 0; ok && ci < nvecs; ++ci) {
+			VBuffer *bref = NULL;
+			if(vbl[bli] && vbl[bli]->Ok()) {
+				bref = vbl[bli]->Buffer(ci);		
+				if(!bref->Data()) {
+					post("%s - %s vector (%s) is invalid",op,bli == 0?"src":"dst",bref->Name());
+					delete bref; bref = NULL;
+					ok = false; 
+				}
+				else
+					dlens = dlens || corrlen(tfrms,bref->Length());
+			}
+			
+			if(bli == 0) 
+				ret->Src(ci,bref);
+			else 
+				ret->Dst(ci,bref);
+		}
 
 	if(dlens) post("%s - vector length has been limited to maximum common length (%i)",op,tfrms);
 
@@ -113,11 +135,11 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
 	I tfrms = -1;
 
 	Vasp *vbl[2] = {&src,dst};
-
+/*
 	for(I bli = 0; bli < 2; ++bli)
 		if(vbl[bli] && vbl[bli]->Ok())
 			for(I ci = 0; ci < pairs; ++ci) {
-				const C *vnm = bli?"src":"dst";
+				const C *vnm = bli == 0?"src":"dst";
 				VBuffer *bre = vbl[bli]->Buffer(ci*2),*bim = vbl[bli]->Buffer(ci*2+1); // complex channels
 
 				if(!bre->Data()) {
@@ -136,6 +158,37 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
 				if(bli == 0) ret->Src(ci,bre,bim);
 				else ret->Dst(ci,bre,bim);
 			}
+*/
+	for(I bli = 0; bli < 2; ++bli) 
+		for(I ci = 0; ci < pairs; ++ci) {
+			VBuffer *bre = NULL,*bim = NULL; // complex channels
+			if(vbl[bli] && vbl[bli]->Ok()) {
+				const C *vnm = bli == 0?"src":"dst";
+				bre = vbl[bli]->Buffer(ci*2);
+				bim = vbl[bli]->Buffer(ci*2+1); // complex channels
+
+				if(!bre->Data()) {
+					post("%s - real %s vector (%s) is invalid",op,vnm,bre->Name());
+					delete bre; bre = NULL;
+					ok = false; 
+				}
+				if(bim && !bim->Data()) {
+					post("%s - imag %s vector (%s) is invalid",op,vnm,bim->Name());
+					delete bim; bim = NULL;
+					ok = false; 
+				}
+
+				// check against common vector length
+				if(bre) dlens = dlens || corrlen(tfrms,bre->Length());
+				if(bim)	dlens = dlens || corrlen(tfrms,bim->Length());
+
+			}
+
+			if(bli == 0) 
+				ret->Src(ci,bre,bim);
+			else 
+				ret->Dst(ci,bre,bim);
+		}
 
 	if(dlens) post("%s - vector src/dst length has been limited to maximum common length (%i)",op,tfrms);
 
@@ -384,15 +437,16 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 		for(I si = 0; ok && si < scnt; ++si) {
 			p.frames = vecs->Frames();
 
-			VBuffer *s = vecs->Src(i),*d = vecs->Dst(i),*a = vecs->Arg(i);
+			VBuffer *s = vecs->Src(i),*d = vecs->Dst(i); //,*a = vecs->Arg(i);
 			p.rsdt = s->Pointer(),p.rss = s->Channels();
 		
 			if(d) p.rddt = d->Pointer(),p.rds = d->Channels();
 			else p.rddt = p.rsdt,p.rds = p.rss;
-		
-			if(a) p.radt = a->Pointer(),p.ras = a->Channels();
-			else p.radt = NULL; //,p.ras = 0;
 
+			for(I bi = 0; bi < vecs->ArgBlks(); ++bi) {
+				p.radt = a->Pointer(),p.ras = a->Channels();
+			}
+		
 			if(!symm) 
 				p.symm = -1;
 			else {

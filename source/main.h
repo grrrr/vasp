@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.1"
+#define VASP_VERSION "0.0.2"
 
 
 #include <flext.h>
@@ -218,8 +218,10 @@ public:
 	I ArgFrames() const { return afrms; }
 	V ArgFrames(I fr) { afrms = fr; }
 
+	BL Complex() { return cplx; }
+
 protected:
-	VecBlock(I msrc,I marg,I mdst);
+	VecBlock(BL cplx,I msrc,I mdst,I marg,I blarg);
 	~VecBlock();
 
 	Vasp *_SrcVasp(I n);
@@ -227,14 +229,17 @@ protected:
 	Vasp *_ResVasp(I n); // either Dst or Src
 
 	VBuffer *_Src(I ix) { return vecs[ix]; }
-	VBuffer *_Arg(I ix) { return vecs[asrc+ix]; }
-	VBuffer *_Dst(I ix) { return vecs[asrc+aarg+ix]; }
+	VBuffer *_Arg(I ix,I bl = 0) { return vecs[asrc+bl*aarg+ix]; }
+	VBuffer *_Dst(I ix) { return vecs[asrc+aarg*barg+ix]; }
 	V _Src(I ix,VBuffer *v) { vecs[ix] = v; }
-	V _Arg(I ix,VBuffer *v) { vecs[asrc+ix] = v; }
-	V _Dst(I ix,VBuffer *v) { vecs[asrc+aarg+ix] = v; }
+	V _Arg(I ix,VBuffer *v,I bl = 0) { vecs[asrc+bl*aarg+ix] = v; }
+	V _Dst(I ix,VBuffer *v) { vecs[asrc+aarg*barg+ix] = v; }
+	
+	I ArgBlks() const { return barg; }
 
 private:
-	I asrc,aarg,adst;
+	BL cplx;
+	I asrc,adst,aarg,barg;
 	VBuffer **vecs;
 	I frms,afrms;
 };
@@ -244,13 +249,13 @@ class RVecBlock:
 	public VecBlock
 {
 public:
-	RVecBlock(I _n,I _a = 0): VecBlock(_n,_a,_n),n(_n),a(_a) {}
+	RVecBlock(I _n,I _a = 0,I _ba = 1): VecBlock(false,_n,_n,_a,_ba),n(_n),a(_a) {}
 
 	VBuffer *Src(I ix) { return _Src(ix); }
-	VBuffer *Arg(I ix) { return _Arg(ix); }
+	VBuffer *Arg(I ix,I bl = 0) { return _Arg(ix,bl); }
 	VBuffer *Dst(I ix) { return _Dst(ix); }
 	V Src(I ix,VBuffer *v) { _Src(ix,v); }
-	V Arg(I ix,VBuffer *v) { _Arg(ix,v); }
+	V Arg(I ix,VBuffer *v,I bl = 0) { _Arg(ix,v,bl); }
 	V Dst(I ix,VBuffer *v) { _Dst(ix,v); }
 
 	I Vecs() const { return n; }
@@ -268,16 +273,16 @@ class CVecBlock:
 	public VecBlock
 {
 public:
-	CVecBlock(I _np,I _ap = 0): VecBlock(_np*2,_ap*2,_np*2),np(_np),ap(_ap) {}
+	CVecBlock(I _np,I _ap = 0,I _bap = 1): VecBlock(true,_np*2,_np*2,_ap*2,_bap),np(_np),ap(_ap) {}
 
 	VBuffer *ReSrc(I ix) { return _Src(ix*2); }
 	VBuffer *ImSrc(I ix) { return _Src(ix*2+1); }
-	VBuffer *ReArg(I ix) { return _Arg(ix*2); }
-	VBuffer *ImArg(I ix) { return _Arg(ix*2+1); }
+	VBuffer *ReArg(I ix,I bl = 0) { return _Arg(ix*2,bl); }
+	VBuffer *ImArg(I ix,I bl = 0) { return _Arg(ix*2+1,bl); }
 	VBuffer *ReDst(I ix) { return _Dst(ix*2); }
 	VBuffer *ImDst(I ix) { return _Dst(ix*2+1); }
 	V Src(I ix,VBuffer *vre,VBuffer *vim) { _Src(ix*2,vre); _Src(ix*2+1,vim); }
-	V Arg(I ix,VBuffer *vre,VBuffer *vim) { _Arg(ix*2,vre); _Arg(ix*2+1,vim); }
+	V Arg(I ix,VBuffer *vre,VBuffer *vim,I bl = 0) { _Arg(ix*2,vre,bl); _Arg(ix*2+1,vim,bl); }
 	V Dst(I ix,VBuffer *vre,VBuffer *vim) { _Dst(ix*2,vre); _Dst(ix*2+1,vim); }
 
 	I Pairs() const { return np; }
@@ -294,50 +299,72 @@ protected:
 
 class OpParam {
 public:
-	OpParam(const C *opnm);
+	OpParam(const C *opnm,I args);
+	~OpParam();
 
-	BL HasArg() const { return radt != NULL; }
+	V InitArgs(I nargs);
+	V Clear();
+
+	BL HasArg() const { return arg != NULL; }
 
 	// check for overlap 
 	// \remark if on same vector, stride is the same for src, arg, dst!
 	inline BL SR_In() const { return rddt > rsdt && rddt < rsdt+frames*rss; } 
 	inline BL SI_In() const { return iddt > isdt && iddt < isdt+frames*iss; } 
-	inline BL AR_In() const { return radt && rddt > radt && rddt < radt+frames*ras; } 
-	inline BL AI_In() const { return iadt && iddt > iadt && iddt < iadt+frames*ias; } 
+	inline BL AR_In(I bl) const { return arg[bl].v.rdt && rddt > arg[bl].v.rdt && rddt < arg[bl].v.rdt+frames*arg[bl].v.rs; } 
+	inline BL AI_In(I bl) const { return arg[bl].v.idt && iddt > arg[bl].v.idt && iddt < arg[bl].v.idt+frames*arg[bl].v.is; } 
+	BL AR_In() const;
+	BL AI_In() const;
 	
 	// Can we reverse direction?
 	inline BL SR_Can() const { return rsdt <= rddt || rsdt >= rddt+frames*rds; } 
 	inline BL SI_Can() const { return isdt <= iddt || isdt >= iddt+frames*ids; } 
-	inline BL AR_Can() const { return !radt || radt <= rddt || radt >= rddt+frames*rds; } 
-	inline BL AI_Can() const { return !iadt || iadt <= iddt || iadt >= iddt+frames*ids; } 
+	inline BL AR_Can(I bl) const { return !arg[bl].v.rdt || arg[bl].v.rdt <= rddt || arg[bl].v.rdt >= rddt+frames*rds; } 
+	inline BL AI_Can(I bl) const { return !arg[bl].v.idt || arg[bl].v.idt <= iddt || arg[bl].v.idt >= iddt+frames*ids; } 
+	BL AR_Can() const;
+	BL AI_Can() const;
 	
 	// does it overlap? (works only with rss,rds,ras.... > 0)
 	inline BL SR_Ovr() const { return rddt != rsdt && rddt < rsdt+frames*rss && rsdt < rddt+frames*rds; } 
 	inline BL SI_Ovr() const { return iddt != isdt && iddt < isdt+frames*iss && isdt < iddt+frames*ids; } 
-	inline BL AR_Ovr() const { return radt && rddt != radt && rddt < radt+frames*ras && radt < rddt+frames*rds; } 
-	inline BL AI_Ovr() const { return iadt && iddt != iadt && iddt < iadt+frames*ras && iadt < iddt+frames*ids; } 
+	inline BL AR_Ovr(I bl) const { return arg[bl].v.rdt && rddt != arg[bl].v.rdt && rddt < arg[bl].v.rdt+frames*arg[bl].v.rs && arg[bl].v.rdt < rddt+frames*rds; } 
+	inline BL AI_Ovr(I bl) const { return arg[bl].v.idt && iddt != arg[bl].v.idt && iddt < arg[bl].v.idt+frames*arg[bl].v.is && arg[bl].v.idt < iddt+frames*ids; } 
+	BL AR_Ovr() const;
+	BL AI_Ovr() const;
 	
 	// reverse direction
 	inline V SR_Rev() { rsdt -= (frames-1)*(rss = -rss); }
 	inline V SI_Rev() { isdt -= (frames-1)*(iss = -iss); }
-	inline V AR_Rev() { if(radt) radt -= (frames-1)*(ras = -ras); }
-	inline V AI_Rev() { if(iadt) iadt -= (frames-1)*(ias = -ias); }
+	inline V AR_Rev(I bl) { if(arg[bl].v.rdt) arg[bl].v.rdt -= (frames-1)*(arg[bl].v.rs = -arg[bl].v.rs); }
+	inline V AI_Rev(I bl) { if(arg[bl].v.idt) arg[bl].v.idt -= (frames-1)*(arg[bl].v.is = -arg[bl].v.is); }
 	inline V DR_Rev() { rddt -= (frames-1)*(rds = -rds); }
 	inline V DI_Rev() { iddt -= (frames-1)*(ids = -ids); }
+	V AR_Rev();
+	V AI_Rev();
 	
 	V R_Rev();
 	V C_Rev();
 
 	const C *opname;
-	I frames,symm;
+	I frames,symm,args;
 	BL ovrlap,revdir;
 	S *rsdt,*isdt; I rss,iss;
 	S *rddt,*iddt; I rds,ids;
-	S *radt,*iadt; I ras,ias;
+	
+	struct arg_t {
+		enum { arg_ = 0,arg_x,arg_v,arg_l } argtp;
+		union {
+			struct { S r,i; } x;
+			struct { S *rdt,*idt; I rs,is; } v;
+			struct { I pts; S *r,*i; } l;
+		};
+	} *arg;
+	
+//	S **radt,**iadt; I *ras,*ias;
 	union {
 		struct { R coef,carry; I rep; } flt;
 		struct { R carry; I rep; } intdif;
-		struct { R density; I cnt; } peaks;
+		struct { BL cx; R density; I cnt; } peaks;
 		struct { R ph,phinc; } gen;
 		struct { R factor,center; I mode; } tilt; 
 		struct { R cur,inc; } bvl;
@@ -868,7 +895,7 @@ public:																			\
 protected:																		\
 	virtual Vasp *tx_work()														\
 	{																			\
-		OpParam p(thisName());													\
+		OpParam p(thisName(),0);												\
 		return VaspOp::m_##op(p,ref,&dst);										\
 	}																			\
 };																				\
@@ -885,14 +912,14 @@ public:																			\
 protected:																		\
 	virtual Vasp *tx_work(const Argument &arg)									\
 	{																			\
-		OpParam p(thisName());													\
+		OpParam p(thisName(),1);												\
 		return VaspOp::m_##op(p,ref,arg,&dst);									\
 	}																			\
 };																				\
 FLEXT_LIB_G(name,vasp__##op)
 
 
-#define VASP_ANYOP(name,op,to)													\
+#define VASP_ANYOP(name,op,args,to)												\
 class vasp__ ## op:																\
 	public vasp_anyop															\
 {																				\
@@ -902,7 +929,7 @@ public:																			\
 protected:																		\
 	virtual Vasp *tx_work(const Argument &arg)									\
 	{																			\
-		OpParam p(thisName());													\
+		OpParam p(thisName(),args);												\
 		return VaspOp::m_##op(p,ref,arg,&dst); }								\
 };																				\
 FLEXT_LIB_G(name,vasp__##op)

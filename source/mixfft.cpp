@@ -268,10 +268,10 @@ void initTrig(int radix)
     trigRe[1]=xre; trigIm[1]=xim;
     for (i=2; i<radix; i++)
     {
-//        trigRe[i] = xre1 = xre*trigRe[i-1] - xim*trigIm[i-1];
-//        trigIm[i] = xim1 = xim*trigRe[i-1] + xre*trigIm[i-1];
-        trigRe[i] = xre1 = xre*xre1 - xim*xim1;
-        trigIm[i] = xim1 = xim*xre1 + xre*xim1;
+        trigRe[i] = xre1 = xre*trigRe[i-1] - xim*trigIm[i-1];
+        trigIm[i] = xim1 = xim*trigRe[i-1] + xre*trigIm[i-1];
+//        trigRe[i] = xre1 = xre*xre1 - xim*xim1;
+//        trigIm[i] = xim1 = xim*xre1 + xre*xim1;
     }
 }   /* initTrig */
 

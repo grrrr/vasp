@@ -991,7 +991,7 @@ public:
 	vasp_q()
 	{
 		AddInAnything();
-		AddOutAnything();
+		AddOutAnything(2);
 		SetupInOut();
 	}
 
@@ -1002,17 +1002,69 @@ public:
 		else {
 			VBuffer *buf = ref.Buffer(0);
 			I cnt = buf->Length();
+			S *p = buf->Pointer();
 			t_atom *lst = new t_atom[cnt];
-			for(I i = 0; i < cnt; ++i) SetFloat(lst[i],buf->Data()[i]);
-			ToOutAnything(0,sym_vector,cnt,lst);
+			for(I i = 0; i < cnt; ++i,++p) SetFloat(lst[i],*p);
+			ToOutAnything(0,sym_list,cnt,lst);
 			delete[] lst;
 		}
 	}
 
-	virtual V m_help() { post("%s - Get samples of a vasp vector",thisName()); }
+	virtual V m_help() { post("%s - Get list of samples of a vasp vector",thisName()); }
 };
 
 FLEXT_LIB("vasp.?",vasp_q)
+
+
+
+/*! \class vasp_qq
+	\remark \b vasp.??
+	\brief Get samples of a single vasp vector.
+	\since 0.0.2
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet.0 list - non-zero samples positions
+	\retval outlet.1 list - non-zero sample values
+
+	\note Outputs 0 if vasp is undefined or invalid
+	\note Only works for a vasp with one vector. No output otherwise.
+*/
+class vasp_qq:
+	public vasp_q
+{
+	FLEXT_HEADER(vasp_qq,vasp_q)
+
+public:
+
+	virtual V m_bang() 
+	{ 
+		if(ref.Vectors() > 1) 
+			post("%s - More than one vector in vasp!",thisName());
+		else {
+			VBuffer *buf = ref.Buffer(0);
+			I i,cnt = buf->Length(),cp,ci;
+			S *p = buf->Pointer();
+			for(cp = i = 0; i < cnt; ++i,++p) if(*p) ++cp;
+			t_atom *pos = new t_atom[cp],*lst = new t_atom[cp];
+			p = buf->Pointer();
+			for(ci = i = 0; ci < cp; ++i,++p)
+				if(*p) {
+					SetInt(pos[ci],i);
+					SetFloat(lst[ci],*p);
+					++ci;
+				}
+			ToOutAnything(0,sym_list,cp,pos);
+			ToOutAnything(1,sym_list,cp,lst);
+			delete[] pos;
+			delete[] lst;
+		}
+	}
+
+	virtual V m_help() { post("%s - Get list of non-zero samples of a vasp vector",thisName()); }
+};
+
+FLEXT_LIB("vasp.??",vasp_qq)
 
 
 

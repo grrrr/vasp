@@ -1,5 +1,5 @@
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
-version 0.0.1
+version 0.0.2
 
 Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -40,13 +40,16 @@ Goals/features of the package:
 
 Version history:
 
-0.0.1:
+0.0.2:
 - vasp.cmin,vasp.cmax - renamed to vasp.rmin,vasp.rmax
 - reversed vasp channel and offset
 - fixed bug with arguments to complex binary operations
 - vasp.chk: included channel check
+- fixed pointer bug in vasp.?
+- fixed pointer increment bug in vasp.fhp
+- changed VecBlock implementation
 
-0.0.0:
+0.0.1:
 - defined the vasp
 - quick and dirty setup of most functions (non-interruptible)
 

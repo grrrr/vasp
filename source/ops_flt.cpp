@@ -14,6 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // --- highpass ---------------------------------------
 
 //! \todo handle carry
+// !BUG
 
 BL VecOp::d_fhp(OpParam &p) 
 { 
@@ -37,7 +38,7 @@ BL VecOp::d_fhp(OpParam &p)
 			register const S v0 = *src + coef*v1;
 			*dst = v0-v1;
 			v1 = v0;
-			src += p.rss,dst -= p.rds;
+			src += p.rss,dst += p.rds;
 		}
 		
 		if(p.flt.rep < 0) {
