@@ -63,7 +63,8 @@ public:
 			if(!frms) 
 				post("%s - No length defined!",thisName());
 			else {
-				Vasp ret(frms,Vasp::Ref(ImmBuf(frms)));
+				ImmBuf ibuf(frms);
+				Vasp ret(frms,Vasp::Ref(ibuf));
 				ToOutVasp(0,ret);
 			}
 		}
