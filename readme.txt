@@ -98,6 +98,8 @@ warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay 
 - make loops granular and interruptible
 - make in place rotation more efficient
 
+- introduce default values (2) for vasp.split and vasp.join
+
 objects:
 ---------------------
 - wave object for table-lookup oscs.
@@ -120,6 +122,7 @@ tests:
 ---------------------
 - vasp.size always keeps the data... do we want that? -> flag if yes/no
 - in-place operation (src == dst), test if strides are equal!
+- check results of rfft!
 
 
 premature thoughts:
