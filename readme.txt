@@ -1,5 +1,5 @@
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
-version 0.0.4
+version 0.0.5
 
 Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -39,6 +39,10 @@ Goals/features of the package:
 ----------------------------------------------------------------------------
 
 Version history:
+
+0.0.5:
+- fixed sqrt bug in [vasp.rmin?],[vasp.rmax?]
+- fixed (offs >= frames) bug in [vasp.offs?] 
 
 0.0.4:
 - changed vasp.min/max functions so that a vasp length 0 results in 0

@@ -209,7 +209,7 @@ class vasp_peaks:
 	FLEXT_HEADER(vasp_peaks,vasp_anyop)
 public:			
 	
-	vasp_peaks(I argc,t_atom *argv): vasp_anyop(argc,argv,true) {}
+	vasp_peaks(I argc,t_atom *argv): vasp_anyop(argc,argv,true,XletCode(xlet::tp_float,0)) {}
 
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_peaks(p,ref,&dst); }
 		
@@ -241,7 +241,7 @@ public:
 	vasp_valleys(I argc,t_atom *argv): vasp_peaks(argc,argv) {}
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_valleys(p,ref,&dst); }
 };																				
-FLEXT_LIB_G("vasp.!peaks",vasp_valleys)
+FLEXT_LIB_G("vasp.valleys",vasp_valleys)
 
 
 class vasp_rpeaks:
@@ -263,5 +263,5 @@ public:
 	vasp_rvalleys(I argc,t_atom *argv): vasp_peaks(argc,argv) {}
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_rvalleys(p,ref,&dst); }
 };																				
-FLEXT_LIB_G("vasp.r!peaks",vasp_rvalleys)
+FLEXT_LIB_G("vasp.rvalleys",vasp_rvalleys)
 

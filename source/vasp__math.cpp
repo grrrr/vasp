@@ -316,7 +316,7 @@ public:
 	{ 
 		OpParam p(thisName(),0);													
 		Vasp *ret = do_opt(p);
-		ToOutFloat(1,p.norm.minmax);
+		ToOutFloat(1,sqrt(p.norm.minmax));
 		return ret;
 	}
 

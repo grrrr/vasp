@@ -830,7 +830,7 @@ public:
 				else {
 					VBuffer *buf = ref.Buffer(0);
 					if(buf) {
-						I f = buf->Length();
+						I f = buf->Frames();
 						if(o > f) o = f;
 						delete buf;
 					}
