@@ -149,11 +149,11 @@ static V Collect()
 
 #ifdef FLEXT_THREADS
 static bool libthractive = false;
-static pthread_t libthrid;
+//static flext::thrid_t libthrid;
 static bool libthrexit = false; // currently not used
 static flext::ThrCond *libthrcond = NULL;
 
-static V *LibThr(V *)
+static V LibThr(flext::thr_params *)
 {
 	flext::RelPriority(-2);
 
@@ -162,7 +162,6 @@ static V *LibThr(V *)
 		// TODO - should process return value of TimedWait
 		Collect();	
 	}
-	return NULL;
 }
 #endif
 
@@ -218,7 +217,7 @@ BufEntry *BufLib::NewImm(I fr,BL zero)
 {
 #ifdef FLEXT_THREADS
 	if(!libthractive) {
-		int ret = pthread_create(&libthrid,NULL,LibThr,NULL);
+		bool ret = flext::LaunchThread(LibThr,NULL);
 		if(ret)
 			error("vasp - Could not launch helper thread");
 		else {
