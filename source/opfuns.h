@@ -12,6 +12,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __VASP_OPFUNS_H
 
 #include "opdefs.h"
+#include <math.h>
+#include "util.h"
 
 
 namespace VecOp {
@@ -398,8 +400,6 @@ namespace VecOp {
     public:
     	static I cun_opt() { return 0; }
         static V cun(T &rv,T &iv,T ra,T ia) { rv = sqrt(sqabs(ra,ia)),iv = arg(ra,ia); }
-    protected:
-        static T sqabs(T re,T im) { return re*re+im*im; }
     };
 
     template<class T> class f_rect {
