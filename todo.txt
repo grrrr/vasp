@@ -45,15 +45,11 @@ objects:
 bugs:
 ---------------------
 
-- vasp.join doesn't like length -1
-
 
 tests:
 ---------------------
-- vasp.size always keeps the data... do we want that? -> flag if yes/no
 - in-place operation (src == dst), test if strides are equal!
 - should frame count always be pre-evaluated (e.g. in vasp.f+ etc. ?)
-- review/change questionable permutation algorithm
 - test DFT objects on strided buffers
 - check for odd remainder frame on symmetric operations!!
 
