@@ -532,6 +532,9 @@ namespace VaspOp {
 	Vasp *m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // scaling across max
 	Vasp *m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius scaling across max
 
+	Vasp *m_qmin(OpParam &p,Vasp &src); // get minimum sample value
+	Vasp *m_qmax(OpParam &p,Vasp &src); // get maximum sample value
+
 	inline Vasp *m_minmax(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_minmax); } // min/max 
 
 	inline Vasp *m_sqr(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_run(p,src,dst,VecOp::d_sqr); }    // unsigned square 

@@ -110,6 +110,9 @@ V lib_setup()
 	VASP__SETUP(optf);
 	VASP__SETUP(roptf);
 
+	VASP_SETUP(qmin)
+	VASP_SETUP(qmax)
+
 	VASP__SETUP(cnorm)
 //	VASP__SETUP(cswap)
 	VASP__SETUP(cconj)

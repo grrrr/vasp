@@ -1050,7 +1050,7 @@ public:
 			p = buf->Pointer();
 			for(ci = i = 0; ci < cp; ++i,++p)
 				if(*p) {
-					SetInt(pos[ci],i);
+					SetFlint(pos[ci],i);
 					SetFloat(lst[ci],*p);
 					++ci;
 				}

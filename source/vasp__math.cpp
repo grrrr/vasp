@@ -89,6 +89,8 @@ public:
 		ToOutFloat(1,p.norm.fnorm);
 		return ret;
 	}
+
+	virtual V m_help() { post("%s - Optimize a vasp",thisName()); }
 };																				
 FLEXT_LIB("vasp.opt",vasp_opt)
 
@@ -124,6 +126,7 @@ class vasp_ropt: public vasp_opt
 	FLEXT_HEADER(vasp_ropt,vasp_opt)
 public:			
 	virtual Vasp *do_opt(OpParam &p) { return VaspOp::m_ropt(p,ref,&dst); }
+	virtual V m_help() { post("%s - Optimize a vasp by its complex radius",thisName()); }
 };																				
 FLEXT_LIB("vasp.ropt",vasp_ropt)
 
@@ -288,4 +291,71 @@ Vasp *VaspOp::m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	}
 	return ret;
 }
+
+
+
+
+
+
+/*! \class vasp_qmin
+	\remark \b vasp.min?
+	\brief Get minimum sample value
+	\since 0.0.2
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet float - minimum sample value
+
+	\todo Should we provide a cmdln default vasp?
+	\todo Should we inhibit output for invalid vasps?
+*/
+class vasp_qmin:
+	public vasp_unop
+{
+	FLEXT_HEADER(vasp_qmin,vasp_unop)
+
+public:
+	vasp_qmin(): vasp_unop(true,1) {}
+
+	virtual Vasp *do_opt(OpParam &p) { return VaspOp::m_qmin(p,ref); }
+		
+	virtual Vasp *tx_work() 
+	{ 
+		OpParam p(thisName(),0);													
+		Vasp *ret = do_opt(p);
+		ToOutFloat(1,p.norm.fnorm);
+		return ret;
+	}
+
+	virtual V m_help() { post("%s - Get a vasp's minimum sample value",thisName()); }
+};
+
+FLEXT_LIB("vasp.min?",vasp_qmin)
+
+
+
+/*! \class vasp_qmax
+	\remark \b vasp.max?
+	\brief Get maximum sample value
+	\since 0.0.2
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet float - minimum sample value
+
+	\todo Should we provide a cmdln default vasp?
+	\todo Should we inhibit output for invalid vasps?
+*/
+class vasp_qmax:
+	public vasp_qmin
+{
+	FLEXT_HEADER(vasp_qmax,vasp_qmin)
+public:
+	virtual Vasp *do_opt(OpParam &p) { return VaspOp::m_qmax(p,ref); }
+	virtual V m_help() { post("%s - Get a vasp's maximum sample value",thisName()); }
+};
+
+FLEXT_LIB("vasp.max?",vasp_qmax)
+
+
 
