@@ -25,6 +25,7 @@ warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay 
 
 - reduce number of warnings for wrong offset, frame size etc.
 
+- review vasp.f=, vasp.o= for quasi-constant envelopes
 
 
 objects:
