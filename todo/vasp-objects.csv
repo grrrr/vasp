@@ -89,6 +89,10 @@ vasp.leq;vasp.<=
 vasp.geq;vasp.>=
 vasp.equ;vasp.==
 vasp.neq;vasp.!=
+vasp.alwr;vasp.a<
+vasp.agtr;vasp.a>
+vasp.aleq;vasp.a<=
+vasp.ageq;vasp.a>=
 
 vasp.polar;
 vasp.rect;
