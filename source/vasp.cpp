@@ -138,7 +138,7 @@ Vasp &Vasp::operator +=(const Vasp &v)
 		if(!Ok()) *this = v;
 		else {
 			if(Frames() != v.Frames()) {
-				post("%s - Frame count of joined vasps is different - taking the minimum");
+				post("vasp - Frame count of joined vasps is different - taking the minimum");
 				Frames(min(Frames(),v.Frames()));
 			}
 

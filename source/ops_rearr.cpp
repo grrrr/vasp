@@ -115,24 +115,26 @@ BL VecOp::d_rot(OpParam &p)
 
 /*! \brief vasp shift or rotation
 	\todo units for shift
+	\todo include padding modes (on command line?)
 */
 Vasp *VaspOp::m_shift(Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm) 
 {
 	Vasp *ret = NULL;
 	OpParam p(shift?(symm?"xshift":"shift"):(symm?"xrot":"rot"));
 
-	if(arg.CanbeDouble()) {
-		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
-		if(vecs) {
+	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
+	if(vecs) {
+		if(arg.CanbeDouble()) {
 			// shift length
 			p.sh.sh = arg.GetADouble();
-
-			ret = DoOp(vecs,shift?VecOp::d_shift:VecOp::d_rot,p,symm);
-			delete vecs;
 		}
-	}
-	else {
-		post("%s - invalid argument",p.opname);
+		else {
+			post("%s - invalid argument -> set to 0",p.opname);
+			p.sh.sh = 0;
+		}
+
+		ret = DoOp(vecs,shift?VecOp::d_shift:VecOp::d_rot,p,symm);
+		delete vecs;
 	}
 
 	return ret;

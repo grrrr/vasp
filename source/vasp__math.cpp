@@ -31,8 +31,10 @@ BL VecOp::d_opt(OpParam &p)
 		S *dr = p.rddt;
 		for(I i = 0; i < p.frames; ++i,dr += p.rds,sr += p.rss) 
 			*dr = *sr * v;
+		return true;
 	}
-	return true; 
+	else 
+		return d_copy(p);
 }
 
 BL VecOp::d_copt(OpParam &p) 
@@ -53,8 +55,10 @@ BL VecOp::d_copt(OpParam &p)
 		for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids,sr += p.rss,si += p.iss) {
 			*dr = *sr * v, *di = *si * v;
 		}
+		return true;
 	}
-	return true; 
+	else 
+		return d_ccopy(p);
 }
 
 
@@ -107,15 +111,16 @@ Vasp *VaspOp::m_rpow(Vasp &src,const Argument &arg,Vasp *dst)
 { 
 	Vasp *ret = NULL;
 	OpParam p("rpow");
-	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		CVecBlock *vecs = GetCVecs(p.opname,src,dst);
-		if(vecs) {
-			p.cbin.rarg = flx::GetAFloat(arg.GetList()[0]);
-			p.cbin.iarg = 0; // not used anyway
+	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
+	if(vecs) {
+		if(arg.CanbeDouble())
+			p.cbin.rarg = arg.GetADouble();
+		else
+			post("%s - argument is invalid -> set to 1",p.opname);
+		p.cbin.iarg = 0; // not used anyway
 
-			ret = DoOp(vecs,VecOp::d_rpow,p);
-			delete vecs;
-		}
+		ret = DoOp(vecs,VecOp::d_rpow,p);
+		delete vecs;
 	}
 	return ret;
 }

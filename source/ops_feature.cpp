@@ -75,11 +75,6 @@ Vasp *VaspOp::m_int(Vasp &src,const Argument &arg,Vasp *dst,BL inv)
 			p.intdif.rep = 1;
 		}
 		
-/*
-		if(p.SROvr()) {
-			p.SDRRev();
-		}	
-*/
 		ret = DoOp(vecs,inv?VecOp::d_dif:VecOp::d_int,p);
 		delete vecs;
 	}
@@ -145,12 +140,7 @@ Vasp *VaspOp::m_peaks(Vasp &src,const Argument &arg,Vasp *dst,BL inv)
 			post("%s - invalid repetition count (%i) -> set to 1",p.opname,p.peaks.rep);
 			p.peaks.rep = 1;
 		}
-/*		
-		if(p.SROvr()) {
-			p.SDRRev();
-			post("%s - reversing operation direction due to overlap: opposite sample delay",opnm);
-		}	
-*/
+
 		ret = DoOp(vecs,inv?d_peaks:d_valleys,p);
 		delete vecs;
 	}

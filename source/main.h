@@ -215,6 +215,8 @@ public:
 
 	I Frames() const { return frms; }
 	V Frames(I fr) { frms = fr; }
+	I ArgFrames() const { return afrms; }
+	V ArgFrames(I fr) { afrms = fr; }
 
 protected:
 	VecBlock(I msrc,I marg,I mdst);
@@ -234,7 +236,7 @@ protected:
 private:
 	I asrc,aarg,adst;
 	VBuffer **vecs;
-	I frms;
+	I frms,afrms;
 };
 
 
@@ -443,8 +445,8 @@ namespace VaspOp {
 
 	RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp *dst = NULL);
 	CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp *dst = NULL,BL full = false);
-	RVecBlock *GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst = NULL,I multi = -1);
-	CVecBlock *GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst = NULL,I multi = -1,BL full = false);
+	RVecBlock *GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst = NULL,I multi = -1,BL ssize = true);
+	CVecBlock *GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst = NULL,I multi = -1,BL ssize = true,BL full = false);
 	
 	Vasp *DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm = false);
 	Vasp *DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm = false);
