@@ -1,0 +1,58 @@
+#N canvas 43 34 885 461 10;
+#X obj 71 32 cnv 15 15 15 empty empty vasp.*bevel 0 10 1 14 -262144
+-1 0;
+#X obj 78 268 cnv 15 68 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X obj 77 195 vasp.update;
+#X obj 77 172 vasp.* 0.5;
+#X obj 406 344 dac~;
+#X obj 406 300 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 428 299 play;
+#N canvas 40 55 281 170 clear_buffer 0;
+#X obj 54 79 vasp.update;
+#X obj 54 56 vasp.= 0;
+#X obj 54 26 inlet;
+#X obj 54 108 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X connect 0 0 3 0;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X restore 538 344 pd clear_buffer;
+#X obj 77 218 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 78 292 vasp.update;
+#X obj 78 315 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#N canvas 92 108 343 268 init 0;
+#X obj 110 180 s \$0-sample-length;
+#X msg 177 126 resize \$1;
+#X obj 177 79 loadbang;
+#X msg 177 100 88200;
+#X obj 177 148 s bufmbevel;
+#X connect 1 0 4 0;
+#X connect 2 0 3 0;
+#X connect 3 0 1 0;
+#X connect 3 0 0 0;
+#X restore 677 342 pd init;
+#X text 72 63 multiplies a linear ramp from 0 to 1 to a vasp;
+#X msg 77 127 vasp bufmbevel;
+#X text 181 126 generate a sine wave at 1 kHz;
+#X obj 77 149 vasp.osc 44.1;
+#X msg 538 321 vasp bufmbevel;
+#X obj 406 321 tabplay~ bufmbevel;
+#X obj 443 132 wavedisplay-simple bufmbevel \$0;
+#X obj 78 268 vasp.*bevel;
+#X msg 78 245 vasp 22050 bufmbevel;
+#X text 217 243 generate a 500 ms fade in;
+#X connect 2 0 8 0;
+#X connect 3 0 2 0;
+#X connect 5 0 17 0;
+#X connect 9 0 10 0;
+#X connect 13 0 15 0;
+#X connect 15 0 3 0;
+#X connect 16 0 7 0;
+#X connect 17 0 4 0;
+#X connect 17 0 4 1;
+#X connect 19 0 9 0;
+#X connect 20 0 19 0;
