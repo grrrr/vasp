@@ -1,4 +1,4 @@
-#N canvas 21 60 967 574 10;
+#N canvas 21 60 969 576 10;
 #X obj 62 33 cnv 15 15 15 empty empty vasp.-> 0 10 1 14 -262144 -1
 0;
 #X text 55 81 optional argument/right inlet: value/vasp;
@@ -11,7 +11,6 @@
 #X connect 1 0 0 0;
 #X restore 380 379 pd clear_buffer;
 #X obj 50 500 VASP-HELP;
-#X text 92 500 - vasp overview;
 #X text 55 62 copy an array/buffer to a new one;
 #X obj 57 452 vasp.->;
 #N canvas 0 0 450 300 graph1 0;
@@ -53,18 +52,18 @@
 #X obj 157 281 vasp.update;
 #X msg 380 354 vasp bufcopy2 bufcopy3;
 #X text 53 254 original;
-#X text 55 99 left outlet: original \, right outlet copy;
-#X text 164 254 copy;
 #X obj 235 379 vasp.= bufcopy1;
 #X msg 235 354 vasp bufcopy2;
 #X obj 54 234 vasp.copy bufcopy2;
 #X msg 178 226 vasp bufcopy3;
 #X msg 178 203 vasp bufcopy2;
 #X text 66 351 or the other way round:;
-#X connect 13 0 21 0;
-#X connect 15 0 3 0;
-#X connect 19 0 2 0;
-#X connect 20 0 19 0;
-#X connect 21 1 14 0;
-#X connect 22 0 21 1;
-#X connect 23 0 21 1;
+#X text 164 254 copy;
+#X text 55 99 left outlet: original \, right outlet: copy !!!;
+#X connect 12 0 18 0;
+#X connect 14 0 3 0;
+#X connect 16 0 2 0;
+#X connect 17 0 16 0;
+#X connect 18 1 13 0;
+#X connect 19 0 18 1;
+#X connect 20 0 18 1;

@@ -1,4 +1,4 @@
-#N canvas 261 89 554 363 10;
+#N canvas 261 89 556 365 10;
 #X text 52 66 get the number of vectors of a vasp;
 #X obj 51 19 cnv 15 15 15 empty empty vasp.n? 0 10 1 14 -262144 -1
 0;
@@ -10,6 +10,8 @@
 #X obj 438 86 table bufqn1;
 #X obj 438 107 table bufqn2;
 #X obj 438 128 table bufqn3;
+#X obj 151 277 vasp.n?;
+#X text 53 279 abbreviation:;
 #X connect 3 0 2 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;
