@@ -1,55 +1,8 @@
-#N canvas 43 34 881 484 10;
-#X obj 71 32 cnv 15 15 15 empty empty vasp.*osc 0 10 1 14 -262144 -1
-0;
-#X obj 78 268 cnv 15 92 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
-#X obj 77 195 vasp.update;
-#X obj 77 172 vasp.* 0.5;
-#X obj 402 397 dac~;
-#X obj 402 353 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X text 424 352 play;
-#X text 71 63 multiplies a sine wave with a buffer content;
-#X text 70 78 argument/right inlet: frequency in period length in samples
-;
-#N canvas 40 55 281 170 clear_buffer 0;
-#X obj 54 79 vasp.update;
-#X obj 54 56 vasp.= 0;
-#X obj 54 26 inlet;
-#X obj 54 108 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
-#X connect 0 0 3 0;
-#X connect 1 0 0 0;
-#X connect 2 0 1 0;
-#X restore 534 397 pd clear_buffer;
-#X msg 534 374 vasp bufmosc;
-#X msg 77 127 vasp bufmosc;
-#X text 181 126 generate white noise;
-#X obj 77 149 vasp.noise;
-#X msg 78 245 vasp bufmosc;
-#X obj 78 268 vasp.*osc 22050;
-#X obj 77 218 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
-#X obj 419 162 wavedisplay-simple bufmosc \$0;
-#X obj 78 292 vasp.update;
-#X obj 78 315 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
-#X obj 402 374 tabplay~ bufmosc;
-#N canvas 92 108 339 264 init 0;
-#X obj 110 180 s \$0-sample-length;
-#X msg 177 126 resize \$1;
-#X obj 177 79 loadbang;
-#X msg 177 100 88200;
-#X obj 177 148 s bufmosc;
-#X connect 1 0 4 0;
-#X connect 2 0 3 0;
-#X connect 3 0 1 0;
-#X connect 3 0 0 0;
-#X restore 673 395 pd init;
-#N canvas 0 0 454 304 Hz_to_period_length 0;
-#X floatatom 125 242 0 0 0;
+#N canvas 21 35 982 486 10;
+#N canvas 0 0 452 302 Hz_to_period_length 0;
+#X floatatom 125 238 0 0 0;
 #X obj 125 142 t b f;
-#X text 158 223 period length in samples (float);
+#X text 164 238 period length in samples (float);
 #X floatatom 125 80 0 0 0;
 #X obj 125 206 / 1;
 #X text 170 79 frequency in Hz;
@@ -63,19 +16,54 @@
 #X connect 6 0 8 0;
 #X connect 7 0 6 0;
 #X connect 8 0 4 0;
-#X restore 79 405 pd Hz_to_period_length;
-#X text 188 379 ringmod-example;
-#X obj 79 380 ringmod_example;
-#X text 184 241 generate an amplitude modulation;
-#X text 184 257 with 2Hz;
-#X connect 2 0 16 0;
-#X connect 3 0 2 0;
-#X connect 5 0 20 0;
-#X connect 10 0 9 0;
+#X restore 65 415 pd Hz_to_period_length;
+#X obj 71 32 cnv 15 15 15 empty empty vasp.*cosc 0 10 1 14 -262144
+-1 0;
+#X obj 65 311 cnv 15 98 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#N canvas 0 0 450 300 graph1 0;
+#X array bufmcosc1 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 534 108 graph;
+#N canvas 0 0 402 278 init 0;
+#X obj 33 19 loadbang;
+#X msg 33 73 \; \$1 xticks 0 4410 10 \; \$1 xlabel 1.1 0 22050 44100
+66150 88200 \; \$1 yticks 0 0.25 2 \; \$1 ylabel 94000 -1 -0.5 0 0.5
+1;
+#X msg 33 45 symbol bufmcosc1 \, symbol bufmcosc2;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 817 425 pd init;
+#X obj 65 357 vasp.update;
+#X obj 65 334 vasp.* 0.5;
+#N canvas 40 55 247 122 clear_buffers 0;
+#X obj 54 79 vasp.update;
+#X obj 54 56 vasp.= 0;
+#X obj 54 26 inlet;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X restore 539 421 pd clear_buffers;
+#N canvas 0 0 450 300 graph1 0;
+#X array bufmcosc2 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 537 266 graph;
+#X text 71 63 multiplies a complex buffer with a complex sine wave
+;
+#X text 71 83 argument/right inlet: frequency in period length in samples
+;
+#X msg 65 267 vasp bufmcosc1 bufmcosc2;
+#X msg 539 398 vasp bufmcosc1 bufmcosc2;
+#X obj 65 311 vasp.*cosc 44100;
+#X obj 65 179 vasp.update;
+#X msg 65 127 vasp bufmcosc1 bufmcosc2;
+#X obj 65 154 vasp.bevel;
+#X text 233 127 generate a ramp from 0 to 1;
+#X text 225 264 multiply the ramp with a complex sinewave;
+#X text 713 77 *real part of the cosc;
+#X text 684 234 *imaginary part of the cosc;
+#X connect 6 0 5 0;
 #X connect 11 0 13 0;
-#X connect 13 0 3 0;
-#X connect 14 0 15 0;
-#X connect 15 0 18 0;
-#X connect 18 0 19 0;
-#X connect 20 0 4 0;
-#X connect 20 0 4 1;
+#X connect 12 0 7 0;
+#X connect 13 0 6 0;
+#X connect 15 0 16 0;
+#X connect 16 0 14 0;
