@@ -664,7 +664,7 @@ public:
 		}
 	}
 
-	virtual V m_help() { post("%s - Set a vasp's offset(s) into the vector buffers",thisName()); }
+	virtual V m_help() { post("%s - Return consecutive vasps with lengths given by argument list",thisName()); }
 protected:
 	I parts,*part;
 
