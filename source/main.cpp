@@ -96,8 +96,12 @@ V lib_setup()
 
 	VASP__SETUP(lwr)
 	VASP__SETUP(gtr)
+	VASP__SETUP(alwr)
+	VASP__SETUP(agtr)
 	VASP__SETUP(leq)
 	VASP__SETUP(geq)
+	VASP__SETUP(aleq)
+	VASP__SETUP(ageq)
 	VASP__SETUP(equ)
 	VASP__SETUP(neq)
 
