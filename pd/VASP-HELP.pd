@@ -1,4 +1,4 @@
-#N canvas 185 2 622 684 10;
+#N canvas 185 2 624 686 10;
 #X obj 104 47 cnv 15 15 15 empty empty vasp_modular 0 10 1 14 -262144
 -1 0;
 #X obj 61 37 cnv 2 2 2 empty 2-1-r empty 20 12 64 14 -225271 -262144
@@ -391,7 +391,7 @@ grimm - ©2002 patcherboys;
 possible. feel free to combine different patches to more complex ones.
 ;
 #X text 76 291 (very) quick overview;
-#N canvas 123 85 829 562 quickstart 0;
+#N canvas 123 85 831 564 quickstart 0;
 #X text 86 223 How to use:;
 #X obj 292 270 bng 15 250 50 0 1displays 1displayr empty 0 -6 192 8
 -24198 -1 -1;
@@ -400,7 +400,7 @@ possible. feel free to combine different patches to more complex ones.
 -24198 -1 -1;
 #X obj 292 400 bng 15 250 50 0 3displays 3displayr empty 0 -6 192 8
 -24198 -1 -1;
-#N canvas 323 136 532 531 inside 0;
+#N canvas 323 136 534 533 inside 0;
 #X obj 144 38 r 1displays;
 #X obj 176 281 delay 500;
 #X obj 144 156 r 2displays;
@@ -455,9 +455,15 @@ and there is a reference-patch for every vasp object.;
 #X text 233 241 (CLICK GREEN BUTTONS);
 #X text 85 481 Have a look at this help for detailed information about
 the syntax and the available objects and features.;
+#X msg 130 270 vasp buffer1;
+#X obj 130 320 vasp.shift 100;
+#X msg 130 370 vasp buffer1;
+#X obj 130 400 vasp.update;
+#X connect 13 0 14 0;
+#X connect 15 0 16 0;
 #X restore 232 292 pd quickstart;
 #X text 108 324 the vasp message;
-#N canvas 6 13 988 668 syntax 0;
+#N canvas 6 13 990 670 syntax 0;
 #X text 76 52 the vasp message:;
 #X obj 75 20 cnv 15 15 15 empty empty vasp_syntax 0 10 1 14 -262144
 -1 0;
@@ -550,7 +556,7 @@ or as pairs for complex operations respectively.;
 #X connect 36 0 34 0;
 #X restore 232 325 pd syntax;
 #X text 88 357 additional messages;
-#N canvas 26 0 962 704 moremessages 0;
+#N canvas 26 0 964 706 moremessages 0;
 #X obj 59 74 cnv 15 800 330 empty empty empty 20 12 0 14 -241339 -66577
 0;
 #X obj 330 342 vasp.* 0.5;
@@ -704,7 +710,7 @@ of an object chain;
 #X connect 79 0 80 0;
 #X restore 232 356 pd moremessages;
 #X text 107 389 the vasp objects;
-#N canvas 49 0 408 443 objects 0;
+#N canvas 49 0 410 445 objects 0;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
 -1 0;
 #N canvas 339 189 509 292 fftobjects 0;
@@ -1012,7 +1018,7 @@ one is resampled around a center position;
 #X restore 72 103 pd basics;
 #X restore 232 387 pd objects;
 #X text 149 418 envelopes;
-#N canvas 39 33 906 538 envelopes 0;
+#N canvas 39 33 908 540 envelopes 0;
 #N canvas 40 55 255 173 clear_buffer 0;
 #X obj 59 79 vasp.update;
 #X obj 59 56 vasp.= 0;
@@ -1106,7 +1112,7 @@ in the buffer;
 -1 0;
 #X restore 233 451 pd units;
 #X text 112 483 vasp data types;
-#N canvas 218 38 522 619 data_types 0;
+#N canvas 218 38 524 621 data_types 0;
 #X text 68 48 vasp \, float \, envelope \, complex number \, double
 ;
 #X text 83 84 vasp;
@@ -1126,6 +1132,8 @@ in the buffer;
 #X msg 105 526 double 1 1e-013;
 #X text 101 501 for double precision of numbers;
 #X text 96 106 a vasp consists of one or more vectors of data;
+#X text 209 520 the two components are added internally;
+#X text 209 532 to represent a double precision number;
 #X restore 233 484 pd data_types;
 #X text 121 515 vasp glossary;
 #N canvas 69 118 655 553 glossary 0;

@@ -1,5 +1,5 @@
-#N canvas 14 55 988 492 10;
-#N canvas 4 20 454 304 Hz_to_period_length 0;
+#N canvas 14 55 990 494 10;
+#N canvas 4 20 456 306 Hz_to_period_length 0;
 #X floatatom 135 238 0 0 0;
 #X obj 135 142 t b f;
 #X text 136 260 period length in samples (float);
@@ -51,7 +51,6 @@
 #X obj 65 179 vasp.update;
 #X msg 65 127 vasp bufmcosc1 bufmcosc2;
 #X text 246 127 generate a ramp from 0 to 1;
-#X text 245 265 multiply the ramp with a complex sinewave;
 #X text 742 70 *real part of the cosc;
 #X text 713 227 *imaginary part of the cosc;
 #X obj 65 357 vasp.update;
@@ -60,9 +59,10 @@
 #X obj 65 311 vasp.*cosc 44100;
 #X obj 64 448 VASP-HELP;
 #X obj 65 154 vasp.window lin;
+#X text 245 265 multiply the ramp with a complex sine wave;
 #X connect 8 0 4 0;
-#X connect 10 0 20 0;
-#X connect 16 0 15 0;
-#X connect 17 0 18 0;
-#X connect 18 0 16 0;
-#X connect 20 0 9 0;
+#X connect 10 0 19 0;
+#X connect 15 0 14 0;
+#X connect 16 0 17 0;
+#X connect 17 0 15 0;
+#X connect 19 0 9 0;
