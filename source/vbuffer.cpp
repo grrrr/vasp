@@ -13,11 +13,26 @@ SysBuf &SysBuf::Set(const VSymbol &s,I c,I l,I o)
 	buf.Set(s.Symbol());
 
 	chn = c;
-	if(chn > Channels()) chn = Channels()-1; // simply correct the channel??
+	if(chn > Channels()) {
+		I chn1 = Channels()-1;
+		post("vasp - buffer %s: Channel index (%i) is out of range, set to highest (%i)",s.Name(),chn,chn1);
+		chn = chn1; // simply correct the channel??
+	}
 	offs = o;
-	if(offs > Frames()) offs = Frames();
+	if(offs < 0) {
+		post("vasp - buffer %s: Offset (%i) is out of range, set to 0",s.Name(),offs);
+		offs = 0;
+	}
+	if(offs > Frames()) {
+//		post("vasp - buffer %s: Offset (%i) is out of range, set to %i",s.Name(),offs,Frames());
+		offs = Frames();
+	}
 	len = l >= 0?l:Frames();
-	if(offs+len > Frames()) len = Frames()-offs;
+	if(offs+len > Frames()) {
+		I len1 = Frames()-offs;
+		post("vasp - buffer %s: Length (%i) is out of range, corrected to %i",s.Name(),len,len1);
+		len = len1;
+	}
 
 	return *this;
 }

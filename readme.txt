@@ -23,6 +23,7 @@ Version history:
 - ADD: full implementation of vasp.(x)tilt with several interpolation methods
 - CHANGE: vasp.split and vasp.join now have default argument = 2
 - ADD: vasp.offset= and vasp.frames=: search for sample values (eg. zero crossings)
+- ADD: checks and log messages for out-of-range buffer offset and length
 
 0.0.6:
 - reorganized file structure
