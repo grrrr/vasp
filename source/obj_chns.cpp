@@ -30,7 +30,7 @@ class vasp_channel:
 	FLEXT_HEADER_S(vasp_channel,vasp_tx,Setup)
 
 public:
-	vasp_channel(I argc,t_atom *argv):
+	vasp_channel(I argc,const t_atom *argv):
 		ix(0)
 	{
 		if(argc >= 1 && CanbeInt(argv[0]))
