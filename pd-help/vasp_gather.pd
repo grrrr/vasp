@@ -1,0 +1,67 @@
+#N canvas 108 38 825 587 10;
+#X text 403 160 gather as many vasps as you want and put them out (bang)
+;
+#X text 71 74 gather several vasps into one;
+#X text 71 88 argument: vasps to gather before output;
+#X text 70 130 right inlet: stores the different vasps;
+#X text 70 101 left inlet: outputs a vasp immediately \, causes output
+of vasps gathered in right inlet (bang);
+#X text 71 160 use vasp.gather like the int/float object;
+#X text 432 377 !vasps can have more vectors \, but just one length!
+;
+#X text 432 393 gather will always take the length from the shortest
+of all gathered vasps for the new one!;
+#X obj 71 37 cnv 15 15 15 empty empty vasp.gather 0 10 1 14 -262144
+-1 0;
+#X obj 410 267 cnv 15 68 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X obj 674 458 table bufgather1 44100;
+#X obj 674 479 table bufgather2 44100;
+#X obj 674 501 table bufgather3 44100;
+#X obj 674 522 table bufgather4 44100;
+#X obj 78 475 cnv 15 80 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X obj 78 267 cnv 15 68 17 empty empty empty 20 12 0 14 -258699 -66577
+0;
+#X msg 486 242 vasp bufgather4;
+#X msg 471 221 vasp bufgather3;
+#X msg 410 178 bang;
+#X msg 456 201 vasp bufgather2;
+#X msg 410 314;
+#X obj 410 291 prepend set;
+#X obj 410 267 vasp.gather;
+#X msg 444 178 vasp bufgather1;
+#X msg 167 450 vasp bufgather4;
+#X msg 215 178 vasp bufgather2;
+#X msg 78 178 bang;
+#X msg 78 314;
+#X obj 78 291 prepend set;
+#X obj 78 267 vasp.gather;
+#X msg 111 178 vasp bufgather1;
+#X msg 151 429 vasp bufgather3;
+#X msg 78 386 bang;
+#X msg 137 409 vasp bufgather2;
+#X msg 78 522;
+#X obj 78 499 prepend set;
+#X obj 78 475 vasp.gather 2;
+#X msg 125 386 vasp bufgather1;
+#X text 71 366 gather two vasps (opt. argument) an put them out;
+#X connect 16 0 22 1;
+#X connect 17 0 22 1;
+#X connect 18 0 22 0;
+#X connect 19 0 22 1;
+#X connect 21 0 20 0;
+#X connect 22 0 21 0;
+#X connect 23 0 22 1;
+#X connect 24 0 36 1;
+#X connect 25 0 29 1;
+#X connect 26 0 29 0;
+#X connect 28 0 27 0;
+#X connect 29 0 28 0;
+#X connect 30 0 29 0;
+#X connect 31 0 36 1;
+#X connect 32 0 36 0;
+#X connect 33 0 36 1;
+#X connect 35 0 34 0;
+#X connect 36 0 35 0;
+#X connect 37 0 36 1;
