@@ -23,6 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 In the official VASP distribution, the GNU General Public License is
 in the file gpl.txt
 
+
+Excluded from this license is the source code file of MixFFT. 
+See the mixfft.txt file of the VASP package for the respective license text. 
+
 ---------------------------------------------------------
 
              OTHER COPYRIGHT NOTICES
