@@ -30,7 +30,6 @@ V lib_setup()
 	VASP_SETUP(sync);  // vasp.sync
 
 	VASP_SETUP(radio);  // vasp.radio
-	VASP_SETUP(noradio);  // vasp.noradio
 
 	VASP_SETUP(vector); // vasp.vector
 	VASP_SETUP(qvectors); // vasp.vectors?

@@ -16,14 +16,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "util.h"
 #include "buflib.h"
+#include "oploop.h"
 
 /*! \class vasp_imm
 	\remark \b vasp.imm
 	\brief Get vasp immediate.
 	\since 0.0.6
-	\param inlet vasp - is stored and output triggered
-	\param inlet bang - triggers output
-	\param inlet set - vasp to be stored 
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+	\param inlet.1 frames - minimum frame length
+	\param inlet.2 int - minimum frame length
 	\retval outlet vasp! - vasp immediate
 
 */
@@ -33,13 +36,24 @@ class vasp_imm:
 	FLEXT_HEADER(vasp_imm,vasp_op)
 
 public:
-
-	vasp_imm()
+	vasp_imm(I argc,t_atom *argv):
+		frms(0)
 	{
+		if(argc >= 1 && CanbeInt(argv[0]))
+			m_frames(GetAInt(argv[0]));
+		else if(argc)
+			post("%s - Frame count argument invalid -> ignored",thisName());
+
 		AddInAnything();
+		AddInInt();
 		AddOutAnything();
 		SetupInOut();
+
+		FLEXT_ADDMETHOD_(0,"frames",m_frames);
+		FLEXT_ADDMETHOD(1,m_frames);
 	}
+
+	V m_frames(I n) { frms = n; }
 
 	virtual V m_bang() 
 	{ 
@@ -50,12 +64,14 @@ public:
 		else {
 			VBuffer *buf = ref.Buffer(0);
 			I len = buf->Length(),chns = buf->Channels();
-
+			if(frms > len) len = frms; 
+			
 			ImmBuf imm(len);
 
 			S *dst = imm.Pointer();
 			const S *src = buf->Pointer();
-			for(I i = 0; i < len; ++i,src += chns,dst++) *dst = *src; 
+			register int i;
+			_D_LOOP(i,len) *(dst++) = *src,src += chns; 
 
 			Vasp ret(len,Vasp::Ref(imm));
 			ToOutVasp(0,ret);
@@ -66,9 +82,13 @@ public:
 
 protected:
 
+	I frms;
+	
+private:
+	FLEXT_CALLBACK_I(m_frames)
 };
 
-FLEXT_LIB("vasp, vasp.imm vasp.!",vasp_imm)
+FLEXT_LIB_V("vasp, vasp.imm vasp.!",vasp_imm)
 
 
 

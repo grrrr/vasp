@@ -10,6 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "ops_search.h"
 #include "util.h"
+#include "oploop.h"
 
 
 BL VecOp::d_search(OpParam &p) 
@@ -22,13 +23,15 @@ BL VecOp::d_search(OpParam &p)
 	
 	if(p.srch.dir <= 0) {
 		BL y = cur >= val;
-		for(i = off-1; i >= 0; --i) {
+		i = off-1;
+		_D_WHILE(i >= 0) {
 			BL y2 = p.rsdt[i] >= val;
 			if(y != y2) {
 				if(p.srch.slope <= 0 && y2) break;
 				if(p.srch.slope >= 0 && !y2) break;
 			}
 			y = y2;
+			--i;
 		}
 
 		if(i >= 0) ofl = i;
@@ -36,13 +39,15 @@ BL VecOp::d_search(OpParam &p)
 
 	if(p.srch.dir >= 0) {
 		BL y = cur >= val;
-		for(i = off+1; i < p.frames; ++i) {
+		i = off+1; 
+		_D_WHILE(i < p.frames) {
 			BL y2 = p.rsdt[i] >= val;
 			if(y != y2) {
 				if(p.srch.slope <= 0 && !y2) break;
 				if(p.srch.slope >= 0 && y2) break;
 			}
 			y = y2;
+			++i;
 		}
 
 		if(i < p.frames) ofr = i;

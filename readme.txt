@@ -17,6 +17,8 @@ Version history:
 - CHANGE: vasp.? and vasp.??: made explicit list outlets
 - ADD: vasp.window, vasp.*window, vasp.!window, vasp.*!window, vasp.xwindow, vasp.*xwindow
 - REMOVE: vasp.bevel, vasp.!bevel... obsolete due to new vasp.window objects
+- REMOVE: vasp.noradio (vasp.!radio)... can easily be an abstraction of vasp.radio
+_ ADD: minimum length parameter for immediate vasps
 
 0.0.7:
 - CHANGE: vasp.m is now called vasp.multi by default
