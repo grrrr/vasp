@@ -373,7 +373,36 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p)
 	
 		if(a) p.radt = a->Pointer(),p.ras = a->Channels();
 		else p.radt = NULL;
-		
+
+		{
+			// ---- Check out overlap situation ------------
+			BL sovr = p.SR_In(); // check whether dst is before src 
+			if(a) {
+				if(sovr) {
+					// src/dst needs reversal -> check if ok for arg/dst
+					if(p.AR_Can()) 
+						p.R_Rev(); // Revert vectors
+					else {
+						post("%s - vector overlap situation can't be resolved",p.opname);
+						ok = false;
+					}
+				}
+				else if(p.AR_In()) { 
+					// arg/dst needs reversal -> check if ok for src/dst
+
+					if(p.SR_Can()) 
+						p.R_Rev(); // Revert vectors
+					else {
+						post("%s - vector overlap situation can't be resolved",p.opname);
+						ok = false;
+					}
+				}
+			}
+			else { // No arg
+				if(sovr) p.R_Rev(); // if overlapping revert vectors
+			}
+		}
+
 		ok = fun(p);
 	}
 	return ok?vecs->ResVasp():NULL;
@@ -407,6 +436,10 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p)
 		else { 
 			p.radt = NULL,p.iadt = NULL;
 		}
+
+		// Check out overlap situation
+
+
 
 		ok = fun(p);
 	}

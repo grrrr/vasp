@@ -22,6 +22,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 BL VecOp::d_int(OpParam &p) 
 { 
+	if(!p.revdir)
+		post("%s - reversed operation direction due to overlap: opposite sample delay",p.opname);
+
 	register S d = p.intdif.carry;
 	for(; p.frames-- ; p.rsdt += p.rss,p.rddt += p.rds) { 
 		register S d1 = *p.rsdt; 
@@ -39,6 +42,9 @@ BL VecOp::d_int(OpParam &p)
 */
 BL VecOp::d_dif(OpParam &p) 
 { 
+	if(!p.revdir)
+		post("%s - reversed operation direction due to overlap: opposite sample delay",p.opname);
+
 	register S d = p.intdif.carry;
 	for(; p.frames-- ; p.rsdt += p.rss,p.rddt += p.rds) { 
 		register S d1 = *p.rsdt; 
@@ -58,22 +64,22 @@ BL VecOp::d_dif(OpParam &p)
 Vasp *VaspOp::m_int(Vasp &src,const Argument &arg,Vasp *dst,BL inv) 
 { 
 	Vasp *ret = NULL;
-	const C *opnm = inv?"dif":"int";
-	RVecBlock *vecs = GetRVecs(opnm,src,dst);
+	OpParam p(inv?"dif":"int");
+	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		OpParam p; 
 		p.intdif.carry = 0,p.intdif.rep = 1;
 		if(arg.IsList() && arg.GetList().Count() >= 1) p.intdif.rep = flx::GetAInt(arg.GetList()[0]);
 		
 		if(p.intdif.rep < 0) {
-			post("%s - invalid repetition count (%i) -> set to 1",opnm,p.intdif.rep);
+			post("%s - invalid repetition count (%i) -> set to 1",p.opname,p.intdif.rep);
 			p.intdif.rep = 1;
 		}
 		
+/*
 		if(p.SROvr()) {
 			p.SDRRev();
-			post("%s - reversing operation direction due to overlap: opposite sample delay",opnm);
 		}	
+*/
 		ret = DoOp(vecs,inv?VecOp::d_dif:VecOp::d_int,p);
 		delete vecs;
 	}
@@ -129,22 +135,22 @@ inline BL d_valleys(OpParam &p) { return d_vlpk<lower>(p); }
 Vasp *VaspOp::m_peaks(Vasp &src,const Argument &arg,Vasp *dst,BL inv) 
 { 
 	Vasp *ret = NULL;
-	const C *opnm = inv?"valleys":"peaks";
-	RVecBlock *vecs = GetRVecs(opnm,src,dst);
+	OpParam p(inv?"valleys":"peaks");
+	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		OpParam p; 
 		p.peaks.rep = 1;
 		if(arg.IsList() && arg.GetList().Count() >= 1) p.peaks.rep = flx::GetAInt(arg.GetList()[0]);
 		
 		if(p.peaks.rep < 0) {
-			post("%s - invalid repetition count (%i) -> set to 1",opnm,p.peaks.rep);
+			post("%s - invalid repetition count (%i) -> set to 1",p.opname,p.peaks.rep);
 			p.peaks.rep = 1;
 		}
-		
+/*		
 		if(p.SROvr()) {
 			p.SDRRev();
 			post("%s - reversing operation direction due to overlap: opposite sample delay",opnm);
 		}	
+*/
 		ret = DoOp(vecs,inv?d_peaks:d_valleys,p);
 		delete vecs;
 	}

@@ -13,6 +13,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- osc ---------------------------------------
 
+/*!
+	\brief Generator for real (cos) oscillations
+	\todo check for reverse operation!
+*/
 BL VecOp::d_osc(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc; 
@@ -21,6 +25,10 @@ BL VecOp::d_osc(OpParam &p)
 	return true;
 }
 
+/*!
+	\brief multiplicative generator for real (cos) oscillations
+	\todo check for reverse operation!
+*/
 BL VecOp::d_mosc(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc; 
@@ -42,23 +50,24 @@ BL VecOp::d_mosc(OpParam &p)
 Vasp *VaspOp::m_osc(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
 	Vasp *ret = NULL;
+	OpParam p(mul?"*osc":"osc");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		RVecBlock *vecs = GetRVecs(mul?"*osc":"osc",src,dst);
+		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
-			OpParam p;
 			// period length
 			p.gen.phinc = 2*PI/flx::GetAFloat(arg.GetList()[0]); 
 			// starting phase
 			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 
+/*
 			VecOp::opfun *fun;
 			if(mul) {
 				if(p.SROvr()) p.SDRRev();
 				fun = VecOp::d_mosc;
 			}
 			else fun = VecOp::d_osc;
-		
-			ret = DoOp(vecs,fun,p);
+*/		
+			ret = DoOp(vecs,mul?VecOp::d_mosc:VecOp::d_osc,p);
 			delete vecs;
 		}
 	}
@@ -67,6 +76,10 @@ Vasp *VaspOp::m_osc(Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 }
 
 
+/*!
+	\brief Generator for complex oscillations.
+	\todo check for reverse operation!
+*/
 BL VecOp::d_cosc(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc;
@@ -76,8 +89,10 @@ BL VecOp::d_cosc(OpParam &p)
 	return true;
 }
 
-// \todo check for problem of different re/im src/dst overlap
-// \remark re/im overlap is not checked
+/*!
+	\brief Multiplicative generator for complex oscillations.
+	\todo check for reverse operation!
+*/
 BL VecOp::d_mcosc(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc;
@@ -105,16 +120,16 @@ BL VecOp::d_mcosc(OpParam &p)
 Vasp *VaspOp::m_cosc(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
 	Vasp *ret = NULL;
-	const C *opnm = mul?"*cosc":"cosc";
+	OpParam p(mul?"*cosc":"cosc");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		CVecBlock *vecs = GetCVecs(opnm,src,dst);
+		CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 		if(vecs) {
-			OpParam p;
 			// period length
 			p.gen.phinc = 2*PI/flx::GetAFloat(arg.GetList()[0]); 
 			// starting phase
 			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 
+/*
 			VecOp::opfun *fun;
 			if(mul) {
 				BL rovr = p.SROvr(),iovr = p.SIOvr(); 
@@ -126,8 +141,9 @@ Vasp *VaspOp::m_cosc(Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 				fun = VecOp::d_mcosc;
 			}
 			else fun = VecOp::d_cosc;
+*/
 		
-			ret = DoOp(vecs,fun,p);
+			ret = DoOp(vecs,mul?VecOp::d_mcosc:VecOp::d_cosc,p);
 			delete vecs;
 		}
 	}
@@ -140,6 +156,10 @@ Vasp *VaspOp::m_cosc(Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 
 // ! look up Höldrich's pd phasor code
 
+/*!
+	\brief Generator for saw wave oscillations.
+	\todo check for reverse operation!
+*/
 BL VecOp::d_phasor(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc;
@@ -148,6 +168,10 @@ BL VecOp::d_phasor(OpParam &p)
 	return true;
 }
 
+/*!
+	\brief Multiplicative generator for saw wave oscillations.
+	\todo check for reverse operation!
+*/
 BL VecOp::d_mphasor(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc;
@@ -169,23 +193,24 @@ BL VecOp::d_mphasor(OpParam &p)
 Vasp *VaspOp::m_phasor(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
 	Vasp *ret = NULL;
+	OpParam p(mul?"*phasor":"phasor");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		RVecBlock *vecs = GetRVecs(mul?"*phasor":"phasor",src,dst);
+		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
-			OpParam p;
 			// period length
 			p.gen.phinc = 2*PI/flx::GetAFloat(arg.GetList()[0]); 
 			// starting phase
 			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 		
+/*
 			VecOp::opfun *fun;
 			if(mul) {
 				if(p.SROvr()) p.SDRRev();
 				fun = VecOp::d_mphasor;
 			}
 			else fun = VecOp::d_phasor;
-		
-			ret = DoOp(vecs,fun,p);
+*/		
+			ret = DoOp(vecs,mul?VecOp::d_mphasor:VecOp::d_phasor,p);
 			delete vecs;
 		}
 	}
@@ -214,22 +239,19 @@ BL VecOp::d_noise(OpParam &p)
 /*! \brief Generator for real valued noise.
 
 	\return normalized destination vasp
-
-	\todo Replace period length by frequency specification
 */
 Vasp *VaspOp::m_noise(Vasp &src,Vasp *dst) 
 { 
 	Vasp *ret = NULL;
-	RVecBlock *vecs = GetRVecs("noise",src,dst);
+	OpParam p("noise");
+	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		OpParam p;		
 		ret = DoOp(vecs,VecOp::d_noise,p);
 		delete vecs;
 	}
 	return ret;
 }
 
-// \remark no check for re/im ovrlap
 BL VecOp::d_cnoise(OpParam &p) 
 { 
 	for(; p.frames--; p.rddt += p.rds,p.iddt += p.ids) {
@@ -250,9 +272,9 @@ BL VecOp::d_cnoise(OpParam &p)
 Vasp *VaspOp::m_cnoise(Vasp &src,Vasp *dst) 
 { 
 	Vasp *ret = NULL;
-	CVecBlock *vecs = GetCVecs("cnoise",src,dst);
+	OpParam p("cnoise");
+	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 	if(vecs) {
-		OpParam p;		
 		ret = DoOp(vecs,VecOp::d_cnoise,p);
 		delete vecs;
 	}
@@ -264,6 +286,7 @@ Vasp *VaspOp::m_cnoise(Vasp &src,Vasp *dst)
 
 // Should bevels start from 0 or .5/cnt ??  -> 0!
 
+//! \todo check for reverse operation!
 BL VecOp::d_bevel(OpParam &p) 
 { 
 	register R cur = p.bvl.cur,inc = p.bvl.inc;
@@ -272,6 +295,7 @@ BL VecOp::d_bevel(OpParam &p)
 	return true;
 }
 
+//! \todo check for reverse operation!
 BL VecOp::d_mbevel(OpParam &p) 
 { 
 	register R cur = p.bvl.cur,inc = p.bvl.inc;
@@ -289,16 +313,16 @@ BL VecOp::d_mbevel(OpParam &p)
 Vasp *VaspOp::m_bevelup(Vasp &src,Vasp *dst,BL up,BL mul) 
 { 
 	Vasp *ret = NULL;
-	RVecBlock *vecs = GetRVecs(up?(mul?"*bevel":"bevel"):(mul?"*bevel-":"bevel-"),src,dst);
+	OpParam p(up?(mul?"*bevel":"bevel"):(mul?"*bevel-":"bevel-"));
+	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		OpParam p;
 	
 		VecOp::opfun *fun;
 		if(mul) {
 			p.bvl.cur = up?0:1; // start
 			p.bvl.inc = (up?1.:-1.)/vecs->Frames(); // increase
 
-			if(p.SROvr()) p.SDRRev();
+//			if(p.SROvr()) p.SDRRev();
 			fun = VecOp::d_mbevel;
 		}
 		else {

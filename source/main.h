@@ -288,19 +288,22 @@ protected:
 
 class OpParam {
 public:
+	OpParam(const C *opnm): opname(opnm),frames(0),rsdt(NULL),revdir(false) {}
+
 	// check for overlap 
-	// stride can't be different for src, arg, dst on same vector!
+	// \remark if on same vector, stride is the same for src, arg, dst!
 	inline BL SR_In() const { return rddt >= rsdt && rddt < rsdt+frames*rss; } 
 	inline BL SI_In() const { return iddt >= isdt && iddt < isdt+frames*iss; } 
 	inline BL AR_In() const { return rddt >= radt && rddt < radt+frames*ras; } 
 	inline BL AI_In() const { return iddt >= iadt && iddt < iadt+frames*ias; } 
 	
-	inline BL In_SR() const { return rsdt >= rddt && rsdt < rddt+frames*rds; } 
-	inline BL In_SI() const { return isdt >= iddt && isdt < iddt+frames*ids; } 
-	inline BL In_AR() const { return radt >= rddt && radt < rddt+frames*rds; } 
-	inline BL In_AI() const { return iadt >= iddt && iadt < iddt+frames*ids; } 
+	// Can we reverse direction?
+	inline BL SR_Can() const { return rsdt >= rddt && rsdt < rddt+frames*rds; } 
+	inline BL SI_Can() const { return isdt >= iddt && isdt < iddt+frames*ids; } 
+	inline BL AR_Can() const { return radt >= rddt && radt < rddt+frames*rds; } 
+	inline BL AI_Can() const { return iadt >= iddt && iadt < iddt+frames*ids; } 
 	
-	// reverse src & dst stuff
+	// reverse direction
 	inline V SR_Rev() { rsdt -= (frames-1)*(rss = -rss); }
 	inline V SI_Rev() { isdt -= (frames-1)*(iss = -iss); }
 	inline V AR_Rev() { radt -= (frames-1)*(ras = -ras); }
@@ -308,15 +311,23 @@ public:
 	inline V DR_Rev() { rddt -= (frames-1)*(rds = -rds); }
 	inline V DI_Rev() { iddt -= (frames-1)*(ids = -ids); }
 	
+/*
 	V SDR_Rev();
 	V SDI_Rev();
 	V SDC_Rev();
+	V ADR_Rev();
+	V ADI_Rev();
+	V ADC_Rev();
 	V SADR_Rev();
 	V SADI_Rev();
 	V SADC_Rev();
+*/
+	V R_Rev();
+	V C_Rev();
 
-	
+	const C *opname;
 	I frames;
+	BL revdir;
 	S *rsdt,*isdt; I rss,iss;
 	S *rddt,*iddt; I rds,ids;
 	S *radt,*iadt; I ras,ias;

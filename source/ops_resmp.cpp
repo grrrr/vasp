@@ -30,7 +30,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\return true on success
 
 	\todo implement more interpolation methods
-	\todo check src/dst overlap!
+	\todo check for operation direction!
 */
 BL VecOp::d_tilt(OpParam &p) 
 { 
@@ -99,11 +99,10 @@ BL VecOp::d_tilt(OpParam &p)
 Vasp *VaspOp::m_tilt(Vasp &src,const Argument &arg,Vasp *dst,BL symm,I mode) 
 { 
 	Vasp *ret = NULL;
-	const C *opnm = symm?"xtilt":"tilt";
+	OpParam p(symm?"xtilt":"tilt");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		RVecBlock *vecs = GetRVecs(opnm,src,dst);
+		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
-			OpParam p;
 			p.tilt.factor = flx::GetAFloat(arg.GetList()[0]);
 			p.tilt.center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 			p.tilt.mode = mode;
@@ -119,10 +118,12 @@ Vasp *VaspOp::m_tilt(Vasp &src,const Argument &arg,Vasp *dst,BL symm,I mode)
 */
 			}
 			else {
+/*
 				if(p.SROvr()) {
 					p.SDRRev();
 					post("%s - reversing operation direction due to overlap: opposite sample delay",opnm);
 				}	
+*/
 				ret = DoOp(vecs,VecOp::d_tilt,p);
 			}
 

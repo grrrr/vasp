@@ -17,6 +17,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 BL VecOp::d_fhp(OpParam &p) 
 { 
+	if(p.revdir)
+		post("%s - reversing operation direction due to overlap: opposite sample delay",p.opname);
+
 /*
 	R coef = (2*PI)/perln;
     if(coef > 1) coef = 1;
@@ -60,6 +63,9 @@ BL VecOp::d_fhp(OpParam &p)
 
 BL VecOp::d_flp(OpParam &p) 
 { 
+	if(p.revdir)
+		post("%s - reversing operation direction due to overlap: opposite sample delay",p.opname);
+
 /*
 	R coef = (2*PI)/perln;
     if(coef > 1) coef = 1;
@@ -98,20 +104,20 @@ BL VecOp::d_flp(OpParam &p)
 Vasp *VaspOp::m_fhp(Vasp &src,const Argument &arg,Vasp *dst,BL hp) 
 { 
 	Vasp *ret = NULL;
-	const C *opnm = hp?"fhp":"flp";
+	OpParam p(hp?"fhp":"flp");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		RVecBlock *vecs = GetRVecs(opnm,src,dst);
+		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
-			OpParam p;
 			p.flt.coef = 2*PI/flx::GetAFloat(arg.GetList()[0]);
 		    if(p.flt.coef > 1) p.flt.coef = 1;
 			p.flt.rep = arg.GetList().Count() >= 2?flx::GetAInt(arg.GetList()[1]):1;
 			p.flt.rep = -p.flt.rep;  // fwd/bwd operation
-
+/*
 			if(p.SROvr()) {
 				p.SDRRev();
 				post("%s - reversing operation direction due to overlap: opposite sample delay",opnm);
 			}	
+*/
 			ret = DoOp(vecs,hp?VecOp::d_fhp:VecOp::d_flp,p);
 
 			delete vecs;

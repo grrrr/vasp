@@ -269,11 +269,40 @@ Vasp *VecBlock::_ResVasp(I n)
 	return _Dst(0)?_DstVasp(n):_SrcVasp(n);
 }
 
-
+/*
 V OpParam::SDR_Rev() { SR_Rev(); DR_Rev(); }
 V OpParam::SDI_Rev() { SI_Rev(); DI_Rev(); }
 V OpParam::SDC_Rev() { SDR_Rev(); SDI_Rev(); }
+V OpParam::ADR_Rev() { AR_Rev(); DR_Rev(); }
+V OpParam::ADI_Rev() { AI_Rev(); DI_Rev(); }
+V OpParam::ADC_Rev() { ADR_Rev(); ADI_Rev(); }
 V OpParam::SADR_Rev() { SR_Rev(); AR_Rev(); DR_Rev(); }
 V OpParam::SADI_Rev() { SI_Rev(); AI_Rev(); DI_Rev(); }
 V OpParam::SADC_Rev() { SADR_Rev(); SADI_Rev(); }
+*/
 
+/*! \brief Reverse direction of real vector operation 
+	\todo Check for existence of vectors!
+*/
+V OpParam::R_Rev() 
+{ 
+
+	SR_Rev(); 
+	AR_Rev(); 
+	DR_Rev();
+	revdir = true;
+}
+
+/*! \brief Reverse direction of complex vector operation 
+	\todo Check for existence of vectors!
+*/
+V OpParam::C_Rev() 
+{ 
+	SR_Rev(); 
+	AR_Rev(); 
+	DR_Rev();
+	SI_Rev(); 
+	AI_Rev(); 
+	DI_Rev();
+	revdir = true;
+}

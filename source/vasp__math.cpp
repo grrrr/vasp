@@ -12,31 +12,48 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <math.h>
 
 
+Vasp *VaspOp::m_run(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+{ 
+	Vasp *ret = NULL;
+	OpParam p(opnm);
+
+	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
+	if(vecs) {
+		ret = DoOp(vecs,fun,p);
+		delete vecs;
+	}
+
+	return ret;
+}
+
+
+Vasp *VaspOp::m_cun(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+{ 
+	Vasp *ret = NULL;
+	OpParam p(opnm);
+
+	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
+	if(vecs) {
+		ret = DoOp(vecs,fun,p);
+		delete vecs;
+	}
+
+	return ret;
+}
+
+
+
 Vasp *VaspOp::m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
 { 
 	Vasp *ret = NULL;
+	OpParam p(opnm);
 	BL argvasp = arg.IsVasp();
 
-	RVecBlock *vecs = argvasp?GetRVecs(opnm,src,arg.GetVasp(),dst):GetRVecs(opnm,src,dst);
+	RVecBlock *vecs = argvasp?GetRVecs(p.opname,src,arg.GetVasp(),dst):GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		OpParam p;
-
 		if(!argvasp) p.rbin.arg = arg.GetADouble(); // if no arg vasp
-
-		BL ok = true;
-		BL sovr = p.SR_In(); // check whether dst is before src 
-		if(argvasp) {
-			BL aovr = p.AR_In(); // check whether dst is before arg
-			if(sovr != aovr) {
-				ok = false;
-			}
-			else p.SADRRev();
-		}
-		else {
-			if(sovr) p.SDR_Rev(); // if overlapping revert src/dst vectors
-		}
 	
-		if(ok) ret = DoOp(vecs,fun,p);
+		ret = DoOp(vecs,fun,p);
 		delete vecs;
 	}
 
@@ -46,42 +63,18 @@ Vasp *VaspOp::m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,c
 Vasp *VaspOp::m_cbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
 { 
 	Vasp *ret = NULL;
+	OpParam p(opnm);
 	BL argvasp = arg.IsVasp();
 
-	CVecBlock *vecs = argvasp?GetCVecs(opnm,src,arg.GetVasp(),dst):GetCVecs(opnm,src,dst);
+	CVecBlock *vecs = argvasp?GetCVecs(p.opname,src,arg.GetVasp(),dst):GetCVecs(opnm,src,dst);
 	if(vecs) {
-		OpParam p;
-
 		if(!argvasp) {
 			CX z = arg.GetAComplex();
 			p.cbin.rarg = z.real; 
 			p.cbin.iarg = z.imag; 
 		}
 
-		BL ok = true;
-		BL rovr = p.SROvr(),iovr = p.SIOvr(); // src/dst check
-		if(rovr != iovr) {
-			ok = false;
-		}
-		else if(argvasp) {
-			BL arovr = p.AROvr(),aiovr = p.AIOvr(); // src/arg check
-			if(arovr != aiovr) {
-				ok = false;
-			} 
-			else if(rovr != arovr) {
-				ok = false;
-			}
-			else {
-				// all src/arg/dst have the same character
-				if(rovr) { p.SADRRev(); // revert 
-			}
-		}
-		else {
-			// no arg vectors
-			if(rovr) p.SDRRev(); // revert on src/dst overlap
-		}
-
-		if(ok) ret = DoOp(vecs,fun,p);
+		ret = DoOp(vecs,fun,p);
 		delete vecs;
 	}
 
