@@ -16,14 +16,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 202)
-#error You need at least flext version 0.2.2
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 203)
+#error You need at least flext version 0.2.3
 #endif
 
 #include <typeinfo.h>
 
 #define I int
-#define FI t_flint
 #define L long
 #define F float
 #define D double
@@ -119,15 +118,27 @@ public:
 	Argument();
 	~Argument();
 	
-	V Parse(I argc,t_atom *argv);
-	V Clear();
+	Argument &Parse(I argc,t_atom *argv);
+	Argument &Clear();
+	Argument &ClearAll();
 
-	V Set(Vasp *v);
-	V Set(I argc,t_atom *argv);
-	V Set(I i);
-	V Set(F f);
-	V Set(F re,F im);
-	V Set(VX *vec);
+	Argument &Set(Vasp *v);
+	Argument &Set(I argc,t_atom *argv);
+	Argument &Set(I i);
+	Argument &Set(F f);
+	Argument &Set(F re,F im);
+	Argument &Set(VX *vec);
+
+	Argument *Next() { return nxt; }
+	Argument &Next(I i);
+	Argument &Add(Argument *a);
+
+	Argument &Add(Vasp *v);
+	Argument &Add(I argc,t_atom *argv);
+	Argument &Add(I i);
+	Argument &Add(F f);
+	Argument &Add(F re,F im);
+	Argument &Add(VX *vec);
 
 	BL IsNone() const { return tp == tp_none; }
 	BL IsVasp() const { return tp == tp_vasp; }
@@ -165,6 +176,8 @@ protected:
 		CX *cx;
 		VX *vx;
 	} dt;
+
+	Argument *nxt;
 };
 
 
@@ -360,6 +373,9 @@ public:
 	Vasp *m_cfft();
 	Vasp *m_cifft();
 
+	typedef BL (*argfunRA)(I,F *,I,Argument &);
+	typedef BL (*argfunCA)(I,F *,I,F *,I,Argument &);
+	
 	typedef BL (*argfunR)(I,F *,I,F);
 	typedef BL (*argfunC)(I,F *,I,F *,I,F,F);
 	typedef BL (*argfunV)(I,F *,I,const F *,I);
@@ -391,11 +407,15 @@ protected:
 private:
 	typedef flext_base flx;
 
-//	Vasp *fr_nop(const C *op,F v,argfunR f);
 	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_arg(op,v,f.funR); }
-//	Vasp *fc_nop(const C *op,const CX &cx,argfunC f);
 	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_arg(op,cx,f.funC); }
-	Vasp *fc_nop(const C *op,const Argument &arg,const nop_funcs &f);
+	Vasp *fc_nop(const C *op,const Argument &params,const nop_funcs &f);
+
+	Vasp *fr_prm(const C *op,argfunRA f,Argument &params);
+	Vasp *fc_prm(const C *op,argfunCA f,Argument &params);
+//	Vasp *fr_arg(const C *op,argfunVA f,Argument &a);
+//	Vasp *fc_arg(const C *op,argfunCV f,Argument &a);
+//	Vasp *fv_arg(const C *op,argfunV f,Argument &a);
 
 	Vasp *fr_arg(const C *op,F v,argfunR f);
 	Vasp *fr_arg(const C *op,F v,const arg_funcs &f) { return fr_arg(op,v,f.funR); }

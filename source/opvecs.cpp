@@ -43,6 +43,29 @@ Vasp *Vasp::fr_arg(const C *op,F v,argfunR f)
 	return ok?new Vasp(*this):NULL;
 }
 
+// for real values or single real vector (with parameters)
+// This is exactly the same code a in the previous function!!!
+Vasp *Vasp::fr_prm(const C *op,argfunRA f,Argument &p)
+{
+	BL ok = true;
+	for(I ci = 0; ok && ci < this->Vectors(); ++ci) {
+		VBuffer *bref = this->Buffer(ci);		
+		if(!bref->Data()) {
+			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
+			ok = false; // really return?
+		}
+		else {
+			I chns = bref->Channels();
+			ok &= f(bref->Length(),bref->Data()+bref->Offset()*chns+bref->Channel(),chns,p);
+			bref->Dirty();
+		}
+		delete bref;
+	}
+
+	// output Vasp
+	return ok?new Vasp(*this):NULL;
+}
+
 Vasp *Vasp::fr_arg(const C *op,const Vasp &arg,argfunV f)
 {
 	if(!arg.Ok()) {
@@ -141,6 +164,52 @@ Vasp *Vasp::fc_arg(const C *op,const CX &cx,argfunC f)
 
 			I rchns = bre->Channels(),ichns = bim->Channels();
 			ok &= f(frms,bre->Data()+bre->Offset()*rchns+bre->Channel(),rchns,bim->Data()+bim->Offset()*ichns+bim->Channel(),ichns,cx.real,cx.imag);
+			bre->Dirty(); bim->Dirty();
+		}
+
+		delete bre;
+		delete bim;
+	}
+
+	// output corrected vasp
+	return ok?new Vasp(*this):NULL;
+}
+
+// for complex values or complex vector pair
+// This is exactly the same code a in the previous function!!!
+Vasp *Vasp::fc_prm(const C *op,argfunCA f,Argument &p)
+{
+	// complex (or real) input
+
+	if(this->Vectors()%2 != 0) {
+		post("%s(%s) - number of src vectors is odd - omitting last vector",thisName(),op);
+		// clear superfluous vector?
+	}
+
+	BL ok = true;
+
+	for(I ci = 0; ci < this->Vectors()/2; ++ci) {
+		VBuffer *bre = this->Buffer(ci*2),*bim = this->Buffer(ci*2+1); // complex channels
+
+		if(!bre->Data()) {
+			post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,bre->Name());
+			ok = false;
+		}
+		if(!bim->Data()) {
+			post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,bim->Name());
+			ok = false;
+		}
+		else {
+			I frms = bre->Length();
+			if(frms != bim->Length()) {
+				post("%s(%s) - real/imag dst vector length is not equal - using minimum",thisName(),op);
+				frms = min(frms,bim->Length());
+
+				// clear the rest?
+			}
+
+			I rchns = bre->Channels(),ichns = bim->Channels();
+			ok &= f(frms,bre->Data()+bre->Offset()*rchns+bre->Channel(),rchns,bim->Data()+bim->Offset()*ichns+bim->Channel(),ichns,p);
 			bre->Dirty(); bim->Dirty();
 		}
 

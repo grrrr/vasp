@@ -147,8 +147,11 @@ static BL d_norm(I cnt,F *dst,I str,F)
 	F v = 0;
 	I i;
 	for(i = 0; i < cnt; ++i,dst += str) { F s = fabs(*dst); if(s > v) v = s; }
-	v = 1./v;
-	for(i = 0; i < cnt; ++i) *(dst -= str) *= v;
+
+	if(v != 1) {
+		v = 1./v;
+		for(i = 0; i < cnt; ++i) *(dst -= str) *= v;
+	}
 	return true; 
 }
 
@@ -160,8 +163,11 @@ static BL d_cnorm(I cnt,F *re,I rstr,F *im,I istr,F,F)
 		register F abs = *re * *re+*im * *im; 
 		if(abs > v) v = abs; 
 	}
-	v = 1./sqrt(v);
-	for(i = 0; i < cnt; ++i) *(re -= rstr) *= v,*(im -= istr) *= v;
+
+	if(v != 1) {
+		v = 1./sqrt(v);
+		for(i = 0; i < cnt; ++i) *(re -= rstr) *= v,*(im -= istr) *= v;
+	}
 	return true; 
 }
 

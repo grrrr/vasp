@@ -19,6 +19,7 @@ V lib_setup()
 	// call the objects' setup routines
 
 	VASP_SETUP(v);
+	VASP_SETUP(m);
 	VASP_SETUP(n);
 	VASP_SETUP(qn);
 

@@ -57,11 +57,11 @@ AtomList::~AtomList()
 
 
 
-Argument::Argument(): tp(tp_none) {}
-Argument::~Argument() { Clear(); }
+Argument::Argument(): tp(tp_none),nxt(NULL) {}
+Argument::~Argument() { ClearAll(); }
 
 
-V Argument::Parse(I argc,t_atom *argv)
+Argument &Argument::Parse(I argc,t_atom *argv)
 {
 	if(argc == 0)
 		Clear();
@@ -88,11 +88,14 @@ V Argument::Parse(I argc,t_atom *argv)
 			delete v;
 		}
 	}
+	return *this;
 }
 
-V Argument::Clear()
+Argument &Argument::Clear()
 {
 	switch(tp) {
+	case tp_none:
+		break;
 	case tp_vasp:
 		if(dt.v) { delete dt.v; dt.v = NULL; }
 		break;
@@ -114,42 +117,56 @@ V Argument::Clear()
 		error("Argument: Internal error - type unknown!");
 	}
 	tp = tp_none;
+	return *this;
 }
 
-V Argument::Set(Vasp *v)
+Argument &Argument::ClearAll()
+{
+	Clear();
+	if(nxt) { delete nxt; nxt = NULL; }
+	return *this;
+}
+
+Argument &Argument::Set(Vasp *v)
 {
 	if(tp != tp_none) Clear();
 	dt.v = v; tp = tp_vasp;
+	return *this;
 }
 
-V Argument::Set(I argc,t_atom *argv)
+Argument &Argument::Set(I argc,t_atom *argv)
 {
 	if(tp != tp_none) Clear();
 	dt.atoms = new AtomList(argc,argv); tp = tp_list;
+	return *this;
 }
 
-V Argument::Set(F f)
+Argument &Argument::Set(F f)
 {
 	if(tp != tp_none) Clear();
 	dt.f = f; tp = tp_float;
+	return *this;
 }
 
-V Argument::Set(I i)
+Argument &Argument::Set(I i)
 {
 	if(tp != tp_none) Clear();
 	dt.i = i; tp = tp_int;
+	return *this;
 }
 
-V Argument::Set(F re,F im)
+Argument &Argument::Set(F re,F im)
 {
 	if(tp != tp_none) Clear();
 	dt.cx = new CX(re,im); tp = tp_cx;
+	return *this;
 }
 
-V Argument::Set(VX *vec)
+Argument &Argument::Set(VX *vec)
 {
 	if(tp != tp_none) Clear();
 	dt.vx = vec; tp = tp_vx;
+	return *this;
 }
 
 I Argument::GetAInt() const 
@@ -179,3 +196,37 @@ VX Argument::GetAVector() const
 {
 }
 */
+
+
+Argument &Argument::Add(Argument *n) 
+{ 
+	if(nxt) nxt->Add(n);
+	else nxt = n;
+	return *n;
+}
+
+Argument &Argument::Next(I i)
+{
+	if(i <= 0) return *this;
+	else {
+		Argument *n = Next();
+		if(n) return n->Next(i-1);
+		else {
+			error("Argument: index not found!");
+			return *this;
+		}
+	}
+}
+
+Argument &Argument::Add(Vasp *v) { Argument *a = new Argument; a->Set(v); return Add(a); }
+
+Argument &Argument::Add(I argc,t_atom *argv) { Argument *a = new Argument; a->Set(argc,argv); return Add(a); }
+
+Argument &Argument::Add(I i) { Argument *a = new Argument; a->Set(i); return Add(a); }
+
+Argument &Argument::Add(F f) { Argument *a = new Argument; a->Set(f); return Add(a); }
+
+Argument &Argument::Add(F re,F im) { Argument *a = new Argument; a->Set(re,im); return Add(a); }
+
+Argument &Argument::Add(VX *vec) { Argument *a = new Argument; a->Set(vec); return Add(a); }
+

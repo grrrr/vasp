@@ -18,36 +18,36 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- osc ---------------------------------------
 
-static BL d_osc(I cnt,F *dt,I str,F *,I,F frq,F ph) 
+static BL d_osc(I cnt,F *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	const F phinc = 2*PI/frq; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt = cos(ph);
+	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt = cos(cph);
 	return true;
 }
 
-static BL d_cosc(I cnt,F *re,I rstr,F *im,I istr,F frq,F ph) 
+static BL d_cosc(I cnt,F *re,I rstr,F *im,I istr,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	const F phinc = 2*PI/frq; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,re += rstr,im += istr) *re = cos(ph),*im = sin(ph);
+	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	for(I i = 0; i < cnt; ++i,cph += phinc,re += rstr,im += istr) *re = cos(cph),*im = sin(cph);
 	return true;
 }
 
-static BL d_mosc(I cnt,F *dt,I str,F *,I,F frq,F ph) 
+static BL d_mosc(I cnt,F *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	const F phinc = 2*PI/frq; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= cos(ph);
+	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt *= cos(cph);
 	return true;
 }
 
-static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,F frq,F ph) 
+static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	const F phinc = 2*PI/frq; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,re += rstr,im += istr) {
-		*re = cos(ph),*im = sin(ph);
+	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	for(I i = 0; i < cnt; ++i,cph += phinc,re += rstr,im += istr) {
+		*re = cos(cph),*im = sin(cph);
 	}
 	return true;
 }
@@ -55,9 +55,10 @@ static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,F frq,F ph)
 Vasp *Vasp::m_osc(const Argument &arg) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		F frq = flx::GetAFloat(arg.GetList()[0]);
-		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-		return fc_arg("osc",CX(frq,ph),d_osc); 
+		Argument params;
+		params.Set(flx::GetAFloat(arg.GetList()[0]));
+		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
+		return fr_prm("osc",d_osc,params); 
 	}
 	else return NULL;
 }
@@ -65,9 +66,10 @@ Vasp *Vasp::m_osc(const Argument &arg)
 Vasp *Vasp::m_cosc(const Argument &arg) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		F frq = flx::GetAFloat(arg.GetList()[0]);
-		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-		return fc_arg("cosc",CX(frq,ph),d_cosc); 
+		Argument params;
+		params.Set(flx::GetAFloat(arg.GetList()[0]));
+		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
+		return fc_prm("cosc",d_cosc,params); 
 	}
 	else return NULL;
 }
@@ -75,9 +77,10 @@ Vasp *Vasp::m_cosc(const Argument &arg)
 Vasp *Vasp::m_mosc(const Argument &arg) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		F frq = flx::GetAFloat(arg.GetList()[0]);
-		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-		return fc_arg("*osc",CX(frq,ph),d_mosc); 
+		Argument params;
+		params.Set(flx::GetAFloat(arg.GetList()[0]));
+		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
+		return fr_prm("*osc",d_mosc,params); 
 	}
 	else return NULL;
 }
@@ -85,9 +88,10 @@ Vasp *Vasp::m_mosc(const Argument &arg)
 Vasp *Vasp::m_mcosc(const Argument &arg) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		F frq = flx::GetAFloat(arg.GetList()[0]);
-		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-		return fc_arg("*cosc",CX(frq,ph),d_mcosc);
+		Argument params;
+		params.Set(flx::GetAFloat(arg.GetList()[0]));
+		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
+		return fc_prm("*cosc",d_mcosc,params);
 	}
 	else return NULL;
 }
@@ -95,30 +99,31 @@ Vasp *Vasp::m_mcosc(const Argument &arg)
 
 // --- phasor ---------------------------------------
 
-// look up Höldrich's pd phasor code
+// ! look up Höldrich's pd phasor code
 
-static BL d_phasor(I cnt,F *dt,I str,F *,I,F frq,F ph) 
+static BL d_phasor(I cnt,F *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	const F phinc = 2*PI/frq; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt = fmod(ph,1.F);
+	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt = fmod(cph,1.F);
 	return true;
 }
 
-static BL d_mphasor(I cnt,F *dt,I str,F *,I,F frq,F ph) 
+static BL d_mphasor(I cnt,F *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	const F phinc = 2*PI/frq; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= fmod(ph,1.F);
+	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt *= fmod(cph,1.F);
 	return true;
 }
 
 Vasp *Vasp::m_phasor(const Argument &arg) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		F frq = flx::GetAFloat(arg.GetList()[0]);
-		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-		return fc_arg("phasor",CX(frq,ph),d_phasor); 
+		Argument params;
+		params.Set(flx::GetAFloat(arg.GetList()[0]));
+		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
+		return fr_prm("phasor",d_phasor,params); 
 	}
 	else return NULL;
 }
@@ -126,9 +131,10 @@ Vasp *Vasp::m_phasor(const Argument &arg)
 Vasp *Vasp::m_mphasor(const Argument &arg) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		F frq = flx::GetAFloat(arg.GetList()[0]);
-		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-		return fc_arg("*phasor",CX(frq,ph),d_mphasor); 
+		Argument params;
+		params.Set(flx::GetAFloat(arg.GetList()[0]));
+		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0);
+		return fr_prm("*phasor",d_mphasor,params); 
 	}
 	else return NULL;
 }
