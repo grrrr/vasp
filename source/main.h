@@ -226,9 +226,9 @@ public:
 	// length of the vasp (in frames)
 	I Frames() const { return frames; }
 	// set frame count
-	V Frames(I fr);
+	V Frames(I fr) { frames = fr; }
 	// set frame count differentially
-	V FramesD(I frd) { Frames(Frames()+frd); }
+	V FramesD(I frd) { frames += frd; }
 
 	// set offset(s)
 	V Offset(I fr);

@@ -19,13 +19,20 @@ V lib_setup()
 	// call the objects' setup routines
 
 	VASP_SETUP(v);
-	VASP_SETUP(split);
-	VASP_SETUP(sync);
-	VASP_SETUP(join);
+	VASP_SETUP(n);
+	VASP_SETUP(qn);
+
 	VASP_SETUP(offs);
 	VASP_SETUP(doffs);
+	VASP_SETUP(qoffs);
 	VASP_SETUP(frames);
 	VASP_SETUP(dframes);
+	VASP_SETUP(qframes);
+
+	VASP_SETUP(split);
+	VASP_SETUP(join);
+	VASP_SETUP(sync);
+
 	VASP_SETUP(update);
 
 	VASP_BINARY_SETUP(copy);
