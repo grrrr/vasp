@@ -4,6 +4,7 @@ Version history:
 - FIX: bug in vasp.frames* ... wrong argument
 - FIX: another bug in resize of immediate buffers
 - CHANGE: immediates will be initialized to zero, also upon resize to a larger size (by default, later make this optional)
+- ADD: attributes for all basic parameters: ref,to,arg, update,detach,prior (loglvl,argchk,unit later)
 
 0.1.1:
 - FIX: bug in resize of immediate buffers
