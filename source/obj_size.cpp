@@ -49,7 +49,7 @@ public:
 
 	virtual V m_arg(F s) 
 	{ 
-		size = s; 
+		size = (I)s;  // \todo unit processing 
 		sets = true;
 	}
 

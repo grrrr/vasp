@@ -49,7 +49,7 @@ public:
 
 	V m_offs(F o) 
 	{ 
-		offs = o; //! \todo unit processing 
+		offs = (I)o; //! \todo unit processing 
 		seto = true; 
 	}
 

@@ -49,7 +49,7 @@ public:
 
 	virtual V m_arg(F f) 
 	{ 
-		frms = f; //! \todo unit processing
+		frms = (I)f; //! \todo unit processing
 		setf = true; 
 	}
 

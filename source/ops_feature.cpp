@@ -28,7 +28,7 @@ BL lower(S a,S b) { return a < b; }
 
 static BL d_vlpk(OpParam &p,BL cmpf(S a,S b)) 
 { 
-	I dpeaks = p.frames*p.peaks.density;
+	I dpeaks = (I)(p.frames*p.peaks.density);
 	if(dpeaks < 1) dpeaks = 1;
 
 	I cnt;

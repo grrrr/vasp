@@ -53,7 +53,7 @@ public:
 		part = new I[argc]; 
 		for(I i = 0; i < argc; ++i) {
 			BL warn = false;
-			I p = GetAFloat(argv[i]); // \todo unit processing
+			I p = (I)GetAFloat(argv[i]); // \todo unit processing
 			if(p < 0 && !warn) {
 				post("%s - invalid part length(s) -> set to 0",thisName());
 				p = 0; warn = true;

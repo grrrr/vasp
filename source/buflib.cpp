@@ -200,7 +200,7 @@ BufEntry *BufLib::NewImm(I fr)
 	return entry;
 }
 
-static I reuse_maxloserel = REUSE_MAXLOSEREL;
+static F reuse_maxloserel = REUSE_MAXLOSEREL;
 static I reuse_maxloseabs = REUSE_MAXLOSEABS;
 
 BufEntry *BufLib::Resize(BufEntry *e,I fr,BL keep)
