@@ -43,6 +43,8 @@ Version history:
 0.0.5:
 - fixed sqrt bug in [vasp.rmin?],[vasp.rmax?]
 - fixed (offs >= frames) bug in [vasp.offs?] 
+- added lacking setup of [vasp.!-] and [vasp.c!-] objects 
+- corrected buggy [vasp.int] code
 
 0.0.4:
 - changed vasp.min/max functions so that a vasp length 0 results in 0

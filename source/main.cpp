@@ -56,6 +56,8 @@ V lib_setup()
 	VASP__SETUP(cadd);
 	VASP__SETUP(sub);
 	VASP__SETUP(csub);
+	VASP__SETUP(subr);
+	VASP__SETUP(csubr);
 	VASP__SETUP(mul);
 	VASP__SETUP(cmul);
 	VASP__SETUP(div);
