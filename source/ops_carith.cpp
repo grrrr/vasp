@@ -37,8 +37,8 @@ BL VecOp::d_cadd(OpParam &p) { D__cbin(f_cadd<S>,p); }
 BL VecOp::d_csub(OpParam &p) { D__cbin(f_csub<S>,p); }
 BL VecOp::d_csubr(OpParam &p) { D__cbin(f_csubr<S>,p); }
 BL VecOp::d_cmul(OpParam &p) { D__cbin(f_cmul<S>,p); }
-BL VecOp::d_cdiv(OpParam &p) { return d__cbin(f_cdiv<S>,p); }
-BL VecOp::d_cdivr(OpParam &p) { return d__cbin(f_cdivr<S>,p); }
+BL VecOp::d_cdiv(OpParam &p) { d__cbin(f_cdiv<S>,p); }
+BL VecOp::d_cdivr(OpParam &p) { d__cbin(f_cdivr<S>,p); }
 
 
 VASP_BINARY("vasp.c+",cadd,true,VASP_ARG_R(0),"adds a complex value or vasp")
@@ -68,7 +68,7 @@ template<class T> V f_cpowi(T &rv,T &iv,T ra,T ia,OpParam &p)
 	rv = rt,iv = it;
 } 
 
-BL VecOp::d_cpowi(OpParam &p) { return d__cop(f_cpowi<S>,p); }
+BL VecOp::d_cpowi(OpParam &p) { d__cop(f_cpowi<S>,p); }
 
 Vasp *VaspOp::m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) 
 { 

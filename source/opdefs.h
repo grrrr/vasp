@@ -13,7 +13,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \brief skeleton for unary real operations
 */
-#define D__run(fun,p)											\
+#define _D__run(fun,p)											\
 {																\
 	register const S *sr = p.rsdt;								\
 	register S *dr = p.rddt;									\
@@ -34,9 +34,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	return true;												\
 }
 
+#define d__run(fun,p) { return _d__run(fun,p); }
+
 /*! \brief skeleton for unary complex operations
 */
-#define D__cun(fun,p)											\
+#define _D__cun(fun,p)											\
 {																\
 	register const S *sr = p.rsdt,*si = p.isdt;					\
 	register S *dr = p.rddt,*di = p.iddt;						\
@@ -57,9 +59,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	return true;												\
 }
 
+#define d__cun(fun,p) { return _d__cun(fun,p); }
+
+
 /*! \brief skeleton for binary real operations
 */
-#define D__rbin(fun,p)											\
+#define _D__rbin(fun,p)											\
 {																\
 	register const S *sr = p.rsdt;								\
 	register S *dr = p.rddt;									\
@@ -141,9 +146,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	return true;												\
 }
 
+#define d__rbin(fun,p) { return _d__rbin(fun,p); }
+
+
 /*! \brief skeleton for binary complex operations
 */
-#define D__cbin(fun,p)											\
+#define _D__cbin(fun,p)											\
 {																\
 	register const S *sr = p.rsdt,*si = p.isdt;					\
 	register S *dr = p.rddt,*di = p.iddt;						\
@@ -221,10 +229,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	return true;												\
 }
 
+#define d__cbin(fun,p) { return _d__cbin(fun,p); }
+
 
 /*! \brief skeleton for real operations with parameter block
 */
-#define D__rop(fun,p)											\
+#define _D__rop(fun,p)											\
 {																\
 	register const S *sr = p.rsdt;								\
 	register S *dr = p.rddt;									\
@@ -245,9 +255,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	return true;												\
 }
 
+#define d__rop(fun,p) { return _d__rop(fun,p); }
+
+
 /*! \brief skeleton for complex operations with parameter block
 */
-#define D__cop(fun,p)											\
+#define _D__cop(fun,p)											\
 {																\
 	register const S *sr = p.rsdt,*si = p.isdt;					\
 	register S *dr = p.rddt,*di = p.iddt;						\
@@ -267,5 +280,24 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 				fun(*dr,*di,*sr,*si,p);							\
 	return true;												\
 }
+
+#define d__cop(fun,p) { return _d__cop(fun,p); }
+
+
+#ifdef VASP_COMPACT
+#define D__run(fun,p) d__run(fun,p)
+#define D__cun(fun,p) d__cun(fun,p)
+#define D__rbin(fun,p) d__rbin(fun,p)
+#define D__cbin(fun,p) d__cbin(fun,p)
+#define D__rop(fun,p) d__rop(fun,p)
+#define D__cop(fun,p) d__cop(fun,p)
+#else
+#define D__run(fun,p) _D__run(fun,p)
+#define D__cun(fun,p) _D__cun(fun,p)
+#define D__rbin(fun,p) _D__rbin(fun,p)
+#define D__cbin(fun,p) _D__cbin(fun,p)
+#define D__rop(fun,p) _D__rop(fun,p)
+#define D__cop(fun,p) _D__cop(fun,p)
+#endif
 
 #endif

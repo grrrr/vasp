@@ -18,8 +18,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 template<class T> V f_polar(T &rv,T &iv,T ra,T ia) { rv = sqrt(sqabs(ra,ia)),iv = arg(ra,ia); }
 template<class T> V f_rect(T &rv,T &iv,T ra,T ia) { rv = ra*cos(ia),iv = ra*sin(ia); }
 
-BL VecOp::d_polar(OpParam &p) { return d__cun(f_polar<S>,p); }
-BL VecOp::d_rect(OpParam &p) { return d__cun(f_rect<S>,p); }
+BL VecOp::d_polar(OpParam &p) { d__cun(f_polar<S>,p); }
+BL VecOp::d_rect(OpParam &p) { d__cun(f_rect<S>,p); }
 
 
 VASP_UNARY("vasp.polar",polar,true,"") 
@@ -37,7 +37,7 @@ template<class T> V f_radd(T &rv,T &iv,T ra,T ia,T rb,T)
 	rv = _abs*cos(_phi),iv = _abs*sin(_phi);
 } 
 
-BL VecOp::d_radd(OpParam &p) { return d__cbin(f_radd<S>,p); }
+BL VecOp::d_radd(OpParam &p) { d__cbin(f_radd<S>,p); }
 
 Vasp *VaspOp::m_radd(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) 
 { 
@@ -71,7 +71,7 @@ template<class T> V f_cnorm(T &rv,T &iv,T ra,T ia)
 	else rv = iv = 0;
 }
 
-BL VecOp::d_cnorm(OpParam &p) { return d__cun(f_cnorm<S>,p); }
+BL VecOp::d_cnorm(OpParam &p) { d__cun(f_cnorm<S>,p); }
 
 
 VASP_UNARY("vasp.cnorm",cnorm,true,"")

@@ -84,11 +84,11 @@ Vasp *VaspOp::m_cbin(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,VecOp::o
 }
 
 
-BL VecOp::d__run(V fun(S &v,S a),OpParam &p)	{ D__run(fun,p); }
-BL VecOp::d__cun(V fun(S &rv,S &iv,S ra,S ia),OpParam &p) { D__cun(fun,p); }
-BL VecOp::d__rbin(V fun(S &v,S a,S b),OpParam &p) { D__rbin(fun,p); }
-BL VecOp::d__cbin(V fun(S &rv,S &iv,S ra,S ia,S rb,S ib),OpParam &p) { D__cbin(fun,p); }
-BL VecOp::d__rop(V fun(S &v,S a,OpParam &p),OpParam &p) { D__rop(fun,p); }
-BL VecOp::d__cop(V fun(S &rv,S &iv,S ra,S ia,OpParam &p),OpParam &p) { D__cop(fun,p); }
+BL VecOp::_d__run(V fun(S &v,S a),OpParam &p)	{ _D__run(fun,p); }
+BL VecOp::_d__cun(V fun(S &rv,S &iv,S ra,S ia),OpParam &p) { _D__cun(fun,p); }
+BL VecOp::_d__rbin(V fun(S &v,S a,S b),OpParam &p) { _D__rbin(fun,p); }
+BL VecOp::_d__cbin(V fun(S &rv,S &iv,S ra,S ia,S rb,S ib),OpParam &p) { _D__cbin(fun,p); }
+BL VecOp::_d__rop(V fun(S &v,S a,OpParam &p),OpParam &p) { _D__rop(fun,p); }
+BL VecOp::_d__cop(V fun(S &rv,S &iv,S ra,S ia,OpParam &p),OpParam &p) { _D__cop(fun,p); }
 
 

@@ -56,8 +56,8 @@ template<class T> inline V f_rmax(T &rv,T &iv,T ra,T ia,T rb,T ib)
 
 BL VecOp::d_min(OpParam &p) { D__rbin(f_min<S>,p); }
 BL VecOp::d_max(OpParam &p) { D__rbin(f_max<S>,p); }
-BL VecOp::d_rmin(OpParam &p) { return d__cbin(f_rmin<S>,p); }
-BL VecOp::d_rmax(OpParam &p) { return d__cbin(f_rmax<S>,p); }
+BL VecOp::d_rmin(OpParam &p) { d__cbin(f_rmin<S>,p); }
+BL VecOp::d_rmax(OpParam &p) { d__cbin(f_rmax<S>,p); }
 
 
 VASP_BINARY("vasp.min",min,true,VASP_ARG_R(0),"assigns the minimum of the comparison with a value or vasp")
@@ -107,8 +107,8 @@ BL VecOp::d_minq(OpParam &p) { D__rop(f_minq<S>,p); }
 BL VecOp::d_maxq(OpParam &p) { D__rop(f_maxq<S>,p); }
 BL VecOp::d_aminq(OpParam &p) { D__rop(f_aminq<S>,p); }
 BL VecOp::d_amaxq(OpParam &p) { D__rop(f_amaxq<S>,p); }
-BL VecOp::d_rminq(OpParam &p) { return d__cop(f_rminq<S>,p); }
-BL VecOp::d_rmaxq(OpParam &p) { return d__cop(f_rmaxq<S>,p); }
+BL VecOp::d_rminq(OpParam &p) { d__cop(f_rminq<S>,p); }
+BL VecOp::d_rmaxq(OpParam &p) { d__cop(f_rmaxq<S>,p); }
 
 
 // --------------------------------------------------------------
@@ -133,9 +133,9 @@ template<class T> V f_rigate(T &rv,T &iv,T ra,T ia,T rb,T)
 } 
 
 BL VecOp::d_gate(OpParam &p) { D__rbin(f_gate<S>,p); }
-BL VecOp::d_igate(OpParam &p) { return d__rbin(f_igate<S>,p); }
-BL VecOp::d_rgate(OpParam &p) { return d__cbin(f_rgate<S>,p); }
-BL VecOp::d_rigate(OpParam &p) { return d__cbin(f_rigate<S>,p); }
+BL VecOp::d_igate(OpParam &p) { d__rbin(f_igate<S>,p); }
+BL VecOp::d_rgate(OpParam &p) { d__cbin(f_rgate<S>,p); }
+BL VecOp::d_rigate(OpParam &p) { d__cbin(f_rigate<S>,p); }
 
 
 
@@ -190,7 +190,7 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 	else rv = ia,iv = ra; 
 }
 
-BL VecOp::d_minmax(OpParam &p) { return d__cun(f_minmax<S>,p); }
+BL VecOp::d_minmax(OpParam &p) { d__cun(f_minmax<S>,p); }
 
 VASP_UNARY("vasp.minmax",minmax,true,"") 
 

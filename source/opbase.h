@@ -19,12 +19,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 namespace VecOp {
 	typedef BL opfun(OpParam &p);
 
-	BL d__run(V fun(S &v,S a),OpParam &p);
-	BL d__cun(V fun(S &rv,S &iv,S ra,S ia),OpParam &p);
-	BL d__rbin(V fun(S &v,S a,S b),OpParam &p);
-	BL d__cbin(V fun(S &rv,S &iv,S ra,S ia,S rb,S ib),OpParam &p);
-	BL d__rop(V fun(S &v,S a,OpParam &p),OpParam &p);
-	BL d__cop(V fun(S &rv,S &iv,S ra,S ia,OpParam &p),OpParam &p);
+	BL _d__run(V fun(S &v,S a),OpParam &p);
+	BL _d__cun(V fun(S &rv,S &iv,S ra,S ia),OpParam &p);
+	BL _d__rbin(V fun(S &v,S a,S b),OpParam &p);
+	BL _d__cbin(V fun(S &rv,S &iv,S ra,S ia,S rb,S ib),OpParam &p);
+	BL _d__rop(V fun(S &v,S a,OpParam &p),OpParam &p);
+	BL _d__cop(V fun(S &rv,S &iv,S ra,S ia,OpParam &p),OpParam &p);
 }
 
 

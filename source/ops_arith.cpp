@@ -44,7 +44,7 @@ template<class T> inline V f_rsqr(T &v,T a) { v = a*a; }
 template<class T> inline V f_rssqr(T &v,T a) { v = a*fabs(a); } 
 
 BL VecOp::d_sqr(OpParam &p) { D__run(f_rsqr<S>,p); }
-BL VecOp::d_ssqr(OpParam &p) { return d__run(f_rssqr<S>,p); }
+BL VecOp::d_ssqr(OpParam &p) { d__run(f_rssqr<S>,p); }
 
 VASP_UNARY("vasp.sqr",sqr,true,"Calculates the square") 
 VASP_UNARY("vasp.ssqr",ssqr,true,"Calculates the square with preservation of the sign") 

@@ -17,7 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 template<class T> V f_rpow(T &v,T a,T b) { v = pow(fabs(a),b)*sgn(a); } 
 
-BL VecOp::d_pow(OpParam &p) { return d__rbin(f_rpow<S>,p); }
+BL VecOp::d_pow(OpParam &p) { d__rbin(f_rpow<S>,p); }
 
 template<class T> V f_crpow(T &rv,T &iv,T ra,T ia,T rb,T) 
 { 
@@ -30,7 +30,7 @@ template<class T> V f_crpow(T &rv,T &iv,T ra,T ia,T rb,T)
 		rv = iv = 0;
 } 
 
-BL VecOp::d_rpow(OpParam &p) { return d__cbin(f_crpow<S>,p); }
+BL VecOp::d_rpow(OpParam &p) { d__cbin(f_crpow<S>,p); }
 
 Vasp *VaspOp::m_rpow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) 
 { 
@@ -60,8 +60,8 @@ VASP_ANYOP("vasp.rpow",rpow,1,true,VASP_ARG_R(1),"")
 template<class T> V f_rsqrt(T &v,T a) { v = sqrt(fabs(a)); } 
 template<class T> V f_rssqrt(T &v,T a) { v = sqrt(fabs(a))*sgn(a); } 
 
-BL VecOp::d_sqrt(OpParam &p) { return d__run(f_rsqrt<S>,p); }
-BL VecOp::d_ssqrt(OpParam &p) { return d__run(f_rssqrt<S>,p); }
+BL VecOp::d_sqrt(OpParam &p) { d__run(f_rsqrt<S>,p); }
+BL VecOp::d_ssqrt(OpParam &p) { d__run(f_rssqrt<S>,p); }
 
 
 VASP_UNARY("vasp.sqrt",sqrt,true,"") 
@@ -73,8 +73,8 @@ VASP_UNARY("vasp.ssqrt",ssqrt,true,"")
 template<class T> V f_rexp(T &v,T a) { v = exp(a); } 
 template<class T> V f_rlog(T &v,T a) { v = log(a); }  // \todo detect NANs
 
-BL VecOp::d_exp(OpParam &p) { return d__run(f_rexp<S>,p); }
-BL VecOp::d_log(OpParam &p) { return d__run(f_rlog<S>,p); }
+BL VecOp::d_exp(OpParam &p) { d__run(f_rexp<S>,p); }
+BL VecOp::d_log(OpParam &p) { d__run(f_rlog<S>,p); }
 
 
 VASP_UNARY("vasp.exp",exp,true,"") 
