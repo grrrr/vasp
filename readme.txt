@@ -69,8 +69,6 @@ features:
 
 - clear samples outside transform domain (e.g. tilt)?
 
-- value outlet for optimize object
-
 - how to handle beyond buffer-domain:
 warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay on last frame
 
@@ -79,16 +77,12 @@ objects:
 - various random distributions for noise
 
 - spin: polar -> phase difference -> power -> cartesian   ( convention: abs(phase difference) <= pi ) 
-- div reverse
 
 - search functions for values -> offset
 
 - envelopes
 - gliss,slope -> stretch factor
-
 - slope: frequence distortion with given exponent
-- idist: complex integer power
-- rgate: sample oriented noise gate
 
 bugs:
 

@@ -75,10 +75,11 @@ template<class T> V f_crpow(T &rv,T &iv,T ra,T ia,T rb,T)
 { 
 	register const R _abs = sqrt(sqabs(ra,ia));
 	if(_abs) {
-		register const R _p = pow(_abs,rb);
-		rv = _p*(ra/_abs);
-		iv = _p*(ia/_abs);
+		register const R _p = pow(_abs,rb)/_abs;
+		rv = _p*ra,iv = _p*ia;
 	}
+	else
+		rv = iv = 0;
 } 
 
 template<class T> V f_cpowi(T &rv,T &iv,T ra,T ia,T rb,T) 
@@ -88,6 +89,45 @@ template<class T> V f_cpowi(T &rv,T &iv,T ra,T ia,T rb,T)
 	for(I i = 2; i < powi; ++i) f_cmul(rt,it,rt,it,ra,ia);
 	rv = rt,iv = it;
 } 
+
+template<class T> V f_radd(T &rv,T &iv,T ra,T ia,T rb,T) 
+{ 
+	register const R _abs = sqrt(sqabs(ra,ia))+rb;
+	register const R _phi = arg(ra,ia);
+
+	rv = _abs*cos(_phi),iv = _abs*sin(_phi);
+} 
+
+template<class T> V f_gate(T &rv,T ra,T rb) { rv = fabs(ra) >= rb?ra:0; } 
+
+template<class T> V f_rgate(T &rv,T &iv,T ra,T ia,T rb,T) 
+{ 
+	register const T _abs = sqabs(ra,ia);
+
+	if(_abs >= rb*rb) rv = ra,iv = ia;
+	else rv = iv = 0;
+} 
+
+template<class T> V f_optq(T &,T ra,OpParam &p) 
+{ 
+	register T s = fabs(ra); 
+	if(s > p.norm.fnorm) p.norm.fnorm = s; 
+} 
+
+template<class T> V f_roptq(T &,T &,T ra,T ia,OpParam &p) 
+{ 
+	register T s = sqabs(ra,ia); 
+	if(s > p.norm.fnorm) p.norm.fnorm = s; 
+} 
+
+template<class T> V f_optf(T &rv,T ra,OpParam &p) 
+{ 
+} 
+
+template<class T> V f_roptf(T &rv,T &iv,T ra,T ia,OpParam &p) 
+{ 
+} 
+
 
 template<class T> inline V f_rsqr(T &v,T a) { v = a*a; } 
 template<class T> inline V f_rssqr(T &v,T a) { v = a*fabs(a); } 
@@ -103,7 +143,7 @@ template<class T> V f_rlog(T &v,T a) { v = log(a); }  // \todo detect NANs
 template<class T> inline V f_rinv(T &v,T a) { v = 1./a; } 
 template<class T> inline V f_cinv(T &rv,T &iv,T ra,T ia) 
 { 
-	register R d = sqabs(ra,ia);
+	register T d = sqabs(ra,ia);
 	rv = ra/d; iv = -ia/d; 
 }
 
@@ -112,8 +152,9 @@ template<class T> inline V f_rsign(T &v,T a) { v = (a == 0?0:(a < 0?-1.:1.)); }
 
 template<class T> V f_cnorm(T &rv,T &iv,T ra,T ia) 
 { 
-	register R f = sqabs(ra,ia);
+	register T f = sqabs(ra,ia);
 	if(f) { f = 1./sqrt(f); rv = ra*f,iv = ia*f; }
+	else rv = iv = 0;
 }
 
 template<class T> V f_polar(T &rv,T &iv,T ra,T ia) { rv = sqrt(sqabs(ra,ia)),iv = arg(ra,ia); }
@@ -271,6 +312,56 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 	}															\
 	return true;												\
 }
+
+
+/*! \brief skeleton for unary real operations
+	\todo optimization for src=dst
+*/
+#define D__rop(fun,p)											\
+{																\
+	register const S *sr = p.rsdt;								\
+	register S *dr = p.rddt;									\
+	if(sr == dr)												\
+		if(p.rds == 1)											\
+			for(I i = 0; i < p.frames; ++i,dr++)				\
+				fun(*dr,*dr,p);									\
+		else													\
+			for(I i = 0; i < p.frames; ++i,dr += p.rds)			\
+				fun(*dr,*dr,p);									\
+	else														\
+		if(p.rss == 1 && p.rds == 1)							\
+			for(I i = 0; i < p.frames; ++i,sr++,dr++)			\
+				fun(*dr,*sr,p);									\
+		else													\
+			for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds)	\
+				fun(*dr,*sr,p);										\
+	return true;												\
+}
+
+/*! \brief skeleton for unary complex operations
+	\todo optimization for src=dst
+*/
+#define D__cop(fun,p)											\
+{																\
+	register const S *sr = p.rsdt,*si = p.isdt;					\
+	register S *dr = p.rddt,*di = p.iddt;						\
+	if(sr == dr && si == di)									\
+		if(p.rds == 1 && p.ids == 1)							\
+			for(I i = 0; i < p.frames; ++i,dr++,di++)			\
+				fun(*dr,*di,*dr,*di,p);							\
+		else													\
+			for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
+				fun(*dr,*di,*dr,*di,p);								\
+	else														\
+		if(p.rss == 1 && p.iss == 1 && p.rds == 1 && p.ids == 1) \
+			for(I i = 0; i < p.frames; ++i,sr++,si++,dr++,di++) \
+				fun(*dr,*di,*sr,*si,p);								\
+		else													\
+			for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
+				fun(*dr,*di,*sr,*si,p);								\
+	return true;												\
+}
+
 
 
 #endif

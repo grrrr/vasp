@@ -73,16 +73,16 @@ BL VecOp::d_flp(OpParam &p)
     
 	const R coef = p.flt.coef,feed = 1-coef;
 	const I arep = abs(p.flt.rep);
-	S *src = p.rsdt,*dst = p.rddt;
 
 	for(I ti = 0; ti < arep; ++ti) {
 		register S v1;
 		I i;
+		S *src = p.rsdt,*dst = p.rddt;
 
 		// t+ direction
 		for(i = 0,v1 = 0; i < p.frames; ++i) {
 			v1 = *dst = coef* *src + feed*v1;
-			src += p.rss,dst -= p.rds;
+			src += p.rss,dst += p.rds;
 		}
 		
 		if(p.flt.rep < 0) {

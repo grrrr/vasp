@@ -337,13 +337,13 @@ public:
 	union {
 		struct { R coef,carry; I rep; } flt;
 		struct { R carry; I rep; } intdif;
-		struct { I rep; } peaks;
+		struct { R density; I cnt; } peaks;
 		struct { R ph,phinc; } gen;
 		struct { R factor,center; I mode; } tilt; 
 		struct { R cur,inc; } bvl;
 		struct { R sh; I ish; } sh;
 		struct { I wndtp; } wnd;
-		struct { R fnorm; } norm;
+		struct { R fnorm,scl; } norm;
 		struct { R arg; } rbin; 
 		struct { R rarg,iarg; } cbin; 
 	};
@@ -356,7 +356,8 @@ namespace VecOp {
 	BL d__cun(V fun(S &rv,S &iv,S ra,S ia),OpParam &p);
 	BL d__rbin(V fun(S &v,S a,S b),OpParam &p);
 	BL d__cbin(V fun(S &rv,S &iv,S ra,S ia,S rb,S ib),OpParam &p);
-
+	BL d__rop(V fun(S &v,S a,OpParam &p),OpParam &p);
+	BL d__cop(V fun(S &rv,S &iv,S ra,S ia,OpParam &p),OpParam &p);
 
 	BL d_copy(OpParam &p); 
 	BL d_set(OpParam &p); 
@@ -388,6 +389,7 @@ namespace VecOp {
 	BL d_cmax(OpParam &p); 
 	BL d_cpowi(OpParam &p); 
 	BL d_rpow(OpParam &p); 
+	BL d_radd(OpParam &p); 
 
 	BL d_minmax(OpParam &p); 
 	BL d_sqr(OpParam &p); 
@@ -400,7 +402,7 @@ namespace VecOp {
 	BL d_abs(OpParam &p); 
 	BL d_sign(OpParam &p); 
 	BL d_optq(OpParam &p); 
-	BL d_opt(OpParam &p); 
+	BL d_optf(OpParam &p); 
 
 	BL d_csqr(OpParam &p); 
 	BL d_cinv(OpParam &p); 
@@ -409,9 +411,12 @@ namespace VecOp {
 	BL d_cconj(OpParam &p); 
 	BL d_polar(OpParam &p); 
 	BL d_cart(OpParam &p); 
-	BL d_coptq(OpParam &p); 
-	BL d_copt(OpParam &p); 
+	BL d_roptq(OpParam &p); 
+	BL d_roptf(OpParam &p); 
 	BL d_cnorm(OpParam &p); 
+
+	BL d_gate(OpParam &p); 
+	BL d_rgate(OpParam &p); 
 
 	BL d_int(OpParam &p);
 	BL d_dif(OpParam &p); 
@@ -494,6 +499,11 @@ namespace VaspOp {
 
 	Vasp *m_rpow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius power (with each two channels)
 	Vasp *m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex integer power (with each two channels)
+	Vasp *m_radd(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius offset
+	Vasp *m_gate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // gate
+	Vasp *m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius gate
+	Vasp *m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // scaling across max
+	Vasp *m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius scaling across max
 
 	inline Vasp *m_minmax(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_minmax); } // min/max 
 
@@ -523,7 +533,7 @@ namespace VaspOp {
 	inline Vasp *m_cart(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_cart); } // polar -> cartesian (each two)
 
 	Vasp *m_opt(OpParam &p,Vasp &src,Vasp *dst = NULL);  // optimize
-	Vasp *m_copt(OpParam &p,Vasp &src,Vasp *dst = NULL);  // complex optimize
+	Vasp *m_ropt(OpParam &p,Vasp &src,Vasp *dst = NULL);  // complex radius optimize
 
 	inline Vasp *m_cnorm(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_cnorm); } // complex normalize
 
@@ -535,8 +545,10 @@ namespace VaspOp {
 	inline Vasp *m_dif(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_int(p,src,arg,dst,true); } //! differentiate
 	
 	// extrema functions
-	Vasp *m_peaks(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL,BL inv = false); //! find peaks
-	inline Vasp *m_valleys(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_peaks(p,src,arg,dst,true); } //! find valleys	
+	Vasp *m_peaks(OpParam &p,Vasp &src,Vasp *dst = NULL,BL inv = false); //! find peaks
+	inline Vasp *m_valleys(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_peaks(p,src,dst,true); } //! find valleys	
+	Vasp *m_rpeaks(OpParam &p,Vasp &src,Vasp *dst = NULL,BL inv = false); //! find radius peaks
+	inline Vasp *m_rvalleys(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_rpeaks(p,src,dst,true); } //! find radius valleys	
 
 	// Filter functions
 	Vasp *m_fhp(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL,BL hp = true); //! hi pass
@@ -733,7 +745,7 @@ class vasp_op:
 	FLEXT_HEADER(vasp_op,vasp_base)
 
 protected:
-	vasp_op();
+	vasp_op(BL withto = false);
 
 	virtual V m_bang() = 0;						// do! and output current Vasp
 
@@ -762,6 +774,8 @@ class vasp_tx:
 	FLEXT_HEADER(vasp_tx,vasp_op)
 
 protected:
+	vasp_tx(BL withto = false);
+
 	virtual V m_bang();						// do! and output current Vasp
 
 	virtual Vasp *x_work() = 0;
@@ -782,7 +796,7 @@ class vasp_unop:
 	FLEXT_HEADER(vasp_unop,vasp_tx)
 
 protected:
-	vasp_unop(BL withto = false);
+	vasp_unop(BL withto = false,I addouts = 0);
 
 	virtual Vasp *x_work();
 	virtual Vasp *tx_work();
@@ -797,7 +811,7 @@ class vasp_binop:
 	FLEXT_HEADER(vasp_binop,vasp_tx)
 
 protected:
-	vasp_binop(I argc,t_atom *argv,BL withto = false);
+	vasp_binop(I argc,t_atom *argv,BL withto = false,I addouts = 0);
 
 	// assignment functions
 	virtual V a_vasp(I argc,t_atom *argv);
@@ -828,16 +842,11 @@ class vasp_anyop:
 	FLEXT_HEADER(vasp_anyop,vasp_tx)
 
 protected:
-	vasp_anyop(I argc,t_atom *argv,BL withto = false);
+	vasp_anyop(I argc,t_atom *argv,BL withto = false,I addouts = 0);
 
 	// assignment functions
 	virtual V a_list(I argc,t_atom *argv); 
-/*
-	virtual V a_vasp(I argc,t_atom *argv);
-	virtual V a_float(F f); 
-	virtual V a_complex(I argc,t_atom *argv); 
-	virtual V a_vector(I argc,t_atom *argv); 
-*/
+
 	virtual Vasp *x_work();
 	virtual Vasp *tx_work(const Argument &arg);
 
@@ -845,12 +854,6 @@ protected:
 
 private:
 	FLEXT_CALLBACK_G(a_list)
-/*
-	FLEXT_CALLBACK_G(a_vasp)
-	FLEXT_CALLBACK_1(a_float,F)
-	FLEXT_CALLBACK_G(a_complex)
-	FLEXT_CALLBACK_G(a_vector)
-*/
 };
 
 
@@ -871,8 +874,6 @@ protected:																		\
 };																				\
 FLEXT_LIB(name,vasp__##op)
 
-#define VASP_UNARY_SETUP(op) FLEXT_SETUP(vasp__##op);  
-
 
 #define VASP_BINARY(name,op,to)													\
 class vasp__ ## op:																\
@@ -890,8 +891,6 @@ protected:																		\
 };																				\
 FLEXT_LIB_G(name,vasp__##op)
 
-#define VASP_BINARY_SETUP(op) FLEXT_SETUP(vasp__##op);  
-
 
 #define VASP_ANYOP(name,op,to)													\
 class vasp__ ## op:																\
@@ -908,7 +907,8 @@ protected:																		\
 };																				\
 FLEXT_LIB_G(name,vasp__##op)
 
-#define VASP_ANYOP_SETUP(op) FLEXT_SETUP(vasp__##op);  
+
+#define VASP__SETUP(op) FLEXT_SETUP(vasp__##op);  
 
 
 #endif

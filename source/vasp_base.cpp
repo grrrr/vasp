@@ -76,11 +76,12 @@ BL vasp_base::ToOutVasp(I oix,Vasp &v)
 // vasp_op class
 ///////////////////////////////////////////////////////////////////////////
 
-vasp_op::vasp_op()
+vasp_op::vasp_op(BL op)
 {
 	FLEXT_ADDBANG(0,m_bang);
 	FLEXT_ADDMETHOD_(0,"vasp",m_vasp);
 	FLEXT_ADDMETHOD_(0,"set",m_set);
+	if(op) FLEXT_ADDMETHOD_(0,"to",m_to);
 
 	FLEXT_ADDMETHOD_(0,"update",m_update);
 }
@@ -132,6 +133,8 @@ V vasp_op::m_update(I argc,t_atom *argv)
 ///////////////////////////////////////////////////////////////////////////
 // vasp_tx class
 ///////////////////////////////////////////////////////////////////////////
+
+vasp_tx::vasp_tx(BL to): vasp_op(to) {}
 
 V vasp_tx::m_bang()
 {

@@ -122,9 +122,9 @@ Vasp *VaspOp::m_shift(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL shif
 	Vasp *ret = NULL;
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		if(arg.CanbeDouble()) {
+		if(arg.IsList() && arg.GetList().Count() >= 1 && flx::CanbeFloat(arg.GetList()[0])) {
 			// shift length
-			p.sh.sh = arg.GetADouble();
+			p.sh.sh = flx::GetAFloat(arg.GetList()[0]);
 		}
 		else {
 			post("%s - invalid argument -> set to 0",p.opname);

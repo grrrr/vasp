@@ -43,101 +43,108 @@ V lib_setup()
 	VASP_SETUP(q);
 	VASP_SETUP(i);
 
-//	VASP_UNARY_SETUP(copy);
-//	VASP_UNARY_SETUP(ccopy);
-	VASP_BINARY_SETUP(set);
-	VASP_BINARY_SETUP(cset);
+//	VASP__SETUP(copy);
+//	VASP__SETUP(ccopy);
+	VASP__SETUP(set);
+	VASP__SETUP(cset);
 
-	VASP_BINARY_SETUP(add);
-	VASP_BINARY_SETUP(cadd);
-	VASP_BINARY_SETUP(sub);
-	VASP_BINARY_SETUP(csub);
-	VASP_BINARY_SETUP(mul);
-	VASP_BINARY_SETUP(cmul);
-	VASP_BINARY_SETUP(div);
-	VASP_BINARY_SETUP(cdiv);
-	VASP_BINARY_SETUP(divr);
-	VASP_BINARY_SETUP(cdivr);
-	VASP_BINARY_SETUP(mod);
+	VASP__SETUP(add);
+	VASP__SETUP(cadd);
+	VASP__SETUP(sub);
+	VASP__SETUP(csub);
+	VASP__SETUP(mul);
+	VASP__SETUP(cmul);
+	VASP__SETUP(div);
+	VASP__SETUP(cdiv);
+	VASP__SETUP(divr);
+	VASP__SETUP(cdivr);
+	VASP__SETUP(mod);
 
-	VASP_BINARY_SETUP(min)
-	VASP_BINARY_SETUP(cmin)
-	VASP_BINARY_SETUP(max)
-	VASP_BINARY_SETUP(cmax)
+	VASP__SETUP(min)
+	VASP__SETUP(cmin)
+	VASP__SETUP(max)
+	VASP__SETUP(cmax)
 
-	VASP_BINARY_SETUP(lwr)
-	VASP_BINARY_SETUP(gtr)
-	VASP_BINARY_SETUP(leq)
-	VASP_BINARY_SETUP(geq)
-	VASP_BINARY_SETUP(equ)
-	VASP_BINARY_SETUP(neq)
+	VASP__SETUP(lwr)
+	VASP__SETUP(gtr)
+	VASP__SETUP(leq)
+	VASP__SETUP(geq)
+	VASP__SETUP(equ)
+	VASP__SETUP(neq)
 
-	VASP_UNARY_SETUP(int) 
-	VASP_UNARY_SETUP(dif) 
-	VASP_BINARY_SETUP(peaks) 
-	VASP_BINARY_SETUP(valleys) 
+	VASP__SETUP(int) 
+	VASP__SETUP(dif) 
+	VASP_SETUP(peaks) 
+	VASP_SETUP(valleys) 
+	VASP_SETUP(rpeaks) 
+	VASP_SETUP(rvalleys) 
 
-	VASP_UNARY_SETUP(minmax) 
+	VASP__SETUP(minmax) 
 
-	VASP_UNARY_SETUP(sqr) 
-	VASP_UNARY_SETUP(ssqr) 
-	VASP_UNARY_SETUP(csqr) 
-	VASP_UNARY_SETUP(sqrt) 
-	VASP_UNARY_SETUP(ssqrt) 
-	VASP_BINARY_SETUP(pow) 
-	VASP_BINARY_SETUP(cpowi) 
-	VASP_BINARY_SETUP(rpow);
+	VASP__SETUP(sqr) 
+	VASP__SETUP(ssqr) 
+	VASP__SETUP(csqr) 
+	VASP__SETUP(sqrt) 
+	VASP__SETUP(ssqrt) 
+	VASP__SETUP(pow) 
+	VASP__SETUP(cpowi) 
+	VASP__SETUP(rpow);
+	VASP__SETUP(radd);
 
-	VASP_UNARY_SETUP(exp) 
-	VASP_UNARY_SETUP(log) 
+	VASP__SETUP(exp) 
+	VASP__SETUP(log) 
 
-	VASP_UNARY_SETUP(inv) 
-	VASP_UNARY_SETUP(cinv) 
+	VASP__SETUP(inv) 
+	VASP__SETUP(cinv) 
 
-	VASP_UNARY_SETUP(abs) 
-	VASP_UNARY_SETUP(sign) 
-	VASP_UNARY_SETUP(polar) 
-	VASP_UNARY_SETUP(cart) 
+	VASP__SETUP(abs) 
+	VASP__SETUP(sign) 
+	VASP__SETUP(polar) 
+	VASP__SETUP(cart) 
 
-	VASP_UNARY_SETUP(opt)
-	VASP_UNARY_SETUP(copt)
-	VASP_UNARY_SETUP(cnorm)
+	VASP_SETUP(opt)
+	VASP_SETUP(ropt)
+	VASP__SETUP(gate);
+	VASP__SETUP(rgate);
+	VASP__SETUP(optf);
+	VASP__SETUP(roptf);
 
-	VASP_UNARY_SETUP(cswap)
-	VASP_UNARY_SETUP(cconj)
+	VASP__SETUP(cnorm)
+	VASP__SETUP(cswap)
+	VASP__SETUP(cconj)
 
-	VASP_BINARY_SETUP(shift)
-	VASP_BINARY_SETUP(xshift)
-	VASP_BINARY_SETUP(rot)
-	VASP_BINARY_SETUP(xrot)
-	VASP_UNARY_SETUP(mirr)
-	VASP_UNARY_SETUP(xmirr)
+	VASP__SETUP(shift)
+	VASP__SETUP(xshift)
+	VASP__SETUP(rot)
+	VASP__SETUP(xrot)
+	VASP__SETUP(mirr)
+	VASP__SETUP(xmirr)
 
-	VASP_ANYOP_SETUP(osc)
-	VASP_ANYOP_SETUP(mosc)
-	VASP_ANYOP_SETUP(cosc)
-	VASP_ANYOP_SETUP(mcosc)
-	VASP_ANYOP_SETUP(phasor)
-	VASP_ANYOP_SETUP(mphasor)
-	VASP_UNARY_SETUP(noise)
-	VASP_UNARY_SETUP(cnoise)
-	VASP_UNARY_SETUP(bevelup)
-	VASP_UNARY_SETUP(beveldn)
-	VASP_UNARY_SETUP(mbevelup)
-	VASP_UNARY_SETUP(mbeveldn)
-	VASP_BINARY_SETUP(window)
-	VASP_BINARY_SETUP(mwindow)
+	VASP__SETUP(osc)
+	VASP__SETUP(mosc)
+	VASP__SETUP(cosc)
+	VASP__SETUP(mcosc)
+	VASP__SETUP(phasor)
+	VASP__SETUP(mphasor)
+	VASP__SETUP(noise)
+	VASP__SETUP(cnoise)
+	VASP__SETUP(bevelup)
+	VASP__SETUP(beveldn)
+	VASP__SETUP(mbevelup)
+	VASP__SETUP(mbeveldn)
+	VASP__SETUP(window)
+	VASP__SETUP(mwindow)
 
-	VASP_ANYOP_SETUP(flp)
-	VASP_ANYOP_SETUP(fhp)
+	VASP__SETUP(flp)
+	VASP__SETUP(fhp)
 
-	VASP_ANYOP_SETUP(tilt)
-	VASP_ANYOP_SETUP(xtilt)
+	VASP__SETUP(tilt)
+	VASP__SETUP(xtilt)
 
-	VASP_UNARY_SETUP(rfft)
-	VASP_UNARY_SETUP(rifft)
-	VASP_UNARY_SETUP(cfft)
-	VASP_UNARY_SETUP(cifft)
+	VASP__SETUP(rfft)
+	VASP__SETUP(rifft)
+	VASP__SETUP(cfft)
+	VASP__SETUP(cifft)
 }
 
 FLEXT_LIB_SETUP(vasp,lib_setup)
