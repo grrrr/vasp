@@ -10,8 +10,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 
-#define VASPVASP "vasp"
-
 
 #ifdef PD
 // Initialization for pd xsample library
@@ -19,6 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 extern "C" {
 // base classes
 FLEXT_EXT V vasp_v_setup();
+FLEXT_EXT V vasp_modify_setup();
 
 // utils
 FLEXT_EXT V vasp_prepend_setup();
@@ -26,12 +25,13 @@ FLEXT_EXT V vasp_prepend_setup();
 
 FLEXT_EXT V vasp_setup()
 {
-	post("VASP - vector assembling signal processor, (C)2002 Thomas Grill");
+	post("VASP %s - vector assembling signal processor, (C)2002 Thomas Grill",VASP_VERSION);
 	post("");
 
 	// call the objects' setup routines
 
 	vasp_v_setup();
+	vasp_modify_setup();
 
 	vasp_prepend_setup();
 }
@@ -83,7 +83,7 @@ vbuffer &vbuffer::Set(t_symbol *s,I c,I l,I o)
 // vasp class
 ///////////////////////////////////////////////////////////////////////////
 
-t_symbol *const vasp::vaspsym = gensym(VASPVASP);
+t_symbol *const vasp::vaspsym = gensym("vasp");
 
 
 vasp::vasp(): 
@@ -231,7 +231,7 @@ vasp &vasp::MakeList(BL withvasp)
 
 vbuffer *vasp::Buffer(I ix) const
 {
-	if(ix < Vectors()-1) 
+	if(ix >= Vectors()) 
 		return NULL;
 	else {
 		const Ref &r = Vector(ix);

@@ -8,23 +8,31 @@ V vasp_modify::cb_setup(t_class *c)
 
 	// assignment functions
 	FLEXT_ADDMETHOD_G(c,"copy",m_copy);
+	FLEXT_ADDMETHOD_G(c,"ccopy",m_ccopy);
 	FLEXT_ADDMETHOD_G(c,"mcopy",m_mcopy);
 //	FLEXT_ADDMETHOD_G(c,"mix",m_mix);
+//	FLEXT_ADDMETHOD_G(c,"cmix",m_cmix);
 //	FLEXT_ADDMETHOD_G(c,"mmix",m_mmix);
 
 	// binary functions
 	FLEXT_ADDMETHOD_G(c,"add",m_add);
+	FLEXT_ADDMETHOD_G(c,"cadd",m_cadd);
 	FLEXT_ADDMETHOD_G(c,"madd",m_madd);
 	FLEXT_ADDMETHOD_G(c,"sub",m_sub);
+	FLEXT_ADDMETHOD_G(c,"csub",m_csub);
 	FLEXT_ADDMETHOD_G(c,"msub",m_msub);
 	FLEXT_ADDMETHOD_G(c,"mul",m_mul);
+	FLEXT_ADDMETHOD_G(c,"cmul",m_cmul);
 	FLEXT_ADDMETHOD_G(c,"mmul",m_mmul);
 	FLEXT_ADDMETHOD_G(c,"div",m_div);
+	FLEXT_ADDMETHOD_G(c,"cdiv",m_cdiv);
 	FLEXT_ADDMETHOD_G(c,"mdiv",m_mdiv);
 
 	FLEXT_ADDMETHOD_G(c,"min",m_min);
+//	FLEXT_ADDMETHOD_G(c,"cmin",m_cmin);
 	FLEXT_ADDMETHOD_G(c,"mmin",m_mmin);
 	FLEXT_ADDMETHOD_G(c,"max",m_max);
+//	FLEXT_ADDMETHOD_G(c,"cmax",m_cmax);
 	FLEXT_ADDMETHOD_G(c,"mmax",m_mmax);
 
 	// unary functions
@@ -93,11 +101,13 @@ vasp_modify::~vasp_modify()
 
 I vasp_modify::m_set(I argc,t_atom *argv)
 {
-	ref(argc,argv);
+	vasp arg(argc,argv);
 
-	if(!ref.Ok()) {
+	if(!arg.Ok()) {
 		post("%s - invalid vasp detected and ignored",thisName());
 	}
+	else 
+		ref = arg;
 
 	return 0; 
 }

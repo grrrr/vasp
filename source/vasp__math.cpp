@@ -11,9 +11,11 @@ V vasp_modify::fr_transf(const C *op,F v,V (*dofunR)(F *,F,I))
 	for(I ci = 0; ci < ref.Vectors(); ++ci) {
 		vbuffer *bref = ref.Buffer(ci);		
 		if(!bref->Data())
-			post("%s(%s) - vector buffer (%s) is invalid",thisName(),op,bref->Name());
-		else
+			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
+		else {
 			dofunR(bref->Data(),v,bref->Frames());
+			bref->Dirty();
+		}
 		delete bref;
 	}
 
@@ -33,7 +35,7 @@ V vasp_modify::fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F
 		// complex (or real) input
 
 		vr = atom_getfloatarg(1,argc,argv);
-		vi = atom_getfloatarg(2,argc,argv); // is zero if lacking
+		vi = atom_getfloatarg(2,argc,argv); // is zero if absent
 	}
 	else if(argc >= 0) {
 		post("%s(%s) - invalid argument",thisName(),op);
@@ -41,7 +43,7 @@ V vasp_modify::fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F
 	}
 
 	if(ref.Vectors()%2 != 0) {
-		post("%s(%s) - number of vector is odd - omitting last vector",thisName(),op);
+		post("%s(%s) - number of dst vectors is odd - omitting last vector",thisName(),op);
 		// clear superfluous vector?
 	}
 
@@ -49,19 +51,20 @@ V vasp_modify::fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F
 		vbuffer *bre = ref.Buffer(ci*2),*bim = ref.Buffer(ci*2+1); // complex channels
 
 		if(!bre->Data())
-			post("%s(%s) - real vector buffer (%s) is invalid",thisName(),op,bre->Name());
+			post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,bre->Name());
 		else if(!bim->Data())
-			post("%s(%s) - imag vector buffer (%s) is invalid",thisName(),op,bim->Name());
+			post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,bim->Name());
 		else {
 			I frms = bre->Frames();
 			if(frms != bim->Frames()) {
-				post("%s - real/complex vector length is not equal - using minimum",thisName());
+				post("%s - real/imag dst vector length is not equal - using minimum",thisName());
 				frms = min(frms,bim->Frames());
 
 				// clear the rest?
 			}
 
 			dofunC(bre->Data(),bim->Data(),vr,vi,frms);
+			bre->Dirty(); bim->Dirty();
 		}
 
 		delete bre;
@@ -83,9 +86,11 @@ V vasp_modify::fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F
 		for(I ci = 0; ci < ref.Vectors(); ++ci) {
 			vbuffer *bref = ref.Buffer(ci);		
 			if(!bref->Data())
-				post("%s(%s) - vector buffer (%s) is invalid",thisName(),op,bref->Name());
-			else 
+				post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
+			else {
 				dofunR(bref->Data(),v,bref->Frames());
+				bref->Dirty();
+			}
 			delete bref;
 		}
 
@@ -101,12 +106,12 @@ V vasp_modify::fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F
 		}
 
 		if(arg.Vectors() > 1) {
-			post("%s(%s) - using only first vector in argument vasp",thisName(),op);
+			post("%s(%s) - using only first src vector",thisName(),op);
 		}
 
 		vbuffer *barg = arg.Buffer(0);
 		if(!barg->Data())
-			post("%s(%s) - arg vector buffer (%s) is invalid",thisName(),op,barg->Name());
+			post("%s(%s) - src vector (%s) is invalid",thisName(),op,barg->Name());
 		else {
 			I frms = barg->Frames();
 
@@ -114,17 +119,18 @@ V vasp_modify::fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F
 				vbuffer *bref = ref.Buffer(ci);		
 
 				if(!bref->Data())
-					post("%s(%s) - vector buffer (%s) is invalid",thisName(),op,bref->Name());
+					post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
 				else {
 					I frms1 = frms;
 					if(frms1 != bref->Frames()) {
-						post("%s(%s) - source/target vector length not equal - using minimum",thisName(),op);
+						post("%s(%s) - src/dst vector length not equal - using minimum",thisName(),op);
 						frms1 = min(frms1,bref->Frames());
 
 						// clear rest?
 					}
 
 					dofunV(bref->Data(),barg->Data(),frms1);
+					bref->Dirty();
 				}
 
 				delete bref;
@@ -147,7 +153,7 @@ V vasp_modify::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,co
 		F vi = atom_getfloatarg(2,argc,argv); // is zero if lacking
 
 		if(ref.Vectors()%2 != 0) {
-			post("%s(%s) - number of vector is odd - omitting last vector",thisName(),op);
+			post("%s(%s) - number of src vectors is odd - omitting last vector",thisName(),op);
 			// clear superfluous vector?
 		}
 
@@ -155,19 +161,20 @@ V vasp_modify::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,co
 			vbuffer *bre = ref.Buffer(ci*2),*bim = ref.Buffer(ci*2+1); // complex channels
 
 			if(!bre->Data())
-				post("%s(%s) - real vector buffer (%s) is invalid",thisName(),op,bre->Name());
+				post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,bre->Name());
 			if(!bim->Data())
-				post("%s(%s) - imag vector buffer (%s) is invalid",thisName(),op,bim->Name());
+				post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,bim->Name());
 			else {
 				I frms = bre->Frames();
 				if(frms != bim->Frames()) {
-					post("%s(%s) - real/complex vector length is not equal - using minimum",thisName(),op);
+					post("%s(%s) - real/imag dst vector length is not equal - using minimum",thisName(),op);
 					frms = min(frms,bim->Frames());
 
 					// clear the rest?
 				}
 
 				dofunC(bre->Data(),bim->Data(),vr,vi,frms);
+				bre->Dirty(); bim->Dirty();
 			}
 
 			delete bre;
@@ -188,25 +195,25 @@ V vasp_modify::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,co
 		vbuffer *brarg = arg.Buffer(0),*biarg = arg.Buffer(1);
 
 		if(!biarg) {
-			post("%s(%s) - only one vector in argument vasp - setting imaginary part to 0",thisName(),op);					
+			post("%s(%s) - only one src vector - setting imaginary part to 0",thisName(),op);					
 		}
 		else if(arg.Vectors() > 2) {
-			post("%s(%s) - using only first two vectors in argument vasp",thisName(),op);
+			post("%s(%s) - using only first two src vectors",thisName(),op);
 		}
 
 		if(!brarg->Data())
-			post("%s(%s) - real arg vector buffer (%s) is invalid",thisName(),op,brarg->Name());
-		if(!biarg->Data())
-			post("%s(%s) - imag arg vector buffer (%s) is invalid",thisName(),op,biarg->Name());
+			post("%s(%s) - real src vector (%s) is invalid",thisName(),op,brarg->Name());
+		else if(biarg && !biarg->Data())
+			post("%s(%s) - imag src vector (%s) is invalid",thisName(),op,biarg->Name());
 		else {
 			I frms = brarg->Frames();
-			if(frms != biarg->Frames()) {
-				post("%s(%s) - real/complex arg vector length is not equal - using minimum",thisName(),op);
+			if(biarg && frms != biarg->Frames()) {
+				post("%s(%s) - real/imag src vector length is not equal - using minimum",thisName(),op);
 				frms = min(frms,biarg->Frames());
 			}
 
 			if(ref.Vectors()%2 != 0) {
-				post("%s(%s) - number of vector is odd - omitting last vector",thisName(),op);
+				post("%s(%s) - number of dst vectors is odd - omitting last vector",thisName(),op);
 				// clear superfluous vector?
 			}
 
@@ -214,9 +221,9 @@ V vasp_modify::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,co
 				vbuffer *brref = ref.Buffer(ci*2),*biref = ref.Buffer(ci*2+1);		
 
 				if(!brref->Data())
-					post("%s(%s) - real vector buffer (%s) is invalid",thisName(),op,brref->Name());
-				if(!biref->Data())
-					post("%s(%s) - imag vector buffer (%s) is invalid",thisName(),op,biref->Name());
+					post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,brref->Name());
+				else if(biref && !biref->Data())
+					post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,biref->Name());
 				else {
 					I frms1 = frms;
 					if(frms1 != brref->Frames() || frms1 != biref->Frames()) {
@@ -227,6 +234,7 @@ V vasp_modify::fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,co
 					}
 
 					dofunCV(brref->Data(),biref->Data(),brarg->Data(),biarg->Data(),frms1);
+					brref->Dirty(); biref->Dirty();
 				}
 
 				delete brref;
@@ -246,18 +254,18 @@ V vasp_modify::fm_assign(const C *op,I argc,t_atom *argv,V (*dofun)(F *,const F 
 {
 	vasp arg(argc,argv);
 	if(!arg.Ok()) {
-		post("%s(%s) - invalid source vasp",thisName(),op);
+		post("%s(%s) - invalid src vasp",thisName(),op);
 		return;
 	}
 
 	if(!ref.Ok()) {
-		post("%s(%s) - invalid target vasp",thisName(),op);
+		post("%s(%s) - invalid dst vasp",thisName(),op);
 		return;
 	}
 
 	I vecs = ref.Vectors();
 	if(vecs != arg.Vectors()) {
-		post("%s(%s) - unequal source/target vector count",thisName(),op);
+		post("%s(%s) - unequal src/dst vector count - using minimum",thisName(),op);
 
 		vecs = min(vecs,arg.Vectors());
 		// clear the rest?
@@ -270,14 +278,14 @@ V vasp_modify::fm_assign(const C *op,I argc,t_atom *argv,V (*dofun)(F *,const F 
 		vbuffer *bref = ref.Buffer(ci),*barg = arg.Buffer(ci);
 
 		if(!bref->Data())
-			post("%s(%s) - dst vector buffer (%s) is invalid",thisName(),op,bref->Name());
+			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
 		if(!barg->Data())
-			post("%s(%s) - src vector buffer (%s) is invalid",thisName(),op,barg->Name());
+			post("%s(%s) - src vector (%s) is invalid",thisName(),op,barg->Name());
 		else {
 			I frms = bref->Frames();
 			if(frms != barg->Frames()) {
 				if(!warned) { // warn only once (or for each vector?) 
-					post("%s(%s) - unequal source/target frame count",thisName(),op);
+					post("%s(%s) - src/dst vector length not equal - using minimum",thisName(),op);
 					warned = true;
 				}
 
@@ -286,6 +294,7 @@ V vasp_modify::fm_assign(const C *op,I argc,t_atom *argv,V (*dofun)(F *,const F 
 			}
 
 			dofun(bref->Data(),barg->Data(),frms);
+			bref->Dirty();
 		}
 
 		delete bref;
