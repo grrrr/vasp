@@ -22,13 +22,13 @@ BL VecOp::d_search(OpParam &p)
 	I i,ofl = -1,ofr = -1;
 	
 	if(p.srch.dir <= 0) {
-		BL y = cur >= val;
+		BL y = cur >= val,end = false;
 		i = off-1;
-		_D_WHILE(i >= 0) {
+		_D_WHILE(i >= 0 && !end) {
 			BL y2 = p.rsdt[i] >= val;
 			if(y != y2) {
-				if(p.srch.slope <= 0 && y2) break;
-				if(p.srch.slope >= 0 && !y2) break;
+				if(p.srch.slope <= 0 && y2) { end = true; break; }
+				if(p.srch.slope >= 0 && !y2) { end = true; break; }
 			}
 			y = y2;
 			--i;
@@ -38,13 +38,13 @@ BL VecOp::d_search(OpParam &p)
 	}
 
 	if(p.srch.dir >= 0) {
-		BL y = cur >= val;
+		BL y = cur >= val,end = false;
 		i = off+1; 
-		_D_WHILE(i < p.frames) {
+		_D_WHILE(i < p.frames && !end) {
 			BL y2 = p.rsdt[i] >= val;
 			if(y != y2) {
-				if(p.srch.slope <= 0 && !y2) break;
-				if(p.srch.slope >= 0 && y2) break;
+				if(p.srch.slope <= 0 && !y2) { end = true; break; }
+				if(p.srch.slope >= 0 && y2) { end = true; break; }
 			}
 			y = y2;
 			++i;
@@ -77,11 +77,12 @@ Vasp *VaspOp::m_search(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL st)
 	else if(arg.CanbeFloat() || (arg.IsList() && arg.GetList().Count() >= 1)) {
 		I fr = src.ChkFrames();
 		I o = src.Vector(0).Offset();
+		I sz = src.Buffer(0)->Frames();
 		p.srch.offs = o+(st?0:fr);
 
 		Vasp all(src);
 		all.Offset(0);
-		all.Frames(fr);
+		all.Frames(sz);  // all frames of buffer
 
 		RVecBlock *vecs = GetRVecs(p.opname,all,dst);
 		if(vecs) {
