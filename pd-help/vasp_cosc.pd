@@ -1,4 +1,4 @@
-#N canvas 43 34 883 486 10;
+#N canvas 47 54 883 486 10;
 #N canvas 0 0 452 302 Hz_to_period_length 0;
 #X floatatom 125 238 0 0 0;
 #X obj 125 142 t b f;
@@ -18,8 +18,6 @@
 #X connect 8 0 4 0;
 #X restore 78 302 pd Hz_to_period_length;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.cosc 0 10 1 14 -262144 -1
-0;
-#X obj 77 195 cnv 15 92 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufcosc1 88200 float 0;
@@ -51,14 +49,16 @@ in samples;
 #X coords 0 1 88199 -1 300 100 1;
 #X restore 501 228 graph;
 #X text 71 63 vasp complex sine wave generator;
-#X text 228 123 generate a complex sinewave;
-#X text 228 135 at 1 Hz into two buffers;
-#X obj 77 195 vasp.cosc 44100;
+#X text 241 123 generate a complex sinewave;
+#X text 241 135 at 1 Hz into two buffers;
+#X obj 77 194 vasp.cosc 44100;
 #X msg 77 127 vasp bufcosc1 bufcosc2;
 #X floatatom 162 168 7 0 0;
-#X text 214 167 set period length (samples);
-#X connect 7 0 6 0;
-#X connect 8 0 9 0;
-#X connect 14 0 7 0;
-#X connect 15 0 14 0;
-#X connect 16 0 14 1;
+#X text 239 168 set period length (samples);
+#X obj 79 424 VASP;
+#X text 121 424 - vasp overview;
+#X connect 6 0 5 0;
+#X connect 7 0 8 0;
+#X connect 13 0 6 0;
+#X connect 14 0 13 0;
+#X connect 15 0 13 1;

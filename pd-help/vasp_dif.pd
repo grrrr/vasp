@@ -1,7 +1,5 @@
-#N canvas 92 138 861 462 10;
+#N canvas 96 158 861 462 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.dif 0 10 1 14 -262144 -1
-0;
-#X obj 77 316 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
 #N canvas 40 55 247 122 clear_buffer 0;
 #X obj 54 79 vasp.update;
@@ -13,7 +11,7 @@
 #X obj 77 365 vasp.update;
 #X obj 77 243 vasp.update;
 #X obj 77 340 vasp.opt;
-#X obj 77 316 vasp.dif;
+#X obj 77 315 vasp.dif;
 #X text 70 61 vasp differential function;
 #X text 70 77 argument/right inlet: repetition count (default 1);
 #X obj 77 154 vasp.- 0.5;
@@ -38,13 +36,15 @@ yticks 0 0.25 2 \; \$1 ylabel 20.5 -1 -0.5 0 0.5 1;
 #X msg 77 293 vasp bufdif;
 #X text 170 293 find the gradient of the curve;
 #X text 187 101 generate triangular wave;
-#X connect 5 0 3 0;
-#X connect 6 0 5 0;
+#X obj 79 422 VASP;
+#X text 121 422 - vasp overview;
+#X connect 4 0 2 0;
+#X connect 5 0 4 0;
+#X connect 8 0 9 0;
 #X connect 9 0 10 0;
 #X connect 10 0 11 0;
-#X connect 11 0 12 0;
-#X connect 12 0 4 0;
-#X connect 15 0 2 0;
-#X connect 16 0 9 0;
-#X connect 17 0 16 0;
-#X connect 18 0 6 0;
+#X connect 11 0 3 0;
+#X connect 14 0 1 0;
+#X connect 15 0 8 0;
+#X connect 16 0 15 0;
+#X connect 17 0 5 0;

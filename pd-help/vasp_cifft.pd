@@ -1,4 +1,4 @@
-#N canvas 91 83 888 572 10;
+#N canvas 81 48 888 608 10;
 #N canvas 92 108 396 316 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 192 209 s \$0-sample-length;
@@ -27,8 +27,6 @@
 #X restore 781 472 pd inside;
 #X obj 75 32 cnv 15 15 15 empty empty vasp.c!fft 0 10 1 14 -262144
 -1 0;
-#X obj 61 388 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 74 90 filelist \$0;
 #X obj 61 411 vasp.update;
 #X obj 61 434 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
@@ -42,7 +40,7 @@
 #X text 768 242 imaginary;
 #X text 524 385 0 Hz;
 #X text 660 384 sr/2;
-#X text 160 471 <-- click to open;
+#X text 171 473 <-- click to open;
 #X text 789 386 44.1 kHz;
 #X obj 352 474 dac~;
 #N canvas 0 0 413 295 clear_buffers 0;
@@ -74,13 +72,19 @@ use 3 more times vasp.cfft or just once vasp.c!fft;
 #X msg 61 365 vasp bufrei bufimi;
 #X obj 525 112 wavedisplay-simple bufrei \$0;
 #X obj 527 263 wavedisplay-simple bufimi \$0;
-#X connect 4 0 5 0;
-#X connect 6 0 4 0;
+#X text 59 538 related objects:;
+#X obj 59 574 VASP;
+#X text 101 573 - vasp overview;
+#X obj 371 539 vasp.r!fft;
+#X obj 288 539 vasp.rfft;
+#X obj 202 539 vasp.cfft;
+#X connect 3 0 4 0;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
 #X connect 7 0 8 0;
-#X connect 8 0 9 0;
-#X connect 18 0 25 0;
-#X connect 24 0 17 0;
-#X connect 25 0 16 0;
-#X connect 25 0 16 1;
-#X connect 26 0 7 0;
-#X connect 31 0 6 0;
+#X connect 17 0 24 0;
+#X connect 23 0 16 0;
+#X connect 24 0 15 0;
+#X connect 24 0 15 1;
+#X connect 25 0 6 0;
+#X connect 30 0 5 0;

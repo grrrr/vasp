@@ -1,8 +1,6 @@
-#N canvas 43 34 765 370 10;
+#N canvas 51 74 765 370 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.!bevel 0 10 1 14 -262144
 -1 0;
-#X obj 77 171 cnv 15 68 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufbevel1 88200 float 0;
 #X coords 0 1 88199 -1 300 100 1;
@@ -23,11 +21,15 @@
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X restore 476 255 pd clear_buffer;
-#X obj 77 217 vasp.update;
+#X obj 77 199 vasp.update;
 #X msg 476 232 vasp bufbevel1;
 #X msg 77 127 vasp bufbevel1;
-#X obj 77 171 vasp.!bevel;
+#X obj 77 164 vasp.!bevel;
 #X text 71 63 generates a linear ramp from 1 to 0;
-#X connect 6 0 4 0;
-#X connect 7 0 8 0;
-#X connect 8 0 5 0;
+#X obj 74 337 VASP;
+#X text 110 338 - vasp overview;
+#X obj 189 297 vasp.window;
+#X text 73 297 related object:;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 7 0 4 0;

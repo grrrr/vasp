@@ -1,4 +1,4 @@
-#N canvas 24 31 890 574 10;
+#N canvas 28 51 890 603 10;
 #N canvas 92 108 411 413 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 84 238 s \$0-sample-length;
@@ -24,8 +24,6 @@
 #X restore 685 477 pd inside;
 #X obj 75 32 cnv 15 15 15 empty empty vasp.cpowi 0 10 1 14 -262144
 -1 0;
-#X obj 59 348 cnv 15 74 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 77 139 filelist \$0;
 #X obj 59 482 vasp.update;
 #X obj 59 502 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
@@ -66,17 +64,19 @@
 #X msg 59 422 vasp bufcpowi1 bufcpowi2;
 #X obj 59 462 vasp.opt;
 #X text 75 88 needs two vectors (or more complex pairs);
-#X connect 4 0 5 0;
-#X connect 6 0 28 0;
+#X obj 59 552 VASP;
+#X text 101 552 - vasp overview;
+#X connect 3 0 4 0;
+#X connect 5 0 27 0;
+#X connect 6 0 7 0;
 #X connect 7 0 8 0;
-#X connect 8 0 9 0;
-#X connect 12 0 21 0;
-#X connect 18 0 7 0;
+#X connect 11 0 20 0;
+#X connect 17 0 6 0;
+#X connect 20 0 9 0;
+#X connect 20 0 9 1;
 #X connect 21 0 10 0;
-#X connect 21 0 10 1;
-#X connect 22 0 11 0;
-#X connect 23 0 24 0;
-#X connect 25 0 26 0;
-#X connect 26 0 23 0;
-#X connect 27 0 6 0;
-#X connect 28 0 4 0;
+#X connect 22 0 23 0;
+#X connect 24 0 25 0;
+#X connect 25 0 22 0;
+#X connect 26 0 5 0;
+#X connect 27 0 3 0;

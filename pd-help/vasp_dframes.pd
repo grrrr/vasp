@@ -1,4 +1,4 @@
-#N canvas 114 118 899 506 10;
+#N canvas 97 138 899 506 10;
 #X obj 62 303 vasp.osc 22050;
 #X obj 58 31 cnv 15 15 15 empty empty vasp.frames+ 0 10 1 14 -262144
 -1 0;
@@ -18,11 +18,7 @@
 #X connect 2 0 1 0;
 #X connect 3 0 1 0;
 #X restore 714 408 pd init;
-#X obj 62 220 cnv 15 110 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 62 335 vasp.update;
-#X obj 62 397 cnv 15 44 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X text 119 397 abbreviation;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufdfram2 88200 float 0;
@@ -31,8 +27,6 @@
 #X text 58 83 argument/right inlet: value in samples;
 #X text 56 98 !!!all vectors of a vasp have the same framesize/length!!!
 ;
-#X obj 233 221 cnv 15 110 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 77 252 prepend set;
 #X obj 233 303 vasp.osc 22050;
 #X obj 233 335 vasp.update;
@@ -40,20 +34,22 @@
 #X floatatom 336 199 5 0 0;
 #X obj 62 220 vasp.frames+ 30000;
 #X obj 233 221 vasp.frames+ 22050;
-#X obj 62 397 vasp.f+;
+#X obj 63 396 vasp.f+;
 #X msg 62 153 vasp 20000 bufdfram1;
 #X msg 233 151 vasp 20000 bufdfram1 bufdfram2 44100;
 #X text 57 69 adds a value to the frames to a vasp;
 #X msg 77 274;
 #X msg 248 276;
-#X connect 0 0 5 0;
-#X connect 12 0 23 0;
-#X connect 13 0 14 0;
-#X connect 15 0 24 0;
-#X connect 16 0 18 1;
-#X connect 17 0 12 0;
-#X connect 17 0 0 0;
-#X connect 18 0 13 0;
+#X obj 63 452 VASP;
+#X text 105 452 - vasp overview;
+#X connect 0 0 4 0;
+#X connect 9 0 20 0;
+#X connect 10 0 11 0;
+#X connect 12 0 21 0;
+#X connect 13 0 15 1;
+#X connect 14 0 9 0;
+#X connect 14 0 0 0;
+#X connect 15 0 10 0;
+#X connect 15 0 12 0;
+#X connect 17 0 14 0;
 #X connect 18 0 15 0;
-#X connect 20 0 17 0;
-#X connect 21 0 18 0;

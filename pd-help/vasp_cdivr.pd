@@ -1,4 +1,4 @@
-#N canvas 227 188 566 292 10;
+#N canvas 231 208 570 384 10;
 #X text 52 141 c \, d ... right operand;
 #X text 52 126 a \, b ... left operand;
 #X text 52 111 e \, f ... target buffers;
@@ -9,7 +9,10 @@ of each pair;
 as pairs;
 #X obj 55 34 cnv 15 15 15 empty empty vasp.c!/ 0 10 1 14 -262144 -1
 0;
-#X obj 275 79 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X text 52 65 reverse complex division;
-#X obj 275 79 vasp.c!/;
+#X obj 283 79 vasp.c!/;
+#X obj 186 308 vasp.c/;
+#X obj 186 287 vasp.c*;
+#X obj 53 346 VASP;
+#X text 92 348 - vasp overview;
+#X text 51 285 related objects:;
