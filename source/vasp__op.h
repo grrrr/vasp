@@ -102,12 +102,21 @@ template<class T> V f_radd(T &rv,T &iv,T ra,T ia,T rb,T)
 } 
 
 template<class T> V f_gate(T &rv,T ra,T rb) { rv = fabs(ra) >= rb?ra:0; } 
+template<class T> V f_igate(T &rv,T ra,T rb) { rv = fabs(ra) <= rb?ra:0; } 
 
 template<class T> V f_rgate(T &rv,T &iv,T ra,T ia,T rb,T) 
 { 
 	register const T _abs = sqabs(ra,ia);
 
 	if(_abs >= rb*rb) rv = ra,iv = ia;
+	else rv = iv = 0;
+} 
+
+template<class T> V f_rigate(T &rv,T &iv,T ra,T ia,T rb,T) 
+{ 
+	register const T _abs = sqabs(ra,ia);
+
+	if(_abs <= rb*rb) rv = ra,iv = ia;
 	else rv = iv = 0;
 } 
 
@@ -185,7 +194,7 @@ template<class T> V f_cnorm(T &rv,T &iv,T ra,T ia)
 }
 
 template<class T> V f_polar(T &rv,T &iv,T ra,T ia) { rv = sqrt(sqabs(ra,ia)),iv = arg(ra,ia); }
-template<class T> V f_cart(T &rv,T &iv,T ra,T ia) { rv = ra*cos(ia),iv = ra*sin(ia); }
+template<class T> V f_rect(T &rv,T &iv,T ra,T ia) { rv = ra*cos(ia),iv = ra*sin(ia); }
 
 template<class T> inline V f_cswap(T &rv,T &iv,T ra,T ia) { rv = ia,iv = ra; }
 template<class T> inline V f_cconj(T &,T &iv,T,T ia) { iv = -ia; }

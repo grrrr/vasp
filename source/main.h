@@ -469,7 +469,7 @@ namespace VecOp {
 //	BL d_cswap(OpParam &p); 
 	BL d_cconj(OpParam &p); 
 	BL d_polar(OpParam &p); 
-	BL d_cart(OpParam &p); 
+	BL d_rect(OpParam &p); 
 //	BL d_roptq(OpParam &p); 
 //	BL d_roptf(OpParam &p); 
 	BL d_rminq(OpParam &p); 
@@ -477,7 +477,9 @@ namespace VecOp {
 	BL d_cnorm(OpParam &p); 
 
 	BL d_gate(OpParam &p); 
+	BL d_igate(OpParam &p); 
 	BL d_rgate(OpParam &p); 
+	BL d_rigate(OpParam &p); 
 
 	BL d_int(OpParam &p);
 	BL d_dif(OpParam &p); 
@@ -564,7 +566,9 @@ namespace VaspOp {
 	Vasp *m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex integer power (with each two channels)
 	Vasp *m_radd(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius offset
 	Vasp *m_gate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // gate
+	Vasp *m_igate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // inverse gate
 	Vasp *m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius gate
+	Vasp *m_rigate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // inverse radius gate
 //	Vasp *m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // scaling across max
 //	Vasp *m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius scaling across max
 
@@ -600,7 +604,7 @@ namespace VaspOp {
 	inline Vasp *m_sign(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_run(p,src,dst,VecOp::d_sign); }  // sign function 
 
 	inline Vasp *m_polar(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_polar); } // cartesian -> polar (each two)
-	inline Vasp *m_cart(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_cart); } // polar -> cartesian (each two)
+	inline Vasp *m_rect(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_rect); } // polar -> cartesian (each two)
 
 	Vasp *m_opt(OpParam &p,Vasp &src,Vasp *dst = NULL);  // optimize
 	Vasp *m_ropt(OpParam &p,Vasp &src,Vasp *dst = NULL);  // complex radius optimize

@@ -49,7 +49,9 @@ BL VecOp::d_rpow(OpParam &p) { return d__cbin(f_crpow<S>,p); }
 BL VecOp::d_radd(OpParam &p) { return d__cbin(f_radd<S>,p); }
 
 BL VecOp::d_gate(OpParam &p) { D__rbin(f_gate<S>,p); }
+BL VecOp::d_igate(OpParam &p) { return d__rbin(f_igate<S>,p); }
 BL VecOp::d_rgate(OpParam &p) { return d__cbin(f_rgate<S>,p); }
+BL VecOp::d_rigate(OpParam &p) { return d__cbin(f_rigate<S>,p); }
 //BL VecOp::d_optq(OpParam &p) { D__rop(f_optq<S>,p); }
 //BL VecOp::d_roptq(OpParam &p) { return d__cop(f_roptq<S>,p); }
 //BL VecOp::d_optf(OpParam &p) { return d__rop(f_optf<S>,p); }
@@ -79,7 +81,7 @@ BL VecOp::d_abs(OpParam &p) { D__run(f_rabs<S>,p); }
 BL VecOp::d_sign(OpParam &p) { D__run(f_rsign<S>,p); }
 
 BL VecOp::d_polar(OpParam &p) { return d__cun(f_polar<S>,p); }
-BL VecOp::d_cart(OpParam &p) { return d__cun(f_cart<S>,p); }
+BL VecOp::d_rect(OpParam &p) { return d__cun(f_rect<S>,p); }
 //BL VecOp::d_cswap(OpParam &p) { D__cun(f_cswap<S>,p); }
 BL VecOp::d_cconj(OpParam &p) { D__cun(f_cconj<S>,p); }
 

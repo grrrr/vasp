@@ -101,14 +101,14 @@ V lib_setup()
 	VASP__SETUP(abs) 
 	VASP__SETUP(sign) 
 	VASP__SETUP(polar) 
-	VASP__SETUP(cart) 
+	VASP__SETUP(rect) 
 
 //	VASP_SETUP(opt)
 //	VASP_SETUP(ropt)
 	VASP__SETUP(gate);
 	VASP__SETUP(rgate);
-//	VASP__SETUP(optf);
-//	VASP__SETUP(roptf);
+//	VASP__SETUP(igate);
+//	VASP__SETUP(rigate);
 
 	VASP_SETUP(qmin)
 	VASP_SETUP(qmax)
