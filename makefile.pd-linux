@@ -1,37 +1,24 @@
-# xsample - extended sample objects for Max/MSP and pd (pure data)
-# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+# VASP - vector assembling vector processor
+# Copyright (c)2002 Thomas Grill (xovo@gmx.net)
 #
 # Makefile for gcc @ linux
 #
 # usage:
 # to build run "make -f makefile.pd-linux"
 # to install (as root), do "make -f makefile.pd-linux install"
+# to install help, do "make -f makefile.pd-linux install-help"
 #
 
-## EDIT ZONE ##################################
-
-# flext path 
-FLEXTPATH=/usr/local/lib/pd/flext
-
-# pd path 
-#PDPATH=/usr/local/lib/pd/include
-
-# where to install  
-INSTDIR=/usr/local/lib/pd/extra
-
-###############################################
+include config-pd-linux.txt
 
 FLEXTLIB=$(FLEXTPATH)/flext_t.a
 
-# where to build (temporary)
-TARGDIR=../pd-linux
-
 # compiler stuff
-CXX=gcc-3.2
-INCLUDES=$(PDPATH)
+INCLUDES=$(PDPATH) 
 FLAGS=-DPD -DFLEXT_THREADS
+CFLAGS=-O6 -mcpu=pentium -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
 #CFLAGS=-O6 -mcpu=pentiumpro -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
-CFLAGS=-O6 -mcpu=pentium3 -msse -mfpmath=sse -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
+#CFLAGS=-O6 -mcpu=pentium3 -msse -mfpmath=sse -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
 
 LIBS=m
 
@@ -40,11 +27,13 @@ LIBS=m
 # ----------------------------------------------
 
 NAME=vasp
+SRCDIR=source
 
-include ../make-files.txt
+include make-files.txt
 
 MAKEFILE=makefile.pd-linux
 TARGET=$(TARGDIR)/$(NAME).pd_linux
+
 
 # default target
 all: $(TARGDIR) $(TARGET) 
@@ -55,13 +44,15 @@ $(SRCS): $(HDRS) $(MAKEFILE)
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(TARGDIR)/%.o : %.cpp 
+$(TARGDIR)/%.o : $(SRCDIR)/%.cpp 
+	echo $< .. $@
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(FLEXTPATH)) $< -o $@
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) $(FLEXTLIB) 
 	$(CXX) $(LDFLAGS) -shared $^ $(patsubst %,-l%,$(LIBS)) -o $@ 
 	strip --strip-unneeded $@
 	chmod 755 $@
+
 
 $(INSTDIR):
 	mkdir $(INSTDIR)
@@ -72,18 +63,18 @@ install:: $(TARGET)
 	cp $^ $(INSTDIR)
 	chown root.root $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 
+
+$(HELPDIR)/vasp:
+	mkdir $(HELPDIR)/vasp
+
+install-help:: $(HELPDIR)/vasp
+
+install-help:: ./pd-help
+	cp $^/*.* $(HELPDIR)/vasp
+#	chown root.root $(patsubst %,$(HELPDIR)/%,$(notdir $^))
+
+
 .PHONY: clean
 clean:
 	rm -f $(TARGDIR)/*.o $(TARGET)
 	
-
-
-
-
-
-
-
-
-
-
-
