@@ -7,64 +7,39 @@ class vasp_v:
 
 public:
 
-	vasp_v(I argc,t_atom *argv);
-	~vasp_v();
+	vasp_v(I argc,t_atom *argv)
+	{
+		m_set(argc,argv);
 
-	virtual I m_set(I argc,t_atom *argv); // non-triggering set
+		AddInAnything();
+		AddOutAnything();
+		SetupInOut();
+	}
 
 	virtual Vasp *x_work() { return new Vasp(ref); }
-
-/*
-	virtual V m_length(F len);  // length in units
-	virtual V m_channel(FI chn);
-	virtual V m_offset(F offs);  // length in units
-	virtual V m_part(F offs,F len);
-*/
-protected:
-
-//	virtual I Set(I len,Vasp::Ref &r);
-
-private:
-
-/*
-	FLEXT_CALLBACK_1(m_offset,F)
-	FLEXT_CALLBACK_1(m_length,F)
-	FLEXT_CALLBACK_2(m_part,F,F)
-*/
 };
 
 FLEXT_LIB_G("vasp",vasp_v)
 
-vasp_v::vasp_v(I argc,t_atom *argv)
+
+
+
+class vasp_update:
+	public vasp_base
 {
-	m_set(argc,argv);
+	FLEXT_HEADER(vasp_update,vasp_base)
 
-	AddInAnything();
-	AddOutAnything();
-	SetupInOut();
+public:
 
-/*
-	FLEXT_ADDMETHOD_1(0,"offset",m_offset,F);
-	FLEXT_ADDMETHOD_1(0,"length",m_length,F);
-	FLEXT_ADDMETHOD_2(0,"part",m_part,F,F);
-*/
-}
-
-vasp_v::~vasp_v()
-{
-	//if(buf) delete buf;
-}
-
-
-I vasp_v::m_set(I argc,t_atom *argv)
-{
-	ref(argc,argv);
-
-	if(argc && !ref.Ok()) {
-		post("%s - invalid vasp detected and ignored",thisName());
+	vasp_update()
+	{
+		AddInAnything();
+		AddOutAnything();
+		SetupInOut();
 	}
 
-	return 0; //Set(v.Length(),v.Sym(),v.Channel(),v.Offset());
-}
+	virtual Vasp *x_work() { ref.Refresh(); return new Vasp(ref); }
+};
 
+FLEXT_LIB("vasp.update",vasp_update)
 

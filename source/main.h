@@ -172,6 +172,7 @@ inline F arg(const CX &c) { return arg(c.real,c.imag); }
 inline F abs(F re,F im) { return re*re+im*im; }
 inline F abs(const CX &c) { return abs(c.real,c.imag); }
 inline F sgn(F x) { return x < 0.?-1.F:1.F; }
+inline V swap(F &a,F &b) { F c = a; a = b; b = c; }
 
 
 class Vasp 
@@ -234,6 +235,7 @@ public:
 	// make a graphical update of all buffers in vasp
 	V Refresh();
 	
+
 	// copy functions
 	Vasp *m_copy(const Argument &arg); // copy to (one vec or real)
 	Vasp *m_ccopy(const Argument &arg); // complex copy (pairs of vecs or complex)
@@ -264,9 +266,12 @@ public:
 //	Vasp *m_cmax(const Argument &arg); // complex (abs) max (pairs of vecs or complex)
 	Vasp *m_vmax(const Argument &arg); // max (multi-channel)
 
+	Vasp *m_minmax(); // min/max 
+
 	// "unary" functions
 	Vasp *m_int(); // integrate
 	Vasp *m_dif(); // differentiate
+	Vasp *m_peaks(const Argument &arg); // find peaks
 
 	Vasp *m_pow(const Argument &arg); // power
 	Vasp *m_root(const Argument &arg); // real root (from abs value)
@@ -440,6 +445,10 @@ private:
 };
 
 
+#define VASP_SETUP(op) FLEXT_SETUP(vasp_##op);  
+
+
+
 // base class for unary operations
 
 class vasp_unop:
@@ -485,7 +494,41 @@ private:
 	FLEXT_CALLBACK_G(a_vector)
 };
 
-#define VASP_SETUP(op) FLEXT_SETUP(vasp_##op);  
+
+// base class for non-parsed (list) arguments
+
+class vasp_anyop:
+	public vasp_base
+{
+	FLEXT_HEADER(vasp_anyop,vasp_base)
+
+protected:
+	vasp_anyop(I argc,t_atom *argv);
+
+	// assignment functions
+	virtual V a_list(I argc,t_atom *argv); 
+/*
+	virtual V a_vasp(I argc,t_atom *argv);
+	virtual V a_float(F f); 
+	virtual V a_complex(I argc,t_atom *argv); 
+	virtual V a_vector(I argc,t_atom *argv); 
+*/
+	virtual Vasp *x_work();
+	virtual Vasp *tx_work(const Argument &arg);
+
+	Argument arg;
+
+private:
+	FLEXT_CALLBACK_G(a_list)
+/*
+	FLEXT_CALLBACK_G(a_vasp)
+	FLEXT_CALLBACK_1(a_float,F)
+	FLEXT_CALLBACK_G(a_complex)
+	FLEXT_CALLBACK_G(a_vector)
+*/
+};
+
+
 
 #define VASP_UNARY(name,op)														\
 class vasp_u_##op:																\
@@ -515,5 +558,21 @@ protected:																		\
 FLEXT_LIB_G(name,vasp_b_##op)
 
 #define VASP_BINARY_SETUP(op) FLEXT_SETUP(vasp_b_##op);  
+
+
+#define VASP_ANYOP(name,op)													\
+class vasp_l_ ## op:															\
+	public vasp_anyop															\
+{																				\
+	FLEXT_HEADER(vasp_l_##op,vasp_anyop)										\
+public:																			\
+	vasp_l_##op(I argc,t_atom *argv): vasp_anyop(argc,argv) {}					\
+protected:																		\
+	virtual Vasp *tx_work(const Argument &arg) { return ref.m_##op(arg); }		\
+};																				\
+FLEXT_LIB_G(name,vasp_l_##op)
+
+#define VASP_ANYOP_SETUP(op) FLEXT_SETUP(vasp_l_##op);  
+
 
 #endif

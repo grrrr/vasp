@@ -140,13 +140,13 @@ static BL d_mbevelup(I cnt,F *dt,I str,F)
 
 static BL d_beveldn(I cnt,F *dt,I str,F) 
 { 
-	for(I i = cnt-1; i >= 0; -i,dt += str) *dt = (i+.5)/cnt;
+	for(I i = cnt-1; i >= 0; --i,dt += str) *dt = (i+.5)/cnt;
 	return true;
 }
 
 static BL d_mbeveldn(I cnt,F *dt,I str,F) 
 { 
-	for(I i = cnt-1; i >= 0; -i,dt += str) *dt *= (i+.5)/cnt;
+	for(I i = cnt-1; i >= 0; --i,dt += str) *dt *= (i+.5)/cnt;
 	return true;
 }
 

@@ -19,6 +19,7 @@ V lib_setup()
 	// call the objects' setup routines
 
 	VASP_SETUP(v);
+	VASP_SETUP(update);
 
 	VASP_BINARY_SETUP(copy);
 	VASP_BINARY_SETUP(ccopy);
@@ -42,12 +43,15 @@ V lib_setup()
 
 	VASP_BINARY_SETUP(min)
 	VASP_BINARY_SETUP(vmin)
-
 	VASP_BINARY_SETUP(max)
 	VASP_BINARY_SETUP(vmax)
+	VASP_UNARY_SETUP(minmax)
+
 
 	VASP_UNARY_SETUP(int) 
 	VASP_UNARY_SETUP(dif) 
+	VASP_BINARY_SETUP(peaks) 
+
 
 	VASP_UNARY_SETUP(sqr) 
 	VASP_UNARY_SETUP(ssqr) 

@@ -10,6 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 
+
 VASP_BINARY("vasp.=",copy)
 VASP_BINARY("vasp.c=",ccopy)
 VASP_BINARY("vasp.v=",vcopy)
@@ -32,13 +33,15 @@ VASP_BINARY("vasp.v/",vdiv)
 
 VASP_BINARY("vasp.min",min)
 VASP_BINARY("vasp.vmin",vmin)
-
 VASP_BINARY("vasp.max",max)
 VASP_BINARY("vasp.vmax",vmax)
+VASP_UNARY("vasp.minmax",minmax) 
 
 
 VASP_UNARY("vasp.int",int) 
 VASP_UNARY("vasp.dif",dif) 
+VASP_BINARY("vasp.peaks",peaks) 
+
 
 VASP_UNARY("vasp.sqr",sqr) 
 VASP_UNARY("vasp.ssqr",ssqr) 
