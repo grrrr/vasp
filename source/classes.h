@@ -122,8 +122,10 @@ protected:
 	FLEXT_CALLBACK(m_stop)
 
 	FLEXT_CALLVAR_V(m_getupd,m_setupd)
+#ifdef FLEXT_THREADS
 	FLEXT_ATTRVAR_B(detach)
 	FLEXT_ATTRVAR_I(prior)
+#endif
 
 private:
 	virtual V m_bang() = 0;						// do! and output current Vasp

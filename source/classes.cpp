@@ -102,8 +102,11 @@ vasp_op::vasp_op(BL op)
 	FLEXT_ADDMETHOD_(0,"stop",m_stop);
 
 	FLEXT_ADDATTR_VAR("update",m_getupd,m_setupd);
+	
+#ifdef FLEXT_THREADS
 	FLEXT_ADDATTR_VAR1("detach",detach);
 	FLEXT_ADDATTR_VAR1("prior",prior);
+#endif
 }
 
 V vasp_op::m_dobang()
