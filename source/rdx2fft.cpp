@@ -80,8 +80,9 @@ bool fft_bidir_complex_radix2(int size,float *real,float *imag,int direct)
     mmax=istep;
   }
 
-  /* for forward transform divide by size */
 
+/*
+  // for forward transform divide by size 
   if(direct<0)
   {
     for(i=0;i<size;i++)
@@ -90,7 +91,15 @@ bool fft_bidir_complex_radix2(int size,float *real,float *imag,int direct)
       imag[i]/=(float)size;
     }
   }
-  return true;
+*/
+
+	const float nf = (float)(1./sqrt(size));
+	for(i=0;i<size;i++)
+	{
+	  real[i] *= nf;
+	  imag[i] *= nf;
+	}
+	return true;
 }
 
 /* calculate forward fourier transform of complex data radix 2 */
@@ -125,18 +134,28 @@ bool fft_fwd_real_radix2(int size,float *real)
 
   for(i=0;i<size;i++) imag[i]=(float)0;
   fft_fwd_complex_radix2(size,real,imag);
-  for(i = 0; i < size/2; ++i)
-	  real[size/2+i]=imag[i];
+  const int n2 = size/2;
+  const float nf = (float)sqrt(size);
+  for(i = 1; i < n2; ++i) {
+//	  real[i] *= nf;
+	  real[n2+i] = imag[i]; //*nf;
+  }
   delete[] imag;
   return true;
 }
 
+/*
 bool fft_fwd_real_radix2(int size,float *real,float *imag)
 {
   register int i;
-  for(i=0;i<size;i++) imag[i]=(float)0;
-  return fft_fwd_complex_radix2(size,real,imag);
+  const float nf = sqrt(n);
+  for(i=0;i<size;i++) {
+	  real[i] *= nf;
+	  imag[i] = 0;
+  }
+  return ret = fft_fwd_complex_radix2(size,real,imag);
 }
+*/
 
 /* calculate inverse fourier transform of real data radix 2 */
 
@@ -154,8 +173,13 @@ bool fft_inv_real_radix2(int size,float *real)
 	if(!imag) return false;
 
   register int i;
-  for(i = 0; i < size/2; ++i)
-	  imag[i]=real[size/2+i];
+  const int n2 = size/2;
+  const float nf = (float)(1./sqrt(size));
+  for(i = 0; i < n2; ++i) {
+//	  real[i] *= nf;
+	  imag[i] = real[n2+i]; //*nf;
+  }
+
   int j,spectrumsize;
   spectrumsize=fft_freq_domain_size(size);
   for(i=2;i<=spectrumsize;i++)
@@ -172,20 +196,20 @@ bool fft_inv_real_radix2(int size,float *real)
 }
 
 /* calculate hilbert transform of real data radix 2 */
-
+/*
 void fft_hilbert_real_radix2(int size,float *real,float *imag)
 {
   int i,spectrumsize;
 
-  /* calculate forward fourier transform of real data */
+  // calculate forward fourier transform of real data 
 
   fft_fwd_real_radix2(size,real,imag);
 
-  /* determine spectrum size */
+  // determine spectrum size 
 
   spectrumsize=fft_freq_domain_size(size);
 
-  /* zero negative frequency half of spectrum */
+  // zero negative frequency half of spectrum 
 
   for(i=spectrumsize;i<size;i++)
   {
@@ -193,7 +217,7 @@ void fft_hilbert_real_radix2(int size,float *real,float *imag)
     imag[i]=(float)0;
   }
 
-  /* double positive frequency half of spectrum */
+  // double positive frequency half of spectrum 
 
   for(i=1;i<spectrumsize;i++)
   {
@@ -201,11 +225,11 @@ void fft_hilbert_real_radix2(int size,float *real,float *imag)
     imag[i]*=(float)2;
   }
 
-  /* calculate inverse fourier transform of complex data */
+  // calculate inverse fourier transform of complex data 
 
   fft_inv_complex_radix2(size,real,imag);
 }
-
+*/
 
 
 

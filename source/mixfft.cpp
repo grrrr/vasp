@@ -231,7 +231,7 @@ static bool transTableSetup(int sofar[], int actual[], int remain[],
   normal order.
  ****************************************************************************/
 
-#if 0
+#if 1
 static void permute(int nPoint, int nFact,
              int fact[], int remain[],
              REAL xRe[], REAL xIm[],
