@@ -11,7 +11,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "util.h"
 
-namespace flext {
 
 /*! \class vasp_list
 	\remark \b vasp.list
@@ -120,4 +119,3 @@ public:
 
 FLEXT_LIB("vasp, vasp.nonzero vasp.??",vasp_nonzero)
 
-}

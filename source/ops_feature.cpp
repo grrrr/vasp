@@ -135,8 +135,6 @@ Vasp *VaspOp::m_rpeaks(OpParam &p,Vasp &src,Vasp *dst,BL inv)
 }
 
 
-namespace flext {
-
 class vasp_peaks:
 	public vasp_anyop
 {																				
@@ -199,4 +197,3 @@ public:
 };																				
 FLEXT_LIB_V("vasp, vasp.rvalleys",vasp_rvalleys)
 
-}

@@ -18,7 +18,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "buflib.h"
 #include "oploop.h"
 
-namespace flext {
 
 /*! \class vasp_imm
 	\remark \b vasp.imm
@@ -99,5 +98,4 @@ private:
 
 FLEXT_LIB_V("vasp, vasp.imm vasp.!",vasp_imm)
 
-}
 

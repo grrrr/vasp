@@ -11,18 +11,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 //#include <stdarg.h>
 
-namespace flext {
 
 ///////////////////////////////////////////////////////////////////////////
 // vasp_base class
 ///////////////////////////////////////////////////////////////////////////
 
-const t_symbol *flext::sym_radio;
-const t_symbol *flext::sym_vasp;
-const t_symbol *flext::sym_env;
-const t_symbol *flext::sym_double;
-const t_symbol *flext::sym_complex;
-const t_symbol *flext::sym_vector;
+const t_symbol *vasp_base::sym_radio;
+const t_symbol *vasp_base::sym_vasp;
+const t_symbol *vasp_base::sym_env;
+const t_symbol *vasp_base::sym_double;
+const t_symbol *vasp_base::sym_complex;
+const t_symbol *vasp_base::sym_vector;
 
 V vasp_base::setup(t_class *c)
 {
@@ -407,4 +406,3 @@ Vasp *vasp_anyop::tx_work(const Argument &arg)
 	return NULL;
 }
 
-} // namespace flext

@@ -10,7 +10,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "classes.h"
 
-namespace flext {
 
 V lib_setup()
 {
@@ -196,8 +195,6 @@ V lib_setup()
 }
 
 FLEXT_LIB_SETUP(vasp,lib_setup)
-
-}
 
 ///////////////////////////////////////////////////////////////////////////
 

@@ -16,7 +16,7 @@ Env::Env(I argc,const t_atom *argv)
 {
 	I ix = 0;
 	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
-	if(v && v == flext::sym_env) ix++; // if it is "env" ignore it
+	if(v && v == vasp_base::sym_env) ix++; // if it is "env" ignore it
 
 	cnt = (argc-ix)/2;
 	pos = new R[cnt];
@@ -55,7 +55,7 @@ BL Env::ChkArgs(I argc,const t_atom *argv)
 
 	// vasp keyword
 	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
-	if(v && v == flext::sym_env) ix++; // if it is "env" ignore it
+	if(v && v == vasp_base::sym_env) ix++; // if it is "env" ignore it
 
 	while(argc > ix) {
 		// check for position

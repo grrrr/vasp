@@ -59,8 +59,6 @@ BL VecOp::d_rmaxq(OpParam &p) { d__cop(f_rmaxq<S>,p); }
 // --------------------------------------------------------------
 
 
-namespace flext {
-
 /*! \class vasp_qmin
 	\remark \b vasp.min?
 	\brief Get minimum sample value
@@ -275,5 +273,4 @@ public:
 
 FLEXT_LIB("vasp.rmax?",vasp_qrmax)
 
-}
 

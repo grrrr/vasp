@@ -12,8 +12,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "util.h"
 
 
-namespace flext {
-
 /*! \class vasp_sync
 	\remark \b vasp.sync
 	\brief Waits for all inlets to be hit (by vasps/anything) to trigger output.
@@ -120,7 +118,5 @@ private:
 };
 
 FLEXT_LIB_V("vasp, vasp.sync",vasp_sync)
-
-}
 
 

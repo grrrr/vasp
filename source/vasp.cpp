@@ -69,7 +69,7 @@ BL Vasp::ChkArgs(I argc,const t_atom *argv)
 
 	// vasp keyword
 	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
-	if(v && v == flext::sym_vasp) ix++; // if it is "vasp" ignore it
+	if(v && v == vasp_base::sym_vasp) ix++; // if it is "vasp" ignore it
 
 	// length argument
 	if(argc > ix && flext::CanbeInt(argv[ix])) ix++;
@@ -169,7 +169,7 @@ Vasp &Vasp::operator ()(I argc,const t_atom *argv)
 	}
 
 	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
-	if(v && v == flext::sym_vasp) ix++; // if it is "vasp" ignore it
+	if(v && v == vasp_base::sym_vasp) ix++; // if it is "vasp" ignore it
 
 	if(argc > ix && flext::CanbeInt(argv[ix])) {
 		frames = flext::GetAInt(argv[ix]);
@@ -240,7 +240,7 @@ flext::AtomList *Vasp::MakeList(BL withvasp)
 	flext::AtomList *ret = new flext::AtomList(needed);
 
 	if(withvasp) 
-		flext::SetSymbol((*ret)[0],flext::sym_vasp);  // VASP
+		flext::SetSymbol((*ret)[0],vasp_base::sym_vasp);  // VASP
 
 	flext::SetInt((*ret)[voffs],frames);  // frames
 

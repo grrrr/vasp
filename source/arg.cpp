@@ -16,7 +16,7 @@ Argument &Argument::Parse(I argc,t_atom *argv)
 	if(argc == 2 && flext::CanbeFloat(argv[0]) && flext::CanbeFloat(argv[1]))
 		SetCX(flext::GetAFloat(argv[1]),flext::GetAFloat(argv[2]));
 	else // double?
-	if(argc >= 2 && flext::GetASymbol(argv[0]) == flext::sym_double &&
+	if(argc >= 2 && flext::GetASymbol(argv[0]) == vasp_base::sym_double &&
 		flext::CanbeFloat(argv[1]) && (argc == 2 || flext::CanbeFloat(argv[2]))
 		)
 		SetR((D)flext::GetAFloat(argv[1])+(D)flext::GetAFloat(argv[2]));

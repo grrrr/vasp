@@ -91,8 +91,6 @@ BL VecOp::d_shift(OpParam &p)
 }
 
 
-namespace flext {
-
 class vasp_shift:
 	public vasp_anyop
 {																				
@@ -149,7 +147,6 @@ public:
 };																				
 FLEXT_LIB_V("vasp.xshift",vasp_xshift)
 
-}
 
 inline int rotation(int ij, int n,OpParam &p) { return (ij+n-p.sh.ish)%n; }
 

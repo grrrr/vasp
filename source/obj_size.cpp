@@ -12,8 +12,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "util.h"
 
 
-namespace flext {
-
 /*! \class vasp_size
 	\remark \b vasp.size
 	\brief Resize buffer.
@@ -248,4 +246,3 @@ public:
 
 FLEXT_LIB("vasp, vasp.size? vasp.s?",vasp_qsize)
 
-}

@@ -57,7 +57,6 @@ Vasp *VaspOp::m_ccopy(OpParam &p,Vasp &src,Vasp &arg)
 	return s;
 }
 
-namespace flext {
 
 class vasp_copy:
 	public vasp_anyop
@@ -106,5 +105,4 @@ public:
 };																				
 FLEXT_LIB_V("vasp.ccopy vasp.c->",vasp_ccopy)
 
-}
 

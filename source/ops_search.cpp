@@ -107,7 +107,6 @@ Vasp *VaspOp::m_search(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL st)
 	return ret;
 }
 
-namespace flext {
 
 class vasp_search:
 	public vasp_anyop
@@ -169,5 +168,4 @@ public:
 };																				
 FLEXT_LIB_V("vasp, vasp.frames= vasp.f=",vasp_sframes)
 
-}
 

@@ -197,8 +197,6 @@ Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm)
 
 
 
-namespace flext {
-
 class vasp_tilt:
 	public vasp_anyop
 {																				
@@ -265,5 +263,4 @@ public:
 };																				
 FLEXT_LIB_V("vasp, vasp.xtilt",vasp_xtilt)
 
-}
 
