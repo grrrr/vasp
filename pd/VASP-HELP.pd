@@ -1,444 +1,6 @@
-#N canvas 211 19 624 648 10;
-#N canvas 49 0 358 427 objects 0;
-#X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
--1 0;
-#N canvas 306 143 558 381 vasp.displace 0;
-#X text 158 163 rotate buffer content symmetrically;
-#X obj 80 164 vasp.xrot;
-#X obj 80 232 vasp.xmirr;
-#X obj 80 197 vasp.mirr;
-#X obj 80 132 vasp.rot;
-#X obj 80 97 vasp.xshift;
-#X obj 80 62 vasp.shift;
-#X text 158 231 mirrors a vasp symmetrically;
-#X text 158 196 mirrors a vasp;
-#X text 158 61 shifts the buffer content;
-#X text 158 131 rotate buffer content;
-#X obj 35 22 cnv 15 15 15 empty empty vasp_displace 0 10 1 14 -262144
--1 0;
-#X text 157 96 shifts the buffer content symmetrically;
-#X obj 80 275 vasp.tilt;
-#X obj 80 316 vasp.xtilt;
-#X text 160 274 resamples around a center position;
-#X text 161 310 buffer is divided in two symmetrical halves and each
-one is resampled around a center position;
-#X restore 72 213 pd vasp.displace;
-#N canvas 254 4 713 706 define_vasps 0;
-#X obj 63 627 vasp.part;
-#X obj 63 596 vasp.gather;
-#X obj 63 565 vasp.spit;
-#X obj 63 471 vasp.frames?;
-#X obj 63 440 vasp.frames+;
-#X obj 63 409 vasp.frames;
-#X obj 63 191 vasp.update;
-#X obj 63 97 vasp.??;
-#X obj 63 66 vasp.?;
-#X text 161 96 output all non zero samples of a vasp as list;
-#X text 161 595 gather several vasps into one;
-#X text 161 502 split a vasp into its vectors;
-#X text 161 564 spit out vectors of a vasp (one vector after the other)
-;
-#X text 161 533 join several vasps into one;
-#X text 161 471 get a vasps frame count;
-#X text 161 439 raise/lower a vasps frame count;
-#X text 161 408 set a vasps frame count;
-#X text 161 377 get a single vectored vasp«s offset(s) into the buffer
-;
-#X text 161 346 shift a vasp«s offset(s) into the vector buffers;
-#X text 161 315 set a vasp«s offset(s) into the vector buffers;
-#X text 161 283 get the number vectors of a vasp;
-#X text 161 252 get a vector of a vasp;
-#X text 161 221 output a vasp multiply;
-#X text 161 65 output the samples of a vasp as list;
-#X text 161 127 check vasp dimensions;
-#X text 161 159 sync 2 or more vasps;
-#X text 161 190 update the graphics of a patcher (e.g. waveform);
-#X text 161 627 output vasps with different lengths and offsets;
-#X obj 35 22 cnv 15 15 15 empty empty define_vasps 0 10 1 14 -262144
--1 0;
-#X obj 63 315 vasp.offset;
-#X obj 63 347 vasp.offset+;
-#X obj 63 378 vasp.offset?;
-#X obj 63 503 vasp.split 2;
-#X obj 63 534 vasp.join 2;
-#X obj 63 222 vasp.multi;
-#X obj 63 159 vasp.sync;
-#X obj 63 128 vasp.check;
-#X text 205 24 (get help on right click/Help just as usual);
-#X obj 530 440 vasp.channel;
-#X obj 530 463 vasp.channel?;
-#X obj 63 253 vasp.vector;
-#X obj 63 285 vasp.vectors?;
-#X obj 535 200 vasp.frames=;
-#X obj 535 222 vasp.frames*;
-#X obj 535 243 vasp.frames/;
-#X obj 552 304 vasp.size;
-#X obj 553 325 vasp.size+;
-#X obj 553 346 vasp.size*;
-#X obj 554 367 vasp.size/;
-#X obj 554 389 vasp.size?;
-#X obj 519 511 vasp.offset=;
-#X obj 523 559 vasp.imm;
-#X obj 526 599 vasp.copy;
-#X obj 526 623 vasp.ccopy;
-#X restore 72 78 pd define_vasps;
-#N canvas 188 241 787 416 vasp.utilities 0;
-#X text 156 275 symmetrical resampling;
-#X obj 77 245 vasp.tilt;
-#X text 155 246 resampling;
-#X obj 415 97 vasp.cnorm;
-#X obj 77 198 vasp.pwrap;
-#X obj 77 164 vasp.peaks;
-#X obj 77 131 vasp.valleys;
-#X obj 77 97 vasp.opt;
-#X obj 77 64 vasp.gate;
-#X text 155 165 local peaks of a vasp;
-#X text 155 131 local minima of a vasp;
-#X text 155 97 optimize buffer content;
-#X text 155 64 gates vasp under a value (amplitude);
-#X text 491 96 sets complex radius of all samples to unity;
-#X obj 416 201 vasp.rvalleys;
-#X obj 416 234 vasp.rpeaks;
-#X obj 416 167 vasp.ropt;
-#X text 507 201 radius valleys;
-#X text 507 235 radius peaks;
-#X text 507 167 radius optimize;
-#X obj 416 134 vasp.rgate;
-#X text 507 134 radius gate;
-#X text 155 198 wraps value from 0-2 to -1 to 1;
-#X obj 59 28 cnv 15 15 15 empty empty vasp_utilities 0 10 1 14 -262144
--1 0;
-#X obj 77 276 vasp.xtilt;
-#X obj 78 352 vasp.fix;
-#X obj 255 353 vasp.radio;
-#X obj 382 322 vasp;
-#X restore 72 321 pd vasp.utilities;
-#N canvas 195 285 651 301 vasp.minmax_etc. 0;
-#X obj 422 250 vasp.rmin;
-#X obj 422 218 vasp.rmax;
-#X text 511 250 radius minimum;
-#X text 511 219 radius maximum;
-#X obj 76 250 vasp.min;
-#X obj 76 218 vasp.max;
-#X obj 76 187 vasp.max?;
-#X obj 76 156 vasp.min?;
-#X obj 76 125 vasp.amax?;
-#X obj 76 94 vasp.amin?;
-#X obj 422 187 vasp.rmax?;
-#X obj 422 156 vasp.rmin?;
-#X obj 76 62 vasp.minmax;
-#X text 167 250 minimum of vasp and argument;
-#X text 167 219 maximum of vasp and argument;
-#X text 167 156 output min. value of a vasp;
-#X text 167 187 output max. value of a vasp;
-#X text 167 125 output max. absolute value of a vasp;
-#X text 167 94 output min. absolute value of a vasp;
-#X text 511 187 radius max. value;
-#X text 511 156 radius min. value;
-#X text 167 65 splits a vasp into minimum and maximum values;
-#X obj 35 22 cnv 15 15 15 empty empty vasp_minmax 0 10 1 14 -262144
--1 0;
-#X restore 72 267 pd vasp.minmax_etc.;
-#N canvas 198 295 774 325 vasp.transcendent 0;
-#X text 350 165 complex sample^2;
-#X text 350 135 complex integer power function;
-#X text 145 195 square root;
-#X text 145 226 signed sample^2;
-#X obj 276 134 vasp.cpowi;
-#X obj 276 164 vasp.csqr;
-#X obj 73 257 vasp.ssqrt;
-#X obj 73 226 vasp.ssqr;
-#X obj 73 194 vasp.sqrt;
-#X obj 73 164 vasp.sqr;
-#X obj 73 134 vasp.pow;
-#X text 145 257 signed square root;
-#X text 145 135 samps^x;
-#X text 145 165 sample^2;
-#X obj 538 134 vasp.rpow;
-#X text 605 135 radius power function;
-#X obj 73 102 vasp.log;
-#X obj 73 66 vasp.exp;
-#X text 145 102 logarithm;
-#X text 145 66 exponential;
-#X obj 35 22 cnv 15 15 15 empty empty vasp_transcendent 0 10 1 14 -262144
--1 0;
-#X restore 72 240 pd vasp.transcendent;
-#N canvas 407 0 595 631 vasp.arithmetic 0;
-#X obj 301 137 vasp.c!-;
-#X text 150 135 reverse subtraction;
-#X obj 74 134 vasp.!-;
-#X text 151 527 integral function;
-#X text 151 555 differential function;
-#X obj 76 554 vasp.dif;
-#X obj 76 527 vasp.int;
-#X obj 403 84 vasp.r+;
-#X text 462 84 radius offset;
-#X obj 302 218 vasp.c!/;
-#X text 151 217 reverse division;
-#X obj 76 217 vasp.!/;
-#X obj 302 246 vasp.c=;
-#X obj 302 192 vasp.c/;
-#X obj 302 163 vasp.c*;
-#X obj 302 110 vasp.c-;
-#X obj 302 84 vasp.c+;
-#X obj 76 499 vasp.sign;
-#X obj 76 473 vasp.%;
-#X obj 76 448 vasp.abs;
-#X obj 76 420 vasp.!=;
-#X obj 76 392 vasp.==;
-#X obj 76 365 vasp.>=;
-#X obj 76 336 vasp.<=;
-#X obj 76 307 vasp.>;
-#X obj 76 278 vasp.<;
-#X obj 76 248 vasp.=;
-#X obj 76 191 vasp./;
-#X obj 76 162 vasp.*;
-#X obj 74 110 vasp.-;
-#X obj 74 84 vasp.+;
-#X text 151 365 vasp >= x;
-#X text 151 336 vasp >= x;
-#X text 151 307 vasp > x;
-#X text 151 279 vasp < x;
-#X text 151 393 equal to;
-#X text 151 162 multiplication;
-#X text 151 191 division;
-#X text 150 111 subtraction;
-#X text 151 420 not equal to;
-#X text 151 473 modulo (remainder of a division);
-#X text 151 448 absolute value of a vasp;
-#X text 150 84 addition;
-#X text 301 59 complex ....;
-#X text 151 249 vasp = x;
-#X text 151 499 values < 0 become -1 | values > 0 become 1;
-#X text 403 59 radius ....;
-#X obj 35 22 cnv 15 15 15 empty empty vasp_arithmetic 0 10 1 14 -262144
--1 0;
-#X obj 302 274 vasp.cconj;
-#X restore 72 132 pd vasp.arithmetic;
-#N canvas 408 1 508 293 vasp.fftobjects 0;
-#X obj 281 103 vasp.r!fft;
-#X obj 281 71 vasp.rfft;
-#X obj 77 160 vasp.polar;
-#X obj 77 103 vasp.c!fft;
-#X obj 77 71 vasp.cfft;
-#X text 145 160 changes between cartesian and polar representation
-;
-#X text 358 103 inverse real fft;
-#X text 145 71 complex fft;
-#X text 145 103 inverse complex fft;
-#X text 358 71 real fft;
-#X text 145 213 changes between polar and cartesian representation
-;
-#X obj 77 212 vasp.rect;
-#X obj 35 22 cnv 15 15 15 empty empty vasp_fftobjects 0 10 1 14 -262144
--1 0;
-#X restore 72 105 pd vasp.fftobjects;
-#N canvas 506 170 285 182 vasp.filters 0;
-#X obj 53 108 vasp.flp;
-#X obj 53 77 vasp.fhp;
-#X text 114 108 low pass;
-#X text 114 77 high pass;
-#X obj 35 22 cnv 15 15 15 empty empty vasp_filters 0 10 1 14 -262144
--1 0;
-#X restore 72 186 pd vasp.filters;
-#N canvas 267 189 743 326 vasp.generators 0;
-#X obj 507 206 vasp.*cosc;
-#X obj 507 135 vasp.*phasor;
-#X obj 507 107 vasp.*osc;
-#X obj 72 218 vasp.cnoise;
-#X obj 72 190 vasp.cosc;
-#X obj 72 146 vasp.noise;
-#X obj 72 119 vasp.phasor;
-#X obj 72 91 vasp.osc;
-#X text 72 67 generate .....;
-#X text 154 145 vasp noise generator;
-#X text 154 118 vasp saw tooth generator;
-#X text 154 90 vasp sine wave generator;
-#X text 366 67 multiplies a buffer content with the oscillator functions
-...;
-#X text 154 222 complex noise;
-#X text 154 192 complex sine wave;
-#X obj 35 22 cnv 15 15 15 empty empty vasp_generators 0 10 1 14 -262144
--1 0;
-#X restore 72 159 pd vasp.generators;
-#N canvas 229 139 567 405 vasp.window-functions 0;
-#X obj 59 28 cnv 15 15 15 empty empty vasp_window-functions 0 10 1
-14 -262144 -1 0;
-#X obj 77 92 vasp.window;
-#X obj 77 125 vasp.xwindow;
-#X obj 77 159 vasp.!window;
-#X obj 116 255 vasp.*window;
-#X obj 116 289 vasp.*xwindow;
-#X obj 116 318 vasp.*!window;
-#X text 188 122 symmetrical window;
-#X text 188 90 left part of symmetrical window;
-#X text 190 161 right part of symmetrical window;
-#X text 77 212 multiply...;
-#X restore 72 294 pd vasp.window-functions;
-#X restore 192 357 pd objects;
-#X text 54 169 vasp objects are using a specialized message syntax
-for all objects to refer to a buffer or a part of it.;
-#N canvas 6 13 982 662 syntax 0;
-#X text 76 52 the vasp message:;
-#X obj 75 20 cnv 15 15 15 empty empty vasp_syntax 0 10 1 14 -262144
--1 0;
-#N canvas 0 0 405 218 init 0;
-#X obj 33 19 loadbang;
-#X msg 33 99 \; \$1 xticks 0 4410 5 \; \$1 xlabel 1.1 0 22050 44100
-66150 88200 \; \$1 yticks 0 0.25 2 \; \$1 ylabel 94000 -1 -0.5 0 0.5
-1;
-#X msg 33 45 symbol buf1 \, symbol buf2 \, sysymbol buf1 \, symbol
-buf2 \, symbol buf3 \, symbol buf4 \, symbol buf5 \, symbol buf6 \,
-symbol buf7 \, symbol buf8 \, symbol buf9;
-#X connect 0 0 2 0;
-#X connect 2 0 1 0;
-#X restore 827 44 pd init;
-#X obj 73 92 cnv 15 800 450 empty empty empty 20 12 0 14 -241339 -66577
-0;
-#X text 455 243 (default 0);
-#X text 469 183 which does the same.;
-#X msg 417 182 vasp -1;
-#X msg 207 270 vasp 44100 buf1 22050 0;
-#X text 110 271 and the channel;
-#X msg 310 241 vasp 44100 buf1 22050;
-#X text 110 243 an optional offset in samples;
-#X msg 333 215 vasp 44100 buf1;
-#X text 110 216 the name of the buffer it refers to;
-#X msg 325 157 vasp 44100;
-#X text 110 161 followed by the length in samples;
-#X msg 257 132 vasp;
-#X text 89 102 - a vasp message is structured by the following parts:
-;
-#X text 110 135 it always starts with;
-#X text 110 450 set all samples of buf1 to 0;
-#X text 110 384 generate a sine wave at 2Hz;
-#X msg 288 451 vasp buf1;
-#X obj 288 497 vasp.update;
-#X obj 288 473 vasp.= 0;
-#X obj 287 412 vasp.update;
-#X obj 287 383 vasp.osc 22050;
-#N canvas 0 0 450 300 graph1 0;
-#X array buf1 88200 float 0;
-#X coords 0 1 88199 -1 300 100 1;
-#X restore 498 403 graph;
-#X msg 287 323 vasp 44100 buf1 22050 0;
-#X text 110 325 one vectored vasp message:;
-#X obj 73 582 cnv 15 800 480 empty empty empty 20 12 0 14 -241339 -66577
-0;
-#X text 138 890 set all samples of buf1 and buf2 to 0;
-#X msg 275 910 vasp buf2 buf3;
-#X obj 275 956 vasp.update;
-#X obj 275 932 vasp.= 0;
-#X obj 274 846 vasp.update;
-#X obj 274 816 vasp.osc 22050;
-#X text 139 993 a vasp message can contain as many vectors as you like
-\, but all vectors have the same length;
-#X msg 274 688 vasp 44100 buf2 0 0 buf3 22050;
-#X text 110 689 two vectored vasp message:;
-#X text 110 633 all vectors have the same length \, but the vectors
-can differ in the buffers and offsets;
-#X text 89 597 - if a vasp message contains more than one vector:;
-#N canvas 0 0 450 300 graph1 0;
-#X array buf2 88200 float 0;
-#X coords 0 1 88199 -1 300 100 1;
-#X restore 477 754 graph;
-#N canvas 0 0 450 300 graph1 0;
-#X array buf3 88200 float 0;
-#X coords 0 1 88199 -1 300 100 1;
-#X restore 478 878 graph;
-#X text 110 184 if missing \, it refers to the whole buffer \, or type
-;
-#X text 139 1028 different vectors of a vasp are processed in parallel
-or as pairs for complex operations respectively.;
-#X obj 860 1077 cnv 15 15 15 empty empty empty 20 12 0 14 -262144 -66577
-0;
-#X text 313 339 (CLICK HERE);
-#X text 345 451 (CLICK HERE);
-#X text 318 703 (CLICK HERE);
-#X text 469 684 referring to buffer buf1 from 0 sec to 1 sec on channel
-0 and buffer buf2 from 0.5 sec to 1.5 sec on channel 0;
-#X text 363 912 (CLICK HERE);
-#X text 355 271 (default 0 \, it is only used in Max/MSP);
-#X text 440 322 referring to buffer buf1 from 0.5sec to 1.5sec on channel
-0;
-#X connect 20 0 22 0;
-#X connect 22 0 21 0;
-#X connect 24 0 23 0;
-#X connect 26 0 24 0;
-#X connect 30 0 32 0;
-#X connect 32 0 31 0;
-#X connect 34 0 33 0;
-#X connect 36 0 34 0;
-#X restore 192 276 pd syntax;
-#X text 54 202 these help patches should give you an idea of what is
-possible. feel free to combine different patches to more complex ones.
-;
-#X text 49 513 inspired by guenther rabl's fft-box and tool-box. find
-guenther rabl at www.canto-crudo.com;
+#N canvas 211 19 626 650 10;
 #X obj 104 47 cnv 15 15 15 empty empty vasp_modular 0 10 1 14 -262144
 -1 0;
-#N canvas 93 94 807 343 links 0;
-#X text 483 224 don't miss that!;
-#X text 134 257 http://www.canto-crudo.com/;
-#X text 483 190 comparable (but more extensive) functionality;
-#X text 64 52 about fft:;
-#X text 134 190 http://www.bath.ac.uk/~masjpf/CDP/CDP.htm;
-#X text 84 190 CDP:;
-#X text 134 113 http://sepwww.stanford.edu/oldsep/hale/FftLab.html
-;
-#X text 483 113 very useful;
-#X text 134 151 http://www.fftw.org/links.html;
-#X text 483 151 more fft links;
-#X text 483 80 introduction to fft;
-#X text 134 80 http://www.eptools.com/tn/T0001/INDEX.HTM;
-#X text 20 224 Numerical Recipes:;
-#X text 134 224 http://www.nr.com/;
-#X text 28 22 vasp_links;
-#X text 134 52 http://www.parasitaere-kapazitaeten.net/Pd/fft_and_pd_en.htm
-;
-#X text 44 257 guenther rabl:;
-#X restore 192 464 pd links;
-#X text 87 461 useful links;
-#X text 96 389 vasps units;
-#N canvas 49 240 511 378 units 0;
-#N canvas 442 226 404 340 Hz_to_period_length 0;
-#X text 17 201 current sampling rate;
-#X floatatom 157 241 0 0 0;
-#X obj 157 143 t b f;
-#X text 215 242 period length;
-#X floatatom 157 115 0 0 0;
-#X obj 157 210 / 1;
-#X floatatom 30 180 0 0 0;
-#X text 202 112 frequency in Hz;
-#X obj 30 138 samplerate~;
-#X obj 30 115 loadbang;
-#X obj 39 44 cnv 15 15 15 empty empty Hz_to_period_length 0 10 1 14
--262144 -1 0;
-#X connect 2 0 5 0;
-#X connect 2 1 5 1;
-#X connect 4 0 2 0;
-#X connect 5 0 1 0;
-#X connect 8 0 6 0;
-#X connect 8 0 5 0;
-#X connect 9 0 8 0;
-#X restore 150 310 pd Hz_to_period_length;
-#X text 103 281 sample rate/frequency in Hz = frequency in period length
-(float);
-#X text 60 264 - frequencies are always defined in period lengths;
-#X msg 149 227 vasp 44100 buf1 22050 0;
-#X text 103 187 e.g: vasp message with an offset of 0.5 sec. and a
-length of 1 sec. (sr 44100);
-#X text 60 155 - lengths and offsets are always defined in samples
-(depending on sample rate);
-#X msg 150 113 vasp 44100 buf1 22050 0;
-#X text 60 69 - vasp index counting starts from 0;
-#X text 104 81 e.g: channel 0 in a vasp message means first channel
-in the buffer;
-#X obj 51 27 cnv 15 15 15 empty empty vasp_units 0 10 1 14 -262144
--1 0;
-#X restore 192 392 pd units;
-#X text 67 354 the vasp objects;
-#X text 68 273 the vasp message;
 #X obj 61 37 cnv 2 2 2 empty 2-1-r empty 20 12 64 14 -225271 -262144
 0;
 #X obj 63 37 cnv 2 2 2 empty 2-2-r empty 20 12 64 14 -225271 -262144
@@ -810,35 +372,109 @@ in the buffer;
 0;
 #X obj 89 61 cnv 2 2 2 empty 14-15-r empty 20 12 64 14 -225271 -262144
 0;
+#X text 54 90 vasp modular - vector assembling signal processor ©2002
+thomas grill;
 #X text 54 123 vasp is a library of objects for max/msp and pd \, containing
 functions to generate and modify vectors as well as buffer content
 in a non-realtime context.;
-#X text 80 428 vasp glossary;
-#N canvas 69 118 655 553 glossary 0;
-#X text 105 84 buffer~ (MaxMSP) / array (Pd);
-#X text 129 100 resident data-field (can be channel-interleaved in
-Max/MSP) in system memory containing a number of frames;
-#X text 106 313 channel;
-#X text 105 379 vector;
-#X text 107 435 vasp;
-#X text 128 397 reference (with an offset and length \, with frames
-as units) to one channel of a buffer~ or array vector;
-#X text 130 452 contains one or more vectors in parallel with one common
-length but in general different offsets/channels per vector;
-#X text 130 330 a buffer~ (in MaxMSP) consists of one or more channels
-\, resulting in 1 \, 2 or 4 data elements per frame \, 0-indexed;
-#X text 131 183 32 bit IEEE floating point value \, typically (but
-not necessarily) normalized to the range -1...1 \;;
-#X text 105 161 data element (representing a sample);
-#X text 130 247 (aka "sample") time unit of sampled data - if multiple
-channels (typically 2 or 4) are sampled \, there are multiple data
-elements per frame;
-#X text 104 227 frame;
-#X obj 82 40 cnv 15 15 15 empty empty glossary 0 10 1 14 -262144 -1
+#X text 54 169 vasp objects are using a specialized message syntax
+for all objects to refer to a buffer or a part of it.;
+#X text 54 202 these help patches should give you an idea of what is
+possible. feel free to combine different patches to more complex ones.
+;
+#N canvas 6 13 982 662 syntax 0;
+#X text 76 52 the vasp message:;
+#X obj 75 20 cnv 15 15 15 empty empty vasp_syntax 0 10 1 14 -262144
+-1 0;
+#N canvas 0 0 405 218 init 0;
+#X obj 33 19 loadbang;
+#X msg 33 99 \; \$1 xticks 0 4410 5 \; \$1 xlabel 1.1 0 22050 44100
+66150 88200 \; \$1 yticks 0 0.25 2 \; \$1 ylabel 94000 -1 -0.5 0 0.5
+1;
+#X msg 33 45 symbol buf1 \, symbol buf2 \, sysymbol buf1 \, symbol
+buf2 \, symbol buf3 \, symbol buf4 \, symbol buf5 \, symbol buf6 \,
+symbol buf7 \, symbol buf8 \, symbol buf9;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 827 44 pd init;
+#X obj 73 92 cnv 15 800 450 empty empty empty 20 12 0 14 -241339 -66577
 0;
-#X restore 192 430 pd glossary;
-#X text 54 90 vasp modular - vector assembling signal processor ©2002
-thomas grill;
+#X text 455 243 (default 0);
+#X text 469 183 which does the same.;
+#X msg 417 182 vasp -1;
+#X msg 207 270 vasp 44100 buf1 22050 0;
+#X text 110 271 and the channel;
+#X msg 310 241 vasp 44100 buf1 22050;
+#X text 110 243 an optional offset in samples;
+#X msg 333 215 vasp 44100 buf1;
+#X text 110 216 the name of the buffer it refers to;
+#X msg 325 157 vasp 44100;
+#X text 110 161 followed by the length in samples;
+#X msg 257 132 vasp;
+#X text 89 102 - a vasp message is structured by the following parts:
+;
+#X text 110 135 it always starts with;
+#X text 110 450 set all samples of buf1 to 0;
+#X text 110 384 generate a sine wave at 2Hz;
+#X msg 288 451 vasp buf1;
+#X obj 288 497 vasp.update;
+#X obj 288 473 vasp.= 0;
+#X obj 287 412 vasp.update;
+#X obj 287 383 vasp.osc 22050;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf1 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 498 403 graph;
+#X msg 287 323 vasp 44100 buf1 22050 0;
+#X text 110 325 one vectored vasp message:;
+#X obj 73 582 cnv 15 800 480 empty empty empty 20 12 0 14 -241339 -66577
+0;
+#X text 138 890 set all samples of buf1 and buf2 to 0;
+#X msg 275 910 vasp buf2 buf3;
+#X obj 275 956 vasp.update;
+#X obj 275 932 vasp.= 0;
+#X obj 274 846 vasp.update;
+#X obj 274 816 vasp.osc 22050;
+#X text 139 993 a vasp message can contain as many vectors as you like
+\, but all vectors have the same length;
+#X msg 274 688 vasp 44100 buf2 0 0 buf3 22050;
+#X text 110 689 two vectored vasp message:;
+#X text 110 633 all vectors have the same length \, but the vectors
+can differ in the buffers and offsets;
+#X text 89 597 - if a vasp message contains more than one vector:;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf2 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 477 754 graph;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf3 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 478 878 graph;
+#X text 110 184 if missing \, it refers to the whole buffer \, or type
+;
+#X text 139 1028 different vectors of a vasp are processed in parallel
+or as pairs for complex operations respectively.;
+#X obj 860 1077 cnv 15 15 15 empty empty empty 20 12 0 14 -262144 -66577
+0;
+#X text 313 339 (CLICK HERE);
+#X text 345 451 (CLICK HERE);
+#X text 318 703 (CLICK HERE);
+#X text 469 684 referring to buffer buf1 from 0 sec to 1 sec on channel
+0 and buffer buf2 from 0.5 sec to 1.5 sec on channel 0;
+#X text 363 912 (CLICK HERE);
+#X text 355 271 (default 0 \, it is only used in Max/MSP);
+#X text 440 322 referring to buffer buf1 from 0.5sec to 1.5sec on channel
+0;
+#X connect 20 0 22 0;
+#X connect 22 0 21 0;
+#X connect 24 0 23 0;
+#X connect 26 0 24 0;
+#X connect 30 0 32 0;
+#X connect 32 0 31 0;
+#X connect 34 0 33 0;
+#X connect 36 0 34 0;
+#X restore 192 276 pd syntax;
+#X text 68 273 the vasp message;
 #N canvas 26 0 962 704 moremessages 0;
 #X obj 59 74 cnv 15 800 330 empty empty empty 20 12 0 14 -241339 -66577
 0;
@@ -954,7 +590,6 @@ of an object chain;
 #X obj 323 1709 vasp.s/;
 #X text 236 1637 print out a short description of the object;
 #X text 361 1178 real fft;
-#X text 232 709 switch on;
 #X connect 1 0 3 0;
 #X connect 4 0 1 0;
 #X connect 5 0 7 0;
@@ -994,6 +629,384 @@ of an object chain;
 #X connect 79 0 80 0;
 #X restore 192 315 pd moremessages;
 #X text 48 313 additional messages;
+#N canvas 49 0 368 437 objects 0;
+#X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
+-1 0;
+#N canvas 151 -3 828 706 define_vasps 0;
+#X obj 66 64 cnv 15 15 15 empty empty define_vasps 0 10 1 14 -262144
+-1 0;
+#X text 42 97 (get help on right click/Help just as usual);
+#X text 472 27 output the samples of a vasp as list;
+#X obj 372 27 vasp.?;
+#X text 472 46 output all non zero samples of a vasp as list;
+#X obj 372 47 vasp.??;
+#X text 472 67 check vasp dimensions;
+#X obj 372 67 vasp.check;
+#X text 472 87 sync 2 or more vasps;
+#X obj 372 87 vasp.sync;
+#X text 472 107 update the graphics of a patcher (e.g. waveform);
+#X obj 372 107 vasp.update;
+#X text 472 127 output a vasp multiply;
+#X obj 372 127 vasp.multi;
+#X text 472 147 get a vector of a vasp;
+#X obj 372 147 vasp.vector;
+#X text 472 167 get the number of vectors of a vasp;
+#X obj 372 167 vasp.vectors?;
+#X text 472 187 set a vasp's offset(s) into the vector buffers;
+#X obj 372 187 vasp.offset;
+#X text 472 207 shift a vasp's offset(s) into the vector buffers;
+#X obj 372 207 vasp.offset+;
+#X text 472 227 get a single vectored vasp's offset(s) into the buffer
+;
+#X obj 372 227 vasp.offset?;
+#X text 472 247 set a vasp's offset via value-position;
+#X obj 372 247 vasp.offset=;
+#X text 472 267 set a vasps frame count;
+#X obj 372 267 vasp.frames;
+#X text 472 287 raise/lower a vasps frame count;
+#X obj 372 287 vasp.frames+;
+#X text 472 307 get a vasps frame count;
+#X obj 372 307 vasp.frames?;
+#X text 472 327 raise/lower a vasps frame count by multiplication;
+#X obj 372 327 vasp.frames*;
+#X text 472 347 raise/lower a vasps frame count by division;
+#X obj 372 347 vasp.frames/;
+#X text 472 367 set a vasps frame count via value-position;
+#X obj 372 367 vasp.frames=;
+#X obj 372 387 vasp.size;
+#X obj 372 407 vasp.size+;
+#X text 472 407 comment;
+#X obj 372 427 vasp.size*;
+#X text 472 427 comment;
+#X obj 372 447 vasp.size?;
+#X text 472 447 comment;
+#X obj 372 467 vasp.size/;
+#X text 472 468 comment;
+#X text 472 487 split a vasp into its vectors;
+#X obj 372 487 vasp.split 2;
+#X text 472 507 join several vasps into one;
+#X obj 372 507 vasp.join 2;
+#X text 472 527 spit out vectors of a vasp (one vector after the other)
+;
+#X obj 372 527 vasp.spit;
+#X text 472 547 gather several vasps into one;
+#X obj 372 547 vasp.gather;
+#X text 472 567 output vasps with different lengths and offsets;
+#X obj 372 567 vasp.part;
+#X obj 372 587 vasp.copy;
+#X text 472 587 comment;
+#X obj 372 607 vasp.ccopy;
+#X text 472 607 comment;
+#X obj 372 627 vasp.imm;
+#X text 472 627 comment;
+#X obj 372 647 vasp.channel;
+#X text 472 647 comment;
+#X obj 372 667 vasp.channel?;
+#X text 472 667 comment;
+#X text 472 388 comment;
+#X restore 72 78 pd define_vasps;
+#N canvas 408 1 508 293 vasp.fftobjects 0;
+#X obj 281 103 vasp.r!fft;
+#X obj 281 71 vasp.rfft;
+#X obj 77 160 vasp.polar;
+#X obj 77 103 vasp.c!fft;
+#X obj 77 71 vasp.cfft;
+#X text 145 160 changes between cartesian and polar representation
+;
+#X text 358 103 inverse real fft;
+#X text 145 71 complex fft;
+#X text 145 103 inverse complex fft;
+#X text 358 71 real fft;
+#X text 145 213 changes between polar and cartesian representation
+;
+#X obj 77 212 vasp.rect;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_fftobjects 0 10 1 14 -262144
+-1 0;
+#X restore 72 105 pd vasp.fftobjects;
+#N canvas 407 0 595 631 vasp.arithmetic 0;
+#X obj 301 137 vasp.c!-;
+#X text 150 135 reverse subtraction;
+#X obj 74 134 vasp.!-;
+#X text 151 527 integral function;
+#X text 151 555 differential function;
+#X obj 76 554 vasp.dif;
+#X obj 76 527 vasp.int;
+#X obj 403 84 vasp.r+;
+#X text 462 84 radius offset;
+#X obj 302 218 vasp.c!/;
+#X text 151 217 reverse division;
+#X obj 76 217 vasp.!/;
+#X obj 302 246 vasp.c=;
+#X obj 302 192 vasp.c/;
+#X obj 302 163 vasp.c*;
+#X obj 302 110 vasp.c-;
+#X obj 302 84 vasp.c+;
+#X obj 76 499 vasp.sign;
+#X obj 76 473 vasp.%;
+#X obj 76 448 vasp.abs;
+#X obj 76 420 vasp.!=;
+#X obj 76 392 vasp.==;
+#X obj 76 365 vasp.>=;
+#X obj 76 336 vasp.<=;
+#X obj 76 307 vasp.>;
+#X obj 76 278 vasp.<;
+#X obj 76 248 vasp.=;
+#X obj 76 191 vasp./;
+#X obj 76 160 vasp.*;
+#X obj 74 110 vasp.-;
+#X obj 74 84 vasp.+;
+#X text 151 365 vasp >= x;
+#X text 151 336 vasp >= x;
+#X text 151 307 vasp > x;
+#X text 151 279 vasp < x;
+#X text 151 393 equal to;
+#X text 151 162 multiplication;
+#X text 151 191 division;
+#X text 150 111 subtraction;
+#X text 151 420 not equal to;
+#X text 151 473 modulo (remainder of a division);
+#X text 151 448 absolute value of a vasp;
+#X text 150 84 addition;
+#X text 301 59 complex ....;
+#X text 151 249 vasp = x;
+#X text 151 499 values < 0 become -1 | values > 0 become 1;
+#X text 403 59 radius ....;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_arithmetic 0 10 1 14 -262144
+-1 0;
+#X obj 302 274 vasp.cconj;
+#X restore 72 132 pd vasp.arithmetic;
+#N canvas 267 189 743 326 vasp.generators 0;
+#X obj 507 206 vasp.*cosc;
+#X obj 507 135 vasp.*phasor;
+#X obj 507 107 vasp.*osc;
+#X obj 72 218 vasp.cnoise;
+#X obj 72 190 vasp.cosc;
+#X obj 72 146 vasp.noise;
+#X obj 72 119 vasp.phasor;
+#X obj 72 91 vasp.osc;
+#X text 72 67 generate .....;
+#X text 154 145 vasp noise generator;
+#X text 154 118 vasp saw tooth generator;
+#X text 154 90 vasp sine wave generator;
+#X text 366 67 multiplies a buffer content with the oscillator functions
+...;
+#X text 154 222 complex noise;
+#X text 154 192 complex sine wave;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_generators 0 10 1 14 -262144
+-1 0;
+#X restore 72 159 pd vasp.generators;
+#N canvas 506 170 285 182 vasp.filters 0;
+#X obj 53 108 vasp.flp;
+#X obj 53 77 vasp.fhp;
+#X text 114 108 low pass;
+#X text 114 77 high pass;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_filters 0 10 1 14 -262144
+-1 0;
+#X restore 72 186 pd vasp.filters;
+#N canvas 306 143 558 381 vasp.displace 0;
+#X text 158 163 rotate buffer content symmetrically;
+#X obj 80 164 vasp.xrot;
+#X obj 80 232 vasp.xmirr;
+#X obj 80 197 vasp.mirr;
+#X obj 80 132 vasp.rot;
+#X obj 80 97 vasp.xshift;
+#X obj 80 62 vasp.shift;
+#X text 158 231 mirrors a vasp symmetrically;
+#X text 158 196 mirrors a vasp;
+#X text 158 61 shifts the buffer content;
+#X text 158 131 rotate buffer content;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_displace 0 10 1 14 -262144
+-1 0;
+#X text 157 96 shifts the buffer content symmetrically;
+#X obj 80 275 vasp.tilt;
+#X obj 80 316 vasp.xtilt;
+#X text 160 274 resamples around a center position;
+#X text 160 310 buffer is divided in two symmetrical halves and each
+one is resampled around a center position;
+#X restore 72 213 pd vasp.displace;
+#N canvas 198 295 774 325 vasp.transcendent 0;
+#X text 350 165 complex sample^2;
+#X text 350 135 complex integer power function;
+#X text 145 195 square root;
+#X text 145 226 signed sample^2;
+#X obj 276 134 vasp.cpowi;
+#X obj 276 164 vasp.csqr;
+#X obj 73 257 vasp.ssqrt;
+#X obj 73 226 vasp.ssqr;
+#X obj 73 194 vasp.sqrt;
+#X obj 73 164 vasp.sqr;
+#X obj 73 134 vasp.pow;
+#X text 145 257 signed square root;
+#X text 145 135 samps^x;
+#X text 145 165 sample^2;
+#X obj 538 134 vasp.rpow;
+#X text 605 135 radius power function;
+#X obj 73 102 vasp.log;
+#X obj 73 66 vasp.exp;
+#X text 145 102 logarithm;
+#X text 145 66 exponential;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_transcendent 0 10 1 14 -262144
+-1 0;
+#X restore 72 240 pd vasp.transcendent;
+#N canvas 195 285 651 301 vasp.minmax_etc. 0;
+#X obj 422 250 vasp.rmin;
+#X obj 422 218 vasp.rmax;
+#X text 511 250 radius minimum;
+#X text 511 219 radius maximum;
+#X obj 76 250 vasp.min;
+#X obj 76 218 vasp.max;
+#X obj 76 187 vasp.max?;
+#X obj 76 156 vasp.min?;
+#X obj 76 125 vasp.amax?;
+#X obj 76 94 vasp.amin?;
+#X obj 422 187 vasp.rmax?;
+#X obj 422 156 vasp.rmin?;
+#X obj 76 62 vasp.minmax;
+#X text 167 250 minimum of vasp and argument;
+#X text 167 219 maximum of vasp and argument;
+#X text 167 156 output min. value of a vasp;
+#X text 167 187 output max. value of a vasp;
+#X text 167 125 output max. absolute value of a vasp;
+#X text 167 94 output min. absolute value of a vasp;
+#X text 511 187 radius max. value;
+#X text 511 156 radius min. value;
+#X text 167 65 splits a vasp into minimum and maximum values;
+#X obj 35 22 cnv 15 15 15 empty empty vasp_minmax 0 10 1 14 -262144
+-1 0;
+#X restore 72 267 pd vasp.minmax_etc.;
+#N canvas 229 139 567 405 vasp.window-functions 0;
+#X obj 59 28 cnv 15 15 15 empty empty vasp_window-functions 0 10 1
+14 -262144 -1 0;
+#X obj 77 92 vasp.window;
+#X obj 77 125 vasp.xwindow;
+#X obj 77 159 vasp.!window;
+#X obj 116 255 vasp.*window;
+#X obj 116 289 vasp.*xwindow;
+#X obj 116 318 vasp.*!window;
+#X text 188 122 symmetrical window;
+#X text 188 90 left part of symmetrical window;
+#X text 190 160 right part of symmetrical window;
+#X text 77 212 multiply...;
+#X restore 72 294 pd vasp.window-functions;
+#N canvas 188 241 787 416 vasp.utilities 0;
+#X text 156 275 symmetrical resampling;
+#X obj 77 245 vasp.tilt;
+#X text 155 246 resampling;
+#X obj 415 97 vasp.cnorm;
+#X obj 77 198 vasp.pwrap;
+#X obj 77 164 vasp.peaks;
+#X obj 77 131 vasp.valleys;
+#X obj 77 97 vasp.opt;
+#X obj 77 64 vasp.gate;
+#X text 155 165 local peaks of a vasp;
+#X text 155 131 local minima of a vasp;
+#X text 155 97 optimize buffer content;
+#X text 155 64 gates vasp under a value (amplitude);
+#X text 491 96 sets complex radius of all samples to unity;
+#X obj 416 201 vasp.rvalleys;
+#X obj 416 234 vasp.rpeaks;
+#X obj 416 167 vasp.ropt;
+#X text 507 201 radius valleys;
+#X text 507 235 radius peaks;
+#X text 507 167 radius optimize;
+#X obj 416 134 vasp.rgate;
+#X text 507 134 radius gate;
+#X text 155 198 wraps value from 0-2 to -1 to 1;
+#X obj 59 28 cnv 15 15 15 empty empty vasp_utilities 0 10 1 14 -262144
+-1 0;
+#X obj 77 276 vasp.xtilt;
+#X obj 78 352 vasp.fix;
+#X obj 255 353 vasp.radio;
+#X obj 382 322 vasp;
+#X restore 72 321 pd vasp.utilities;
+#X restore 192 357 pd objects;
+#X text 67 354 the vasp objects;
+#X text 96 389 vasps units;
+#N canvas 49 240 511 378 units 0;
+#N canvas 442 226 404 340 Hz_to_period_length 0;
+#X text 17 201 current sampling rate;
+#X floatatom 157 241 0 0 0;
+#X obj 157 143 t b f;
+#X text 215 242 period length;
+#X floatatom 157 115 0 0 0;
+#X obj 157 210 / 1;
+#X floatatom 30 180 0 0 0;
+#X text 202 112 frequency in Hz;
+#X obj 30 138 samplerate~;
+#X obj 30 115 loadbang;
+#X obj 39 44 cnv 15 15 15 empty empty Hz_to_period_length 0 10 1 14
+-262144 -1 0;
+#X connect 2 0 5 0;
+#X connect 2 1 5 1;
+#X connect 4 0 2 0;
+#X connect 5 0 1 0;
+#X connect 8 0 6 0;
+#X connect 8 0 5 0;
+#X connect 9 0 8 0;
+#X restore 150 310 pd Hz_to_period_length;
+#X text 103 281 sample rate/frequency in Hz = frequency in period length
+(float);
+#X text 60 264 - frequencies are always defined in period lengths;
+#X msg 149 227 vasp 44100 buf1 22050 0;
+#X text 103 187 e.g: vasp message with an offset of 0.5 sec. and a
+length of 1 sec. (sr 44100);
+#X text 60 155 - lengths and offsets are always defined in samples
+(depending on sample rate);
+#X msg 150 113 vasp 44100 buf1 22050 0;
+#X text 60 69 - vasp index counting starts from 0;
+#X text 104 81 e.g: channel 0 in a vasp message means first channel
+in the buffer;
+#X obj 51 27 cnv 15 15 15 empty empty vasp_units 0 10 1 14 -262144
+-1 0;
+#X restore 192 392 pd units;
+#X text 80 428 vasp glossary;
+#N canvas 69 118 655 553 glossary 0;
+#X text 100 84 buffer~ (MaxMSP) / array (Pd);
+#X text 120 100 resident data-field (can be channel-interleaved in
+Max/MSP) in system memory containing a number of frames;
+#X text 100 313 channel;
+#X text 100 379 vector;
+#X text 100 435 vasp;
+#X text 120 397 reference (with an offset and length \, with frames
+as units) to one channel of a buffer~ or array vector;
+#X text 120 452 contains one or more vectors in parallel with one common
+length but in general different offsets/channels per vector;
+#X text 120 330 a buffer~ (in MaxMSP) consists of one or more channels
+\, resulting in 1 \, 2 or 4 data elements per frame \, 0-indexed;
+#X text 121 183 32 bit IEEE floating point value \, typically (but
+not necessarily) normalized to the range -1...1 \;;
+#X text 100 161 data element (representing a sample);
+#X text 120 247 (aka "sample") time unit of sampled data - if multiple
+channels (typically 2 or 4) are sampled \, there are multiple data
+elements per frame;
+#X text 100 227 frame;
+#X obj 82 40 cnv 15 15 15 empty empty glossary 0 10 1 14 -262144 -1
+0;
+#X restore 192 430 pd glossary;
+#N canvas 93 94 807 343 links 0;
+#X text 483 224 don't miss that!;
+#X text 134 257 http://www.canto-crudo.com/;
+#X text 483 190 comparable (but more extensive) functionality;
+#X text 64 52 about fft:;
+#X text 134 190 http://www.bath.ac.uk/~masjpf/CDP/CDP.htm;
+#X text 84 190 CDP:;
+#X text 134 113 http://sepwww.stanford.edu/oldsep/hale/FftLab.html
+;
+#X text 483 113 very useful;
+#X text 134 151 http://www.fftw.org/links.html;
+#X text 483 151 more fft links;
+#X text 483 80 introduction to fft;
+#X text 134 80 http://www.eptools.com/tn/T0001/INDEX.HTM;
+#X text 20 224 Numerical Recipes:;
+#X text 134 224 http://www.nr.com/;
+#X text 28 22 vasp_links;
+#X text 134 52 http://www.parasitaere-kapazitaeten.net/Pd/fft_and_pd_en.htm
+;
+#X text 44 257 guenther rabl:;
+#X restore 192 464 pd links;
+#X text 87 461 useful links;
+#X text 49 513 inspired by guenther rabl's fft-box and tool-box. find
+guenther rabl at www.canto-crudo.com;
 #X text 49 550 vasp help patches by florian bogner and oliver grimm
 - ©2002 patcherboys - www.patcherboys.com;
 #X text 47 585 revised & extended version for PD by smedge - www.parasitaere-kapazitaeten.net/vasp
