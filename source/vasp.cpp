@@ -258,3 +258,32 @@ V Vasp::Refresh()
 		}
 	}
 }
+
+V Vasp::Offset(I o)
+{
+	for(I i = 0; i < Vectors(); ++i) Vector(i).Offset(o);
+}
+
+V Vasp::OffsetD(I od)
+{
+	for(I i = 0; i < Vectors(); ++i) Vector(i).OffsetD(od);
+}
+
+
+I Vasp::ChkFrames() const
+{
+	if(Vectors() == 0) return 0;
+
+	I frms = -1;
+	for(I i = 0; i < Vectors(); ++i) {
+		VBuffer *buf = Buffer(i);
+		if(buf) {
+			I f = buf->Length();
+			if(frms < 0 || f < frms) frms = f;
+			delete buf;
+		}
+	}
+
+	return frms < 0?0:frms;
+}
+

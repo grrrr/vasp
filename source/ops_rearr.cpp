@@ -13,6 +13,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 /*! \brief shift buffer
 	
 	\todo symmetric operation
+	\todo review code
 */
 BL VecOp::d_shift(OpParam &p) 
 { 
@@ -125,11 +126,11 @@ Vasp *VaspOp::m_shift(Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm)
 	Vasp *ret = NULL;
 	OpParam p(shift?(symm?"xshift":"shift"):(symm?"xrot":"rot"));
 
-	if(arg.IsList() && arg.GetList().Count() >= 1) {
+	if(arg.CanbeDouble()) {
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
 			// shift length
-			p.sh.sh = flx::GetAFloat(arg.GetList()[0]);
+			p.sh.sh = arg.GetADouble();
 
 			ret = DoOp(vecs,shift?VecOp::d_shift:VecOp::d_rot,p,symm);
 			delete vecs;

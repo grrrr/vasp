@@ -125,6 +125,43 @@ FLEXT_LIB("vasp.update",vasp_update)
 
 
 
+/*! \class vasp_chk
+	\remark \b vasp.chk
+	\brief Check vasp dimensions.
+	\since 0.0.1
+	\param inlet vasp - is stored and output
+	\param inlet bang - triggers stored vasp output
+	\param inlet set - vasp to be stored (and not immediately output)
+	\retval outlet vasp
+*/
+class vasp_chk:
+	public vasp_tx
+{
+	FLEXT_HEADER(vasp_chk,vasp_tx)
+
+public:
+	vasp_chk()
+	{
+		AddInAnything();
+		AddOutAnything();
+		SetupInOut();
+	}
+
+	virtual Vasp *x_work() 
+	{ 
+		Vasp *ret = new Vasp(ref); 
+		I fr = ret->ChkFrames(); // maximum common frame length
+		ret->Frames(fr);
+		return ret;
+	}
+
+	virtual V m_help() { post("%s - Check vasp dimensions",thisName()); }
+};
+
+FLEXT_LIB("vasp.chk",vasp_chk)
+
+
+
 /*! \class vasp_n
 	\remark \b vasp.n
 	\brief Gets indexed vector of a vasp.
@@ -269,7 +306,7 @@ public:
 
 	virtual V m_bang() { chkbang(0); }
 
-	virtual V m_reset() 
+	V m_reset() 
 	{ 
 		for(I i = 0; i < CntIn(); ++i) flags[i] = false;
 	}
@@ -304,7 +341,7 @@ FLEXT_LIB_1("vasp.sync",vasp_sync,I)
 	\retval outlet.n vasp - vector of stored vasp
 	\retval outlet.+ vasp - remainder of stored vasp
 
-	\todo Output remainder to additional outlet.
+	\note if there is no remainder outputs a bang
 */
 class vasp_split:
 	public vasp_op
@@ -421,8 +458,6 @@ FLEXT_LIB_1("vasp.join",vasp_join,I)
 	\param inlet.1 set - vasp to be stored 
 	\retval outlet.n vasp - vectors of stored vasp
 	\retval outlet.+ bang - triggered after last spit 
-
-	\todo Output remainder to additional outlet.
 */
 class vasp_spit:
 	public vasp_op
@@ -447,11 +482,17 @@ public:
 
 	virtual V m_bang() 
 	{ 
-		for(I i = 0; i < ref.Vectors(); ++i) {
-			Vasp v(ref.Frames(),ref.Vector(i));
-			ToOutVasp(i%(CntOut()-1),v);
+		I outs = CntOut()-1,rem = ref.Vectors();
+		for(I vi = 0; rem;) {
+			I r = min(rem,outs);
+			for(I i = 0; i < r; ++i) {
+				Vasp v(ref.Frames(),ref.Vector(vi+i));
+				ToOutVasp(r-1-i,v);
+			}
+			vi += r;
+			rem -= r;
 		}
-		ToOutBang(CntOut()-1);
+		ToOutBang(outs);
 	}
 
 	virtual V m_help() { post("%s - Spit out vectors of a vasp",thisName()); }
@@ -472,7 +513,7 @@ FLEXT_LIB_G("vasp.spit",vasp_spit)
 	\param inlet.2 vasp - add to result vasp
 	\retval outlet vasp - gathered vasp
 
-	The several incoming vectors are all joined into one vasp.
+	The several incoming vectors are all gathered into one vasp.
 
 	\note On different vasp frame count the minimum frame count is taken.
 */
@@ -533,6 +574,91 @@ FLEXT_LIB_G("vasp.gather",vasp_gather)
 
 
 
+/*! \class vasp_part
+	\remark \b vasp.part
+	\brief Gets parts of vasp vectors.
+	\since 0.0.1
+	\param cmdln.1 list - list of part lengts
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+    \param inlet.2 list - list of part lengts
+ 	\retval outlet.1 vasp - consecutive vasp parts
+ 	\retval outlet.2 vasp - remainder
+
+	\todo Implement unit processing.
+	\remarks Output zero length vasps?
+*/
+class vasp_part:
+	public vasp_op
+{
+	FLEXT_HEADER(vasp_part,vasp_op)
+
+public:
+	vasp_part(I argc,t_atom *argv):
+		part(NULL),parts(0)
+	{
+		m_part(argc,argv);
+
+		AddInAnything(2);
+		AddOutAnything(2);
+		SetupInOut();
+
+		FLEXT_ADDMETHOD_(1,"list",m_part);
+	}
+
+	~vasp_part() { if(part) delete[] part; }
+
+	V m_part(I argc,t_atom *argv) 
+	{ 
+		if(part) delete[] part; parts = 0;
+		part = new I[argc]; 
+		for(I i = 0; i < argc; ++i) {
+			BL warn = false;
+			I p = GetAFloat(argv[i]); // \todo unit processing
+			if(p < 0 && !warn) {
+				post("%s - invalid part length(s) -> set to 0",thisName());
+				p = 0; warn = true;
+			}
+			part[i] = p; ++parts;
+		}
+	}
+
+	virtual V m_bang() 
+	{ 
+		I fr = ref.Frames(),o = 0,f = 0;
+		for(I i = 0; i < parts && (fr < 0 || fr); ++i) {
+			I p = part[i];
+			if(fr >= 0) { p = min(p,fr); fr -= p; }
+
+			Vasp ret(ref); 
+			ret.Frames(p);
+			ret.OffsetD(o);
+			ToOutVasp(0,ret);
+
+			o += p;
+		}
+
+		if(fr) {
+			Vasp ret(ref); 
+			ret.Frames(fr);
+			ret.OffsetD(o);
+			ToOutVasp(1,ret);
+		}
+	}
+
+	virtual V m_help() { post("%s - Set a vasp's offset(s) into the vector buffers",thisName()); }
+protected:
+	I parts,*part;
+
+	FLEXT_CALLBACK_G(m_part)
+};
+
+FLEXT_LIB_G("vasp.part",vasp_part)
+
+
+
+
 /*! \class vasp_offs
 	\remark \b vasp.offs
 	\brief Sets offset of vasp vectors.
@@ -556,8 +682,8 @@ public:
 	vasp_offs(I argc,t_atom *argv):
 		offs(0),seto(false)
 	{
-		if(argc >= 1 && CanbeInt(argv[0]))
-			m_offs(GetAInt(argv[0]));
+		if(argc >= 1 && CanbeFloat(argv[0]))
+			m_offs(GetAFloat(argv[0]));
 		else if(argc)
 			post("%s - Offset argument invalid -> ignored",thisName());
 
@@ -578,10 +704,7 @@ public:
 	virtual Vasp *x_work() 
 	{ 
 		Vasp *ret = new Vasp(ref); 
-		if(seto) {
-			for(I i = 0; i < ret->Vectors(); ++i) 
-				ret->Vector(i).Offset(offs);
-		}
+		if(seto) ret->Offset(offs);
 		return ret;
 	}
 
@@ -623,10 +746,7 @@ public:
 	virtual Vasp *x_work() 
 	{ 
 		Vasp *ret = new Vasp(ref); 
-		if(seto) {
-			for(I i = 0; i < ret->Vectors(); ++i)
-				ret->Vector(i).OffsetD(offs);
-		}
+		if(seto) ret->OffsetD(offs);
 		return ret;
 	}
 
@@ -823,26 +943,95 @@ public:
 		SetupInOut();
 	}
 
-	virtual V m_bang() 
-	{ 
-		if(ref.Vectors() == 0) ToOutInt(0,0);
-		else {
-			I frms = -1;
-			for(I i = 0; i < ref.Vectors(); ++i) {
-				VBuffer *buf = ref.Buffer(i);
-				if(buf) {
-					I f = buf->Length();
-					if(frms < 0 || f < frms) frms = f;
-					delete buf;
-				}
-			}
-			//! \todo unit processing
-			ToOutInt(0,frms < 0?0:frms);
-		}
-	}
+	virtual V m_bang() { ToOutInt(0,ref.ChkFrames()); }	//! \todo unit processing
 
 	virtual V m_help() { post("%s - Get a vasp's frame count",thisName()); }
 };
 
 FLEXT_LIB("vasp.frames?",vasp_qframes)
+
+
+
+/*! \class vasp_q
+	\remark \b vasp.?
+	\brief Get samples of a single vasp vector.
+	\since 0.0.1
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet vector - vasp samples
+
+	\note Outputs 0 if vasp is undefined or invalid
+	\note Only works for a vasp with one vector. No output otherwise.
+*/
+class vasp_q:
+	public vasp_op
+{
+	FLEXT_HEADER(vasp_q,vasp_op)
+
+public:
+
+	vasp_q()
+	{
+		AddInAnything();
+		AddOutAnything();
+		SetupInOut();
+	}
+
+	virtual V m_bang() 
+	{ 
+		if(ref.Vectors() > 1) 
+			post("%s - More than one vector in vasp!",thisName());
+		else {
+			VBuffer *buf = ref.Buffer(0);
+			I cnt = buf->Length();
+			t_atom *lst = new t_atom[cnt];
+			for(I i = 0; i < cnt; ++i) SetFloat(lst[i],buf->Data()[i]);
+			ToOutAnything(0,sym_vector,cnt,lst);
+			delete[] lst;
+		}
+	}
+
+	virtual V m_help() { post("%s - Get samples of a vasp vector",thisName()); }
+};
+
+FLEXT_LIB("vasp.?",vasp_q)
+
+
+
+/*! \class vasp_i
+	\remark \b vasp.!
+	\brief Get vasp immediate.
+	\since 0.0.1
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet vasp! - vasp immediate
+
+*/
+class vasp_i:
+	public vasp_op
+{
+	FLEXT_HEADER(vasp_i,vasp_op)
+
+public:
+
+	vasp_i()
+	{
+		AddInAnything();
+		AddOutAnything();
+		SetupInOut();
+	}
+
+	virtual V m_bang() 
+	{ 
+		post("%s - Sorry, not implemented yet",thisName());
+	}
+
+	virtual V m_help() { post("%s - Get immediate vasp vectors",thisName()); }
+};
+
+FLEXT_LIB("vasp.!",vasp_i)
+
+
 

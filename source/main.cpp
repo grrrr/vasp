@@ -23,6 +23,10 @@ V lib_setup()
 	VASP_SETUP(n);
 	VASP_SETUP(qn);
 
+	VASP_SETUP(chk);
+	VASP_SETUP(update);
+	VASP_SETUP(sync);
+
 	VASP_SETUP(offs);
 	VASP_SETUP(doffs);
 	VASP_SETUP(qoffs);
@@ -34,9 +38,10 @@ V lib_setup()
 	VASP_SETUP(join);
 	VASP_SETUP(spit);
 	VASP_SETUP(gather);
-	VASP_SETUP(sync);
+	VASP_SETUP(part);
 
-	VASP_SETUP(update);
+	VASP_SETUP(q);
+	VASP_SETUP(i);
 
 	VASP_BINARY_SETUP(copy);
 	VASP_BINARY_SETUP(ccopy);

@@ -613,6 +613,9 @@ public:
 	// set frame count differentially
 	V FramesD(I frd) { frames += frd; }
 
+	// actual length of the vasp (in frames)
+	I ChkFrames() const;
+
 	// set offset(s)
 	V Offset(I fr);
 	// set offset(s) differentially
