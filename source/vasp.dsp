@@ -413,6 +413,10 @@ SOURCE=.\rvfft.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\obj_chns.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\obj_frames.cpp
 # End Source File
 # Begin Source File
