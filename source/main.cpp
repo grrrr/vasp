@@ -29,10 +29,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 const C *VASP_VERSION = "0.1.3pre1";
 
 
+#include "opfuns.h"
 
 V lib_setup()
 
 {
+    VecFun<S>::v_add(10,3,NULL,NULL,NULL);
 
 	post("");
 

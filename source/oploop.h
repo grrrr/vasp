@@ -53,9 +53,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 
+#define _DE_WHILE(COND,BODY) { _D_WHILE(COND) BODY; _E_WHILE }
+#define _DF_LOOP(VAR,LEN,BODY) { _D_LOOP(VAR,LEN) BODY; _E_LOOP }
+
 #ifdef VASP_COMPACT
 
-    #define _DE_LOOP(VAR,LEN,BODY) { _D_LOOP(VAR,LEN) BODY; _E_LOOP }
+    #define _DE_LOOP(VAR,LEN,BODY) _DF_LOOP(VAR,LEN,BODY)
 
 #else
 
@@ -93,7 +96,5 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     #endif
 
 #endif
-
-#define _DE_WHILE(COND,BODY) { _D_WHILE(COND) BODY; _E_WHILE }
 
 #endif
