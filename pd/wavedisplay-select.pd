@@ -1,5 +1,5 @@
 #N canvas 200 200 300 120 10;
-#N canvas 154 41 667 343 inside 0;
+#N canvas 154 41 669 345 inside 0;
 #N canvas 149 25 652 578 positions 0;
 #N canvas 74 268 410 336 setpositions 0;
 #X obj 60 102 inlet;
@@ -214,9 +214,9 @@
 #X connect 11 1 9 0;
 #X restore 91 188 pd loadsample;
 #X text 187 187 load a new sample;
-#N canvas 46 30 518 600 drawdisplay 0;
-#X obj 193 445 vasp.frames 20;
-#X obj 193 420 vasp.offset 0;
+#N canvas 46 30 520 602 drawdisplay 0;
+#X obj 193 422 vasp.frames 20;
+#X obj 193 449 vasp.offset 0;
 #X msg 83 83 bang;
 #X obj 168 137 0;
 #X obj 168 225 t f f f;
@@ -242,8 +242,8 @@
 #X obj 168 162 moses 299;
 #X msg 242 217 0;
 #X obj 217 196 t f b;
-#X connect 0 0 9 0;
-#X connect 1 0 0 0;
+#X connect 0 0 1 0;
+#X connect 1 0 9 0;
 #X connect 2 0 14 0;
 #X connect 3 0 5 0;
 #X connect 3 0 24 0;
@@ -261,7 +261,7 @@
 #X connect 12 2 1 1;
 #X connect 13 0 3 0;
 #X connect 14 0 13 0;
-#X connect 17 0 1 0;
+#X connect 17 0 0 0;
 #X connect 18 0 17 0;
 #X connect 19 0 2 0;
 #X connect 20 0 21 0;
@@ -553,7 +553,7 @@ and graphic-positions;
 #X restore 332 83 pd inside;
 #X obj 398 96 outlet;
 #X obj 3 0 hsl 300 120 0 299 0 0 \$0-sliders \$0-sliderr empty -2 -6
-1728 8 -262144 -1 -1 5100 0;
+1728 8 -262144 -1 -1 12200 0;
 #X obj 0 0 cnv 15 305 120 empty empty empty 20 12 0 14 -262144 -66577
 0;
 #X obj 2 0 cnv 15 300 120 empty empty empty 20 12 0 14 -225271 -66577

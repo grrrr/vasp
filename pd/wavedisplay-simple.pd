@@ -1,11 +1,11 @@
 #N canvas 200 200 300 120 10;
-#N canvas 154 41 395 173 inside 0;
+#N canvas 154 41 397 175 inside 0;
 #N canvas 183 206 183 114 wavetable 0;
 #X obj 30 22 table \$1 44100;
 #X restore 62 51 pd wavetable;
 #X text 146 50 contains the sample;
-#N canvas 46 30 526 608 drawdisplay 0;
-#X obj 193 445 vasp.frames 20;
+#N canvas 46 30 528 610 drawdisplay 0;
+#X obj 193 389 vasp.frames 20;
 #X obj 193 420 vasp.offset 0;
 #X msg 83 83 bang;
 #X obj 168 137 0;
@@ -32,8 +32,8 @@
 #X obj 217 196 t f b;
 #X obj 325 229 r \$0-sample-length;
 #X obj 83 46 r \$0-draw_display;
-#X connect 0 0 9 0;
-#X connect 1 0 0 0;
+#X connect 0 0 1 0;
+#X connect 1 0 9 0;
 #X connect 2 0 14 0;
 #X connect 3 0 5 0;
 #X connect 3 0 22 0;
@@ -51,7 +51,7 @@
 #X connect 12 2 1 1;
 #X connect 13 0 3 0;
 #X connect 14 0 13 0;
-#X connect 17 0 1 0;
+#X connect 17 0 0 0;
 #X connect 18 0 17 0;
 #X connect 19 0 11 0;
 #X connect 20 0 15 0;
