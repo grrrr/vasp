@@ -9,6 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "ops_rearr.h"
+#include "oploop.h"
 #include "oppermute.h"
 
 /*! \brief vasp shift or rotation
@@ -52,10 +53,12 @@ BL VecOp::d_shift(OpParam &p)
 		p.sh.sh = ish;
 	}
 
+	p.SkipOddMiddle();
+	
 	ish = ish%p.frames;
 	if(p.symm == 1) ish = -ish;
 
-	I cnt = p.frames-abs(ish);
+	I i,cnt = p.frames-abs(ish);
 	const S *sd = p.rsdt-ish*p.rss;
 	S *dd = p.rddt;
 
@@ -66,22 +69,22 @@ BL VecOp::d_shift(OpParam &p)
 
 	// do shift
 	if(p.rss == 1 && p.rds == 1) 
-		for(I i = 0; i < cnt; ++i) *(dd++) = *(sd++);
+		_D_LOOP(i,cnt) *(dd++) = *(sd++);
 	else if(p.rss == -1 && p.rds == -1) 
-		for(I i = 0; i < cnt; ++i) *(dd--) = *(sd--);
+		_D_LOOP(i,cnt) *(dd--) = *(sd--);
 	else 
-		for(I i = 0; i < cnt; ++i,sd += p.rss,dd += p.rds) *dd = *sd;
+		_D_LOOP(i,cnt) *dd = *sd,sd += p.rss,dd += p.rds;
 
 	// fill spaces
 	if(p.sh.fill) {
 		S vfill = p.sh.fill == 1?0:dd[-p.rds];
 		I aish = abs(ish);
 		if(p.rds == 1) 
-			for(I i = 0; i < aish; ++i) *(dd++) = vfill;
+			_D_LOOP(i,aish) *(dd++) = vfill;
 		else if(p.rds == -1) 
-			for(I i = 0; i < aish; ++i) *(dd--) = vfill;
+			_D_LOOP(i,aish) *(dd--) = vfill;
 		else 
-			for(I i = 0; i < aish; ++i,dd += p.rds) *dd = vfill;
+			_D_LOOP(i,aish) *dd = vfill,dd += p.rds;
 	}
 
 	return true;
@@ -146,9 +149,12 @@ FLEXT_LIB_V("vasp.xshift",vasp_xshift)
 
 
 
-static int rotation(int ij, int n,OpParam &p) { return (ij+n-p.sh.ish)%n; }
+inline int rotation(int ij, int n,OpParam &p) { return (ij+n-p.sh.ish)%n; }
+
+#define ROTBLOCK 1024
 
 /*! \brief rotate buffer
+	\todo implement temporary storage for faster transformation (use abstract permute algorithm)
 */
 BL VecOp::d_rot(OpParam &p) 
 { 
@@ -163,10 +169,21 @@ BL VecOp::d_rot(OpParam &p)
 		post("%s - non-integer shift not implemented - truncating to integer",p.opname);
 	}
 
+	p.SkipOddMiddle();
+	
 	p.sh.ish = p.sh.ish%p.frames;
 	if(p.symm == 1) p.sh.ish = -p.sh.ish;
 
-	PERMUTATION(S,1,p,rotation);
+/*
+	if(p.frames >= ROTBLOCK) {
+		//use temporary space;
+		S *tmp = new S[ROTBLOCK];
+		
+		delete[] tmp;
+	}
+	else 
+*/
+		PERMUTATION(S,1,p,rotation);
 	return true; 
 }
 
@@ -183,15 +200,21 @@ BL VecOp::d_mirr(OpParam &p)
 		return false;
 	}
 
-	if(p.rsdt == p.rddt) 
-		for(S *dl = p.rddt,*du = p.rddt+(p.frames-1)*p.rds; dl < du; dl += p.rds,du -= p.rds) {
+	p.SkipOddMiddle();
+	
+	if(p.rsdt == p.rddt) {
+		S *dl = p.rddt,*du = p.rddt+(p.frames-1)*p.rds;
+		_D_WHILE(dl < du) {
 			register S t;
 			t = *dl; *dl = *du; *du = t;
+			dl += p.rds,du -= p.rds;
 		}
+	}
 	else {
+		I i;
 		const S *ds = p.rsdt;
 		S *dd = p.rddt+(p.frames-1)*p.rds;
-		for(I i = 0; i < p.frames; ++i,ds += p.rss,dd -= p.rds) *dd = *ds;
+		_D_LOOP(i,p.frames) *dd = *ds,ds += p.rss,dd -= p.rds;
 	}
 	return true; 
 }

@@ -11,18 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPDEFS_H
 #define __VASP_OPDEFS_H
 
-#define _D_BLOCK 1024
-
-#define _D_MIN(a,b) ((a) < (b)?(a):(b))
-
-#ifdef FLEXT_THREADS
-#define _D_LOOP(VAR,LEN) \
-	for(I i = 0; i < p.frames; flext_base::ThrYield()) \
-	for(I m = _D_MIN(p.frames,i+_D_BLOCK); i < m; ++i)
-#else
-#define _D_LOOP(VAR,LEN) \
-	for(I i = 0; i < p.frames; ++i)
-#endif
+#include "oploop.h"
 
 /*! \brief skeleton for unary real operations
 */
@@ -30,6 +19,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 {																\
 	register const S *sr = p.rsdt;								\
 	register S *dr = p.rddt;									\
+	register I i;												\
 	if(sr == dr)												\
 		if(p.rds == 1)											\
 			_D_LOOP(i,p.frames)									\
@@ -55,6 +45,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 {																\
 	register const S *sr = p.rsdt,*si = p.isdt;					\
 	register S *dr = p.rddt,*di = p.iddt;						\
+	register I i;												\
 	if(sr == dr && si == di)									\
 		if(p.rds == 1 && p.ids == 1)							\
 			_D_LOOP(i,p.frames)										\
@@ -81,6 +72,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 {																\
 	register const S *sr = p.rsdt;								\
 	register S *dr = p.rddt;									\
+	register I i;												\
 	if(p.HasArg() && p.arg[0].Is()) {											\
 		switch(p.arg[0].argtp) {									\
 		case OpParam::Arg::arg_v: {								\
@@ -168,6 +160,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 {																\
 	register const S *sr = p.rsdt,*si = p.isdt;					\
 	register S *dr = p.rddt,*di = p.iddt;						\
+	register I i;												\
 	if(p.HasArg() && p.arg[0].Is()) {											\
 		switch(p.arg[0].argtp) {									\
 		case OpParam::Arg::arg_v: {									\
@@ -251,6 +244,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 {																\
 	register const S *sr = p.rsdt;								\
 	register S *dr = p.rddt;									\
+	register I i;												\
 	if(sr == dr)												\
 		if(p.rds == 1)											\
 			_D_LOOP(i,p.frames)										\
@@ -277,6 +271,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 {																\
 	register const S *sr = p.rsdt,*si = p.isdt;					\
 	register S *dr = p.rddt,*di = p.iddt;						\
+	register I i;												\
 	if(sr == dr && si == di)									\
 		if(p.rds == 1 && p.ids == 1)							\
 			_D_LOOP(i,p.frames)										\

@@ -9,154 +9,108 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "ops_wnd.h"
+#include "oploop.h"
 #include <math.h>
+#include <string.h>
 
-// --- bevel --------------------------
+// --- window --------------------------
 
-// Should bevels start from 0 or .5/cnt ??  -> 0!
-
-/*!	\brief Vector function for bevel.
-*/
-BL VecOp::d_bevel(OpParam &p) 
+BL VecOp::d_window(OpParam &p) 
 { 
-	register R cur = p.bvl.cur,inc = p.bvl.inc;
-	if(p.revdir) cur -= (p.frames-1)*(inc = -inc);
+	switch(p.wnd.wndtp) {	
+	case 0: { // bevel
+		BL rev = ((p.revdir?1:0)^(p.symm == 1?1:0)^(p.wnd.inv?1:0)) != 0;
+		register R inc,cur;
+		
+		if(p.oddrem) p.SkipOddMiddle(1);
 
-	register S *dd = p.rddt;
-	if(p.rds == 1)
-		for(I i = 0; i < p.frames; ++i,dd++,cur += inc) *dd = cur;
-	else
-		for(I i = 0; i < p.frames; ++i,dd += p.rds,cur += inc) *dd = cur;
+		inc = (rev?-1.:1.)/p.frames; // increase
+		cur = rev?(1+inc/2):inc/2; // start
+
+		if(!p.wnd.mul) {
+			register S *dd = p.rddt;
+			register I i;
+			if(p.rds == 1)
+				_D_LOOP(i,p.frames) *(dd++) = cur,cur += inc;
+			else
+				_D_LOOP(i,p.frames) *dd = cur,dd += p.rds,cur += inc;
+		}
+		else {
+			register const S *sd = p.rsdt;
+			register S *dd = p.rddt;
+			register I i;
+			if(sd == dd)
+				if(p.rss == 1 && p.rds == 1)
+					_D_LOOP(i,p.frames) *(dd++) *= cur,cur += inc;
+				else
+					_D_LOOP(i,p.frames) *dd *= cur,dd += p.rds,cur += inc;
+			else
+				if(p.rss == 1 && p.rds == 1)
+					_D_LOOP(i,p.frames) *(dd++) = *(sd++) * cur,cur += inc;
+				else
+					_D_LOOP(i,p.frames) *dd = *sd * cur,sd += p.rss,dd += p.rds,cur += inc;
+		}
+		break;
+	}
+	case 1: { // sine
+	}
+	case 2: { // cosine
+	}	
+	default: {
+		post("%s: Window function #%i not known",p.opname,p.wnd.wndtp);
+		return false;
+	}
+	}
+	
 	return true;
 }
 
-/*!	\brief Vector function for multiplicative bevel ("fade").
-*/
-BL VecOp::d_mbevel(OpParam &p) 
+Vasp *VaspOp::m_window(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL inv,BL mul,BL symm) 
 { 
-	register R cur = p.bvl.cur,inc = p.bvl.inc;
-	if(p.revdir) cur -= (p.frames-1)*(inc = -inc);
+	static const int wndnum = 3;
+	static const char *wndtps[wndnum] = {"lin","sin","cos"};
 
-	register const S *sd = p.rsdt;
-	register S *dd = p.rddt;
-	if(sd == dd)
-		if(p.rss == 1 && p.rds == 1)
-			for(I i = 0; i < p.frames; ++i,dd++,cur += inc) *dd *= cur;
-		else
-			for(I i = 0; i < p.frames; ++i,dd += p.rds,cur += inc) *dd *= cur;
-	else
-		if(p.rss == 1 && p.rds == 1)
-			for(I i = 0; i < p.frames; ++i,sd++,dd++,cur += inc) *dd = *sd * cur;
-		else
-			for(I i = 0; i < p.frames; ++i,sd += p.rss,dd += p.rds,cur += inc) *dd = *sd * cur;
-	return true;
-}
-
-/*! \brief Generator for bevel ups or downs.
-
-	\param up true if bevel should rise
-	\param mul true for multiplcation on existing data (aka fading)
-	\return normalized destination vasp
-*/
-Vasp *VaspOp::m_bevelup(OpParam &p,Vasp &src,Vasp *dst,BL up,BL mul) 
-{ 
 	Vasp *ret = NULL;
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		p.bvl.cur = up?0:1; // start
-		p.bvl.inc = (up?1.:-1.)/vecs->Frames(); // increase
+		p.wnd.wndtp = -1;
 
-		ret = DoOp(vecs,mul?VecOp::d_mbevel:VecOp::d_bevel,p);
+		if(arg.IsList() && arg.GetList().Count() >= 1) {
+			// window mode
+			const flext_base::AtomList &l = arg.GetList();
+			if(flx::IsSymbol(l[0])) {
+				I i;
+				const C *s = flx::GetString(l[0]);
+				p.wnd.wndtp = -1;
+				for(i = 0; i < wndnum; ++i)
+					if(!strcmp(wndtps[i],s)) { p.wnd.wndtp = i; break; }
+			}
+			else if(flx::CanbeInt(l[0])) {
+				p.wnd.wndtp = flx::GetAInt(l[0]);
+			}
+			else p.wnd.wndtp = -1;
+		}
+		
+		if(p.wnd.wndtp < 0) {
+			post("%s - invalid window type - using lin",p.opname);
+			p.wnd.wndtp = 0;
+		}
+		
+		p.wnd.inv = inv;
+		p.wnd.mul = mul;			
+		ret = DoOp(vecs,VecOp::d_window,p,symm);
 		delete vecs;
 	}
 
 	return ret;
 }
 
-VASP_UNARY("vasp.bevel",bevelup,false,"")
-VASP_UNARY("vasp.!bevel",beveldn,false,"")
-VASP_UNARY("vasp.*bevel",mbevelup,true,"")
-VASP_UNARY("vasp.*!bevel",mbeveldn,false,"")
-
-// --- window --------------------------
-
-BL VecOp::d_window(OpParam &p) 
-{ 
-	post("vasp.window: Sorry, not implemented yet");
-	return false;
-	
-//	for(I i = 0; i < cnt; ++i,dt += str) *dt = 0;
-//	return true;
-}
-
-BL VecOp::d_vwindow(OpParam &p) 
-{ 
-	post("vasp.window: Sorry, not implemented yet");
-	return false;
-	
-//	for(I i = 0; i < cnt; ++i,dt += str) *dt = 0;
-//	return true;
-}
-
-BL VecOp::d_mwindow(OpParam &p) 
-{ 
-	post("vasp*window: Sorry, not implemented yet");
-	return false;
-	
-//	for(I i = 0; i < cnt; ++i,dt += str) *dt *= 1;
-//	return true;
-}
-
-BL VecOp::d_vmwindow(OpParam &p) 
-{ 
-	post("vasp*window: Sorry, not implemented yet");
-	return false;
-	
-//	for(I i = 0; i < cnt; ++i,dt += str) *dt *= 1;
-//	return true;
-}
-
-
-/*
-Vasp *Vasp::m_window(const Argument &arg) 
-{ 
-	if(arg.CanbeInt())
-		return fr_arg("window",arg.GetAInt(),d_window);
-	else if(arg.IsVasp())
-		return fv_arg("window",arg.GetVasp(),d_vwindow);
-	else return NULL; 
-}
-
-Vasp *Vasp::m_mwindow(const Argument &arg) 
-{ 
-	if(arg.CanbeInt())
-		return fr_arg("*window",arg.GetAInt(),d_mwindow);
-	else if(arg.IsVasp())
-		return fv_arg("*window",arg.GetVasp(),d_vmwindow);
-	else return NULL; 
-}
-
-*/
-
-Vasp *VaspOp::m_window(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
-{ 
-	Vasp *ret = NULL;
-	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
-		if(vecs) {
-			// window mode
-			p.wnd.wndtp = flx::GetAInt(arg.GetList()[1]);
-		
-			ret = DoOp(vecs,mul?VecOp::d_mwindow:VecOp::d_window,p);
-			delete vecs;
-		}
-	}
-
-	return ret;
-}
-
-VASP_ANYOP("vasp.window",window,0,false,VASP_ARG(),"")
-VASP_ANYOP("vasp.*window",mwindow,0,true,VASP_ARG(),"")
+VASP_ANYOP("vasp.window vasp.wnd",window,0,false,VASP_ARG(),"Sets target vasp to window function")
+VASP_ANYOP("vasp.*window vasp.*wnd",mwindow,0,true,VASP_ARG(),"Multiplies a vasp by window function")
+VASP_ANYOP("vasp.!window vasp.!wnd",iwindow,0,false,VASP_ARG(),"Sets target vasp to reverse window function")
+VASP_ANYOP("vasp.*!window vasp.!wnd",miwindow,0,true,VASP_ARG(),"Multiplies a vasp by reverse window function")
+VASP_ANYOP("vasp.xwindow vasp.xwnd",xwindow,0,false,VASP_ARG(),"Sets target vasp to symmetrical window function")
+VASP_ANYOP("vasp.*xwindow vasp.*xwnd",mxwindow,0,true,VASP_ARG(),"Multiplies a vasp by symmetrical window function")
 
 
 

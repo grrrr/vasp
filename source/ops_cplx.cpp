@@ -73,7 +73,6 @@ template<class T> V f_cnorm(T &rv,T &iv,T ra,T ia)
 
 BL VecOp::d_cnorm(OpParam &p) { d__cun(f_cnorm<S>,p); }
 
-
 VASP_UNARY("vasp.cnorm",cnorm,true,"")
 
 // -----------------------------------------------------
@@ -82,12 +81,5 @@ template<class T> inline V f_cconj(T &,T &iv,T,T ia) { iv = -ia; }
 
 BL VecOp::d_cconj(OpParam &p) { D__cun(f_cconj<S>,p); }
 
-
 VASP_UNARY("vasp.cconj",cconj,true,"")  // should be replaced by an abstraction
 
-
-//template<class T> inline V f_cswap(T &rv,T &iv,T ra,T ia) { rv = ia,iv = ra; }
-//BL VecOp::d_cswap(OpParam &p) { D__cun(f_cswap<S>,p); }
-
-
-//VASP_UNARY("vasp.cswap",cswap,true)

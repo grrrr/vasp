@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.8pre1"
+#define VASP_VERSION "0.0.8pre2"
 
 
 #include <flext.h>
@@ -20,15 +20,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #error You need at least flext version 0.3.3
 #endif
 
-//#ifdef __GNUC__
 #include <typeinfo>
-//#else
-//#include <typeinfo.h>
-//#endif
-
 #include <stdlib.h>
-
-//#include "util.h"
 
 #define I int
 #define L long
@@ -45,10 +38,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 #ifdef PD
-
 // buffers are never interleaved - special optimizations may occur
+// attention: possibly obsolete when immediate file access is implemented
 #define VASP_CHN1  
-
 #endif
 
 class complex 

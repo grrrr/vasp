@@ -20,9 +20,6 @@ namespace VecOp {
 	BL d_mbevel(OpParam &p); 
 
 	BL d_window(OpParam &p);
-	BL d_mwindow(OpParam &p);
-	BL d_vwindow(OpParam &p);
-	BL d_vmwindow(OpParam &p);
 }
 
 namespace VaspOp {
@@ -30,8 +27,13 @@ namespace VaspOp {
 	inline Vasp *m_mbevelup(OpParam &p,Vasp &src,Vasp *dst) { return m_bevelup(p,src,dst,true,true); }   // * bevel up (fade in)
 	inline Vasp *m_beveldn(OpParam &p,Vasp &src,Vasp *dst) { return m_bevelup(p,src,dst,false,false); }  // bevel down
 	inline Vasp *m_mbeveldn(OpParam &p,Vasp &src,Vasp *dst) { return m_bevelup(p,src,dst,false,true); }   // * bevel down (fade out)
-	Vasp *m_window(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul = false);  // window curve
-	inline Vasp *m_mwindow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) { return m_window(p,src,arg,dst,true); }  // * window curve
+
+	Vasp *m_window(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL inv = false,BL mul = false,BL symm = false);  // window curve
+	inline Vasp *m_mwindow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) { return m_window(p,src,arg,dst,false,true,false); }  // * window curve
+	inline Vasp *m_iwindow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) { return m_window(p,src,arg,dst,true,false,false); }  // inverse window curve
+	inline Vasp *m_miwindow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) { return m_window(p,src,arg,dst,true,true,false); }  // * inverse window curve
+	inline Vasp *m_xwindow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) { return m_window(p,src,arg,dst,false,false,true); }  // symmetrical window curve
+	inline Vasp *m_mxwindow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) { return m_window(p,src,arg,dst,false,true,true); }  // * symmetrical window curve
 }
 
 #endif

@@ -58,26 +58,6 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
 
 	Vasp *vbl[2] = {&src,dst};
 
-/*
-	for(I bli = 0; bli < 2; ++bli)
-		if(vbl[bli] && vbl[bli]->Ok())
-			for(I ci = 0; ok && ci < nvecs; ++ci) {
-				VBuffer *bref = vbl[bli]->Buffer(ci);		
-				if(!bref->Data()) {
-					post("%s - %s vector (%s) is invalid",op,bli == 0?"src":"dst",bref->Name());
-					ok = false; break; // really break?
-				}
-				else {
-					if(bli == 0) 
-						ret->Src(ci,bref);
-					else 
-						ret->Dst(ci,bref);
-
-					dlens = dlens || corrlen(tfrms,bref->Length());
-				}
-			}
-*/
-
 	for(I bli = 0; bli < 2; ++bli)
 		for(I ci = 0; ok && ci < nvecs; ++ci) {
 			VBuffer *bref = NULL;
@@ -137,30 +117,7 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
 	I tfrms = -1;
 
 	Vasp *vbl[2] = {&src,dst};
-/*
-	for(I bli = 0; bli < 2; ++bli)
-		if(vbl[bli] && vbl[bli]->Ok())
-			for(I ci = 0; ci < pairs; ++ci) {
-				const C *vnm = bli == 0?"src":"dst";
-				VBuffer *bre = vbl[bli]->Buffer(ci*2),*bim = vbl[bli]->Buffer(ci*2+1); // complex channels
 
-				if(!bre->Data()) {
-					post("%s - real %s vector (%s) is invalid",op,vnm,bre->Name());
-					ok = false; break;
-				}
-				if(!bim->Data()) {
-					post("%s - imag %s vector (%s) is invalid",op,vnm,bim->Name());
-					ok = false; break;
-				}
-
-				// check against common vector length
-				dlens = dlens || corrlen(tfrms,bre->Length());
-				if(bim)	dlens = dlens || corrlen(tfrms,bim->Length());
-
-				if(bli == 0) ret->Src(ci,bre,bim);
-				else ret->Dst(ci,bre,bim);
-			}
-*/
 	for(I bli = 0; bli < 2; ++bli) 
 		for(I ci = 0; ci < pairs; ++ci) {
 			VBuffer *bre = NULL,*bim = NULL; // complex channels
@@ -257,7 +214,7 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 
 		if(barg && (multi || ci == 0) && !barg->Data()) {
 			post("%s - arg vector (%s) is invalid",op,barg->Name());
-			ok = false; break; // really return?
+			ok = false; break; // really break?
 		}
 		else if(!bref->Data()) {
 			post("%s - src vector (%s) is invalid",op,bref->Name());
@@ -449,7 +406,7 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 		for(I si = 0; ok && si < scnt; ++si) {
 			p.frames = vecs->Frames();
 
-			VBuffer *s = vecs->Src(i),*d = vecs->Dst(i); //,*a = vecs->Arg(i);
+			VBuffer *s = vecs->Src(i),*d = vecs->Dst(i); 
 			p.rsdt = s->Pointer(),p.rss = s->Channels();
 		
 			if(d) p.rddt = d->Pointer(),p.rds = d->Channels();
@@ -458,15 +415,16 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 			for(I bi = 0; bi < vecs->ArgBlks(); ++bi) {
 				VBuffer *a = vecs->Arg(i,bi);
 				p.arg[bi].SetV(a?a->Pointer():NULL,a?a->Channels():0);
-//				p.radt = a->Pointer(),p.ras = a->Channels();
 			}
 		
 			if(!symm) 
 				p.symm = -1;
 			else {
 				const I hcnt = p.frames/2;
+				p.oddrem = p.frames != 2*hcnt;
+
 				if((p.symm = si) == 0) {
-					p.frames = hcnt; 
+					p.frames = hcnt+(p.oddrem?1:0); 
 				}
 				else {
 					const I r = p.frames-hcnt;
@@ -474,8 +432,8 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					p.rsdt += r*p.rss,p.rddt += r*p.rds;
 
 					// What to do with arguments in symmetric mode?
-//					if(p.radt) p.radt += r*p.ras;
-				}
+					// let the object decide!!
+				}				
 			}
 
 			{	// ---- Check out and try to resolve overlap situation ------------
@@ -568,24 +526,16 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 			for(I bi = 0; bi < vecs->ArgBlks(); ++bi) {
 				VBuffer *rav = vecs->ReArg(i,bi),*iav = vecs->ImArg(i,bi);
 				p.arg[bi].SetV(rav?rav->Pointer():NULL,rav?rav->Channels():0,iav?iav->Pointer():NULL,iav?iav->Channels():0);
-/*
-				if(rav) {
-					p.radt = rav->Pointer(),p.ras = rav->Channels();
-					if(iav) p.iadt = iav->Pointer(),p.ias = iav->Channels();
-					else p.iadt = NULL; //,p.ias = 0;
-				}
-				else { 
-					p.radt = NULL,p.iadt = NULL;
-				}
-*/
 			}
 
 			if(!symm) 
 				p.symm = -1;
 			else {
 				const I hcnt = p.frames/2;
+				p.oddrem = p.frames != 2*hcnt;
+
 				if((p.symm = si) == 0) {
-					p.frames = hcnt; 
+					p.frames = hcnt+(p.oddrem?1:0); 
 				}
 				else {
 					const I r = p.frames-hcnt;
@@ -595,8 +545,7 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					if(p.iddt) p.iddt += r*p.ids; // Can that be NULL??
 
 					// What to do with arguments?
-//					if(p.radt) p.radt += r*p.ras;
-//					if(p.iadt) p.iadt += r*p.ias;
+					// let objects decide!!
 				}
 			}
 

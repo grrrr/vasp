@@ -15,7 +15,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // --- highpass ---------------------------------------
 
 //! \todo handle carry
-// !BUG
+//! \todo handle yield
 
 BL VecOp::d_fhp(OpParam &p) 
 { 
@@ -62,6 +62,7 @@ BL VecOp::d_fhp(OpParam &p)
 // --- lowpass ---------------------------------------
 
 //! \todo handle carry
+//! \todo handle yield
 
 BL VecOp::d_flp(OpParam &p) 
 { 
@@ -146,8 +147,10 @@ BL VecOp::d_int(OpParam &p)
 		post("%s - reversed operation direction due to overlap: opposite sample delay",p.opname);
 
 	register S d = p.intdif.carry;
-	for(; p.frames-- ; p.rsdt += p.rss,p.rddt += p.rds) { 
+	register I i;
+	_D_LOOP(i,p.frames) { 
 		*p.rddt = (d += *p.rsdt); 
+		p.rsdt += p.rss,p.rddt += p.rds;
 	}
 	p.intdif.carry = d;
 	return true; 
@@ -165,9 +168,11 @@ BL VecOp::d_dif(OpParam &p)
 		post("%s - reversed operation direction due to overlap: opposite sample delay",p.opname);
 
 	register S d = p.intdif.carry;
-	for(; p.frames-- ; p.rsdt += p.rss,p.rddt += p.rds) { 
+	register I i;
+	_D_LOOP(i,p.frames) { 
 		register S d1 = *p.rsdt; 
 		*p.rddt = d1-d,d = d1; 
+		p.rsdt += p.rss,p.rddt += p.rds;
 	}
 	p.intdif.carry = d;
 	return true; 

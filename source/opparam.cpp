@@ -81,7 +81,7 @@ V OpParam::SADC_Rev() { SADR_Rev(); SADI_Rev(); }
 
 OpParam::OpParam(const C *opnm,I nargs): 
 	opname(opnm),frames(0),args(0),arg(NULL),
-	/*part(false),*/ ovrlap(false),revdir(false) 
+	/*part(false),*/ ovrlap(false),revdir(false),oddrem(false)
 {
 	InitArgs(nargs);
 }
@@ -202,6 +202,22 @@ V OpParam::AI_Rev()
 	for(I i = 0; i < args; ++i) AI_Rev(i);
 }
 
-
-
-
+V OpParam::SkipOddMiddle()
+{
+	if(symm == 0 && oddrem) {
+		// don't process middle sample!
+		if(revdir) rsdt += rss,rddt += rds;
+		frames--; 
+	}
+}
+	
+V OpParam::SkipOddMiddle(S m)
+{
+	if(symm == 0 && oddrem) {
+		// set and skip middle sample!
+		frames--; 
+		if(revdir) *rddt = m,rsdt += rss,rddt += rds;
+		else rddt[frames] = m;
+	}
+}
+	

@@ -51,8 +51,8 @@ Vasp *VaspOp::m_rpow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	return ret;
 }
 
-VASP_BINARY("vasp.pow",pow,true,VASP_ARG_R(1),"") 
-VASP_ANYOP("vasp.rpow",rpow,1,true,VASP_ARG_R(1),"") 
+VASP_BINARY("vasp.pow",pow,true,VASP_ARG_R(1),"Real power function") 
+VASP_ANYOP("vasp.rpow",rpow,1,true,VASP_ARG_R(1),"Power function acting on complex radius") 
 
 
 // --------------------------------------------------------------
@@ -64,8 +64,8 @@ BL VecOp::d_sqrt(OpParam &p) { d__run(f_rsqrt<S>,p); }
 BL VecOp::d_ssqrt(OpParam &p) { d__run(f_rssqrt<S>,p); }
 
 
-VASP_UNARY("vasp.sqrt",sqrt,true,"") 
-VASP_UNARY("vasp.ssqrt",ssqrt,true,"") 
+VASP_UNARY("vasp.sqrt",sqrt,true,"Square root") 
+VASP_UNARY("vasp.ssqrt",ssqrt,true,"Square root preserving the sign") 
 
 // --------------------------------------------------------------
 
@@ -77,7 +77,7 @@ BL VecOp::d_exp(OpParam &p) { d__run(f_rexp<S>,p); }
 BL VecOp::d_log(OpParam &p) { d__run(f_rlog<S>,p); }
 
 
-VASP_UNARY("vasp.exp",exp,true,"") 
-VASP_UNARY("vasp.log",log,true,"") 
+VASP_UNARY("vasp.exp",exp,true,"Exponential function") 
+VASP_UNARY("vasp.log",log,true,"Natural logarithm") 
 
 

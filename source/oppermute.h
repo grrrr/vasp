@@ -12,14 +12,21 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __VASP_OPPERMUTE_H
 
 #include "opparam.h"
+#include "oploop.h"
 
+#define PERMTMPL
 #define MAXPERMDIM 2
 
 template<class T>
 inline void permswap(T &a,T &b) { register T t = a; a = b; b = t; }
 
+#ifdef PERMTMPL
+template<class T,int origination(int pos, int sz,OpParam &p)>
+void permutation1(OpParam &p)
+#else
 template<class T>
 void permutation1(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
+#endif
 {
 	T *ddt = p.rddt;
 	const I ds = p.rds;
@@ -29,12 +36,14 @@ void permutation1(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 		// not in place
 		const T *sdt = p.rsdt;
 		const I ss = p.rss;
-		for(int i = 0; i < sz; ++i) ddt[origination(i,sz,p)*ds] = sdt[i*ss];
+		I i;
+		_D_LOOP(i,sz) ddt[origination(i,sz,p)*ds] = sdt[i*ss];
 	}
 	else {
 		// in place 
 		// \todo try to come from both sides!
-		for(int i = 0; i <= sz-2; ++i) {
+		I i;
+		_D_LOOP(i,sz-1) {
 			int cur = i;
 			do { cur = origination(cur,sz,p); } while(cur < i);
 			if(cur > i) {
@@ -45,8 +54,13 @@ void permutation1(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 	}
 }
 
+#ifdef PERMTMPL
+template<class T,int origination(int pos, int sz,OpParam &p)>
+void permutation2(OpParam &p)
+#else
 template<class T>
 void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
+#endif
 {
 	T *rddt = p.rddt,*iddt = p.iddt;
 	const I rds = p.rds,ids = p.ids;
@@ -55,8 +69,8 @@ void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 
 	if(rinpl == iinpl) {
 		// re and im both in place
-
-		for(int i = 0; i <= sz-2; ++i) {
+		I i;
+		_D_LOOP(i,sz-1) {
 			int cur = i;
 			do { cur = origination(cur,sz,p); } while(cur < i);
 			if(cur > i) {
@@ -70,10 +84,11 @@ void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 		if(!rinpl) {
 			const T *sdt = p.rsdt;
 			const I ss = p.rss;
+			I i;
 			if(ss == 1 && rds == 1)
-				for(int i = 0; i < sz; ++i) *(rddt++) = *(sdt++);
+				_D_LOOP(i,sz) *(rddt++) = *(sdt++);
 			else
-				for(int i = 0; i < sz; ++i,rddt += rds,sdt += ss) *rddt = *sdt;
+				_D_LOOP(i,sz) *rddt = *sdt,rddt += rds,sdt += ss;
 			rddt = p.rddt;
 		}
 		else permutation1<T>(p,origination);
@@ -81,10 +96,11 @@ void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 		if(!iinpl) {
 			const T *sdt = p.isdt;
 			const I ss = p.iss;
+			I i;
 			if(ss == 1 && ids == 1)
-				for(int i = 0; i < sz; ++i) *(iddt++) = *(sdt++);
+				_D_LOOP(i,sz) *(iddt++) = *(sdt++);
 			else
-				for(int i = 0; i < sz; ++i,iddt += ids,sdt += ss) *iddt = *sdt;
+				_D_LOOP(i,sz) *iddt = *sdt,iddt += ids,sdt += ss;
 			iddt = p.iddt;
 		}
 		else {
@@ -95,8 +111,11 @@ void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 	}
 }
 
-
+#ifdef PERMTMPL
+#define PERMUTATION(tp,dim,p,func) permutation ## dim <tp,func>(p)
+#else
 #define PERMUTATION(tp,dim,p,func) permutation ## dim <tp>(p,func)
+#endif
 
 #endif
 

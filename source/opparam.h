@@ -56,10 +56,13 @@ public:
 	
 	V R_Rev();
 	V C_Rev();
+	
+	V SkipOddMiddle();
+	V SkipOddMiddle(S m);
 
 	const C *opname;
 	I frames,symm,args;
-	BL ovrlap,revdir;
+	BL ovrlap,revdir,oddrem;
 	S *rsdt,*isdt; I rss,iss;
 	S *rddt,*iddt; I rds,ids;
 	
@@ -102,7 +105,7 @@ public:
 		struct { R factor,center; I mode,fill; } tilt; 
 		struct { R cur,inc; } bvl;
 		struct { R sh; I ish; I fill; } sh;
-		struct { I wndtp; } wnd;
+		struct { I wndtp; BL inv,mul; } wnd;
 		struct { R minmax,scl; } norm;
 		struct { I arg; } ibin;
 		struct { R arg; } rbin; 

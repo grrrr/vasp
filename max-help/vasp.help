@@ -701,7 +701,7 @@ max v2;
 #P comment 25 41 148 196622 vasp_modular.help;
 #P comment 45 120 354 196617 vasp is a library of objects for max/msp and pd \,;
 #P comment 45 348 432 196617 inspired by günther rabl´s fft-box and tool-box. find günther rabl at www.canto-crudo.com;
-#P comment 45 75 362 196620 vasp modular 0.0.5 - vector assembling signal processor ©2002 thomas grill;
+#P comment 45 75 362 196620 vasp modular - vector assembling signal processor ©2002 thomas grill;
 #P comment 45 365 470 196617 vasp.help patches by florian bogner and oliver grimm - ©2002 patcherboys - www.patcherboys.com;
 #P comment 45 168 570 196617 these help patches should give you an idea of what is possible. feel free to combine different patches to more complex ones.;
 #P hidden connect 18 0 20 0;

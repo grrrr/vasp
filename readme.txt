@@ -14,6 +14,9 @@ Version history:
 0.0.8:
 - CHANGE: vasp.radio got right outlet for non-radio messages
 - ADD: thread yield for all simple vasp objects
+- CHANGE: vasp.? and vasp.??: made explicit list outlets
+- ADD: vasp.window, vasp.*window, vasp.!window, vasp.*!window, vasp.xwindow, vasp.*xwindow
+- REMOVE: vasp.bevel, vasp.!bevel... obsolete due to new vasp.window objects
 
 0.0.7:
 - CHANGE: vasp.m is now called vasp.multi by default
@@ -129,6 +132,9 @@ tests:
 - vasp.size always keeps the data... do we want that? -> flag if yes/no
 - in-place operation (src == dst), test if strides are equal!
 - should frame count always be pre-evaluated (e.g. in vasp.f+ etc. ?)
+- review/change questionable permutation algorithm
+- test DFT objects on strided buffers
+- check for odd remainder frame on symmetric operations!!
 
 premature thoughts:
 ---------------------

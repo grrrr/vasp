@@ -33,7 +33,7 @@ public:
 	vasp_list()
 	{
 		AddInAnything();
-		AddOutAnything();
+		AddOutList();
 		SetupInOut();
 	}
 
@@ -45,13 +45,11 @@ public:
 			post("%s - More than one vector in vasp!",thisName());
 		else {
 			VBuffer *buf = ref.Buffer(0);
-			I cnt = buf->Length();
+			I cnt = buf->Length();			
 			S *p = buf->Pointer();
-			t_atom *lst = new t_atom[cnt];
+			AtomList lst(cnt);
 			for(I i = 0; i < cnt; ++i,++p) SetFloat(lst[i],*p);
-			ToOutAnything(0,sym_list,cnt,lst);
-//			ToOutVasp(0,ref);
-			delete[] lst;
+			ToOutList(0,lst);
 		}
 	}
 
@@ -86,7 +84,7 @@ public:
 	vasp_nonzero()
 	{
 		AddInAnything();
-		AddOutAnything(2);
+		AddOutList(2);
 		SetupInOut();
 	}
 
@@ -101,18 +99,17 @@ public:
 			I i,cnt = buf->Length(),cp,ci;
 			S *p = buf->Pointer();
 			for(cp = i = 0; i < cnt; ++i,++p) if(*p) ++cp;
-			t_atom *pos = new t_atom[cp],*lst = new t_atom[cp];
+			
+			AtomList pos(cp),lst(cp);
 			p = buf->Pointer();
 			for(ci = i = 0; ci < cp; ++i,++p)
 				if(*p) {
 					SetFloat(pos[ci],i);
 					SetFloat(lst[ci],*p);
-					++ci;
+					++ci;			
 				}
-			ToOutAnything(0,sym_list,cp,pos);
-			ToOutAnything(1,sym_list,cp,lst);
-			delete[] pos;
-			delete[] lst;
+			ToOutList(0,pos);
+			ToOutList(1,lst);
 		}
 	}
 

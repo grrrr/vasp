@@ -9,6 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "ops_feature.h"
+#include "oploop.h"
 #include "util.h"
 #include <math.h>
 
@@ -46,7 +47,7 @@ static BL d_vlpk(OpParam &p,BL cmpf(S a,S b))
 		S d1 = -1,d0 = -1,dn = -1;
 
 		// search first non-null sample
-		for(i = 0; i < p.frames; ++i) 
+		_D_LOOP(i,p.frames) 
 			if((dn = sqabs(rsrc[i*p.rss],isrc[i*p.iss])) != 0)
 				break; // non-null -> break!
 			else 
@@ -54,7 +55,7 @@ static BL d_vlpk(OpParam &p,BL cmpf(S a,S b))
 
 		// i points to first non-null sample
 
-		while(i < p.frames) {
+		_D_WHILE(i < p.frames) {
 
 			// current samples -> previous samples
 			d1 = d0,d0 = dn;
