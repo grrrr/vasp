@@ -1,4 +1,4 @@
-#N canvas 11 0 969 636 10;
+#N canvas 11 0 971 638 10;
 #X obj 75 32 cnv 15 15 15 empty empty filter_example 0 10 1 14 -262144
 -1 0;
 #X obj 523 555 dac~;
@@ -72,7 +72,7 @@
 #X text 190 506 invers transform back to the time domain;
 #X obj 66 434 vasp.= 0;
 #X msg 66 414 set vasp \$1 bufre1 \$2 bufim1 \$2;
-#X obj 299 345 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 290 348 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X obj 66 455 vasp.update;
 #X obj 66 475 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
