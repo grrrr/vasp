@@ -1,0 +1,48 @@
+#N canvas 21 60 877 572 10;
+#X obj 61 33 cnv 15 15 15 empty empty vasp.imm 0 10 1 14 -262144 -1
+0;
+#X msg 56 166 vasp bufset;
+#X obj 56 188 vasp.noise;
+#X obj 56 211 vasp.* 0.5;
+#X text 142 164 generate noise;
+#X obj 56 232 vasp.update;
+#X obj 56 254 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 56 385 vasp.= 0;
+#X obj 112 342 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 56 406 vasp.update;
+#X obj 56 426 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 56 315 vasp bufset;
+#X text 134 314 set all samples to zero;
+#X text 136 339 set selected samples to zero;
+#N canvas 0 0 261 214 clear_buffer 0;
+#X obj 49 73 vasp.= 0;
+#X obj 49 49 inlet;
+#X obj 49 97 vasp.u;
+#X obj 49 118 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X restore 559 465 pd clear_buffer;
+#X text 57 138 use vasp.= to clear a buffer;
+#X obj 51 533 VASP;
+#X text 93 533 - vasp overview;
+#X text 57 60 create an immediate vasp;
+#X obj 159 476 vasp.!;
+#X text 58 476 abbreviation:;
+#X text 321 469 rechter inlet???;
+#X msg 559 439 vasp bufimm;
+#X text 463 390 auch mehrere immeditaes? wer greift auf welchen zu?
+;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 5 0;
+#X connect 5 0 6 0;
+#X connect 7 0 9 0;
+#X connect 8 0 7 0;
+#X connect 9 0 10 0;
+#X connect 11 0 7 0;
+#X connect 22 0 14 0;

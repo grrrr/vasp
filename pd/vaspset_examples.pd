@@ -1,4 +1,4 @@
-#N canvas 27 56 969 548 10;
+#N canvas 27 56 971 550 10;
 #X obj 519 287 wavedisplay-simple bufsetb \$0;
 #X obj 519 265 r bufsetb-length;
 #X obj 71 125 filelist \$0;
@@ -90,6 +90,8 @@
 #X connect 2 0 3 0;
 #X restore 532 483 pd clear_buffers;
 #X msg 532 457 vasp bufseta \, vasp bufsetb;
+#X text 495 50 space-bar + mouse to select \, "s" + mouse to shift
+selection;
 #X connect 1 0 0 0;
 #X connect 4 0 13 0;
 #X connect 9 0 11 0;
