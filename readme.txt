@@ -20,6 +20,8 @@ Version history:
 - CHANGE: rewrote vasp.imm implementation (still very inefficient!!)
 - ADD: prior message defines differential priority for detached operations
 - ADD: full DFT implementation (radix-2/radix-n) - also support of "to" message
+- ADD: full implementation of tilt/xtilt with several interpolation methods
+- CHANGE: vasp.split and vasp.join now have default argument = 2
 
 0.0.6:
 - reorganized file structure
@@ -92,8 +94,6 @@ features:
 
 - optimize (c)osc with table lookup, phasor with Höldrichs code (in pd)
 
-- clear samples outside transform domain (e.g. tilt)?
-
 - how to handle beyond buffer-domain:
 warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay on last frame
 
@@ -104,6 +104,8 @@ warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay 
 - make in place rotation more efficient (use temporary space)
 
 - introduce default values (2) for vasp.split and vasp.join
+
+- vasp.clip for 0..1 clipping
 
 objects:
 ---------------------
@@ -120,7 +122,7 @@ objects:
 
 bugs:
 ---------------------
-- vasp.xtilt nonfunctional
+
 
 tests:
 ---------------------
