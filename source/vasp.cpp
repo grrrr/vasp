@@ -66,7 +66,7 @@ Vasp::~Vasp()
 Vasp &Vasp::Clear() 
 { 
 	refs = frames = chns = 0; 
-    if(ref) { delete[] ref; ref = NULL; }
+	if(ref) { delete[] ref; ref = NULL; }
 	return *this; 
 }
 
