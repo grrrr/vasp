@@ -19,6 +19,7 @@ Version history:
 - REMOVE: vasp.bevel, vasp.!bevel... obsolete due to new vasp.window objects
 - REMOVE: vasp.noradio (vasp.!radio)... can easily be an abstraction of vasp.radio
 _ ADD: minimum length parameter for immediate vasps
+- ADD: vasp.channel? (vasp.c?), vasp.channel (vasp.c) for set/query of buffer channel
 
 0.0.7:
 - CHANGE: vasp.m is now called vasp.multi by default

@@ -13,10 +13,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 V lib_setup()
 {
-	post("VASP modular %s - vector assembling signal processor, (C)2002 Thomas Grill",VASP_VERSION);
+	post("");
+	post("----------------------------------------------------");
+	post("VASP modular %s",VASP_VERSION);
+	post("vector assembling signal processor");
+	post("(C)2002 Thomas Grill");
 #if defined(_DEBUG) && !defined(__MWERKS__)
 	post("DEBUG BUILD - " __DATE__ " " __TIME__);
 #endif
+	post("----------------------------------------------------");
 	post("");
 
 	// call the objects' setup routines
@@ -49,6 +54,9 @@ V lib_setup()
 	VASP_SETUP(qframes);  // vasp.frames?
 	VASP_SETUP(mframes);  // vasp.frames*
 	VASP_SETUP(rframes);  // vasp.frames/
+
+	VASP_SETUP(channel);  // vasp.channel
+	VASP_SETUP(qchannel);  // vasp.channel?
 
 	VASP_SETUP(split);
 	VASP_SETUP(join);

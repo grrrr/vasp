@@ -277,6 +277,12 @@ V Vasp::OffsetD(I od)
 }
 
 
+V Vasp::Channel(I c)
+{
+	for(I i = 0; i < Vectors(); ++i) Vector(i).Channel(c);
+}
+
+
 V Vasp::Size(I s)
 {
 	for(I i = 0; i < Vectors(); ++i) {

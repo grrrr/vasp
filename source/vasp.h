@@ -96,6 +96,9 @@ public:
 	// set offset(s) differentially
 	V OffsetD(I fr);
 
+	// set channel(s)
+	V Channel(I ch);
+
 	BL Ok() const { return ref && Vectors() > 0; }
 	BL IsComplex() const { return ref && Vectors() >= 2 && ref[1].Ok(); }
 
