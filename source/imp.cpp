@@ -11,8 +11,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 
 
-VASP_BINARY("vasp.=",copy,false)
-VASP_BINARY("vasp.c=",ccopy,false)
+//VASP_UNARY("vasp.=",copy,false)
+//VASP_UNARY("vasp.c=",ccopy,false)
+VASP_BINARY("vasp.=",set,false)
+VASP_BINARY("vasp.c=",cset,false)
 
 VASP_BINARY("vasp.+",add,true)
 VASP_BINARY("vasp.c+",cadd,true)
@@ -53,6 +55,7 @@ VASP_UNARY("vasp.sqrt",sqrt,true)
 VASP_UNARY("vasp.ssqrt",ssqrt,true) 
 VASP_BINARY("vasp.pow",pow,true) 
 VASP_BINARY("vasp.cpowi",cpowi,true) 
+VASP_BINARY("vasp.rpow",rpow,true) 
 
 VASP_UNARY("vasp.exp",exp,true) 
 VASP_UNARY("vasp.log",log,true) 

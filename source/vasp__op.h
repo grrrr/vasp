@@ -14,9 +14,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 #include <math.h>
 
-template<class T> inline V f_rcopy(T &v,T,T b) { v = b; }
 
-template<class T> inline V f_ccopy(T &rv,T &iv,T,T,T rb,T ib) { rv = rb,iv = ib; }
+template<class T> inline V f_rcopy(T &v,T a) { v = a; }
+template<class T> inline V f_ccopy(T &rv,T &iv,T ra,T ia) { rv = ra,iv = ia; }
+
+template<class T> inline V f_rset(T &v,T,T b) { v = b; }
+template<class T> inline V f_cset(T &rv,T &iv,T,T,T rb,T ib) { rv = rb,iv = ib; }
 
 template<class T> inline V f_radd(T &v,T a,T b) { v = a+b; }
 template<class T> inline V f_cadd(T &rv,T &iv,T ra,T ia,T rb,T ib) { rv = ra+rb,iv = ia+ib; }
@@ -68,6 +71,24 @@ template<class T> inline V f_rneq(T &v,T a,T b) { v = a != b?1:0; }
 
 template<class T> V f_rpow(T &v,T a,T b) { v = pow(fabs(a),b)*sgn(a); } 
 
+template<class T> V f_crpow(T &rv,T &iv,T ra,T ia,T rb,T) 
+{ 
+	register const R _abs = sqrt(sqabs(ra,ia));
+	if(_abs) {
+		register const R _p = pow(_abs,rb);
+		rv = _p*(ra/_abs);
+		iv = _p*(ia/_abs);
+	}
+} 
+
+template<class T> V f_cpowi(T &rv,T &iv,T ra,T ia,T rb,T) 
+{ 
+	register const I powi = rb;
+	register S rt,it; f_csqr(rt,it,ra,ia);
+	for(I i = 2; i < powi; ++i) f_cmul(rt,it,rt,it,ra,ia);
+	rv = rt,iv = it;
+} 
+
 template<class T> inline V f_rsqr(T &v,T a) { v = a*a; } 
 template<class T> inline V f_rssqr(T &v,T a) { v = a*fabs(a); } 
 
@@ -93,7 +114,6 @@ template<class T> V f_cnorm(T &rv,T &iv,T ra,T ia)
 { 
 	register R f = sqabs(ra,ia);
 	if(f) { f = 1./sqrt(f); rv = ra*f,iv = ia*f; }
-	else rv = iv = 0;
 }
 
 template<class T> V f_polar(T &rv,T &iv,T ra,T ia) { rv = sqrt(sqabs(ra,ia)),iv = arg(ra,ia); }
@@ -108,6 +128,149 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 	else rv = ia,iv = ra; 
 }
 
+
+
+
+
+/*! \brief skeleton for unary real operations
+	\todo optimization for src=dst
+*/
+#define D__run(fun,p)											\
+{																\
+	register const S *sr = p.rsdt;								\
+	register S *dr = p.rddt;									\
+	if(sr == dr)												\
+		if(p.rds == 1)											\
+			for(I i = 0; i < p.frames; ++i,dr++)				\
+				fun(*dr,*dr);									\
+		else													\
+			for(I i = 0; i < p.frames; ++i,dr += p.rds)			\
+				fun(*dr,*dr);									\
+	else														\
+		if(p.rss == 1 && p.rds == 1)							\
+			for(I i = 0; i < p.frames; ++i,sr++,dr++)			\
+				fun(*dr,*sr);									\
+		else													\
+			for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds)	\
+				fun(*dr,*sr);										\
+	return true;												\
+}
+
+/*! \brief skeleton for unary complex operations
+	\todo optimization for src=dst
+*/
+#define D__cun(fun,p)											\
+{																\
+	register const S *sr = p.rsdt,*si = p.isdt;					\
+	register S *dr = p.rddt,*di = p.iddt;						\
+	if(sr == dr && si == di)									\
+		if(p.rds == 1 && p.ids == 1)							\
+			for(I i = 0; i < p.frames; ++i,dr++,di++)			\
+				fun(*dr,*di,*dr,*di);							\
+		else													\
+			for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
+				fun(*dr,*di,*dr,*di);								\
+	else														\
+		if(p.rss == 1 && p.iss == 1 && p.rds == 1 && p.ids == 1) \
+			for(I i = 0; i < p.frames; ++i,sr++,si++,dr++,di++) \
+				fun(*dr,*di,*sr,*si);								\
+		else													\
+			for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
+				fun(*dr,*di,*sr,*si);								\
+	return true;												\
+}
+
+/*! \brief skeleton for binary real operations
+	\todo optimization for src=dst
+*/
+#define D__rbin(fun,p)											\
+{																\
+	register const S *sr = p.rsdt;								\
+	register S *dr = p.rddt;									\
+	if(p.HasArg()) {											\
+		register const S *ar = p.radt;							\
+		if(p.rsdt == p.rddt)									\
+			if(p.rds == 1 && p.ras == 1)						\
+				for(I i = 0; i < p.frames; ++i,dr++,ar++)		\
+					fun(*dr,*dr,*ar);							\
+			else												\
+				for(I i = 0; i < p.frames; ++i,dr += p.rds,ar += p.ras) \
+					fun(*dr,*dr,*ar);							\
+		else													\
+			if(p.rss == 1 && p.rds == 1 && p.ras == 1)			\
+				for(I i = 0; i < p.frames; ++i,sr++,dr++,ar++)  \
+					fun(*dr,*sr,*ar);							\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds,ar += p.ras) \
+					fun(*dr,*sr,*ar);							\
+	}															\
+	else {														\
+		register const S v = p.rbin.arg;						\
+		if(p.rsdt == p.rddt)									\
+			if(p.rds == 1)										\
+				for(I i = 0; i < p.frames; ++i,dr++)			\
+					fun(*dr,*dr,v);								\
+			else												\
+				for(I i = 0; i < p.frames; ++i,dr += p.rds)		\
+					fun(*dr,*dr,v);								\
+		else													\
+			if(p.rss == 1 && p.rds == 1)						\
+				for(I i = 0; i < p.frames; ++i,sr++,dr++)		\
+					fun(*dr,*sr,v);								\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds) \
+					fun(*dr,*sr,v);								\
+	}															\
+	return true;												\
+}
+
+/*! \brief skeleton for binary complex operations
+	\todo optimization for src=dst
+*/
+#define D__cbin(fun,p)											\
+{																\
+	register const S *sr = p.rsdt,*si = p.isdt;					\
+	register S *dr = p.rddt,*di = p.iddt;						\
+	if(p.HasArg()) {											\
+		register const S *ar = p.radt,*ai = p.iadt;				\
+		if(ai)													\
+			if(sr == dr && si == di)							\
+				if(p.rds == 1 && p.ids == 1 && p.ras == 1 && p.ias == 1) \
+					for(I i = 0; i < p.frames; ++i,dr++,di++,ar++,ai++) \
+						fun(*dr,*di,*dr,*di,*ar,*ai);			\
+				else											\
+					for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids,ar += p.ras,ai += p.ias) \
+						fun(*dr,*di,*dr,*di,*ar,*ai);			\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.ras,ai += p.ias) \
+					fun(*dr,*di,*sr,*si,*ar,*ai);				\
+		else													\
+			if(sr == dr && si == di)							\
+				for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids,ar += p.ras) \
+					fun(*dr,*di,*dr,*di,*ar,0);					\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.ras) \
+					fun(*dr,*di,*sr,*si,*ar,0);					\
+	}															\
+	else {														\
+		register const S rv = p.cbin.rarg,iv = p.cbin.iarg;		\
+		if(sr == dr && si == di)								\
+			if(p.rds == 1 && p.ids == 1)						\
+				for(I i = 0; i < p.frames; ++i,dr++,di++)		\
+					fun(*dr,*di,*dr,*di,rv,iv);					\
+			else												\
+				for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
+					fun(*dr,*di,*dr,*di,rv,iv);					\
+		else													\
+			if(p.rds == 1 && p.ids == 1 && p.rss == 1 && p.iss == 1) \
+				for(I i = 0; i < p.frames; ++i,sr++,si++,dr++,di++) \
+					fun(*dr,*di,*sr,*si,rv,iv);					\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
+					fun(*dr,*di,*sr,*si,rv,iv);					\
+	}															\
+	return true;												\
+}
 
 
 #endif

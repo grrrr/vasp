@@ -43,8 +43,10 @@ V lib_setup()
 	VASP_SETUP(q);
 	VASP_SETUP(i);
 
-	VASP_BINARY_SETUP(copy);
-	VASP_BINARY_SETUP(ccopy);
+//	VASP_UNARY_SETUP(copy);
+//	VASP_UNARY_SETUP(ccopy);
+	VASP_BINARY_SETUP(set);
+	VASP_BINARY_SETUP(cset);
 
 	VASP_BINARY_SETUP(add);
 	VASP_BINARY_SETUP(cadd);
@@ -84,6 +86,7 @@ V lib_setup()
 	VASP_UNARY_SETUP(ssqrt) 
 	VASP_BINARY_SETUP(pow) 
 	VASP_BINARY_SETUP(cpowi) 
+	VASP_BINARY_SETUP(rpow);
 
 	VASP_UNARY_SETUP(exp) 
 	VASP_UNARY_SETUP(log) 

@@ -198,8 +198,8 @@ protected:
 };
 
 
-F arg(F re,F im);
-inline F arg(const CX &c) { return arg(c.real,c.imag); }
+R arg(R re,R im);
+inline R arg(const CX &c) { return arg(c.real,c.imag); }
 inline F sqabs(F re,F im) { return re*re+im*im; }
 inline F sqabs(const CX &c) { return sqabs(c.real,c.imag); }
 inline F sgn(F x) { return x < 0.?-1.F:1.F; }
@@ -349,7 +349,14 @@ public:
 namespace VecOp {
 	typedef BL opfun(OpParam &p);
 
+	BL d__run(V fun(S &v,S a),OpParam &p);
+	BL d__cun(V fun(S &rv,S &iv,S ra,S ia),OpParam &p);
+	BL d__rbin(V fun(S &v,S a,S b),OpParam &p);
+	BL d__cbin(V fun(S &rv,S &iv,S ra,S ia,S rb,S ib),OpParam &p);
+
+
 	BL d_copy(OpParam &p); 
+	BL d_set(OpParam &p); 
 	BL d_add(OpParam &p); 
 	BL d_sub(OpParam &p); 
 	BL d_mul(OpParam &p); 
@@ -368,6 +375,7 @@ namespace VecOp {
 	BL d_neq(OpParam &p); 
 
 	BL d_ccopy(OpParam &p); 
+	BL d_cset(OpParam &p); 
 	BL d_cadd(OpParam &p); 
 	BL d_csub(OpParam &p); 
 	BL d_cmul(OpParam &p); 
@@ -376,6 +384,7 @@ namespace VecOp {
 	BL d_cmin(OpParam &p); 
 	BL d_cmax(OpParam &p); 
 	BL d_cpowi(OpParam &p); 
+	BL d_rpow(OpParam &p); 
 
 	BL d_minmax(OpParam &p); 
 	BL d_sqr(OpParam &p); 
@@ -443,13 +452,21 @@ namespace VaspOp {
 	// -------- transformations -----------------------------------
 
 	// unary functions
+	Vasp *m_run(Vasp &src,Vasp *dst,VecOp::opfun *fun,OpParam &p); // real unary (one vec or real)
+	Vasp *m_cun(Vasp &src,Vasp *dst,VecOp::opfun *fun,OpParam &p); // complex unary (one vec or complex)
+	// binary functions
+	Vasp *m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,OpParam &p); // real binary (one vec or real)
+	Vasp *m_cbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,OpParam &p); // complex binary (one vec or complex)
+
+	// unary functions
 	Vasp *m_run(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm); // real unary (one vec or real)
 	Vasp *m_cun(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm); // complex unary (one vec or complex)
 	// binary functions
 	Vasp *m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm); // real binary (one vec or real)
 	Vasp *m_cbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm); // complex binary (one vec or complex)
 
-	inline Vasp *m_copy(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_copy,"copy"); } // copy to (one vec or real)
+	inline Vasp *m_copy(Vasp &src,Vasp *dst = NULL) { return m_run(src,dst,VecOp::d_copy,"copy"); } // copy to (one vec or real)
+	inline Vasp *m_set(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_set,"set"); } // copy to (one vec or real)
 	inline Vasp *m_add(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_add,"add"); } // add to (one vec or real)
 	inline Vasp *m_sub(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_sub,"sub"); } // sub from (one vec or real)
 	inline Vasp *m_mul(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_mul,"mul"); } // mul with (one vec or real)
@@ -467,9 +484,8 @@ namespace VaspOp {
 	inline Vasp *m_equ(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_equ,"equ"); } // lower than
 	inline Vasp *m_neq(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_neq,"neq"); } // greater than
 
-	Vasp *m_cpowi(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex integer power (with each two channels)
-
-	inline Vasp *m_ccopy(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_ccopy,"ccopy"); }  // complex copy (pairs of vecs or complex)
+	inline Vasp *m_ccopy(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_ccopy,"ccopy"); }  // complex copy (pairs of vecs or complex)
+	inline Vasp *m_cset(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cset,"cset"); }  // complex copy (pairs of vecs or complex)
 	inline Vasp *m_cadd(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cadd,"cadd"); }  // complex add (pairs of vecs or complex)
 	inline Vasp *m_csub(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_csub,"csub"); }  // complex sub (pairs of vecs or complex)
 	inline Vasp *m_cmul(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmul,"cmul"); }  // complex mul (pairs of vecs or complex)
@@ -477,6 +493,9 @@ namespace VaspOp {
 	inline Vasp *m_cdivr(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cdivr,"cdivr"); }  // complex reverse div (pairs of vecs or complex)
 	inline Vasp *m_cmin(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmin,"cmin"); }  // complex (abs) min (pairs of vecs or complex)
 	inline Vasp *m_cmax(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmax,"cmax"); }  // complex (abs) max (pairs of vecs or complex)
+
+	Vasp *m_rpow(Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius power (with each two channels)
+	Vasp *m_cpowi(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex integer power (with each two channels)
 
 	inline Vasp *m_minmax(Vasp &src,Vasp *dst = NULL) { return m_cun(src,dst,VecOp::d_minmax,"minmax"); } // min/max 
 

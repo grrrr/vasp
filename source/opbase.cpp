@@ -9,12 +9,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "main.h"
+#include "vasp__op.h"
 
-Vasp *VaspOp::m_run(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+Vasp *VaspOp::m_run(Vasp &src,Vasp *dst,VecOp::opfun *fun,OpParam &p) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(opnm);
-
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		ret = DoOp(vecs,fun,p);
@@ -24,11 +23,9 @@ Vasp *VaspOp::m_run(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm)
 	return ret;
 }
 
-Vasp *VaspOp::m_cun(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+Vasp *VaspOp::m_cun(Vasp &src,Vasp *dst,VecOp::opfun *fun,OpParam &p) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(opnm);
-
 	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 	if(vecs) {
 		ret = DoOp(vecs,fun,p);
@@ -38,10 +35,9 @@ Vasp *VaspOp::m_cun(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm)
 	return ret;
 }
 
-Vasp *VaspOp::m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+Vasp *VaspOp::m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,OpParam &p) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(opnm);
 	BL argvasp = arg.IsVasp();
 
 	RVecBlock *vecs = argvasp?GetRVecs(p.opname,src,arg.GetVasp(),dst):GetRVecs(p.opname,src,dst);
@@ -55,13 +51,12 @@ Vasp *VaspOp::m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,c
 	return ret;
 }
 
-Vasp *VaspOp::m_cbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+Vasp *VaspOp::m_cbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,OpParam &p) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(opnm);
 	BL argvasp = arg.IsVasp();
 
-	CVecBlock *vecs = argvasp?GetCVecs(p.opname,src,arg.GetVasp(),dst):GetCVecs(opnm,src,dst);
+	CVecBlock *vecs = argvasp?GetCVecs(p.opname,src,arg.GetVasp(),dst):GetCVecs(p.opname,src,dst);
 	if(vecs) {
 		if(!argvasp) {
 			CX z = arg.GetAComplex();
@@ -75,4 +70,39 @@ Vasp *VaspOp::m_cbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,c
 
 	return ret;
 }
+
+
+
+Vasp *VaspOp::m_run(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+{ 
+	OpParam p(opnm);
+	return m_run(src,dst,fun,p);
+}
+
+Vasp *VaspOp::m_cun(Vasp &src,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+{ 
+	OpParam p(opnm);
+	return m_cun(src,dst,fun,p);
+}
+
+Vasp *VaspOp::m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+{ 
+	OpParam p(opnm);
+	return m_rbin(src,arg,dst,fun,p);
+}
+
+Vasp *VaspOp::m_cbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+{ 
+	OpParam p(opnm);
+	return m_cbin(src,arg,dst,fun,p);
+}
+
+
+
+
+BL VecOp::d__run(V fun(S &v,S a),OpParam &p)	{ D__run(fun,p); }
+BL VecOp::d__cun(V fun(S &rv,S &iv,S ra,S ia),OpParam &p) { D__cun(fun,p); }
+BL VecOp::d__rbin(V fun(S &v,S a,S b),OpParam &p) { D__rbin(fun,p); }
+BL VecOp::d__cbin(V fun(S &rv,S &iv,S ra,S ia,S rb,S ib),OpParam &p) { D__cbin(fun,p); }
+
 

@@ -5,7 +5,7 @@
 #define PI 3.1415926535897932385
 #endif
 
-F arg(F re,F im)
+R arg(R re,R im)
 {
 	if(re) 
 		return atan(im/re)+(re < 0?PI:0);
