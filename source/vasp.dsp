@@ -89,6 +89,10 @@ LINK32=link.exe
 # Name "vasp - Win32 Debug"
 # Begin Source File
 
+SOURCE=.\assign.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\bufref.cpp
 # End Source File
 # Begin Source File
