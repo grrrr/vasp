@@ -17,20 +17,21 @@ LIBS=pd.lib pthreadVC.lib flext_t-pdwin.lib
 # compiler definitions and flags
 DEFS=/DPD /DNT /DFLEXT_THREADS
 
-CFLAGS=/GR /GD /G6 /Ox /MT
-
-DIR=source
+CFLAGS=/GR- /GX- /GD /G6 /Ox /MT
 
 # the rest can stay untouched
 # ----------------------------------------------
 
-# all the source files from the package
-SRCS= 
-HDRS= 
+NAME=vasp
 
-# -----------------------------------------------
+DIR=source
+
+!include make-files.txt
+
 
 all: $(OUTPATH) $(OUTPATH)\$(NAME).dll
+
+OBJS= $(SRCS:.cpp=.obj)
 
 # remove build
 clean:
@@ -40,11 +41,18 @@ clean:
 $(OUTPATH):
 	-mkdir $(OUTPATH)
 
-{source}.cpp{$(OUTPATH)}.obj:
-	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$<
+# bad tricks here... the obj's are phantom files... no real make
 
-{$(OUTPATH)}.obj{$(OUTPATH)}.dll:
-	link /DLL /out:$< /INCREMENTAL:NO $** $(LIBS) $(LIBPATH)
-	@-del $(OUTPATH)\*.exp
-	@-del $(OUTPATH)\*.lib
-	@-del temp.obj
+{$(DIR)}.cpp.obj:
+	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(OUTPATH)\$@
+
+$(OUTPATH)\$(NAME).dll: $(OBJS)
+	cd $(OUTPATH)
+	link /DLL /out:$(NAME).dll /INCREMENTAL:NO $** $(LIBS) $(LIBPATH)
+	@-del *.exp
+	@-del *.lib
+	cd ..
+!ifdef INSTPATH
+	@-if not exist $(INSTPATH) mkdir $(INSTPATH)
+	copy $@ $(INSTPATH) > nul
+!endif
