@@ -1,4 +1,4 @@
-#N canvas 181 1 658 685 10;
+#N canvas 181 1 613 682 10;
 #X obj 104 47 cnv 15 15 15 empty empty vasp_modular 0 10 1 14 -262144
 -1 0;
 #X obj 61 37 cnv 2 2 2 empty 2-1-r empty 20 12 64 14 -225271 -262144
@@ -382,6 +382,8 @@ for all objects to refer to a buffer or a part of it.;
 #X text 54 202 these help patches should give you an idea of what is
 possible. feel free to combine different patches to more complex ones.
 ;
+#X text 52 253 some reference patches need the prepend object of the
+IEMlib;
 #N canvas 6 13 984 664 syntax 0;
 #X text 76 52 the vasp message:;
 #X obj 75 20 cnv 15 15 15 empty empty vasp_syntax 0 10 1 14 -262144
@@ -473,8 +475,8 @@ or as pairs for complex operations respectively.;
 #X connect 32 0 31 0;
 #X connect 34 0 33 0;
 #X connect 36 0 34 0;
-#X restore 192 314 pd syntax;
-#X text 68 311 the vasp message;
+#X restore 191 302 pd syntax;
+#X text 67 301 the vasp message;
 #N canvas 26 0 962 704 moremessages 0;
 #X obj 59 74 cnv 15 800 330 empty empty empty 20 12 0 14 -241339 -66577
 0;
@@ -627,8 +629,8 @@ of an object chain;
 #X connect 71 0 57 0;
 #X connect 77 0 78 0;
 #X connect 79 0 80 0;
-#X restore 192 353 pd moremessages;
-#X text 48 351 additional messages;
+#X restore 191 333 pd moremessages;
+#X text 47 334 additional messages;
 #N canvas 49 0 392 461 objects 0;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
 -1 0;
@@ -937,8 +939,70 @@ one is resampled around a center position;
 #X obj 75 469 vasp.!;
 #X text 175 469 create a temporary vasp (immediate);
 #X restore 72 103 pd basics;
-#X restore 192 395 pd objects;
-#X text 67 392 the vasp objects;
+#X restore 191 364 pd objects;
+#X text 66 366 the vasp objects;
+#N canvas 0 0 916 535 envelopes 0;
+#N canvas 40 55 255 173 clear_buffer 0;
+#X obj 59 79 vasp.update;
+#X obj 59 56 vasp.= 0;
+#X obj 59 26 inlet;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X restore 497 300 pd clear_buffer;
+#N canvas 0 0 450 300 graph167 0;
+#X array bufenv1 88200 float 0;
+#X coords 0 1 88199 -1 300 120 1;
+#X restore 513 99 graph;
+#N canvas 431 348 401 213 init 0;
+#X obj 36 19 loadbang;
+#X msg 36 73 \; \$1 xticks 0 4410 10 \; \$1 xlabel 1.1 0 22050 44100
+66150 88200 \; \$1 yticks 0 0.25 2 \; \$1 ylabel 94000 -1 -0.5 0 0.5
+1;
+#X msg 36 45 symbol bufenv1;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 621 293 pd init;
+#X obj 48 469 vasp.u;
+#X text 43 17 create envelopes from data-pairs;
+#X text 43 36 value - position in samples \, value2 position2 \, ...
+;
+#X msg 497 272 vasp bufenv1;
+#X msg 46 103 vasp bufenv1;
+#X obj 46 159 vasp.u;
+#X obj 46 319 vasp.=;
+#X obj 46 263 t b a;
+#X msg 46 291 vasp bufenv1;
+#X obj 46 347 vasp.u;
+#X msg 46 222 env 0 0 0.8 1500 1 4000 0.95 10000 0.5 20000 0.15 55000
+0 88200;
+#X msg 48 397 vasp bufenv1;
+#X obj 48 421 vasp.!window lin;
+#X obj 48 447 vasp.* env 0 0 1 22050;
+#X obj 46 131 vasp.= env 1 0 -0.6 70000;
+#X text 231 129 an envelope as a creation argument;
+#X text 45 199 or sent as message;
+#X text 159 394 used as an argument alternatively to a value or vasp
+;
+#X text 46 85 CLICK HERE!;
+#X connect 6 0 0 0;
+#X connect 7 0 17 0;
+#X connect 9 0 12 0;
+#X connect 10 0 11 0;
+#X connect 10 1 9 1;
+#X connect 11 0 9 0;
+#X connect 13 0 10 0;
+#X connect 14 0 15 0;
+#X connect 15 0 16 0;
+#X connect 16 0 3 0;
+#X connect 17 0 8 0;
+#X restore 191 396 pd envelopes;
+#X text 108 395 envelopes;
+#X text 47 543 inspired by guenther rabl's fftbox and NMS4. find guenther
+rabl at www.canto-crudo.com;
+#X text 49 581 vasp help patches for MaxMSP by florian bogner and oliver
+grimm - ©2002 patcherboys;
+#X text 46 617 revised & extended version for PD by marius schebella
+- www.parasitaere-kapazitaeten.net/vasp;
 #X text 96 427 vasps units;
 #N canvas 49 240 511 378 units 0;
 #N canvas 442 226 404 340 Hz_to_period_length 0;
@@ -976,8 +1040,8 @@ length of 1 sec. (sr 44100);
 in the buffer;
 #X obj 51 27 cnv 15 15 15 empty empty vasp_units 0 10 1 14 -262144
 -1 0;
-#X restore 192 430 pd units;
-#X text 80 466 vasp glossary;
+#X restore 192 428 pd units;
+#X text 80 458 vasp glossary;
 #N canvas 69 118 655 553 glossary 0;
 #X text 100 84 buffer~ (MaxMSP) / array (Pd);
 #X text 120 100 resident data-field (can be channel-interleaved in
@@ -1000,7 +1064,7 @@ elements per frame;
 #X text 100 227 frame;
 #X obj 82 40 cnv 15 15 15 empty empty glossary 0 10 1 14 -262144 -1
 0;
-#X restore 192 468 pd glossary;
+#X restore 192 459 pd glossary;
 #N canvas 93 94 807 343 links 0;
 #X text 483 224 don't miss that!;
 #X text 134 257 http://www.canto-crudo.com/;
@@ -1021,13 +1085,5 @@ elements per frame;
 #X text 134 52 http://www.parasitaere-kapazitaeten.net/Pd/fft_and_pd_en.htm
 ;
 #X text 44 257 guenther rabl:;
-#X restore 192 502 pd links;
-#X text 87 499 useful links;
-#X text 47 550 inspired by guenther rabl's fftbox and NMS4. find guenther
-rabl at www.canto-crudo.com;
-#X text 49 588 vasp help patches for MaxMSP by florian bogner and oliver
-grimm - ©2002 patcherboys;
-#X text 46 624 revised & extended version for PD by marius schebella
-- www.parasitaere-kapazitaeten.net/vasp;
-#X text 52 253 some reference patches need the prepend object of the
-IEMlib;
+#X restore 192 489 pd links;
+#X text 87 488 useful links;
