@@ -1,4 +1,4 @@
-#N canvas 0 0 543 577 10;
+#N canvas 0 0 545 579 10;
 #N canvas 49 0 328 395 objects 0;
 #N canvas 306 143 429 271 vasp.displace 0;
 #X text 158 165 rotate buffer content symmetrically;
@@ -387,7 +387,7 @@ can differ in the buffers and offsets;
 #X text 54 202 these help patches should give you an idea of what is
 possible. feel free to combine different patches to more complex ones.
 ;
-#X text 55 87 vasp modular 0.0.6 - vector assembling signal processor
+#X text 56 84 vasp modular 0.0.6 - vector assembling signal processor
 ©2002 thomas grill;
 #X text 51 431 inspired by guenther rabl's fft-box and tool-box. find
 guenther rabl at www.canto-crudo.com;
