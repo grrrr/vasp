@@ -41,7 +41,8 @@ IMPORTANT INFORMATION for all PD users:
 For VASP and its documentation to work properly, you have to specify a 
 PD command line like
 
-pd -path vasp/pd -lib vasp/vasp
+Linux/OSX: pd -path /usr/local/lib/pd/extra/vasp/pd -lib vasp/vasp
+Windows:  pd -path c:\audio\pd\extra\vasp\pd -lib vasp\vasp
 
 ----------------------------------------------------------------------------
 
