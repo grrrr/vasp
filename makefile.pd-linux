@@ -31,6 +31,8 @@ endif
 LIBS=flext
 
 else
+
+# take threaded flext lib
 LIBS=flext_t
 endif
 
