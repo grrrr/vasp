@@ -42,6 +42,8 @@ Version history:
 
 0.0.4:
 - changed vasp.min/max functions so that a vasp length 0 results in 0
+- removed vasp.inv, vasp.cinv.... already replaced by reverse devision
+- fixed outlet bug in vasp.?
 
 0.0.3:
 - restructured the code for future use of break-point lists as arguments

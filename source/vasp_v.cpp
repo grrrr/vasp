@@ -208,7 +208,7 @@ public:
 			post("%s - Index argument invalid -> set to 0",thisName());
 
 		AddInAnything(2);
-		AddOutAnything(2);
+		AddOutAnything();
 		SetupInOut();
 
 		FLEXT_ADDMETHOD(1,m_ix);
@@ -253,11 +253,16 @@ public:
 	vasp_qn()
 	{
 		AddInAnything();
+//		AddOutAnything();
 		AddOutInt();
 		SetupInOut();
 	}
 
-	virtual V m_bang() { ToOutInt(0,ref.Ok()?ref.Vectors():0); }
+	virtual V m_bang() 
+	{ 
+//		ToOutVasp(0,ref); 
+		ToOutInt(0,ref.Ok()?ref.Vectors():0); 
+	}
 
 	virtual V m_help() { post("%s - Get number of vectors of a vasp",thisName()); }
 };
@@ -804,6 +809,7 @@ public:
 	vasp_qoffs()
 	{
 		AddInAnything();
+//		AddOutAnything();
 		AddOutFloat();
 		SetupInOut();
 	}
@@ -827,6 +833,7 @@ public:
 				}
 			}
 			//! \todo unit processing
+//			ToOutVasp(0,ref);
 			ToOutFloat(0,o);
 		}
 	}
@@ -995,7 +1002,7 @@ public:
 	vasp_q()
 	{
 		AddInAnything();
-		AddOutAnything(2);
+		AddOutAnything();
 		SetupInOut();
 	}
 
@@ -1010,6 +1017,7 @@ public:
 			t_atom *lst = new t_atom[cnt];
 			for(I i = 0; i < cnt; ++i,++p) SetFloat(lst[i],*p);
 			ToOutAnything(0,sym_list,cnt,lst);
+//			ToOutVasp(0,ref);
 			delete[] lst;
 		}
 	}
@@ -1035,11 +1043,18 @@ FLEXT_LIB("vasp.?",vasp_q)
 	\note Only works for a vasp with one vector. No output otherwise.
 */
 class vasp_qq:
-	public vasp_q
+	public vasp_op
 {
-	FLEXT_HEADER(vasp_qq,vasp_q)
+	FLEXT_HEADER(vasp_qq,vasp_op)
 
 public:
+
+	vasp_qq()
+	{
+		AddInAnything();
+		AddOutAnything(2);
+		SetupInOut();
+	}
 
 	virtual V m_bang() 
 	{ 

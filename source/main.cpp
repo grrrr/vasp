@@ -95,8 +95,8 @@ V lib_setup()
 	VASP__SETUP(exp) 
 	VASP__SETUP(log) 
 
-	VASP__SETUP(inv) 
-	VASP__SETUP(cinv) 
+//	VASP__SETUP(inv) 
+//	VASP__SETUP(cinv) 
 
 	VASP__SETUP(abs) 
 	VASP__SETUP(sign) 

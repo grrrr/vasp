@@ -65,8 +65,8 @@ VASP_ANYOP("vasp.r+",radd,1,true)
 VASP_UNARY("vasp.exp",exp,true) 
 VASP_UNARY("vasp.log",log,true) 
 
-VASP_UNARY("vasp.inv",inv,true) 
-VASP_UNARY("vasp.cinv",cinv,true) 
+//VASP_UNARY("vasp.inv",inv,true) 
+//VASP_UNARY("vasp.cinv",cinv,true) 
 
 VASP_UNARY("vasp.abs",abs,true) 
 VASP_UNARY("vasp.sign",sign,true) 
@@ -75,7 +75,7 @@ VASP_UNARY("vasp.rect",rect,true)
 
 VASP_UNARY("vasp.cnorm",cnorm,true)
 //VASP_UNARY("vasp.cswap",cswap,true)
-VASP_UNARY("vasp.cconj",cconj,true)
+VASP_UNARY("vasp.cconj",cconj,true)  // should be replaced by an abstraction
 
 VASP_ANYOP("vasp.shift",shift,0,true)
 VASP_ANYOP("vasp.xshift",xshift,0,true)
