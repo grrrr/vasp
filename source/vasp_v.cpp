@@ -20,10 +20,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\brief Stores vasp messages.
 	\since 0.0.1
 	\param cmdln.* vasp - to be stored
-	\param inlet vasp - is stored and output
-	\param inlet list - if possible list is converted to vasp format
-	\param inlet bang - triggers stored Vasp output
-	\param inlet set - Vasp is stored (and not immediately output)
+	\param inlet.1 vasp - is stored and output
+	\param inlet.1 list - if possible list is converted to vasp format
+	\param inlet.1 bang - triggers stored Vasp output
+	\param inlet.1 set vasp - Vasp is stored (and not immediately output)
+	\param inlet.2 vasp - Vasp is stored (and not immediately output)
 	\retval outlet vasp
 */
 class vasp_v:
@@ -37,11 +38,14 @@ public:
 	{
 		m_set(argc,argv);
 
-		AddInAnything();
+		AddInAnything(2);
 		AddOutAnything();
 		SetupInOut();
 
 		FLEXT_ADDMETHOD_(0,"list",m_vasp);
+
+		FLEXT_ADDMETHOD_(1,"list",m_set);
+		FLEXT_ADDMETHOD_(1,"vasp",m_set);
 	}
 
 	virtual Vasp *x_work() { return new Vasp(ref); }

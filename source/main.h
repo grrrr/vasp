@@ -933,7 +933,7 @@ private:
 
 
 
-#define VASP_UNARY(name,op,to)													\
+#define VASP_UNARY(name,op,to,help)												\
 class vasp__##op:																\
 	public vasp_unop															\
 {																				\
@@ -946,11 +946,12 @@ protected:																		\
 		OpParam p(thisName(),0);												\
 		return VaspOp::m_##op(p,ref,&dst);										\
 	}																			\
+	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
 FLEXT_LIB(name,vasp__##op)
 
 
-#define VASP_BINARY(name,op,to)													\
+#define VASP_BINARY(name,op,to,help)											\
 class vasp__ ## op:																\
 	public vasp_binop															\
 {																				\
@@ -963,11 +964,12 @@ protected:																		\
 		OpParam p(thisName(),1);												\
 		return VaspOp::m_##op(p,ref,arg,&dst);									\
 	}																			\
+	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
 FLEXT_LIB_G(name,vasp__##op)
 
 
-#define VASP_ANYOP(name,op,args,to)												\
+#define VASP_ANYOP(name,op,args,to,help)										\
 class vasp__ ## op:																\
 	public vasp_anyop															\
 {																				\
@@ -978,7 +980,9 @@ protected:																		\
 	virtual Vasp *tx_work(const Argument &arg)									\
 	{																			\
 		OpParam p(thisName(),args);												\
-		return VaspOp::m_##op(p,ref,arg,&dst); }								\
+		return VaspOp::m_##op(p,ref,arg,&dst);									\
+	}																			\
+	virtual V m_help() { post("%s - " help,thisName()); }						\
 };																				\
 FLEXT_LIB_G(name,vasp__##op)
 
