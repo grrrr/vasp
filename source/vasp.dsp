@@ -153,6 +153,10 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\changes.txt
+# End Source File
+# Begin Source File
+
 SOURCE=..\compile.txt
 # End Source File
 # Begin Source File
@@ -162,6 +166,10 @@ SOURCE=..\license.txt
 # Begin Source File
 
 SOURCE=..\readme.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\todo.txt
 # End Source File
 # End Group
 # Begin Group "vasp"
