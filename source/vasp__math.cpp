@@ -15,7 +15,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define BIG 1.e10
 
-
+#if 0
 Vasp *VaspOp::m_opt(OpParam &p,Vasp &src,Vasp *dst) 
 { 
 	Vasp *ret = NULL;
@@ -41,6 +41,7 @@ Vasp *VaspOp::m_opt(OpParam &p,Vasp &src,Vasp *dst)
 }
 
 
+/*
 //! \todo opt could be replaced by *
 Vasp *VaspOp::m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) 
 { 
@@ -71,7 +72,7 @@ Vasp *VaspOp::m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	}
 	return ret;
 }
-
+*/
 
 
 class vasp_opt:
@@ -133,7 +134,7 @@ public:
 FLEXT_LIB("vasp.ropt",vasp_ropt)
 
 
-
+/*
 Vasp *VaspOp::m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) 
 { 
 	post("%s - sorry, not implemented yet",p.opname);
@@ -163,10 +164,10 @@ Vasp *VaspOp::m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	}
 	return ret;
 }
+*/
 
 
-
-
+#endif
 
 
 
@@ -202,7 +203,7 @@ Vasp *VaspOp::m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 				break;
 			}
 			default: {
-				p.cbin.rarg = powi,p.cbin.iarg = 0;
+				p.ibin.arg = powi;
 				ret = DoOp(vecs,VecOp::d_cpowi,p);
 				break;
 			}
@@ -424,6 +425,78 @@ public:
 };
 
 FLEXT_LIB("vasp.amax?",vasp_qamax)
+
+
+
+
+/*! \class vasp_qrmin
+	\remark \b vasp.rmin?
+	\brief Get minimum complex radius of samples
+	\since 0.0.2
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet float - minimum sample value
+
+	\todo Should we provide a cmdln default vasp?
+	\todo Should we inhibit output for invalid vasps?
+*/
+class vasp_qrmin:
+	public vasp_unop
+{
+	FLEXT_HEADER(vasp_qrmin,vasp_unop)
+
+public:
+	vasp_qrmin(): vasp_unop(true,1) {}
+
+	virtual Vasp *do_opt(OpParam &p) 
+	{ 
+		p.norm.minmax = BIG;
+		return VaspOp::m_qrmin(p,ref); 
+	}
+		
+	virtual Vasp *tx_work() 
+	{ 
+		OpParam p(thisName(),0);													
+		Vasp *ret = do_opt(p);
+		ToOutFloat(1,p.norm.minmax);
+		return ret;
+	}
+
+	virtual V m_help() { post("%s - Get a vasp's minimum complex radius",thisName()); }
+};
+
+FLEXT_LIB("vasp.rmin?",vasp_qrmin)
+
+
+
+/*! \class vasp_qrmax
+	\remark \b vasp.rmax?
+	\brief Get maximum complex radius of samples
+	\since 0.0.2
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet float - minimum sample value
+
+	\todo Should we provide a cmdln default vasp?
+	\todo Should we inhibit output for invalid vasps?
+*/
+class vasp_qrmax:
+	public vasp_qrmin
+{
+	FLEXT_HEADER(vasp_qrmax,vasp_qrmin)
+public:
+	virtual Vasp *do_opt(OpParam &p) 
+	{ 
+		p.norm.minmax = 0;
+		return VaspOp::m_qrmax(p,ref); 
+	}
+
+	virtual V m_help() { post("%s - Get a vasp's maximum complex radius",thisName()); }
+};
+
+FLEXT_LIB("vasp.rmax?",vasp_qrmax)
 
 
 

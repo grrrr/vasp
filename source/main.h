@@ -218,7 +218,10 @@ public:
 	~OpArg() { Clear(); }
 	V Clear();
 
+	BL Is() const { return argtp != arg_; }
+
 	OpArg &operator =(const OpArg &op);
+	OpArg &operator =(const Argument &arg);
 
 	OpArg &SetX(S r,S i = 0);
 	OpArg &SetV(S *r,I rs,S *i = NULL,I is = 0);
@@ -226,7 +229,7 @@ public:
 
 	enum { arg_ = 0,arg_x,arg_v,arg_l } argtp;
 	union {
-		struct { S r,i; } x;
+		struct { R r,i; } x;
 		struct { S *rdt,*idt; I rs,is; } v;
 		struct { I pts; R *r,*i; } l;
 	};
@@ -383,6 +386,7 @@ public:
 		struct { R sh; I ish; } sh;
 		struct { I wndtp; } wnd;
 		struct { R minmax,scl; } norm;
+		struct { I arg; } ibin;
 		struct { R arg; } rbin; 
 		struct { R rarg,iarg; } cbin; 
 	};
@@ -412,6 +416,7 @@ namespace VecOp {
 	BL d_set(OpParam &p); 
 	BL d_add(OpParam &p); 
 	BL d_sub(OpParam &p); 
+	BL d_subr(OpParam &p); 
 	BL d_mul(OpParam &p); 
 	BL d_div(OpParam &p); 
 	BL d_divr(OpParam &p); 
@@ -431,6 +436,7 @@ namespace VecOp {
 	BL d_cset(OpParam &p); 
 	BL d_cadd(OpParam &p); 
 	BL d_csub(OpParam &p); 
+	BL d_csubr(OpParam &p); 
 	BL d_cmul(OpParam &p); 
 	BL d_cdiv(OpParam &p); 
 	BL d_cdivr(OpParam &p); 
@@ -451,7 +457,7 @@ namespace VecOp {
 	BL d_abs(OpParam &p); 
 	BL d_sign(OpParam &p); 
 //	BL d_optq(OpParam &p); 
-	BL d_optf(OpParam &p); 
+//	BL d_optf(OpParam &p); 
 	BL d_minq(OpParam &p); 
 	BL d_maxq(OpParam &p); 
 	BL d_aminq(OpParam &p); 
@@ -465,7 +471,7 @@ namespace VecOp {
 	BL d_polar(OpParam &p); 
 	BL d_cart(OpParam &p); 
 //	BL d_roptq(OpParam &p); 
-	BL d_roptf(OpParam &p); 
+//	BL d_roptf(OpParam &p); 
 	BL d_rminq(OpParam &p); 
 	BL d_rmaxq(OpParam &p); 
 	BL d_cnorm(OpParam &p); 
@@ -527,9 +533,10 @@ namespace VaspOp {
 	inline Vasp *m_set(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_set); } // copy to (one vec or real)
 	inline Vasp *m_add(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_add); } // add to (one vec or real)
 	inline Vasp *m_sub(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_sub); } // sub from (one vec or real)
+	inline Vasp *m_subr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_subr); } // reverse sub from (one vec or real)
 	inline Vasp *m_mul(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_mul); } // mul with (one vec or real)
 	inline Vasp *m_div(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_div); } // div by (one vec or real)
-	inline Vasp *m_divr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_divr); } // reserve div by (one vec or real)
+	inline Vasp *m_divr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_divr); } // reverse div by (one vec or real)
 	inline Vasp *m_mod(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_mod); } // modulo by (one vec or real)
 	inline Vasp *m_min(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_min); } // min (one vec or real)
 	inline Vasp *m_max(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_max); } // max (one vec or real)
@@ -546,6 +553,7 @@ namespace VaspOp {
 	inline Vasp *m_cset(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cset); }  // complex copy (pairs of vecs or complex)
 	inline Vasp *m_cadd(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cadd); }  // complex add (pairs of vecs or complex)
 	inline Vasp *m_csub(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_csub); }  // complex sub (pairs of vecs or complex)
+	inline Vasp *m_csubr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_csubr); }  // reverse complex sub (pairs of vecs or complex)
 	inline Vasp *m_cmul(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cmul); }  // complex mul (pairs of vecs or complex)
 	inline Vasp *m_cdiv(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cdiv); }  // complex div (pairs of vecs or complex)
 	inline Vasp *m_cdivr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cdivr); }  // complex reverse div (pairs of vecs or complex)
@@ -557,8 +565,8 @@ namespace VaspOp {
 	Vasp *m_radd(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius offset
 	Vasp *m_gate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // gate
 	Vasp *m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius gate
-	Vasp *m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // scaling across max
-	Vasp *m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius scaling across max
+//	Vasp *m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // scaling across max
+//	Vasp *m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius scaling across max
 
 	inline Vasp *m_qmin(OpParam &p,Vasp &src) { return m_run(p,src,NULL,VecOp::d_minq); } // get minimum sample value
 	inline Vasp *m_qamin(OpParam &p,Vasp &src) { return m_run(p,src,NULL,VecOp::d_aminq); } // get minimum sample value

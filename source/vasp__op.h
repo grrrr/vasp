@@ -27,6 +27,9 @@ template<class T> inline V f_cadd(T &rv,T &iv,T ra,T ia,T rb,T ib) { rv = ra+rb,
 template<class T> inline V f_rsub(T &v,T a,T b) { v = a-b; }
 template<class T> inline V f_csub(T &rv,T &iv,T ra,T ia,T rb,T ib) { rv = ra-rb,iv = ia-ib; }
 
+template<class T> inline V f_rsubr(T &v,T a,T b) { v = b-a; }
+template<class T> inline V f_csubr(T &rv,T &iv,T ra,T ia,T rb,T ib) { rv = rb-ra,iv = ib-ia; }
+
 template<class T> inline V f_rmul(T &v,T a,T b) { v = a*b; }
 template<class T> inline V f_cmul(T &rv,T &iv,T ra,T ia,T rb,T ib) { rv = ra*rb-ia*ib, iv = ra*ib+rb*ia; }
 
@@ -82,9 +85,9 @@ template<class T> V f_crpow(T &rv,T &iv,T ra,T ia,T rb,T)
 		rv = iv = 0;
 } 
 
-template<class T> V f_cpowi(T &rv,T &iv,T ra,T ia,T rb,T) 
+template<class T> V f_cpowi(T &rv,T &iv,T ra,T ia,OpParam &p) 
 { 
-	register const I powi = rb;
+	register const I powi = p.ibin.arg;
 	register S rt,it; f_csqr(rt,it,ra,ia);
 	for(I i = 2; i < powi; ++i) f_cmul(rt,it,rt,it,ra,ia);
 	rv = rt,iv = it;
@@ -142,6 +145,7 @@ template<class T> V f_rminq(T &,T &,T ra,T ia,OpParam &p)
 	if(s < p.norm.minmax) p.norm.minmax = s; 
 } 
 
+/*
 template<class T> V f_optf(T &rv,T ra,OpParam &p) 
 { 
 } 
@@ -149,6 +153,7 @@ template<class T> V f_optf(T &rv,T ra,OpParam &p)
 template<class T> V f_roptf(T &rv,T &iv,T ra,T ia,OpParam &p) 
 { 
 } 
+*/
 
 
 template<class T> inline V f_rsqr(T &v,T a) { v = a*a; } 
@@ -247,7 +252,7 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 {																\
 	register const S *sr = p.rsdt;								\
 	register S *dr = p.rddt;									\
-	if(p.HasArg()) {											\
+	if(p.HasArg() && p.arg[0].Is()) {											\
 		switch(p.arg[0].argtp) {									\
 		case OpArg::arg_v: {								\
 			register const S *ar = p.arg[0].v.rdt;					\
@@ -317,7 +322,7 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 {																\
 	register const S *sr = p.rsdt,*si = p.isdt;					\
 	register S *dr = p.rddt,*di = p.iddt;						\
-	if(p.HasArg()) {											\
+	if(p.HasArg() && p.arg[0].Is()) {											\
 		switch(p.arg[0].argtp) {									\
 		case OpArg::arg_v: {									\
 			register const S *ar = p.arg[0].v.rdt,*ai = p.arg[0].v.idt;				\

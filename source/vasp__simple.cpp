@@ -21,6 +21,8 @@ BL VecOp::d_add(OpParam &p) { D__rbin(f_radd<S>,p); }
 BL VecOp::d_cadd(OpParam &p) { D__cbin(f_cadd<S>,p); }
 BL VecOp::d_sub(OpParam &p) { D__rbin(f_rsub<S>,p); }
 BL VecOp::d_csub(OpParam &p) { D__cbin(f_csub<S>,p); }
+BL VecOp::d_subr(OpParam &p) { D__rbin(f_rsubr<S>,p); }
+BL VecOp::d_csubr(OpParam &p) { D__cbin(f_csubr<S>,p); }
 BL VecOp::d_mul(OpParam &p) { D__rbin(f_rmul<S>,p); }
 BL VecOp::d_cmul(OpParam &p) { D__cbin(f_cmul<S>,p); }
 BL VecOp::d_div(OpParam &p) { D__rbin(f_rdiv<S>,p); }
@@ -42,7 +44,7 @@ BL VecOp::d_equ(OpParam &p) { D__rbin(f_requ<S>,p); }
 BL VecOp::d_neq(OpParam &p) { D__rbin(f_rneq<S>,p); }
 
 BL VecOp::d_pow(OpParam &p) { return d__rbin(f_rpow<S>,p); }
-BL VecOp::d_cpowi(OpParam &p) { return d__cbin(f_cpowi<S>,p); }
+BL VecOp::d_cpowi(OpParam &p) { return d__cop(f_cpowi<S>,p); }
 BL VecOp::d_rpow(OpParam &p) { return d__cbin(f_crpow<S>,p); }
 BL VecOp::d_radd(OpParam &p) { return d__cbin(f_radd<S>,p); }
 
@@ -50,8 +52,8 @@ BL VecOp::d_gate(OpParam &p) { D__rbin(f_gate<S>,p); }
 BL VecOp::d_rgate(OpParam &p) { return d__cbin(f_rgate<S>,p); }
 //BL VecOp::d_optq(OpParam &p) { D__rop(f_optq<S>,p); }
 //BL VecOp::d_roptq(OpParam &p) { return d__cop(f_roptq<S>,p); }
-BL VecOp::d_optf(OpParam &p) { return d__rop(f_optf<S>,p); }
-BL VecOp::d_roptf(OpParam &p) { return d__cop(f_roptf<S>,p); }
+//BL VecOp::d_optf(OpParam &p) { return d__rop(f_optf<S>,p); }
+//BL VecOp::d_roptf(OpParam &p) { return d__cop(f_roptf<S>,p); }
 BL VecOp::d_minq(OpParam &p) { D__rop(f_minq<S>,p); }
 BL VecOp::d_maxq(OpParam &p) { D__rop(f_maxq<S>,p); }
 BL VecOp::d_aminq(OpParam &p) { D__rop(f_aminq<S>,p); }

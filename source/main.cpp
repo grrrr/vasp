@@ -103,17 +103,19 @@ V lib_setup()
 	VASP__SETUP(polar) 
 	VASP__SETUP(cart) 
 
-	VASP_SETUP(opt)
-	VASP_SETUP(ropt)
+//	VASP_SETUP(opt)
+//	VASP_SETUP(ropt)
 	VASP__SETUP(gate);
 	VASP__SETUP(rgate);
-	VASP__SETUP(optf);
-	VASP__SETUP(roptf);
+//	VASP__SETUP(optf);
+//	VASP__SETUP(roptf);
 
 	VASP_SETUP(qmin)
 	VASP_SETUP(qmax)
 	VASP_SETUP(qamin)
 	VASP_SETUP(qamax)
+	VASP_SETUP(qrmin)
+	VASP_SETUP(qrmax)
 
 	VASP__SETUP(cnorm)
 //	VASP__SETUP(cswap)
