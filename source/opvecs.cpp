@@ -235,14 +235,16 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 			post("%s - too few arg vectors, operating on only first %i vectors",op,nvecs);
 		}
 		ret = new RVecBlock(nvecs,nvecs,1);
-		for(I i = 0; i < nvecs; ++i) ret->Arg(i,arg.Buffer(i));
+		for(I i = 0; i < nvecs; ++i) 
+			ret->Arg(i,arg.Buffer(i));
 	}
 	else {
 		if(arg.Vectors() > 1) {
 			post("%s - using only first arg vector for all operations",op);
 		}
-		ret = new RVecBlock(nvecs,1,1);
-		ret->Arg(0,arg.Buffer(0));
+		ret = new RVecBlock(nvecs,nvecs,1);
+		for(I i = 0; i < nvecs; ++i) 
+			ret->Arg(i,arg.Buffer(0));
 	}
 
 	BL ok = true,dlens = false,dalens = false;
@@ -337,14 +339,16 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 			post("%s - too few arg vectors, operating on only first %i vector pairs",op,pairs);
 		}
 		ret = new CVecBlock(pairs,pairs,1);
-		for(I i = 0; i < pairs; ++i) ret->Arg(i,arg.Buffer(i*2),arg.Buffer(i*2+1));
+		for(I i = 0; i < pairs; ++i) 
+			ret->Arg(i,arg.Buffer(i*2),arg.Buffer(i*2+1));
 	}
 	else {
 		if(arg.Vectors() > 2) {
 			post("%s - using only first arg vector pair for all operations",op);
 		}
-		ret = new CVecBlock(pairs,1,1);
-		ret->Arg(0,arg.Buffer(0),arg.Buffer(1));
+		ret = new CVecBlock(pairs,pairs,1);
+		for(I i = 0; i < pairs; ++i) 
+			ret->Arg(i,arg.Buffer(0),arg.Buffer(1));
 	}
 
 	BL ok = true,dlens = false,dalens = false;

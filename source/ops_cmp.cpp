@@ -188,7 +188,7 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 { 
 	if(ra < ia)	rv = ra,iv = ia; 
 	else rv = ia,iv = ra; 
-}
+} 
 
 BL VecOp::d_minmax(OpParam &p) { d__cun(f_minmax<S>,p); }
 
