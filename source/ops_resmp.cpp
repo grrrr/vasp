@@ -32,51 +32,51 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\todo implement more interpolation methods
 	\todo check src/dst overlap!
 */
-static BL d_tilt(I cnt,S *src,I sstr,S *dst,I dstr,R factor,R center,I mode = 0) 
+BL VecOp::d_tilt(OpParam &p) 
 { 
-	if(cnt <= 1 || factor == 1) return true;
+	if(p.frames <= 1 || p.tilt.factor == 1) return true;
 
-	if(factor == 0) {
+	if(p.tilt.factor == 0) {
 		post("tilt: invalid factor value");
 		return false;
 	}
 
-	I icenter = (I)center;
+	I icenter = (I)p.tilt.center;
 
-	if(center != icenter)
+	if(p.tilt.center != icenter)
 		post("tilt: center position truncated to integer sample");
 
 	if(icenter < 0) {
 		post("tilt: center position < 0 -> set to 0");
 		icenter = 0;
 	}
-	else if(icenter >= cnt) {
+	else if(icenter >= p.frames) {
 		post("tilt: center position >= buffer length -> set to max. position");
-		icenter = cnt;
+		icenter = p.frames;
 	}
 
 	// !lacking interpolation
-	if(factor > 1) {
+	if(p.tilt.factor > 1) {
 		I i;
 //		I pl = (I)(icenter/factor),ql = (I)((cnt-icenter)/factor);
 		for(i = 1; i <= icenter; ++i) {
-			R sp = icenter-i*factor;
-			dst[(icenter-i)*dstr] = sp >= 0 && sp < cnt?src[(I)sp*sstr]:0;
+			R sp = icenter-i*p.tilt.factor;
+			p.rddt[(icenter-i)*p.rds] = sp >= 0 && sp < p.frames?p.rsdt[(I)sp*p.rss]:0;
 		}
-		for(i = 1; i < cnt-icenter; ++i) {
-			R sp = icenter+i*factor;
-			dst[(icenter+i)*dstr] = sp >= 0 && sp < cnt?src[(I)sp*sstr]:0;
+		for(i = 1; i < p.frames-icenter; ++i) {
+			R sp = icenter+i*p.tilt.factor;
+			p.rddt[(icenter+i)*p.rds] = sp >= 0 && sp < p.frames?p.rsdt[(I)sp*p.rss]:0;
 		}
 	}
 	else {
 		I i;
 		for(i = icenter; i > 0; --i) {
-			R sp = icenter-i*factor;
-			dst[(icenter-i)*dstr] = src[(I)sp*sstr];
+			R sp = icenter-i*p.tilt.factor;
+			p.rddt[(icenter-i)*p.rds] = p.rsdt[(I)sp*p.rss];
 		}
-		for(i = cnt-1-icenter; i > 0; --i) {
-			R sp = icenter+i*factor;
-			dst[(icenter+i)*dstr] = src[(I)sp*sstr];
+		for(i = p.frames-1-icenter; i > 0; --i) {
+			R sp = icenter+i*p.tilt.factor;
+			p.rddt[(icenter+i)*p.rds] = p.rsdt[(I)sp*p.rss];
 		}
 	}
 
@@ -93,40 +93,42 @@ static BL d_tilt(I cnt,S *src,I sstr,S *dst,I dstr,R factor,R center,I mode = 0)
 	\param symm true for symmetric operation
 	\param mode interpolation mode
 	\return normalized destination vasp
-
-	\todo src/dst returned vasp
+	
+	\todo symmetric stuff
 */
-Vasp *Vasp::m_tilt(const Argument &arg,Vasp *dst,BL symm,I mode) 
+Vasp *VaspOp::m_tilt(Vasp &src,const Argument &arg,Vasp *dst,BL symm,I mode) 
 { 
+	Vasp *ret = NULL;
+	const C *opnm = symm?"xtilt":"tilt";
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		R factor = flx::GetAFloat(arg.GetList()[0]);
-		R center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-
-		RVecBlock *vecs = GetRVecs(symm?"xtilt":"tilt",*this,dst);
+		RVecBlock *vecs = GetRVecs(opnm,src,dst);
 		if(vecs) {
-			BL ok = true;
-			for(I i = 0; ok && i < vecs->Vecs(); ++i) {
-				VBuffer *s = vecs->Src(i),*d = vecs->Dst(i);
-				if(!d) d = s; // if there's no dst, take src
+			OpParam p;
+			p.tilt.factor = flx::GetAFloat(arg.GetList()[0]);
+			p.tilt.center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+			p.tilt.mode = mode;
 
+			if(symm) {
+/*
 				I cnt = vecs->Frames();
 				I sc = s->Channels(),dc = d->Channels();
-				if(symm) {
-					// symmetric mode
-					I hcnt = cnt/2;
-					ok = 
-						d_tilt(hcnt,s->Pointer(),sc,d->Pointer(),dc,factor,center) &&
-						d_tilt(hcnt,s->Pointer()+(cnt-hcnt),sc,d->Pointer()+(cnt-hcnt),dc,factor,hcnt-1-center);
-				}
-				else
-					// normal mode
-					ok = d_tilt(cnt,s->Pointer(),sc,d->Pointer(),dc,factor,center);
+				I hcnt = cnt/2;
+				ok = 
+					d_tilt(hcnt,s->Pointer(),sc,d->Pointer(),dc,factor,center) &&
+					d_tilt(hcnt,s->Pointer()+(cnt-hcnt),sc,d->Pointer()+(cnt-hcnt),dc,factor,hcnt-1-center);
+*/
 			}
-			return ok?vecs->ResVasp():NULL;
-		}
-		else
-			return NULL;
-	}
-	else return NULL;
-}
+			else {
+				if(p.SROvr()) {
+					p.SDRRev();
+					post("%s - reversing operation direction due to overlap: opposite sample delay",opnm);
+				}	
+				ret = DoOp(vecs,VecOp::d_tilt,p);
+			}
 
+			delete vecs;
+		}
+	}
+
+	return ret;
+}

@@ -14,16 +14,43 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- power functions ---------------------
 
-static BL d_pow(I cnt,S *dst,I str,S v) 
+// \remark sign is preserved
+BL VecOp::d_pow(OpParam &p) 
 { 
-	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)pow(fabs(*dst),v)*sgn(*dst);
+	for(I i = 0; i < p.frames; ++i,src += sstr,dst += dstr) *dst = (F)pow(fabs(*src),v)*sgn(*src);
 	return true; 
 }
 
-static BL d_sqr(I cnt,S *dst,I str,S) { for(I i = 0; i < cnt; ++i,dst += str) *dst = *dst * *dst; return true; }
-static BL d_ssqr(I cnt,S *dst,I str,S) { for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)(*dst * fabs(*dst)); return true; }
 
-static BL d_csqr(I cnt,S *re,I rstr,S *im,I istr,S,S) 
+
+BL VecOp::d_root(I cnt,F *dst,I str,F v) 
+{ 
+	if(v == 0) return true;
+	F rad = 1.F/v;
+	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)pow(fabs(*dst),rad)*sgn(*dst);
+	return true; 
+}
+
+Vasp *VaspOp::m_pow(Vasp &src,const Argument &arg,Vasp *dst,BL inv) 
+{ 
+	return arg.IsFloat()?fr_arg("pow",arg.GetFloat(),d_pow):NULL; 
+}
+
+
+
+BL VecOp::d_sqr(I cnt,S *src,I sstr,S *dst,I dstr) 
+{ 
+	for(I i = 0; i < cnt; ++i,dst += str) *dst = *dst * *dst; 
+	return true; 
+}
+
+BL VecOp::d_ssqr(I cnt,S *src,I sstr,S *dst,I dstr) 
+{ 
+	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)(*dst * fabs(*dst)); 
+	return true; 
+}
+
+BL VecOp::d_csqr(I cnt,S *re,I rstr,S *im,I istr) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
 		F r = *re * *re - *im * *im;
@@ -33,35 +60,18 @@ static BL d_csqr(I cnt,S *re,I rstr,S *im,I istr,S,S)
 	return true; 
 }
 
-static BL d_root(I cnt,F *dst,I str,F v) 
-{ 
-	if(v == 0) return true;
-	F rad = 1.F/v;
-	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)pow(fabs(*dst),rad)*sgn(*dst);
-	return true; 
-}
-
-static BL d_sqrt(I cnt,F *dst,I str,F) 
+BL VecOp::d_sqrt(I cnt,F *dst,I str) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)sqrt(fabs(*dst));
 	return true; 
 }
 
-static BL d_ssqrt(I cnt,F *dst,I str,F) 
+BL VecOp::d_ssqrt(I cnt,F *dst,I str) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)sqrt(fabs(*dst))*sgn(*dst);
 	return true; 
 }
 
-Vasp *Vasp::m_pow(const Argument &arg) 
-{ 
-	return arg.IsFloat()?fr_arg("pow",arg.GetFloat(),d_pow):NULL; 
-}
-
-Vasp *Vasp::m_root(const Argument &arg) 
-{ 
-	return arg.IsFloat()?fr_arg("root",arg.GetFloat(),d_root):NULL; 
-}
 
 //Vasp *Vasp::m_cpow(I argc,t_atom *argv) { return fm_arg("cpow",argc,argv,d_max); }
 Vasp *Vasp::m_sqr() { return fr_arg("sqr",0,d_sqr); }

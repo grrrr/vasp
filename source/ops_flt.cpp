@@ -13,77 +13,80 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- highpass ---------------------------------------
 
-static BL d_fhp(I cnt,S *dt,I str,Argument &a) 
+//! \todo handle carry
+
+BL VecOp::d_fhp(OpParam &p) 
 { 
-	F perln = a.GetFloat();
-	I tms = a.Next(1).GetFloat();
+/*
+	R coef = (2*PI)/perln;
+    if(coef > 1) coef = 1;
+*/  
+    const R coef = 1-p.flt.coef;
+	const I arep = abs(p.flt.rep);
+	S *src = p.rsdt,*dst = p.rddt;
 
-	S coef = 1-(2*PI)/perln;
-    if(coef < 0) coef = 0;
-
-	for(I ti = 0; ti < tms; ++ti) {
+	for(I ti = 0; ti < arep; ++ti) {
 		register S v1;
 		I i;
 
 		// t+ direction
-		for(i = 0,v1 = 0; i < cnt; ++i) {
-			register const S v0 = *dt + coef*v1;
-			*dt = v0-v1;
+		for(i = 0,v1 = 0; i < p.frames; ++i) {
+			register const S v0 = *src + coef*v1;
+			*dst = v0-v1;
 			v1 = v0;
-			dt += str;
+			src += p.rss,dst -= p.rds;
 		}
-		if(++ti == tms) break;
+		
+		if(p.flt.rep < 0) {
+			if(++ti == arep) break;
 
-		// t- direction
-		for(i = cnt-1,v1 = 0; i >= 0; --i) {
-			dt -= str;
-			register const S v0 = *dt + coef*v1;
-			*dt = v0-v1;
-			v1 = v0;
+			// t- direction
+			for(i = p.frames-1,v1 = 0; i >= 0; --i) {
+				src -= p.rss,dst -= p.rds;
+				register const S v0 = *src + coef*v1;
+				*dst = v0-v1;
+				v1 = v0;
+			}
 		}
 	}
 
 	return true;
 }
 
-
-Vasp *Vasp::m_fhp(const Argument &arg) 
-{ 
-	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAInt(arg.GetList()[1]):1);
-		return fr_prm("fhp",d_fhp,params); 
-	}
-	else return NULL;
-}
 
 // --- lowpass ---------------------------------------
 
-static BL d_flp(I cnt,S *dt,I str,Argument &a) 
+//! \todo handle carry
+
+BL VecOp::d_flp(OpParam &p) 
 { 
-	F perln = a.GetFloat();
-	I tms = a.Next(1).GetFloat();
-
-	S coef = (2*PI)/perln;
+/*
+	R coef = (2*PI)/perln;
     if(coef > 1) coef = 1;
-	const S feed = 1-coef;
+*/    
+    
+	const R coef = p.flt.coef,feed = 1-coef;
+	const I arep = abs(p.flt.rep);
+	S *src = p.rsdt,*dst = p.rddt;
 
-	for(I ti = 0; ti < tms; ++ti) {
+	for(I ti = 0; ti < arep; ++ti) {
 		register S v1;
 		I i;
 
 		// t+ direction
-		for(i = 0,v1 = 0; i < cnt; ++i) {
-			v1 = *dt = coef* *dt + feed*v1;
-			dt += str;
+		for(i = 0,v1 = 0; i < p.frames; ++i) {
+			v1 = *dst = coef* *src + feed*v1;
+			src += p.rss,dst -= p.rds;
 		}
-		if(++ti == tms) break;
+		
+		if(p.flt.rep < 0) {
+			if(++ti == arep) break;
 
-		// t- direction
-		for(i = cnt-1,v1 = 0; i >= 0; --i) {
-			dt -= str;
-			v1 = *dt = coef* *dt + feed*v1;
+			// t- direction
+			for(i = p.frames-1,v1 = 0; i >= 0; --i) {
+				src -= p.rss,dst -= p.rds;
+				v1 = *dst = coef* *src + feed*v1;
+			}
 		}
 	}
 
@@ -91,14 +94,30 @@ static BL d_flp(I cnt,S *dt,I str,Argument &a)
 }
 
 
-Vasp *Vasp::m_flp(const Argument &arg) 
+
+Vasp *VaspOp::m_fhp(Vasp &src,const Argument &arg,Vasp *dst,BL hp) 
 { 
+	Vasp *ret = NULL;
+	const C *opnm = hp?"fhp":"flp";
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAInt(arg.GetList()[1]):1);
-		return fr_prm("flp",d_flp,params); 
+		RVecBlock *vecs = GetRVecs(opnm,src,dst);
+		if(vecs) {
+			OpParam p;
+			p.flt.coef = 2*PI/flx::GetAFloat(arg.GetList()[0]);
+		    if(p.flt.coef > 1) p.flt.coef = 1;
+			p.flt.rep = arg.GetList().Count() >= 2?flx::GetAInt(arg.GetList()[1]):1;
+			p.flt.rep = -p.flt.rep;  // fwd/bwd operation
+
+			if(p.SROvr()) {
+				p.SDRRev();
+				post("%s - reversing operation direction due to overlap: opposite sample delay",opnm);
+			}	
+			ret = DoOp(vecs,hp?VecOp::d_fhp:VecOp::d_flp,p);
+
+			delete vecs;
+		}
 	}
-	else return NULL;
+
+	return ret;
 }
 

@@ -286,6 +286,199 @@ protected:
 };
 
 
+class OpParam {
+public:
+	// check for overlap
+	inline BL SROvr() const { return rddt >= rsdt && rddt < rsdt+frames*rss; } 
+	inline BL SIOvr() const { return iddt >= isdt && iddt < isdt+frames*iss; } 
+	inline BL AROvr() const { return rddt >= radt && rddt < radt+frames*ras; } 
+	inline BL AIOvr() const { return iddt >= iadt && iddt < iadt+frames*ias; } 
+	
+	// reverse src & dst stuff
+	inline V SRRev() { rsdt -= (frames-1)*(rss = -rss); }
+	inline V SIRev() { isdt -= (frames-1)*(iss = -iss); }
+	inline V ARRev() { radt -= (frames-1)*(ras = -ras); }
+	inline V AIRev() { iadt -= (frames-1)*(ias = -ias); }
+	inline V DRRev() { rddt -= (frames-1)*(rds = -rds); }
+	inline V DIRev() { iddt -= (frames-1)*(ids = -ids); }
+	
+	inline V SDRRev() { SRRev(); DRRev(); }
+	inline V SDIRev() { SIRev(); DIRev(); }
+	inline V SADRRev() { SRRev(); ARRev(); DRRev(); }
+	inline V SADIRev() { SIRev(); AIRev(); DIRev(); }
+	
+	I frames;
+	S *rsdt,*isdt; I rss,iss;
+	S *rddt,*iddt; I rds,ids;
+	S *radt,*iadt; I ras,ias;
+	union {
+		struct { R coef,carry; I rep; } flt;
+		struct { R carry; I rep; } intdif;
+		struct { I rep; } peaks;
+		struct { R ph,phinc; } gen;
+		struct { R factor,center; I mode; } tilt; 
+		struct { R cur,inc; } bvl;
+		struct { R sh; } sh;
+		struct { I wndtp; } wnd;
+		struct { BL vecarg; R arg; } rbin; 
+		struct { BL vecarg; CX arg; } cbin; 
+	};
+};
+
+namespace VecOp {
+	typedef BL opfun(OpParam &p);
+
+	BL d_pow(OpParam &p); 
+
+	BL d_int(OpParam &p);
+	BL d_dif(OpParam &p); 
+	
+	BL d_flp(OpParam &p);
+	BL d_fhp(OpParam &p);
+	
+	BL d_tilt(OpParam &p);
+
+	BL d_shift(OpParam &p);
+	BL d_rot(OpParam &p);
+	BL d_mirr(OpParam &p);
+	
+	BL d_osc(OpParam &p);
+	BL d_cosc(OpParam &p);
+	BL d_mosc(OpParam &p);
+	BL d_mcosc(OpParam &p);
+	BL d_phasor(OpParam &p);
+	BL d_mphasor(OpParam &p);
+	BL d_noise(OpParam &p);
+	BL d_cnoise(OpParam &p);
+
+	BL d_bevel(OpParam &p); 
+	BL d_mbevel(OpParam &p); 
+
+	BL d_window(OpParam &p);
+	BL d_mwindow(OpParam &p);
+	BL d_vwindow(OpParam &p);
+	BL d_vmwindow(OpParam &p);
+}
+
+namespace VaspOp {
+	typedef flext_base flx;
+
+	inline I min(I a,I b) { return a < b?a:b; }
+	inline I max(I a,I b) { return a > b?a:b; }
+
+	RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp *dst = NULL);
+	CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp *dst = NULL,BL full = false);
+	RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst = NULL,I multi = -1);
+	CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst = NULL,I multi = -1,BL full = false);
+	
+	Vasp *DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p);
+	Vasp *DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p);
+
+	// -------- transformations -----------------------------------
+
+	// binary functions
+	Vasp *m_copy(Vasp &src,const Argument &arg,Vasp *dst = NULL); // copy to (one vec or real)
+	Vasp *m_add(Vasp &src,const Argument &arg,Vasp *dst = NULL); // add to (one vec or real)
+	Vasp *m_sub(Vasp &src,const Argument &arg,Vasp *dst = NULL); // sub from (one vec or real/complex)
+	Vasp *m_mul(Vasp &src,const Argument &arg,Vasp *dst = NULL); // mul with (one vec or real/complex)
+	Vasp *m_div(Vasp &src,const Argument &arg,Vasp *dst = NULL); // div by (one vec or real/complex)
+	Vasp *m_min(Vasp &src,const Argument &arg,Vasp *dst = NULL); // min (one vec or real)
+	Vasp *m_max(Vasp &src,const Argument &arg,Vasp *dst = NULL); // max (one vec or real)
+	Vasp *m_pow(Vasp &src,const Argument &arg,Vasp *dst = NULL); // power
+	Vasp *m_root(Vasp &src,const Argument &arg,Vasp *dst = NULL); // real root (from abs value)
+
+	Vasp *m_ccopy(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex copy (pairs of vecs or complex)
+	Vasp *m_cadd(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex add (pairs of vecs or complex)
+	Vasp *m_csub(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex sub (pairs of vecs or complex)
+	Vasp *m_cmul(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex mul (pairs of vecs or complex)
+	Vasp *m_cdiv(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex div (pairs of vecs or complex)
+	Vasp *m_cmin(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex (abs) min (pairs of vecs or complex)
+	Vasp *m_cmax(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex (abs) max (pairs of vecs or complex)
+	Vasp *m_cpowi(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex integer power (with each two channels)
+
+	Vasp *m_minmax(Vasp &src,Vasp *dst = NULL,BL rev = false); // min/max 
+	Vasp *m_maxmin(Vasp &src,Vasp *dst = NULL) { return m_minmax(src,dst,true); } // min/max 
+
+	Vasp *m_sqr(Vasp &src,Vasp *dst = NULL);   // unsigned square 
+	Vasp *m_ssqr(Vasp &src,Vasp *dst = NULL);   // signed square 
+	Vasp *m_sqrt(Vasp &src,Vasp *dst = NULL);  // square root (from abs value)
+	Vasp *m_ssqrt(Vasp &src,Vasp *dst = NULL);  // square root (from abs value)
+
+	Vasp *m_csqr(Vasp &src,Vasp *dst = NULL);  // complex square (with each two channels)
+//	Vasp *m_csqrt(Vasp &src,Vasp *dst = NULL);  // complex square root (how about branches?)
+
+	Vasp *m_exp(Vasp &src,Vasp *dst = NULL);  // exponential function
+	Vasp *m_log(Vasp &src,Vasp *dst = NULL); // natural logarithm
+
+//	Vasp *m_cexp(Vasp &src,Vasp *dst = NULL);  // complex exponential function
+//	Vasp *m_clog(Vasp &src,Vasp *dst = NULL); // complex logarithm (how about branches?)
+
+	Vasp *m_inv(Vasp &src,Vasp *dst = NULL);  // invert buffer values
+	Vasp *m_cinv(Vasp &src,Vasp *dst = NULL); // complex invert buffer values (each two)
+
+	Vasp *m_abs(Vasp &src,Vasp *dst = NULL);  // absolute values
+	Vasp *m_sign(Vasp &src,Vasp *dst = NULL);  // sign function 
+	Vasp *m_polar(Vasp &src,Vasp *dst = NULL); // cartesian -> polar (each two)
+	Vasp *m_cart(Vasp &src,Vasp *dst = NULL); // polar -> cartesian (each two)
+
+	Vasp *m_opt(Vasp &src,Vasp *dst = NULL);  // optimize
+	Vasp *m_copt(Vasp &src,Vasp *dst = NULL);  // complex optimize
+
+	Vasp *m_cnorm(Vasp &src,Vasp *dst = NULL); // complex normalize
+
+	Vasp *m_cswap(Vasp &src,Vasp *dst = NULL);  // swap real and imaginary parts
+	Vasp *m_cconj(Vasp &src,Vasp *dst = NULL);  // complex conjugate
+
+	// int/dif functions
+	Vasp *m_int(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL inv = false); //! integrate
+	Vasp *m_dif(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_int(src,arg,dst,true); } //! differentiate
+	
+	// extrema functions
+	Vasp *m_peaks(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL inv = false); //! find peaks
+	Vasp *m_valleys(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_peaks(src,arg,dst,true); } //! find valleys	
+
+	// Filter functions
+	Vasp *m_fhp(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL hp = true); //! hi pass
+	Vasp *m_flp(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_fhp(src,arg,dst,false); } //! lo pass
+	
+	// Rearrange buffer 
+	Vasp *m_shift(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL sh = true,BL symm = false);  // shift buffer
+	Vasp *m_xshift(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_shift(src,arg,dst,true,true); }  // shift buffer (symmetrically)
+	Vasp *m_rot(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_shift(src,arg,dst,false,false); } // rotate buffer
+	Vasp *m_xrot(Vasp &src,const Argument &arg,Vasp *dst = NULL)  { return m_shift(src,arg,dst,false,true); }  // rotate buffer (symmetrically)
+	Vasp *m_mirr(Vasp &src,Vasp *dst = NULL,BL symm = false);  //! mirror buffer
+	Vasp *m_xmirr(Vasp &src,Vasp *dst = NULL) { return m_mirr(src,dst,true); } //! mirror buffer (symmetrically)
+
+	// Generator functions 
+	Vasp *m_osc(Vasp &src,const Argument &arg,Vasp *dst,BL mul = false);  // real osc
+	Vasp *m_mosc(Vasp &src,const Argument &arg,Vasp *dst) { return m_osc(src,arg,dst,true); }   // * real osc
+	Vasp *m_cosc(Vasp &src,const Argument &arg,Vasp *dst,BL mul = false);  // complex osc (phase rotates)
+	Vasp *m_mcosc(Vasp &src,const Argument &arg,Vasp *dst) { return m_cosc(src,arg,dst,true); }  // * complex osc (phase rotates)
+	Vasp *m_phasor(Vasp &src,const Argument &arg,Vasp *dst,BL mul = false);  // phasor
+	Vasp *m_mphasor(Vasp &src,const Argument &arg,Vasp *dst) { return m_phasor(src,arg,dst,true); }  // * phasor
+	Vasp *m_noise(Vasp &src,Vasp *dst);  // real noise
+	Vasp *m_cnoise(Vasp &src,Vasp *dst); // complex noise (arg and abs random)
+	Vasp *m_bevelup(Vasp &src,Vasp *dst,BL up = true,BL mul = false);  // bevel up 
+	Vasp *m_mbevelup(Vasp &src,Vasp *dst) { return m_bevelup(src,dst,true,true); }   // * bevel up (fade in)
+	Vasp *m_beveldn(Vasp &src,Vasp *dst) { return m_bevelup(src,dst,false,false); }  // bevel down
+	Vasp *m_mbeveldn(Vasp &src,Vasp *dst) { return m_bevelup(src,dst,false,true); }   // * bevel down (fade out)
+	Vasp *m_window(Vasp &src,const Argument &arg,Vasp *dst,BL mul = false);  // window curve
+	Vasp *m_mwindow(Vasp &src,const Argument &arg,Vasp *dst) { return m_window(src,arg,dst,true); }  // * window curve
+
+	// Resampling (around center sample)
+	Vasp *m_tilt(Vasp &src,const Argument &arg,Vasp *dst = NULL,BL symm = false,I mode = 0); 
+	// Symmetric resampling (around center sample)
+	Vasp *m_xtilt(Vasp &src,const Argument &arg,Vasp *dst = NULL,I mode = 0) { return m_tilt(src,arg,dst,true,mode); }
+
+	// Fourier transforms 
+	Vasp *m_rfft(Vasp &src,Vasp *dst = NULL,BL inv = false);  // real forward
+	Vasp *m_rifft(Vasp &src,Vasp *dst = NULL) { return m_rfft(src,dst,true); } // real inverse
+	Vasp *m_cfft(Vasp &src,Vasp *dst = NULL,BL inv = false); // complex forward
+	Vasp *m_cifft(Vasp &src,Vasp *dst = NULL) { return m_cfft(src,dst,true); } // complex inverse
+
+}
+
+
 
 class Vasp 
 {
@@ -376,112 +569,7 @@ public:
 	V Refresh();
 	
 
-	// -------- transformations -----------------------------------
-
-	// copy functions
-	Vasp *m_copy(const Argument &arg); // copy to (one vec or real)
-	Vasp *m_ccopy(const Argument &arg); // complex copy (pairs of vecs or complex)
-//	Vasp *m_vcopy(const Argument &arg); // copy to (multi-channel)
-
-	// simple binary math
-	Vasp *m_add(const Argument &arg); // add to (one vec or real)
-	Vasp *m_cadd(const Argument &arg); // complex add (pairs of vecs or complex)
-//	Vasp *m_vadd(const Argument &arg); // add to (multi-channel)
-
-	Vasp *m_sub(const Argument &arg); // sub from (one vec or real/complex)
-	Vasp *m_csub(const Argument &arg); // complex sub (pairs of vecs or complex)
-//	Vasp *m_vsub(const Argument &arg); // sub from (multi-channel)
-
-	Vasp *m_mul(const Argument &arg); // mul with (one vec or real/complex)
-	Vasp *m_cmul(const Argument &arg); // complex mul (pairs of vecs or complex)
-//	Vasp *m_vmul(const Argument &arg); // mul with (multi-channel)
-
-	Vasp *m_div(const Argument &arg); // div by (one vec or real/complex)
-	Vasp *m_cdiv(const Argument &arg); // complex div (pairs of vecs or complex)
-//	Vasp *m_vdiv(const Argument &arg); // div by (multi-channel)
-
-	Vasp *m_min(const Argument &arg); // min (one vec or real)
-//	Vasp *m_cmin(const Argument &arg); // complex (abs) min (pairs of vecs or complex)
-//	Vasp *m_vmin(const Argument &arg); // min (multi-channel)
-
-	Vasp *m_max(const Argument &arg); // max (one vec or real)
-//	Vasp *m_cmax(const Argument &arg); // complex (abs) max (pairs of vecs or complex)
-//	Vasp *m_vmax(const Argument &arg); // max (multi-channel)
-
-	Vasp *m_minmax(); // min/max 
-
-	// "unary" functions
-	Vasp *m_int(); // integrate
-	Vasp *m_dif(); // differentiate
-	Vasp *m_peaks(const Argument &arg); // find peaks
-
-	Vasp *m_pow(const Argument &arg); // power
-	Vasp *m_root(const Argument &arg); // real root (from abs value)
-//	Vasp *m_cpow(const Argument &arg); // complex power (with each two channels)
-	Vasp *m_sqr();   // unsigned square 
-	Vasp *m_ssqr();   // signed square 
-	Vasp *m_csqr();  // complex square (with each two channels)
-	Vasp *m_sqrt();  // square root (from abs value)
-	Vasp *m_ssqrt();  // square root (from abs value)
-//	Vasp *m_csqrt();  // complex square root (how about branches?)
-
-	Vasp *m_exp();  // exponential function
-//	Vasp *m_cexp();  // complex exponential function
-	Vasp *m_log(); // natural logarithm
-//	Vasp *m_clog(); // complex logarithm (how about branches?)
-
-	Vasp *m_inv();  // invert buffer values
-	Vasp *m_cinv(); // complex invert buffer values (each two)
-
-	Vasp *m_abs();  // absolute values
-	Vasp *m_sign();  // sign function 
-	Vasp *m_polar(); // cartesian -> polar (each two)
-	Vasp *m_cart(); // polar -> cartesian (each two)
-
-	Vasp *m_norm();  // normalize
-	Vasp *m_cnorm(); // complex normalize
-
-	Vasp *m_cswap();  // swap real and imaginary parts
-	Vasp *m_cconj();  // complex conjugate
-
-	// Rearrange buffer 
-	Vasp *m_shift(const Argument &arg,Vasp *dst = NULL,BL symm = false);  // shift buffer
-	Vasp *m_xshift(const Argument &arg,Vasp *dst = NULL) { return m_shift(arg,dst,true); }  // shift buffer (symmetrically)
-	Vasp *m_rot(const Argument &arg,Vasp *dst = NULL,BL symm = false);  // rotate buffer
-	Vasp *m_xrot(const Argument &arg,Vasp *dst = NULL)  { return m_rot(arg,dst,true); }  // rotate buffer (symmetrically)
-	Vasp *m_mirr(Vasp *dst = NULL,BL symm = false);  //! mirror buffer
-	Vasp *m_xmirr(Vasp *dst = NULL) { return m_mirr(dst,true); } //! mirror buffer (symmetrically)
-
-	// Generator functions 
-	Vasp *m_osc(const Argument &arg,BL mul = false);  // real osc
-	Vasp *m_mosc(const Argument &arg) { return m_osc(arg,true); }   // * real osc
-	Vasp *m_cosc(const Argument &arg,BL mul = false);  // complex osc (phase rotates)
-	Vasp *m_mcosc(const Argument &arg) { return m_cosc(arg,true); }  // * complex osc (phase rotates)
-	Vasp *m_phasor(const Argument &arg,BL mul = false);  // phasor
-	Vasp *m_mphasor(const Argument &arg) { return m_phasor(arg,true); }  // * phasor
-	Vasp *m_noise();  // real noise
-	Vasp *m_cnoise(); // complex noise (arg and abs random)
-	Vasp *m_bevelup(BL up = true,BL mul = false);  // bevel up 
-	Vasp *m_mbevelup() { return m_bevelup(true,true); }   // * bevel up (fade in)
-	Vasp *m_beveldn() { return m_bevelup(false,false); }  // bevel down
-	Vasp *m_mbeveldn() { return m_bevelup(false,true); }   // * bevel down (fade out)
-	Vasp *m_window(const Argument &arg,BL mul = false);  // window curve
-	Vasp *m_mwindow(const Argument &arg) { return m_window(arg,true); }  // * window curve
-
-	// Filter transforms 
-	Vasp *m_fhp(const Argument &arg); // time-domain high pass
-	Vasp *m_flp(const Argument &arg); // time-domain low pass
-
-	// Resampling (around center sample)
-	Vasp *m_tilt(const Argument &arg,Vasp *dst = NULL,BL symm = false,I mode = 0); 
-	// Symmetric resampling (around center sample)
-	Vasp *m_xtilt(const Argument &arg,Vasp *dst = NULL,I mode = 0) { return m_tilt(arg,dst,true,mode); }
-
-	// Fourier transforms 
-	Vasp *m_rfft(Vasp *dst = NULL,BL inv = false);  // real forward
-	Vasp *m_rifft(Vasp *dst = NULL) { return m_rfft(dst,true); } // real inverse
-	Vasp *m_cfft(Vasp *dst = NULL,BL inv = false); // complex forward
-	Vasp *m_cifft(Vasp *dst = NULL) { return m_cfft(dst,true); } // complex inverse
+#if 0
 
 	// --------------------------------------------------------------------
 
@@ -505,7 +593,7 @@ public:
 		argfunV funV;
 		argfunCV funCV;
 	};
-
+#endif
 protected:
 	I frames; // length counted in frames
 	I chns; // used channels
@@ -514,17 +602,9 @@ protected:
 
 	V Resize(I rcnt);
 
-	static I min(I a,I b) { return a < b?a:b; }
-	static I max(I a,I b) { return a > b?a:b; }
-
+#if 0
 private:
 	typedef flext_base flx;
-
-	static RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp *dst = NULL);
-	static CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp *dst = NULL,BL full = false);
-	static RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst = NULL,I multi = -1);
-	static CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst = NULL,I multi = -1,BL full = false);
-
 
 	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_arg(op,v,f.funR); }
 	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_arg(op,cx,f.funC); }
@@ -549,9 +629,8 @@ private:
 	Vasp *fv_arg(const C *op,const Vasp &v,argfunV f);
 	Vasp *fv_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fv_arg(op,v,f.funV); }
 	Vasp *fv_arg(const C *op,const Argument &arg,const arg_funcs &f);
+#endif
 };
-
-
 
 
 class vasp_base:
@@ -611,12 +690,14 @@ protected:
 
 	virtual V m_vasp(I argc,t_atom *argv); // trigger
 	virtual I m_set(I argc,t_atom *argv);  // non trigger
+	virtual V m_to(I argc,t_atom *argv); // set destinatioc
 
 	virtual V m_update(I argc = 0,t_atom *argv = NULL);  // graphics update
 
 	// destination vasp
-	Vasp ref;
+	Vasp ref,dst;
 
+	FLEXT_CALLBACK_G(m_to)
 private:
 	FLEXT_CALLBACK(m_bang)
 	FLEXT_CALLBACK_G(m_vasp)
@@ -652,7 +733,7 @@ class vasp_unop:
 	FLEXT_HEADER(vasp_unop,vasp_tx)
 
 protected:
-	vasp_unop();
+	vasp_unop(BL withto = false);
 
 	virtual Vasp *x_work();
 	virtual Vasp *tx_work();
@@ -667,7 +748,7 @@ class vasp_binop:
 	FLEXT_HEADER(vasp_binop,vasp_tx)
 
 protected:
-	vasp_binop(I argc,t_atom *argv);
+	vasp_binop(I argc,t_atom *argv,BL withto = false);
 
 	// assignment functions
 	virtual V a_vasp(I argc,t_atom *argv);
@@ -698,7 +779,7 @@ class vasp_anyop:
 	FLEXT_HEADER(vasp_anyop,vasp_tx)
 
 protected:
-	vasp_anyop(I argc,t_atom *argv);
+	vasp_anyop(I argc,t_atom *argv,BL withto = false);
 
 	// assignment functions
 	virtual V a_list(I argc,t_atom *argv); 
@@ -725,49 +806,49 @@ private:
 
 
 
-#define VASP_UNARY(name,op)														\
-class vasp_u_##op:																\
+#define VASP_UNARY(name,op,to)														\
+class vasp__##op:																\
 	public vasp_unop															\
 {																				\
-	FLEXT_HEADER(vasp_u_##op,vasp_unop)											\
+	FLEXT_HEADER(vasp__##op,vasp_unop)											\
 public:																			\
-	vasp_u_##op() {}															\
+	vasp__##op(): vasp_unop(to) {}															\
 protected:																		\
-	virtual Vasp *tx_work() { return ref.m_##op(); }							\
+	virtual Vasp *tx_work() { return VaspOp::m_##op(ref,&dst); }							\
 };																				\
-FLEXT_LIB(name,vasp_u_##op)
+FLEXT_LIB(name,vasp__##op)
 
-#define VASP_UNARY_SETUP(op) FLEXT_SETUP(vasp_u_##op);  
+#define VASP_UNARY_SETUP(op) FLEXT_SETUP(vasp__##op);  
 
 
-#define VASP_BINARY(name,op)													\
-class vasp_b_ ## op:															\
+#define VASP_BINARY(name,op,to)													\
+class vasp__ ## op:															\
 	public vasp_binop															\
 {																				\
-	FLEXT_HEADER(vasp_b_##op,vasp_binop)										\
+	FLEXT_HEADER(vasp__##op,vasp_binop)										\
 public:																			\
-	vasp_b_##op(I argc,t_atom *argv): vasp_binop(argc,argv) {}					\
+	vasp__##op(I argc,t_atom *argv): vasp_binop(argc,argv,to) {}					\
 protected:																		\
-	virtual Vasp *tx_work(const Argument &arg) { return ref.m_##op(arg); }		\
+	virtual Vasp *tx_work(const Argument &arg) { return VaspOp::m_##op(ref,arg,&dst); }		\
 };																				\
-FLEXT_LIB_G(name,vasp_b_##op)
+FLEXT_LIB_G(name,vasp__##op)
 
-#define VASP_BINARY_SETUP(op) FLEXT_SETUP(vasp_b_##op);  
+#define VASP_BINARY_SETUP(op) FLEXT_SETUP(vasp__##op);  
 
 
-#define VASP_ANYOP(name,op)													\
-class vasp_l_ ## op:															\
+#define VASP_ANYOP(name,op,to)													\
+class vasp__ ## op:															\
 	public vasp_anyop															\
 {																				\
-	FLEXT_HEADER(vasp_l_##op,vasp_anyop)										\
+	FLEXT_HEADER(vasp__##op,vasp_anyop)										\
 public:																			\
-	vasp_l_##op(I argc,t_atom *argv): vasp_anyop(argc,argv) {}					\
+	vasp__##op(I argc,t_atom *argv): vasp_anyop(argc,argv,to) {}					\
 protected:																		\
-	virtual Vasp *tx_work(const Argument &arg) { return ref.m_##op(arg); }		\
+	virtual Vasp *tx_work(const Argument &arg) { return VaspOp::m_##op(ref,arg,&dst); }		\
 };																				\
-FLEXT_LIB_G(name,vasp_l_##op)
+FLEXT_LIB_G(name,vasp__##op)
 
-#define VASP_ANYOP_SETUP(op) FLEXT_SETUP(vasp_l_##op);  
+#define VASP_ANYOP_SETUP(op) FLEXT_SETUP(vasp__##op);  
 
 
 #endif

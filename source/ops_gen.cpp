@@ -13,41 +13,21 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- osc ---------------------------------------
 
-static BL d_osc(I cnt,S *dt,I str,R perln,R ph) 
+BL VecOp::d_osc(OpParam &p) 
 { 
-	R phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt = cos(ph);
+	register R ph = p.gen.ph,phinc = p.gen.phinc; 
+	for(; p.frames--; ph += phinc,p.rddt += p.rds) *p.rddt = cos(ph);
+	p.gen.ph = ph;
 	return true;
 }
 
-static BL d_cosc(I cnt,S *re,I rstr,S *im,I istr,R perln,R ph) 
+BL VecOp::d_mosc(OpParam &p) 
 { 
-	R phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,re += rstr,im += istr) 
-		*re = cos(ph),*im = sin(ph);
+	register R ph = p.gen.ph,phinc = p.gen.phinc; 
+	for(; p.frames--; ph += phinc,p.rsdt += p.rss,p.rddt += p.rds) *p.rddt = *p.rsdt * cos(ph);
+	p.gen.ph = ph;
 	return true;
 }
-
-static BL d_mosc(I cnt,S *dt,I str,R perln,R ph) 
-{ 
-	R phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= cos(ph);
-	return true;
-}
-
-static BL d_mcosc(I cnt,S *re,I rstr,S *im,I istr,R perln,R ph) 
-{ 
-	R phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,re += rstr,im += istr) {
-		R zre = cos(ph),zim = sin(ph);
-
-		register const R r = *re * zre - *im * zim;
-		*im = *im * zre + *re * zim;
-		*re = r;
-	}
-	return true;
-}
-
 
 /*! \brief Generator for real (cos) oscillations.
 
@@ -59,30 +39,57 @@ static BL d_mcosc(I cnt,S *re,I rstr,S *im,I istr,R perln,R ph)
 
 	\todo Replace period length by frequency specification
 */
-Vasp *Vasp::m_osc(const Argument &arg,BL mul) 
+Vasp *VaspOp::m_osc(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
+	Vasp *ret = NULL;
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		// period length
-		R perlen = flx::GetAFloat(arg.GetList()[0]);
-		// starting phase
-		R stph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-
-		RVecBlock *vecs = GetRVecs(mul?"*osc":"osc",*this);
+		RVecBlock *vecs = GetRVecs(mul?"*osc":"osc",src,dst);
 		if(vecs) {
-			BL ok = true;
-			for(I i = 0; ok && i < vecs->Vecs(); ++i) {
-				VBuffer *s = vecs->Src(i);
-				if(mul)
-					ok = d_mosc(vecs->Frames(),s->Pointer(),s->Channels(),perlen,stph);
-				else
-					ok = d_osc(vecs->Frames(),s->Pointer(),s->Channels(),perlen,stph);
+			OpParam p;
+			// period length
+			p.gen.phinc = 2*PI/flx::GetAFloat(arg.GetList()[0]); 
+			// starting phase
+			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+
+			VecOp::opfun *fun;
+			if(mul) {
+				if(p.SROvr()) p.SDRRev();
+				fun = VecOp::d_mosc;
 			}
-			return ok?vecs->ResVasp():NULL;
+			else fun = VecOp::d_osc;
+		
+			ret = DoOp(vecs,fun,p);
+			delete vecs;
 		}
-		else
-			return NULL;
 	}
-	else return NULL;
+
+	return ret;
+}
+
+
+BL VecOp::d_cosc(OpParam &p) 
+{ 
+	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	for(; p.frames--; ph += phinc,p.rddt += p.rds,p.iddt += p.ids) 
+		*p.rddt = cos(ph),*p.iddt = sin(ph);
+	p.gen.ph = ph;
+	return true;
+}
+
+// \todo check for problem of different re/im src/dst overlap
+// \remark re/im overlap is not checked
+BL VecOp::d_mcosc(OpParam &p) 
+{ 
+	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	for(; p.frames--; ph += phinc,p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids) {
+		R zre = cos(ph),zim = sin(ph);
+
+		register const R r = *p.rsdt * zre - *p.isdt * zim;
+		*p.iddt = *p.isdt * zre + *p.rsdt * zim;
+		*p.rddt = r;
+	}
+	p.gen.ph = ph;
+	return true;
 }
 
 /*! \brief Generator for complex (cos+i sin) oscillations.
@@ -95,30 +102,37 @@ Vasp *Vasp::m_osc(const Argument &arg,BL mul)
 
 	\todo Replace period length by frequency specification
 */
-Vasp *Vasp::m_cosc(const Argument &arg,BL mul) 
+Vasp *VaspOp::m_cosc(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
+	Vasp *ret = NULL;
+	const C *opnm = mul?"*cosc":"cosc";
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		// period length
-		R perlen = flx::GetAFloat(arg.GetList()[0]);
-		// starting phase
-		R stph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-
-		CVecBlock *vecs = GetCVecs(mul?"*cosc":"cosc",*this);
+		CVecBlock *vecs = GetCVecs(opnm,src,dst);
 		if(vecs) {
-			BL ok = true;
-			for(I i = 0; ok && i < vecs->Pairs(); ++i) {
-				VBuffer *re = vecs->ReSrc(i),*im = vecs->ImSrc(i);
-				if(mul)
-					ok = d_mcosc(vecs->Frames(),re->Pointer(),re->Channels(),im?im->Pointer():NULL,im?im->Channels():0,perlen,stph);
-				else
-					ok = d_cosc(vecs->Frames(),re->Pointer(),re->Channels(),im?im->Pointer():NULL,im?im->Channels():0,perlen,stph);
+			OpParam p;
+			// period length
+			p.gen.phinc = 2*PI/flx::GetAFloat(arg.GetList()[0]); 
+			// starting phase
+			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+
+			VecOp::opfun *fun;
+			if(mul) {
+				BL rovr = p.SROvr(),iovr = p.SIOvr(); 
+				if(rovr == iovr) { p.SDRRev(); p.SDIRev(); }
+				else {
+					post("%s: Unresolvable src/dst vector overlap",opnm);
+					return NULL;
+				}
+				fun = VecOp::d_mcosc;
 			}
-			return ok?vecs->ResVasp():NULL;
+			else fun = VecOp::d_cosc;
+		
+			ret = DoOp(vecs,fun,p);
+			delete vecs;
 		}
-		else
-			return NULL;
 	}
-	else return NULL;
+
+	return ret;
 }
 
 
@@ -126,19 +140,19 @@ Vasp *Vasp::m_cosc(const Argument &arg,BL mul)
 
 // ! look up Höldrich's pd phasor code
 
-static BL d_phasor(I cnt,S *dt,I str,R perln,R ph) 
+BL VecOp::d_phasor(OpParam &p) 
 { 
-	// frq and phase defined by complex frequency
-	R phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt = fmod(ph,1.F);
+	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	for(; p.frames--; ph += phinc,p.rddt += p.rds) *p.rddt = fmod(ph,1.F);
+	p.gen.ph = ph;
 	return true;
 }
 
-static BL d_mphasor(I cnt,S *dt,I str,R perln,R ph) 
+BL VecOp::d_mphasor(OpParam &p) 
 { 
-	// frq and phase defined by complex frequency
-	R phinc = 2*PI/perln; 
-	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= fmod(ph,1.F);
+	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	for(; p.frames--; ph += phinc,p.rddt += p.rds,p.rsdt += p.rss) *p.rddt = *p.rsdt * fmod(ph,1.F);
+	p.gen.ph = ph;
 	return true;
 }
 
@@ -152,30 +166,31 @@ static BL d_mphasor(I cnt,S *dt,I str,R perln,R ph)
 
 	\todo Replace period length by frequency specification
 */
-Vasp *Vasp::m_phasor(const Argument &arg,BL mul) 
+Vasp *VaspOp::m_phasor(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
+	Vasp *ret = NULL;
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		// period length
-		R perlen = flx::GetAFloat(arg.GetList()[0]);
-		// starting phase
-		R stph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-
-		RVecBlock *vecs = GetRVecs(mul?"*phasor":"phasor",*this);
+		RVecBlock *vecs = GetRVecs(mul?"*phasor":"phasor",src,dst);
 		if(vecs) {
-			BL ok = true;
-			for(I i = 0; ok && i < vecs->Vecs(); ++i) {
-				VBuffer *s = vecs->Src(i);
-				if(mul)
-					ok = d_mphasor(vecs->Frames(),s->Pointer(),s->Channels(),perlen,stph);
-				else
-					ok = d_phasor(vecs->Frames(),s->Pointer(),s->Channels(),perlen,stph);
+			OpParam p;
+			// period length
+			p.gen.phinc = 2*PI/flx::GetAFloat(arg.GetList()[0]); 
+			// starting phase
+			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+		
+			VecOp::opfun *fun;
+			if(mul) {
+				if(p.SROvr()) p.SDRRev();
+				fun = VecOp::d_mphasor;
 			}
-			return ok?vecs->ResVasp():NULL;
+			else fun = VecOp::d_phasor;
+		
+			ret = DoOp(vecs,fun,p);
+			delete vecs;
 		}
-		else
-			return NULL;
 	}
-	else return NULL;
+
+	return ret;
 }
 
 
@@ -189,20 +204,9 @@ static F rnd()
 	return ret;
 }
 
-static BL d_noise(I cnt,S *dt,I str) 
+BL VecOp::d_noise(OpParam &p) 
 { 
-	for(I i = 0; i < cnt; ++i,dt += str) *dt = rnd();
-	return true;
-}
-
-static BL d_cnoise(I cnt,S *re,I rstr,S *im,I istr) 
-{ 
-	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
-		S amp = rnd();
-		S arg = rnd()*(2.*PI);
-		*re = amp*cos(arg);
-		*im = amp*sin(arg);
-	}
+	for(; p.frames--; p.rddt += p.rds) *p.rddt = rnd();
 	return true;
 }
 
@@ -213,19 +217,28 @@ static BL d_cnoise(I cnt,S *re,I rstr,S *im,I istr)
 
 	\todo Replace period length by frequency specification
 */
-Vasp *Vasp::m_noise() 
+Vasp *VaspOp::m_noise(Vasp &src,Vasp *dst) 
 { 
-	RVecBlock *vecs = GetRVecs("noise",*this);
+	Vasp *ret = NULL;
+	RVecBlock *vecs = GetRVecs("noise",src,dst);
 	if(vecs) {
-		BL ok = true;
-		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
-			VBuffer *s = vecs->Src(i);
-			ok = d_noise(vecs->Frames(),s->Pointer(),s->Channels());
-		}
-		return ok?vecs->ResVasp():NULL;
+		OpParam p;		
+		ret = DoOp(vecs,VecOp::d_noise,p);
+		delete vecs;
 	}
-	else
-		return NULL;
+	return ret;
+}
+
+// \remark no check for re/im ovrlap
+BL VecOp::d_cnoise(OpParam &p) 
+{ 
+	for(; p.frames--; p.rddt += p.rds,p.iddt += p.ids) {
+		R amp = rnd();
+		R arg = rnd()*(2.*PI);
+		*p.rddt = amp*cos(arg);
+		*p.iddt = amp*sin(arg);
+	}
+	return true;
 }
 
 /*! \brief Generator for complex noise (complex abs, complex arg).
@@ -234,19 +247,16 @@ Vasp *Vasp::m_noise()
 
 	\todo Replace period length by frequency specification
 */
-Vasp *Vasp::m_cnoise() 
+Vasp *VaspOp::m_cnoise(Vasp &src,Vasp *dst) 
 { 
-	CVecBlock *vecs = GetCVecs("cnoise",*this);
+	Vasp *ret = NULL;
+	CVecBlock *vecs = GetCVecs("cnoise",src,dst);
 	if(vecs) {
-		BL ok = true;
-		for(I i = 0; ok && i < vecs->Pairs(); ++i) {
-			VBuffer *re = vecs->ReSrc(i),*im = vecs->ImSrc(i);
-			ok = d_cnoise(vecs->Frames(),re->Pointer(),re->Channels(),im->Pointer(),im->Channels());
-		}
-		return ok?vecs->ResVasp():NULL;
+		OpParam p;		
+		ret = DoOp(vecs,VecOp::d_cnoise,p);
+		delete vecs;
 	}
-	else
-		return NULL;
+	return ret;
 }
 
 
@@ -254,66 +264,63 @@ Vasp *Vasp::m_cnoise()
 
 // Should bevels start from 0 or .5/cnt ??  -> 0!
 
-static BL d_bevelup(I cnt,S *dt,I str) 
+BL VecOp::d_bevel(OpParam &p) 
 { 
-	for(I i = 0; i < cnt; ++i,dt += str) *dt = (i+.5)/cnt;
+	register R cur = p.bvl.cur,inc = p.bvl.inc;
+	for(; p.frames--; p.rddt += p.rds,cur += inc) *p.rddt = cur;
+	p.bvl.cur = cur;
 	return true;
 }
 
-static BL d_mbevelup(I cnt,S *dt,I str) 
+BL VecOp::d_mbevel(OpParam &p) 
 { 
-	for(I i = 0; i < cnt; ++i,dt += str) *dt *= (i+.5)/cnt;
+	register R cur = p.bvl.cur,inc = p.bvl.inc;
+	for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,cur += inc) *p.rddt = *p.rsdt * cur;
+	p.bvl.cur = cur;
 	return true;
 }
-
-static BL d_beveldn(I cnt,S *dt,I str) 
-{ 
-	for(I i = cnt-1; i >= 0; --i,dt += str) *dt = (i+.5)/cnt;
-	return true;
-}
-
-static BL d_mbeveldn(I cnt,S *dt,I str) 
-{ 
-	for(I i = cnt-1; i >= 0; --i,dt += str) *dt *= (i+.5)/cnt;
-	return true;
-}
-
 
 /*! \brief Generator for bevel ups or downs.
 
 	\param up true if bevel should rise
 	\param mul true for multiplcation on existing data (aka fading)
 	\return normalized destination vasp
-
-	\todo Replace period length by frequency specification
 */
-Vasp *Vasp::m_bevelup(BL up,BL mul) 
+Vasp *VaspOp::m_bevelup(Vasp &src,Vasp *dst,BL up,BL mul) 
 { 
-	RVecBlock *vecs = GetRVecs(up?(mul?"*bevel":"bevel"):(mul?"*bevel-":"bevel-"),*this);
+	Vasp *ret = NULL;
+	RVecBlock *vecs = GetRVecs(up?(mul?"*bevel":"bevel"):(mul?"*bevel-":"bevel-"),src,dst);
 	if(vecs) {
-		BL ok = true;
-		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
-			VBuffer *s = vecs->Src(i);
-			if(up)
-				if(mul)
-					ok = d_mbevelup(vecs->Frames(),s->Pointer(),s->Channels());
-				else
-					ok = d_bevelup(vecs->Frames(),s->Pointer(),s->Channels());
-			else
-				if(mul)
-					ok = d_mbeveldn(vecs->Frames(),s->Pointer(),s->Channels());
-				else
-					ok = d_bevelup(vecs->Frames(),s->Pointer(),s->Channels());
+		OpParam p;
+	
+		VecOp::opfun *fun;
+		if(mul) {
+			p.bvl.cur = up?0:1; // start
+			p.bvl.inc = (up?1.:-1.)/vecs->Frames(); // increase
+
+			if(p.SROvr()) p.SDRRev();
+			fun = VecOp::d_mbevel;
 		}
-		return ok?vecs->ResVasp():NULL;
+		else {
+			p.bvl.cur = up?1:0; // start
+			p.bvl.inc = (up?-1.:1.)/vecs->Frames(); // increase
+
+			fun = VecOp::d_bevel;
+		}
+	
+		ret = DoOp(vecs,fun,p);
+		delete vecs;
 	}
-	else
-		return NULL;
+
+	return ret;
 }
+
+
+#if 0
 
 // --- window --------------------------
 
-static BL d_window(I cnt,S *dt,I str,F wndtp) 
+BL VecOp::d_window(I cnt,S *dt,I str,I wndtp) 
 { 
 	post("vasp.window: Sorry, not implemented yet");
 	return false;
@@ -322,7 +329,7 @@ static BL d_window(I cnt,S *dt,I str,F wndtp)
 //	return true;
 }
 
-static BL d_vwindow(I cnt,S *dst,I dstr,const F *src,I sstr) 
+BL VecOp::d_vwindow(I cnt,S *dst,I dstr,const S *src,I sstr) 
 { 
 	post("vasp.window: Sorry, not implemented yet");
 	return false;
@@ -331,7 +338,7 @@ static BL d_vwindow(I cnt,S *dst,I dstr,const F *src,I sstr)
 //	return true;
 }
 
-static BL d_mwindow(I cnt,S *dt,I str,F wndtp) 
+BL VecOp::d_mwindow(I cnt,S *dt,I str,I wndtp) 
 { 
 	post("vasp*window: Sorry, not implemented yet");
 	return false;
@@ -340,7 +347,7 @@ static BL d_mwindow(I cnt,S *dt,I str,F wndtp)
 //	return true;
 }
 
-static BL d_vmwindow(I cnt,S *dst,I dstr,const F *src,I sstr) 
+BL VecOp::d_vmwindow(I cnt,S *dst,I dstr,const S *src,I sstr) 
 { 
 	post("vasp*window: Sorry, not implemented yet");
 	return false;
@@ -371,15 +378,15 @@ Vasp *Vasp::m_mwindow(const Argument &arg)
 
 */
 
-Vasp *Vasp::m_window(const Argument &arg,BL mul) 
+Vasp *VaspOp::m_window(Vasp &dst,const Argument &arg,BL mul) 
 { 
 	
-	RVecBlock *vecs = GetRVecs(mul?"*window":"window",*this);
+	RVecBlock *vecs = GetRVecs(mul?"*window":"window",dst);
 	if(vecs) {
 		BL ok = true;
 		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
 			VBuffer *s = vecs->Src(i);
-			ok = d_noise(vecs->Frames(),s->Pointer(),s->Channels());
+			ok = VecOp::d_noise(vecs->Frames(),s->Pointer(),s->Channels());
 		}
 		return ok?vecs->ResVasp():NULL;
 	}
@@ -387,5 +394,5 @@ Vasp *Vasp::m_window(const Argument &arg,BL mul)
 		return NULL;
 }
 
-
+#endif
 

@@ -264,3 +264,8 @@ Vasp *VecBlock::_SrcVasp(I n)
 	return ret;
 }
 
+Vasp *VecBlock::_ResVasp(I n)
+{
+	return _Dst(0)?_DstVasp(n):_SrcVasp(n);
+}
+

@@ -25,10 +25,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 	\todo Support dst vasp
 */
-RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
+RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
 {
-	if(dst) {
-		error("%s - sorry, out-of-place operation not supported yet");
+	if(dst && dst->Ok()) {
+		error("%s - sorry, out-of-place operation not supported yet",op);
 		return NULL;
 	}
 
@@ -70,10 +70,10 @@ RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
 
 	\todo Support dst vasp
 */
-CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
+CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
 {
-	if(dst) {
-		error("%s - sorry, out-of-place operation not supported yet");
+	if(dst && dst->Ok()) {
+		error("%s - sorry, out-of-place operation not supported yet",op);
 		return NULL;
 	}
 
@@ -137,10 +137,10 @@ CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
 
 	\todo Support dst vasp
 */
-RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi)
+RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi)
 {
-	if(dst) {
-		error("%s - sorry, out-of-place operation not supported yet");
+	if(dst && dst->Ok()) {
+		error("%s - sorry, out-of-place operation not supported yet",op);
 		return NULL;
 	}
 
@@ -222,10 +222,10 @@ RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi)
 
 	\todo Support dst vasp
 */
-CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi,BL full)
+CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi,BL full)
 {
-	if(dst) {
-		error("%s - sorry, out-of-place operation not supported yet");
+	if(dst && dst->Ok()) {
+		error("%s - sorry, out-of-place operation not supported yet",op);
 		return NULL;
 	}
 
@@ -359,9 +359,63 @@ CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi,BL f
 }
 
 
+Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p)
+{
+	p.frames = vecs->Frames();
+
+	BL ok = true;
+	for(I i = 0; ok && i < vecs->Vecs(); ++i) {
+		VBuffer *s = vecs->Src(i),*d = vecs->Dst(i),*a = vecs->Arg(i);
+		p.rsdt = s->Pointer(),p.rss = s->Channels();
+	
+		if(d) p.rddt = d->Pointer(),p.rds = d->Channels();
+		else p.rddt = p.rsdt,p.rds = p.rss;
+	
+		if(a) p.radt = a->Pointer(),p.ras = a->Channels();
+		else p.radt = NULL;
+		
+		ok = fun(p);
+	}
+	return ok?vecs->ResVasp():NULL;
+}
+
+
+Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p)
+{
+	p.frames = vecs->Frames();
+
+	BL ok = true;
+	for(I i = 0; ok && i < vecs->Pairs(); ++i) {
+		VBuffer *rv = vecs->ReSrc(i),*iv = vecs->ImSrc(i);
+		p.rsdt = rv->Pointer(),p.rss = rv->Channels();
+		p.isdt = iv->Pointer(),p.iss = iv->Channels();
+
+		rv = vecs->ReDst(i),iv = vecs->ImDst(i);
+		if(rv) {
+			p.rddt = rv->Pointer(),p.rds = rv->Channels();
+			p.iddt = iv?iv->Pointer():NULL,p.ids = iv?iv->Channels():0;
+		}
+		else { 
+			p.rddt = p.rsdt,p.rds = p.rss,p.iddt = p.isdt,p.ids = p.iss;
+		}
+		
+		rv = vecs->ReArg(i),iv = vecs->ImArg(i);
+		if(rv) {
+			p.radt = rv->Pointer(),p.rds = rv->Channels();
+			p.iadt = iv?iv->Pointer():NULL,p.ids = iv?iv->Channels():0;
+		}
+		else { 
+			p.radt = NULL,p.iadt = NULL;
+		}
+
+		ok = fun(p);
+	}
+	return ok?vecs->ResVasp():NULL;
+}
 
 
 
+#if 0
 
 
 // just transform complex vector pairs
@@ -724,4 +778,8 @@ Vasp *Vasp::fv_arg(const C *op,const Argument &arg,const arg_funcs &f)
 {
 	return arg.IsVasp()?fv_arg(op,arg.GetVasp(),f):NULL;
 }
+
+
+#endif
+
 

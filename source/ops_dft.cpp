@@ -185,14 +185,14 @@ static BL d_cifft(I cnt,S *re,I rstr,S *im,I istr)
 
 
 
-Vasp *Vasp::m_rfft(Vasp *dst,BL inv) 
+Vasp *VaspOp::m_rfft(Vasp &src,Vasp *dst,BL inv) 
 { 
 	if(dst) {
 		error("rfft: out-of-place operation not implemented yet");
 		return NULL;
 	}
 
-	RVecBlock *vecs = GetRVecs(inv?"rfft-":"rfft",*this,dst);
+	RVecBlock *vecs = GetRVecs(inv?"rfft-":"rfft",src,dst);
 	if(vecs) {
 		BL ok = true;
 		for(I i = 0; ok && i < vecs->Vecs(); ++i) {
@@ -208,14 +208,14 @@ Vasp *Vasp::m_rfft(Vasp *dst,BL inv)
 		return NULL;
 }
 
-Vasp *Vasp::m_cfft(Vasp *dst,BL inv) 
+Vasp *VaspOp::m_cfft(Vasp &src,Vasp *dst,BL inv) 
 { 
 	if(dst) {
 		error("rfft: out-of-place operation not implemented yet");
 		return NULL;
 	}
 
-	CVecBlock *vecs = GetCVecs(inv?"cfft-":"cfft",*this,dst,true);
+	CVecBlock *vecs = GetCVecs(inv?"cfft-":"cfft",src,dst,true);
 	if(vecs) {
 		BL ok = true;
 		for(I i = 0; ok && i < vecs->Pairs(); ++i) {

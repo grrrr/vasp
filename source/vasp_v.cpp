@@ -200,7 +200,7 @@ public:
 		SetupInOut();
 	}
 
-	virtual V m_bang() { ToOutInt(0,ref.Ok?ref.Vectors():0); }
+	virtual V m_bang() { ToOutInt(0,ref.Ok()?ref.Vectors():0); }
 
 	virtual V m_help() { post("%s - Get number of vectors of a vasp",thisName()); }
 };

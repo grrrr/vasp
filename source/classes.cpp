@@ -15,11 +15,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // vasp_unop class
 ///////////////////////////////////////////////////////////////////////////
 
-vasp_unop::vasp_unop()
+vasp_unop::vasp_unop(BL op)
 {
 	AddInAnything();
 	AddOutAnything();
 	SetupInOut();
+
+	if(op) FLEXT_ADDMETHOD_(1,"to",m_to);
 }
 
 Vasp *vasp_unop::x_work() { return tx_work(); }
@@ -35,7 +37,7 @@ Vasp *vasp_unop::tx_work()
 ///////////////////////////////////////////////////////////////////////////
 
 
-vasp_binop::vasp_binop(I argc,t_atom *argv)
+vasp_binop::vasp_binop(I argc,t_atom *argv,BL op)
 {
 	a_list(argc,argv);
 
@@ -43,6 +45,7 @@ vasp_binop::vasp_binop(I argc,t_atom *argv)
 	AddOutAnything();
 	SetupInOut();
 
+	if(op) FLEXT_ADDMETHOD_(1,"to",m_to);
 	FLEXT_ADDMETHOD(1,a_list);
 	FLEXT_ADDMETHOD_(1,"vasp",a_vasp);
 	FLEXT_ADDMETHOD_(1,"float",a_float);
@@ -117,7 +120,7 @@ Vasp *vasp_binop::tx_work(const Argument &arg)
 ///////////////////////////////////////////////////////////////////////////
 
 
-vasp_anyop::vasp_anyop(I argc,t_atom *argv)
+vasp_anyop::vasp_anyop(I argc,t_atom *argv,BL op)
 {
 	a_list(argc,argv);
 
@@ -125,6 +128,7 @@ vasp_anyop::vasp_anyop(I argc,t_atom *argv)
 	AddOutAnything();
 	SetupInOut();
 
+	if(op) FLEXT_ADDMETHOD_(1,"to",m_to);
 	FLEXT_ADDMETHOD(1,a_list);
 /*
 	FLEXT_ADDMETHOD_(1,"vasp",a_vasp);
