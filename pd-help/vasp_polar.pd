@@ -1,5 +1,5 @@
-#N canvas 15 40 970 661 10;
-#N canvas 92 108 551 422 inside 0;
+#N canvas 28 7 948 670 10;
+#N canvas 92 108 559 430 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 84 238 s \$0-sample-length;
 #X obj 66 208 s \$0-draw_display;
@@ -15,8 +15,8 @@
 #X msg 67 133 read \$1 bufpol1;
 #X obj 236 278 s bufpola;
 #X obj 246 302 s bufpolp;
-#X msg 226 101 ylabel 315 -3.14 0 3.14 \, bounds 0 -3.5 300 3.5;
 #X obj 226 123 s \$0-bounds;
+#X msg 226 101 ylabel 315 -3.14 0 3.14 \, bounds 0 3.5 300 -3.5;
 #X connect 0 0 7 0;
 #X connect 3 0 10 0;
 #X connect 3 0 11 0;
@@ -24,7 +24,7 @@
 #X connect 3 0 14 0;
 #X connect 4 0 6 0;
 #X connect 5 0 9 0;
-#X connect 5 0 15 0;
+#X connect 5 0 16 0;
 #X connect 6 0 3 0;
 #X connect 6 0 1 0;
 #X connect 7 0 2 0;
@@ -33,7 +33,7 @@
 #X connect 8 0 12 0;
 #X connect 9 0 8 0;
 #X connect 12 0 0 0;
-#X connect 15 0 16 0;
+#X connect 16 0 15 0;
 #X restore 360 610 pd inside;
 #X obj 75 32 cnv 15 15 15 empty empty vasp.polar 0 10 1 14 -262144
 -1 0;
