@@ -24,23 +24,23 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class FreeEntry
 {
 public:
-	FreeEntry(t_symbol *s): sym(s),nxt(NULL) {}
+	FreeEntry(const t_symbol *s): sym(s),nxt(NULL) {}
 
-	t_symbol *sym;
+	const t_symbol *sym;
 	FreeEntry *nxt;
 };
 
 class BufEntry
 {
 public:
-	BufEntry(t_symbol *s,I fr,BL zero = true);
+	BufEntry(const t_symbol *s,I fr,BL zero = true);
 	~BufEntry();
 
 	V IncRef();
 	V DecRef();
 
 //	UL magic;
-	t_symbol *sym;
+	const t_symbol *sym;
 	I refcnt,tick;
 	BufEntry *nxt;
 
@@ -57,12 +57,12 @@ static I libcnt = 0,libtick = 0;
 static flext::ThrMutex libmtx;
 #endif
 
-static V FreeLibSym(t_symbol *s);
+static V FreeLibSym(const t_symbol *s);
 
 
 
 
-BufEntry::BufEntry(t_symbol *s,I fr,BL zero): 
+BufEntry::BufEntry(const t_symbol *s,I fr,BL zero): 
 	sym(s), //magic(LIBMAGIC),
 	alloc(fr),len(fr),data(new S[fr]),
 	refcnt(0),nxt(NULL) 
@@ -97,7 +97,7 @@ VBuffer *BufLib::Get(const VSymbol &s,I chn,I len,I offs)
 		return new SysBuf(s,chn,len,offs);
 }
 
-V BufLib::IncRef(t_symbol *s) 
+V BufLib::IncRef(const t_symbol *s) 
 { 
 	if(s) {
 		BufEntry *e = FindInLib(s);
@@ -105,7 +105,7 @@ V BufLib::IncRef(t_symbol *s)
 	}
 }
 
-V BufLib::DecRef(t_symbol *s)
+V BufLib::DecRef(const t_symbol *s)
 { 
 	if(s) {
 		BufEntry *e = FindInLib(s);
@@ -179,14 +179,14 @@ static V LibTick(V *)
 
 }
 
-static t_symbol *GetLibSym()
+static const t_symbol *GetLibSym()
 {
 	if(freehead) {
 		// reuse from free-list
 		FreeEntry *r = freehead;
 		freehead = r->nxt;
 		if(!freehead) freetail = NULL;
-		t_symbol *s = r->sym;
+		const t_symbol *s = r->sym;
 		delete r;
 		return s;
 	}
@@ -204,7 +204,7 @@ static t_symbol *GetLibSym()
 	clock_delay(libclk,LIBTICK);
 }
 
-static V FreeLibSym(t_symbol *sym)
+static V FreeLibSym(const t_symbol *sym)
 {
 	FreeEntry *f = new FreeEntry(sym);
 	if(!freehead) freehead = f;
@@ -218,7 +218,7 @@ BufEntry *BufLib::NewImm(I fr,BL zero)
 #ifdef FLEXT_THREADS
 	if(!libthractive) {
 		bool ret = flext::LaunchThread(LibThr,NULL);
-		if(ret)
+		if(!ret)
 			error("vasp - Could not launch helper thread");
 		else {
 			libthrcond = new flext::ThrCond;
@@ -231,11 +231,7 @@ BufEntry *BufLib::NewImm(I fr,BL zero)
 		clock_delay(libclk,LIBTICK);
 	}
 
-	t_symbol *s = NULL;
-//	do {
-		s = GetLibSym();
-//	} while(s->s_thing);
-
+	const t_symbol *s = GetLibSym();
 	BufEntry *entry = new BufEntry(s,fr,zero);
 
 #ifdef FLEXT_THREADS
@@ -299,6 +295,3 @@ I ImmBuf::Frames() const { return entry->len; }
 V ImmBuf::Frames(I fr,BL keep) { entry = BufLib::Resize(entry,fr,keep); }
 
 S *ImmBuf::Data() { return entry->data; }
-
-
-
