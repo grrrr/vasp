@@ -127,3 +127,17 @@ Vasp *VaspOp::m_rpow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	return ret;
 }
 
+
+VASP_UNARY("vasp.sqr",sqr,true,"") 
+VASP_UNARY("vasp.ssqr",ssqr,true,"") 
+VASP_UNARY("vasp.csqr",csqr,true,"") 
+VASP_UNARY("vasp.sqrt",sqrt,true,"") 
+VASP_UNARY("vasp.ssqrt",ssqrt,true,"") 
+VASP_BINARY("vasp.pow",pow,true,"") 
+VASP_ANYOP("vasp.cpowi",cpowi,0,true,"") 
+VASP_ANYOP("vasp.rpow",rpow,1,true,"") 
+
+VASP_UNARY("vasp.exp",exp,true,"") 
+VASP_UNARY("vasp.log",log,true,"") 
+
+

@@ -55,6 +55,24 @@ BL VecOp::d_divr(OpParam &p) { D__rbin(f_rdivr<S>,p); }
 BL VecOp::d_cdivr(OpParam &p) { return d__cbin(f_cdivr<S>,p); }
 BL VecOp::d_mod(OpParam &p) { D__rbin(f_rmod<S>,p); }
 
+
+VASP_BINARY("vasp.+",add,true,"adds a value or vasp")
+VASP_BINARY("vasp.c+",cadd,true,"adds a complex value or vasp")
+VASP_BINARY("vasp.-",sub,true,"subtracts a value or vasp")
+VASP_BINARY("vasp.c-",csub,true,"subtracts a complex value or vasp")
+VASP_BINARY("vasp.!-",subr,true,"reverse subtracts a value or vasp")
+VASP_BINARY("vasp.c!-",csubr,true,"reverse subtracts a complex value or vasp")
+VASP_BINARY("vasp.*",mul,true,"multiplies by a value or vasp")
+VASP_BINARY("vasp.c*",cmul,true,"multiplies by a complex value or vasp")
+VASP_BINARY("vasp./",div,true,"divides by a value or vasp")
+VASP_BINARY("vasp.c/",cdiv,true,"divides by a complex value or vasp")
+VASP_BINARY("vasp.!/",divr,true,"reverse divides by a value or vasp")
+VASP_BINARY("vasp.c!/",cdivr,true,"reverse divides by a complex value or vasp")
+VASP_BINARY("vasp.%",mod,true,"calculates the remainder of the division by a value or vasp")
+
+
+// -----------------------------------------------------
+
 template<class T> inline V f_rsign(T &v,T a) { v = (a == 0?0:(a < 0?-1.:1.)); }  
 template<class T> inline V f_rabs(T &v,T a) { v = fabs(a); }  
 template<class T> inline V f_cabs(T &rv,T &iv,T ra,T ia) { rv = sqrt(ra*ra+ia*ia),iv = 0; }
@@ -62,4 +80,9 @@ template<class T> inline V f_cabs(T &rv,T &iv,T ra,T ia) { rv = sqrt(ra*ra+ia*ia
 BL VecOp::d_sign(OpParam &p) { D__run(f_rsign<S>,p); }
 BL VecOp::d_abs(OpParam &p) { D__run(f_rabs<S>,p); }
 BL VecOp::d_cabs(OpParam &p) { D__cun(f_cabs<S>,p); }
+
+
+VASP_UNARY("vasp.sign",sign,true,"") 
+VASP_UNARY("vasp.abs",abs,true,"") 
+VASP_UNARY("vasp.cabs",cabs,true,"") 
 

@@ -12,6 +12,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "opdefs.h"
 
 
+// -----------------------------------------------------
+
+template<class T> V f_polar(T &rv,T &iv,T ra,T ia) { rv = sqrt(sqabs(ra,ia)),iv = arg(ra,ia); }
+template<class T> V f_rect(T &rv,T &iv,T ra,T ia) { rv = ra*cos(ia),iv = ra*sin(ia); }
+
+BL VecOp::d_polar(OpParam &p) { return d__cun(f_polar<S>,p); }
+BL VecOp::d_rect(OpParam &p) { return d__cun(f_rect<S>,p); }
+
+
+VASP_UNARY("vasp.polar",polar,true,"") 
+VASP_UNARY("vasp.rect",rect,true,"") 
+
+
+// -----------------------------------------------------
+
+
 template<class T> V f_radd(T &rv,T &iv,T ra,T ia,T rb,T) 
 { 
 	register const R _abs = sqrt(sqabs(ra,ia))+rb;
@@ -42,7 +58,10 @@ Vasp *VaspOp::m_radd(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 }
 
 
+VASP_ANYOP("vasp.r+",radd,1,true,"") 
 
+
+// -----------------------------------------------------
 
 template<class T> V f_cnorm(T &rv,T &iv,T ra,T ia) 
 { 
@@ -54,17 +73,20 @@ template<class T> V f_cnorm(T &rv,T &iv,T ra,T ia)
 BL VecOp::d_cnorm(OpParam &p) { return d__cun(f_cnorm<S>,p); }
 
 
-template<class T> V f_polar(T &rv,T &iv,T ra,T ia) { rv = sqrt(sqabs(ra,ia)),iv = arg(ra,ia); }
-template<class T> V f_rect(T &rv,T &iv,T ra,T ia) { rv = ra*cos(ia),iv = ra*sin(ia); }
+VASP_UNARY("vasp.cnorm",cnorm,true,"")
 
-BL VecOp::d_polar(OpParam &p) { return d__cun(f_polar<S>,p); }
-BL VecOp::d_rect(OpParam &p) { return d__cun(f_rect<S>,p); }
-
+// -----------------------------------------------------
 
 template<class T> inline V f_cconj(T &,T &iv,T,T ia) { iv = -ia; }
 
 BL VecOp::d_cconj(OpParam &p) { D__cun(f_cconj<S>,p); }
 
 
+VASP_UNARY("vasp.cconj",cconj,true,"")  // should be replaced by an abstraction
+
+
 //template<class T> inline V f_cswap(T &rv,T &iv,T ra,T ia) { rv = ia,iv = ra; }
 //BL VecOp::d_cswap(OpParam &p) { D__cun(f_cswap<S>,p); }
+
+
+//VASP_UNARY("vasp.cswap",cswap,true)

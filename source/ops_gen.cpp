@@ -126,6 +126,11 @@ Vasp *VaspOp::m_cosc(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 }
 
 
+VASP_ANYOP("vasp.osc",osc,1,false,"")
+VASP_ANYOP("vasp.*osc",mosc,1,true,"")
+VASP_ANYOP("vasp.cosc",cosc,1,false,"")
+VASP_ANYOP("vasp.*cosc",mcosc,1,true,"")
+
 // --- phasor ---------------------------------------
 
 // ! look up Höldrich's pd phasor code
@@ -181,6 +186,9 @@ Vasp *VaspOp::m_phasor(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul
 	return ret;
 }
 
+
+VASP_ANYOP("vasp.phasor",phasor,1,false,"")
+VASP_ANYOP("vasp.*phasor",mphasor,1,true,"")
 
 // --- noise --------------------------------
 
@@ -246,5 +254,6 @@ Vasp *VaspOp::m_cnoise(OpParam &p,Vasp &src,Vasp *dst)
 	return ret;
 }
 
-
+VASP_UNARY("vasp.noise",noise,false,"")
+VASP_UNARY("vasp.cnoise",cnoise,false,"")
 

@@ -73,6 +73,10 @@ Vasp *VaspOp::m_bevelup(OpParam &p,Vasp &src,Vasp *dst,BL up,BL mul)
 	return ret;
 }
 
+VASP_UNARY("vasp.bevel",bevelup,false,"")
+VASP_UNARY("vasp.!bevel",beveldn,false,"")
+VASP_UNARY("vasp.*bevel",mbevelup,true,"")
+VASP_UNARY("vasp.*!bevel",mbeveldn,false,"")
 
 // --- window --------------------------
 
@@ -150,6 +154,9 @@ Vasp *VaspOp::m_window(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul
 
 	return ret;
 }
+
+VASP_ANYOP("vasp.window",window,0,false,"")
+VASP_ANYOP("vasp.*window",mwindow,0,true,"")
 
 
 

@@ -121,3 +121,6 @@ Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm,
 
 	return ret;
 }
+
+VASP_ANYOP("vasp.tilt",tilt,1,true,"")
+VASP_ANYOP("vasp.xtilt",xtilt,1,true,"")

@@ -127,6 +127,8 @@ Vasp *VaspOp::m_fhp(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL hp)
 	return ret;
 }
 
+VASP_ANYOP("vasp.flp",flp,1,true,"")
+VASP_ANYOP("vasp.fhp",fhp,1,true,"")
 
 
 // --- integrate/differentiate
@@ -195,4 +197,8 @@ Vasp *VaspOp::m_int(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL inv)
 	}
 	return ret;
 }
+
+VASP_ANYOP("vasp.int",int,0,true,"") 
+VASP_ANYOP("vasp.dif",dif,0,true,"") 
+
 

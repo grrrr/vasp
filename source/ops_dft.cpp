@@ -230,3 +230,10 @@ Vasp *VaspOp::m_cfft(OpParam &p,Vasp &src,Vasp *dst,BL inv)
 	else
 		return NULL;
 }
+
+VASP_UNARY("vasp.rfft",rfft,true,"")
+VASP_UNARY("vasp.r!fft",rifft,true,"")
+VASP_UNARY("vasp.cfft",cfft,true,"")
+VASP_UNARY("vasp.c!fft",cifft,true,"")
+
+

@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "ops_cmp.h"
 #include "opdefs.h"
 
+// --------------------------------------------------------------
+
 template<class T> inline V f_rlwr(T &v,T a,T b) { v = a < b?1:0; }
 template<class T> inline V f_rgtr(T &v,T a,T b) { v = a > b?1:0; }
 template<class T> inline V f_rleq(T &v,T a,T b) { v = a <= b?1:0; }
@@ -25,6 +27,15 @@ BL VecOp::d_geq(OpParam &p) { D__rbin(f_rgeq<S>,p); }
 BL VecOp::d_equ(OpParam &p) { D__rbin(f_requ<S>,p); }
 BL VecOp::d_neq(OpParam &p) { D__rbin(f_rneq<S>,p); }
 
+VASP_BINARY("vasp.<",lwr,true,"")
+VASP_BINARY("vasp.>",gtr,true,"")
+VASP_BINARY("vasp.<=",leq,true,"")
+VASP_BINARY("vasp.>=",geq,true,"")
+VASP_BINARY("vasp.==",equ,true,"")
+VASP_BINARY("vasp.!=",neq,true,"")
+
+
+// --------------------------------------------------------------
 
 template<class T> inline V f_min(T &v,T a,T b) { v = a < b?a:b; }
 template<class T> inline V f_max(T &v,T a,T b) { v = a > b?a:b; }
@@ -46,6 +57,15 @@ BL VecOp::d_max(OpParam &p) { D__rbin(f_max<S>,p); }
 BL VecOp::d_rmin(OpParam &p) { return d__cbin(f_rmin<S>,p); }
 BL VecOp::d_rmax(OpParam &p) { return d__cbin(f_rmax<S>,p); }
 
+
+VASP_BINARY("vasp.min",min,true,"assigns the minimum of the comparison with a value or vasp")
+VASP_BINARY("vasp.max",max,true,"assigns the maximum of the comparison with a value or vasp")
+
+VASP_BINARY("vasp.rmin",rmin,true,"assigns the minimum of the radius comparison with a complex value or vasp")
+VASP_BINARY("vasp.rmax",rmax,true,"assigns the maximum of the radius comparison with a complex value or vasp")
+
+
+// --------------------------------------------------------------
 
 template<class T> V f_maxq(T &,T ra,OpParam &p) 
 { 
@@ -89,6 +109,8 @@ BL VecOp::d_rminq(OpParam &p) { return d__cop(f_rminq<S>,p); }
 BL VecOp::d_rmaxq(OpParam &p) { return d__cop(f_rmaxq<S>,p); }
 
 
+// --------------------------------------------------------------
+
 template<class T> V f_gate(T &rv,T ra,T rb) { rv = fabs(ra) >= rb?ra:0; } 
 template<class T> V f_igate(T &rv,T ra,T rb) { rv = fabs(ra) <= rb?ra:0; } 
 
@@ -112,15 +134,6 @@ BL VecOp::d_gate(OpParam &p) { D__rbin(f_gate<S>,p); }
 BL VecOp::d_igate(OpParam &p) { return d__rbin(f_igate<S>,p); }
 BL VecOp::d_rgate(OpParam &p) { return d__cbin(f_rgate<S>,p); }
 BL VecOp::d_rigate(OpParam &p) { return d__cbin(f_rigate<S>,p); }
-
-
-template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia) 
-{ 
-	if(ra < ia)	rv = ra,iv = ia; 
-	else rv = ia,iv = ra; 
-}
-
-BL VecOp::d_minmax(OpParam &p) { return d__cun(f_minmax<S>,p); }
 
 
 
@@ -162,6 +175,25 @@ Vasp *VaspOp::m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	return ret;
 }
 
+VASP_ANYOP("vasp.gate",gate,1,true,"") 
+VASP_ANYOP("vasp.!gate",igate,1,true,"") 
+VASP_ANYOP("vasp.rgate",rgate,1,true,"") 
+VASP_ANYOP("vasp.r!gate",rigate,1,true,"") 
+
+// --------------------------------------------------------------
+
+template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia) 
+{ 
+	if(ra < ia)	rv = ra,iv = ia; 
+	else rv = ia,iv = ra; 
+}
+
+BL VecOp::d_minmax(OpParam &p) { return d__cun(f_minmax<S>,p); }
+
+VASP_UNARY("vasp.minmax",minmax,true,"") 
+
+
+// --------------------------------------------------------------
 
 
 
@@ -378,5 +410,6 @@ public:
 };
 
 FLEXT_LIB("vasp.rmax?",vasp_qrmax)
+
 
 
