@@ -29,9 +29,9 @@ VASP_BINARY("vasp.c/-",cdivr,true)
 VASP_BINARY("vasp.%",mod,true)
 
 VASP_BINARY("vasp.min",min,true)
-VASP_BINARY("vasp.cmin",cmin,true)
+VASP_BINARY("vasp.rmin",rmin,true)
 VASP_BINARY("vasp.max",max,true)
-VASP_BINARY("vasp.cmax",cmax,true)
+VASP_BINARY("vasp.rmax",rmax,true)
 
 VASP_UNARY("vasp.minmax",minmax,true) 
 
@@ -77,7 +77,7 @@ VASP_UNARY("vasp.polar",polar,true)
 VASP_UNARY("vasp.cart",cart,true) 
 
 VASP_UNARY("vasp.cnorm",cnorm,true)
-VASP_UNARY("vasp.cswap",cswap,true)
+//VASP_UNARY("vasp.cswap",cswap,true)
 VASP_UNARY("vasp.cconj",cconj,true)
 
 VASP_ANYOP("vasp.shift",shift,true)

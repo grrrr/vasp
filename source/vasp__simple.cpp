@@ -29,10 +29,10 @@ BL VecOp::d_divr(OpParam &p) { D__rbin(f_rdivr<S>,p); }
 BL VecOp::d_cdivr(OpParam &p) { return d__cbin(f_cdivr<S>,p); }
 BL VecOp::d_mod(OpParam &p) { D__rbin(f_rmod<S>,p); }
 
-BL VecOp::d_min(OpParam &p) { D__rbin(f_rmin<S>,p); }
-BL VecOp::d_cmin(OpParam &p) { return d__cbin(f_cmin<S>,p); }
-BL VecOp::d_max(OpParam &p) { D__rbin(f_rmax<S>,p); }
-BL VecOp::d_cmax(OpParam &p) { return d__cbin(f_cmax<S>,p); }
+BL VecOp::d_min(OpParam &p) { D__rbin(f_min<S>,p); }
+BL VecOp::d_rmin(OpParam &p) { return d__cbin(f_rmin<S>,p); }
+BL VecOp::d_max(OpParam &p) { D__rbin(f_max<S>,p); }
+BL VecOp::d_rmax(OpParam &p) { return d__cbin(f_rmax<S>,p); }
 
 BL VecOp::d_lwr(OpParam &p) { D__rbin(f_rlwr<S>,p); }
 BL VecOp::d_gtr(OpParam &p) { D__rbin(f_rgtr<S>,p); }
@@ -72,7 +72,7 @@ BL VecOp::d_sign(OpParam &p) { D__run(f_rsign<S>,p); }
 
 BL VecOp::d_polar(OpParam &p) { return d__cun(f_polar<S>,p); }
 BL VecOp::d_cart(OpParam &p) { return d__cun(f_cart<S>,p); }
-BL VecOp::d_cswap(OpParam &p) { D__cun(f_cswap<S>,p); }
+//BL VecOp::d_cswap(OpParam &p) { D__cun(f_cswap<S>,p); }
 BL VecOp::d_cconj(OpParam &p) { D__cun(f_cconj<S>,p); }
 
 BL VecOp::d_minmax(OpParam &p) { return d__cun(f_minmax<S>,p); }

@@ -48,15 +48,15 @@ template<class T> inline V f_cdivr(T &rv,T &iv,T ra,T ia,T rb,T ib)
 
 template<class T> inline V f_rmod(T &v,T a,T b) { v = fmod(a,b); }
 
-template<class T> inline V f_rmin(T &v,T a,T b) { v = a < b?a:b; }
-template<class T> inline V f_cmin(T &rv,T &iv,T ra,T ia,T rb,T ib) 
+template<class T> inline V f_min(T &v,T a,T b) { v = a < b?a:b; }
+template<class T> inline V f_rmin(T &rv,T &iv,T ra,T ia,T rb,T ib) 
 { 
 	if(sqabs(ra,ia) < sqabs(rb,ib))	rv = ra,iv = ia; 
 	else rv = rb,iv = ib; 
 }
 
-template<class T> inline V f_rmax(T &v,T a,T b) { v = a > b?a:b; }
-template<class T> inline V f_cmax(T &rv,T &iv,T ra,T ia,T rb,T ib) 
+template<class T> inline V f_max(T &v,T a,T b) { v = a > b?a:b; }
+template<class T> inline V f_rmax(T &rv,T &iv,T ra,T ia,T rb,T ib) 
 { 
 	if(sqabs(ra,ia) > sqabs(rb,ib))	rv = ra,iv = ia; 
 	else rv = rb,iv = ib; 

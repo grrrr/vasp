@@ -110,7 +110,8 @@ V vasp_op::m_to(I argc,t_atom *argv)
 	Vasp to(argc,argv);
 
 	if(argc && !to.Ok()) {
-		post("%s - invalid vasp detected and ignored",thisName());
+		// empty vasp
+		dst.Clear();
 	}
 	else 
 		dst = to;

@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.0"
+#define VASP_VERSION "0.0.1"
 
 
 #include <flext.h>
@@ -302,26 +302,26 @@ public:
 	// \remark if on same vector, stride is the same for src, arg, dst!
 	inline BL SR_In() const { return rddt > rsdt && rddt < rsdt+frames*rss; } 
 	inline BL SI_In() const { return iddt > isdt && iddt < isdt+frames*iss; } 
-	inline BL AR_In() const { return rddt > radt && rddt < radt+frames*ras; } 
-	inline BL AI_In() const { return iddt > iadt && iddt < iadt+frames*ias; } 
+	inline BL AR_In() const { return radt && rddt > radt && rddt < radt+frames*ras; } 
+	inline BL AI_In() const { return iadt && iddt > iadt && iddt < iadt+frames*ias; } 
 	
 	// Can we reverse direction?
 	inline BL SR_Can() const { return rsdt <= rddt || rsdt >= rddt+frames*rds; } 
 	inline BL SI_Can() const { return isdt <= iddt || isdt >= iddt+frames*ids; } 
-	inline BL AR_Can() const { return radt <= rddt || radt >= rddt+frames*rds; } 
-	inline BL AI_Can() const { return iadt <= iddt || iadt >= iddt+frames*ids; } 
+	inline BL AR_Can() const { return !radt || radt <= rddt || radt >= rddt+frames*rds; } 
+	inline BL AI_Can() const { return !iadt || iadt <= iddt || iadt >= iddt+frames*ids; } 
 	
 	// does it overlap? (works only with rss,rds,ras.... > 0)
 	inline BL SR_Ovr() const { return rddt != rsdt && rddt < rsdt+frames*rss && rsdt < rddt+frames*rds; } 
 	inline BL SI_Ovr() const { return iddt != isdt && iddt < isdt+frames*iss && isdt < iddt+frames*ids; } 
-	inline BL AR_Ovr() const { return rddt != rsdt && rddt < radt+frames*ras && radt < rddt+frames*rds; } 
-	inline BL AI_Ovr() const { return iddt != isdt && iddt < iadt+frames*ras && iadt < iddt+frames*ids; } 
+	inline BL AR_Ovr() const { return radt && rddt != radt && rddt < radt+frames*ras && radt < rddt+frames*rds; } 
+	inline BL AI_Ovr() const { return iadt && iddt != iadt && iddt < iadt+frames*ras && iadt < iddt+frames*ids; } 
 	
 	// reverse direction
 	inline V SR_Rev() { rsdt -= (frames-1)*(rss = -rss); }
 	inline V SI_Rev() { isdt -= (frames-1)*(iss = -iss); }
-	inline V AR_Rev() { radt -= (frames-1)*(ras = -ras); }
-	inline V AI_Rev() { iadt -= (frames-1)*(ias = -ias); }
+	inline V AR_Rev() { if(radt) radt -= (frames-1)*(ras = -ras); }
+	inline V AI_Rev() { if(iadt) iadt -= (frames-1)*(ias = -ias); }
 	inline V DR_Rev() { rddt -= (frames-1)*(rds = -rds); }
 	inline V DI_Rev() { iddt -= (frames-1)*(ids = -ids); }
 	
@@ -385,8 +385,8 @@ namespace VecOp {
 	BL d_cmul(OpParam &p); 
 	BL d_cdiv(OpParam &p); 
 	BL d_cdivr(OpParam &p); 
-	BL d_cmin(OpParam &p); 
-	BL d_cmax(OpParam &p); 
+	BL d_rmin(OpParam &p); 
+	BL d_rmax(OpParam &p); 
 	BL d_cpowi(OpParam &p); 
 	BL d_rpow(OpParam &p); 
 	BL d_radd(OpParam &p); 
@@ -407,7 +407,7 @@ namespace VecOp {
 	BL d_csqr(OpParam &p); 
 	BL d_cinv(OpParam &p); 
 	BL d_cabs(OpParam &p); 
-	BL d_cswap(OpParam &p); 
+//	BL d_cswap(OpParam &p); 
 	BL d_cconj(OpParam &p); 
 	BL d_polar(OpParam &p); 
 	BL d_cart(OpParam &p); 
@@ -494,8 +494,8 @@ namespace VaspOp {
 	inline Vasp *m_cmul(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cmul); }  // complex mul (pairs of vecs or complex)
 	inline Vasp *m_cdiv(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cdiv); }  // complex div (pairs of vecs or complex)
 	inline Vasp *m_cdivr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cdivr); }  // complex reverse div (pairs of vecs or complex)
-	inline Vasp *m_cmin(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cmin); }  // complex (abs) min (pairs of vecs or complex)
-	inline Vasp *m_cmax(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cmax); }  // complex (abs) max (pairs of vecs or complex)
+	inline Vasp *m_rmin(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_rmin); }  // complex (radius) min (pairs of vecs or complex)
+	inline Vasp *m_rmax(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_rmax); }  // complex (radius) max (pairs of vecs or complex)
 
 	Vasp *m_rpow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // radius power (with each two channels)
 	Vasp *m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex integer power (with each two channels)
@@ -537,7 +537,7 @@ namespace VaspOp {
 
 	inline Vasp *m_cnorm(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_cnorm); } // complex normalize
 
-	inline Vasp *m_cswap(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_cswap); }  // swap real and imaginary parts
+//	inline Vasp *m_cswap(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_cswap); }  // swap real and imaginary parts
 	inline Vasp *m_cconj(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_cconj); }  // complex conjugate
 
 	// int/dif functions

@@ -101,7 +101,7 @@ FLEXT_LIB_1("vasp.m",vasp_m,I)
 	\param inlet set - vasp to be stored (and not immediately output)
 	\retval outlet vasp
 
-	\note Not necessary in MaxMSP.
+	\note In MaxMSP only necessary when buffer is in another window.
 */
 class vasp_update:
 	public vasp_tx
@@ -133,6 +133,9 @@ FLEXT_LIB("vasp.update",vasp_update)
 	\param inlet bang - triggers stored vasp output
 	\param inlet set - vasp to be stored (and not immediately output)
 	\retval outlet vasp
+
+	\remark checks and corrects frame count
+	\remark checks channel index... no correction, no output on error!
 */
 class vasp_chk:
 	public vasp_tx
@@ -152,7 +155,21 @@ public:
 		Vasp *ret = new Vasp(ref); 
 		I fr = ret->ChkFrames(); // maximum common frame length
 		ret->Frames(fr);
-		return ret;
+
+		BL chok = true;
+
+		for(I i = 0; i < ret->Vectors(); ++i) {
+			VBuffer *buf = ret->Buffer(i);
+			chok = chok && buf->Ok() && buf->Channel() == ret->Vector(i).Channel();
+			delete buf;
+		}
+
+		if(chok) 
+			return ret;
+		else {
+			delete ret;
+			return NULL;
+		}
 	}
 
 	virtual V m_help() { post("%s - Check vasp dimensions",thisName()); }

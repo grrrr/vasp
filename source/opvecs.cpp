@@ -325,7 +325,7 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 
 			VBuffer *brref = src.Buffer(ci*2),*biref = src.Buffer(ci*2+1);		
 			VBuffer *brdst,*bidst;
-			if(dst && dst->Ok()) brdst = ret->ReArg(ci),biarg = ret->ImArg(ci);
+			if(dst && dst->Ok()) brdst = dst->Buffer(ci*2),bidst = dst->Buffer(ci*2+1);
 			else brdst = bidst = NULL;
 
 			if(!brref->Data()) {
@@ -487,7 +487,7 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 			
 			VBuffer *rav = vecs->ReArg(i),*iav = vecs->ImArg(i);
 			if(rav) {
-				p.radt = rav->Pointer(),p.rds = rav->Channels();
+				p.radt = rav->Pointer(),p.ras = rav->Channels();
 				if(iav) p.iadt = iav->Pointer(),p.ias = iav->Channels();
 				else p.iadt = NULL; //,p.ias = 0;
 			}

@@ -18,21 +18,21 @@ V lib_setup()
 
 	// call the objects' setup routines
 
-	VASP_SETUP(v);
-	VASP_SETUP(m);
-	VASP_SETUP(n);
-	VASP_SETUP(qn);
+	VASP_SETUP(v); // vasp
+	VASP_SETUP(m); // vasp.m
+	VASP_SETUP(n); // vasp.n
+	VASP_SETUP(qn); // vasp.n?
 
-	VASP_SETUP(chk);
-	VASP_SETUP(update);
-	VASP_SETUP(sync);
+	VASP_SETUP(chk);  // vasp.chk
+	VASP_SETUP(update);  // vasp.update
+	VASP_SETUP(sync);  // vasp.sync
 
-	VASP_SETUP(offs);
-	VASP_SETUP(doffs);
-	VASP_SETUP(qoffs);
-	VASP_SETUP(frames);
-	VASP_SETUP(dframes);
-	VASP_SETUP(qframes);
+	VASP_SETUP(offs);  // vasp.offs
+	VASP_SETUP(doffs); // vasp.offs+
+	VASP_SETUP(qoffs);  // vasp.offs?
+	VASP_SETUP(frames);  // vasp.frames
+	VASP_SETUP(dframes);  // vasp.frames+
+	VASP_SETUP(qframes);  // vasp.frames?
 
 	VASP_SETUP(split);
 	VASP_SETUP(join);
@@ -61,9 +61,9 @@ V lib_setup()
 	VASP__SETUP(mod);
 
 	VASP__SETUP(min)
-	VASP__SETUP(cmin)
+	VASP__SETUP(rmin)
 	VASP__SETUP(max)
-	VASP__SETUP(cmax)
+	VASP__SETUP(rmax)
 
 	VASP__SETUP(lwr)
 	VASP__SETUP(gtr)
@@ -110,7 +110,7 @@ V lib_setup()
 	VASP__SETUP(roptf);
 
 	VASP__SETUP(cnorm)
-	VASP__SETUP(cswap)
+//	VASP__SETUP(cswap)
 	VASP__SETUP(cconj)
 
 	VASP__SETUP(shift)

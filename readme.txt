@@ -41,6 +41,12 @@ Goals/features of the package:
 Version history:
 
 0.0.1:
+- vasp.cmin,vasp.cmax - renamed to vasp.rmin,vasp.rmax
+- reversed vasp channel and offset
+- fixed bug with arguments to complex binary operations
+- vasp.chk: included channel check
+
+0.0.0:
 - defined the vasp
 - quick and dirty setup of most functions (non-interruptible)
 
@@ -52,7 +58,6 @@ TODO list:
 features:
 - introduce several log levels (for warning posts)
 - flags how to handle special situations (div/0, log(<0) etc.)
-- flag for immediate or delayed explicit graphics refresh
 - how handle symmetric data operations (x*): leave 0 and n-1 bin, odd remainder bin?
 - progress % - outlet?
 - filter object for radio commands

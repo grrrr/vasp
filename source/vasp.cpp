@@ -40,7 +40,7 @@ VBuffer &VBuffer::Set(t_symbol *s,I c,I l,I o)
 	parent::Set(s);
 
 	chn = c;
-	if(chn > Channels()) chn = Channels();
+	if(chn > Channels()) chn = Channels()-1; // simply correct the channel??
 	offs = o;
 	if(offs > Frames()) offs = Frames();
 	len = l >= 0?l:Frames();
@@ -188,18 +188,18 @@ Vasp &Vasp::operator ()(I argc,t_atom *argv)
 		r.Symbol(bsym);
 
 		if(argc > ix && (flext_base::IsFlint(argv[ix]) || flext_base::IsFloat(argv[ix]))) {
-			r.Channel(flext_base::GetAFlint(argv[ix]));
-			ix++;
-		}
-		else
-			r.Channel(0);
-
-		if(argc > ix && (flext_base::IsFlint(argv[ix]) || flext_base::IsFloat(argv[ix]))) {
 			r.Offset(flext_base::GetAFlint(argv[ix]));
 			ix++;
 		}
 		else
 			r.Offset(0);
+
+		if(argc > ix && (flext_base::IsFlint(argv[ix]) || flext_base::IsFloat(argv[ix]))) {
+			r.Channel(flext_base::GetAFlint(argv[ix]));
+			ix++;
+		}
+		else
+			r.Channel(0);
 
 		chns++;
 	}
@@ -240,8 +240,8 @@ AtomList *Vasp::MakeList(BL withvasp)
 	for(I ix = 0; ix < Vectors(); ++ix) {
 		Ref &r = Vector(ix);
 		flext_base::SetSymbol((*ret)[voffs+1+ix*3],r.Symbol());  // buf
-		flext_base::SetFlint((*ret)[voffs+2+ix*3],r.Channel());  // chn
-		flext_base::SetFlint((*ret)[voffs+3+ix*3],r.Offset());  // offs
+		flext_base::SetFlint((*ret)[voffs+2+ix*3],r.Offset());  // offs
+		flext_base::SetFlint((*ret)[voffs+3+ix*3],r.Channel());  // chn
 	}
 
 	return ret;
