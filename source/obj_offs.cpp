@@ -142,7 +142,9 @@ public:
 
 	virtual V m_bang() 
 	{ 
-		if(ref.Vectors() > 1) 
+		if(!ref.Ok())
+			post("%s - Invalid vasp!",thisName());
+		else if(ref.Vectors() > 1) 
 			post("%s - More than one vector in vasp!",thisName());
 		else {
 			I o = 0;

@@ -11,8 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "util.h"
 
-/*! \class vasp_n
-	\remark \b vasp.n
+/*! \class vasp_vector
+	\remark \b vasp.vector
 	\brief Gets indexed vector of a vasp.
 	\since 0.0.1
 	\param cmdln.1 int - index of vasp vector
@@ -25,13 +25,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\note Outputs only on valid index
 	\todo Output remainder as vasp.
 */
-class vasp_n:
+class vasp_vector:
 	public vasp_tx
 {
-	FLEXT_HEADER(vasp_n,vasp_tx)
+	FLEXT_HEADER(vasp_vector,vasp_tx)
 
 public:
-	vasp_n(I argc,t_atom *argv):
+	vasp_vector(I argc,t_atom *argv):
 		ix(0)
 	{
 		if(argc >= 1 && CanbeInt(argv[0]))
@@ -59,7 +59,7 @@ private:
 	FLEXT_CALLBACK_I(m_ix);
 };
 
-FLEXT_LIB_G("vasp.n",vasp_n)
+FLEXT_LIB_G("vasp.vector",vasp_vector)
 
 
 
@@ -76,13 +76,13 @@ FLEXT_LIB_G("vasp.n",vasp_n)
 
 	\todo Should we disable output with invalid vasp?
 */
-class vasp_qn:
+class vasp_qvectors:
 	public vasp_op
 {
-	FLEXT_HEADER(vasp_qn,vasp_op)
+	FLEXT_HEADER(vasp_qvectors,vasp_op)
 
 public:
-	vasp_qn()
+	vasp_qvectors()
 	{
 		AddInAnything();
 //		AddOutAnything();
@@ -99,7 +99,7 @@ public:
 	virtual V m_help() { post("%s - Get number of vectors of a vasp",thisName()); }
 };
 
-FLEXT_LIB("vasp.n?",vasp_qn)
+FLEXT_LIB("vasp.vectors?",vasp_qvectors)
 
 
 

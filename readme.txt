@@ -41,6 +41,9 @@ Version history:
 
 0.0.6:
 - reorganized file structure
+- changed name of vasp.n and vasp.n? to vasp.vector and vasp.vectors?, respectively
+- added vasp.size, vasp.size+, vasp.size? for buffer size manipulation
+- added vasp.peaks? for extremum extraction
 
 0.0.5:
 - fixed lacking sqrt in [vasp.rmin?],[vasp.rmax?]

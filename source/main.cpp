@@ -23,12 +23,18 @@ V lib_setup()
 
 	VASP_SETUP(v); // vasp
 	VASP_SETUP(m); // vasp.m
-	VASP_SETUP(n); // vasp.n
-	VASP_SETUP(qn); // vasp.n?
 
 	VASP_SETUP(chk);  // vasp.chk
 	VASP_SETUP(update);  // vasp.upd
+
 	VASP_SETUP(sync);  // vasp.sync
+
+	VASP_SETUP(vector); // vasp.vector
+	VASP_SETUP(qvectors); // vasp.vectors?
+
+	VASP_SETUP(size);  // vasp.size 
+	VASP_SETUP(dsize);  // vasp.size+ 
+	VASP_SETUP(qsize);  // vasp.size?
 
 	VASP_SETUP(offs);  // vasp.offs
 	VASP_SETUP(doffs); // vasp.offs+
@@ -45,7 +51,8 @@ V lib_setup()
 
 	VASP_SETUP(q);
 	VASP_SETUP(qq);
-	VASP_SETUP(i);
+
+	VASP_SETUP(i); // vasp.imm - NOT FUNCTIONAL
 
 //	VASP__SETUP(copy);
 //	VASP__SETUP(ccopy);
@@ -66,10 +73,9 @@ V lib_setup()
 	VASP__SETUP(cdivr);
 	VASP__SETUP(mod);
 
-	VASP__SETUP(min)
-	VASP__SETUP(rmin)
-	VASP__SETUP(max)
-	VASP__SETUP(rmax)
+	VASP__SETUP(sign) 
+	VASP__SETUP(abs) 
+	VASP__SETUP(cabs) 
 
 	VASP__SETUP(lwr)
 	VASP__SETUP(gtr)
@@ -78,14 +84,37 @@ V lib_setup()
 	VASP__SETUP(equ)
 	VASP__SETUP(neq)
 
-	VASP__SETUP(int) 
-	VASP__SETUP(dif) 
+	VASP__SETUP(min)
+	VASP__SETUP(rmin)
+	VASP__SETUP(max)
+	VASP__SETUP(rmax)
+
+	VASP__SETUP(minmax) 
+
+	VASP_SETUP(qmin)
+	VASP_SETUP(qmax)
+	VASP_SETUP(qamin)
+	VASP_SETUP(qamax)
+	VASP_SETUP(qrmin)
+	VASP_SETUP(qrmax)
+
+	VASP__SETUP(gate);
+	VASP__SETUP(rgate);
+//	VASP__SETUP(igate);
+//	VASP__SETUP(rigate);
+
 	VASP_SETUP(peaks) 
 	VASP_SETUP(valleys) 
 	VASP_SETUP(rpeaks) 
 	VASP_SETUP(rvalleys) 
 
-	VASP__SETUP(minmax) 
+	VASP_SETUP(qpeaks);
+
+/*
+	VASP_SETUP(qvalleys);
+	VASP_SETUP(qrpeaks);
+	VASP_SETUP(qrvalleys);
+*/
 
 	VASP__SETUP(sqr) 
 	VASP__SETUP(ssqr) 
@@ -100,27 +129,8 @@ V lib_setup()
 	VASP__SETUP(exp) 
 	VASP__SETUP(log) 
 
-//	VASP__SETUP(inv) 
-//	VASP__SETUP(cinv) 
-
-	VASP__SETUP(abs) 
-	VASP__SETUP(sign) 
 	VASP__SETUP(polar) 
 	VASP__SETUP(rect) 
-
-//	VASP_SETUP(opt)
-//	VASP_SETUP(ropt)
-	VASP__SETUP(gate);
-	VASP__SETUP(rgate);
-//	VASP__SETUP(igate);
-//	VASP__SETUP(rigate);
-
-	VASP_SETUP(qmin)
-	VASP_SETUP(qmax)
-	VASP_SETUP(qamin)
-	VASP_SETUP(qamax)
-	VASP_SETUP(qrmin)
-	VASP_SETUP(qrmax)
 
 	VASP__SETUP(cnorm)
 //	VASP__SETUP(cswap)
@@ -141,12 +151,16 @@ V lib_setup()
 	VASP__SETUP(mphasor)
 	VASP__SETUP(noise)
 	VASP__SETUP(cnoise)
+
 	VASP__SETUP(bevelup)
 	VASP__SETUP(beveldn)
 	VASP__SETUP(mbevelup)
 	VASP__SETUP(mbeveldn)
 	VASP__SETUP(window)
 	VASP__SETUP(mwindow)
+
+	VASP__SETUP(int) 
+	VASP__SETUP(dif) 
 
 	VASP__SETUP(flp)
 	VASP__SETUP(fhp)

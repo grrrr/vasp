@@ -231,6 +231,30 @@ V Vasp::OffsetD(I od)
 }
 
 
+V Vasp::Size(I s)
+{
+	for(I i = 0; i < Vectors(); ++i) {
+		VBuffer *buf = Buffer(i);
+		if(buf) { 
+			buf->Frames(s);
+			delete buf;
+		}
+	}
+}
+
+V Vasp::SizeD(I sd)
+{
+	for(I i = 0; i < Vectors(); ++i) {
+		VBuffer *buf = Buffer(i);
+		if(buf) { 
+			I s = buf->Frames()+sd;
+			buf->Frames(s >= 0?s:0);
+			delete buf;
+		}
+	}
+}
+
+
 I Vasp::ChkFrames() const
 {
 	if(Vectors() == 0) return 0;

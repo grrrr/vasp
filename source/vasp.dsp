@@ -337,7 +337,15 @@ SOURCE=.\obj_part.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\obj_peaks.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\obj_q.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\obj_size.cpp
 # End Source File
 # Begin Source File
 

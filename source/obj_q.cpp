@@ -39,7 +39,9 @@ public:
 
 	virtual V m_bang() 
 	{ 
-		if(ref.Vectors() > 1) 
+		if(!ref.Ok())
+			post("%s - Invalid vasp!",thisName());
+		else if(ref.Vectors() > 1) 
 			post("%s - More than one vector in vasp!",thisName());
 		else {
 			VBuffer *buf = ref.Buffer(0);
@@ -72,6 +74,7 @@ FLEXT_LIB("vasp.?",vasp_q)
 
 	\note Outputs 0 if vasp is undefined or invalid
 	\note Only works for a vasp with one vector. No output otherwise.
+	\todo units for position list
 */
 class vasp_qq:
 	public vasp_op
@@ -89,7 +92,9 @@ public:
 
 	virtual V m_bang() 
 	{ 
-		if(ref.Vectors() > 1) 
+		if(!ref.Ok())
+			post("%s - Invalid vasp!",thisName());
+		else if(ref.Vectors() > 1) 
 			post("%s - More than one vector in vasp!",thisName());
 		else {
 			VBuffer *buf = ref.Buffer(0);
@@ -100,7 +105,7 @@ public:
 			p = buf->Pointer();
 			for(ci = i = 0; ci < cp; ++i,++p)
 				if(*p) {
-					SetFlint(pos[ci],i);
+					SetFloat(pos[ci],i);
 					SetFloat(lst[ci],*p);
 					++ci;
 				}

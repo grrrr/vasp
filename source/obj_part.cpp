@@ -64,6 +64,11 @@ public:
 
 	virtual V m_bang() 
 	{ 
+		if(!ref.Ok()) {
+			post("%s - Invalid vasp!",thisName());
+			return;
+		}
+
 		I fr = ref.Frames(),o = 0,f = 0;
 		for(I i = 0; i < parts && (fr < 0 || fr); ++i) {
 			I p = part[i];

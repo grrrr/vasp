@@ -40,6 +40,11 @@ public:
 
 	virtual V m_bang() 
 	{ 
+		if(!ref.Ok()) {
+			post("%s - Invalid vasp!",thisName());
+			return;
+		}
+
 		I outs = CntOut()-1,rem = ref.Vectors()-outs;
 		for(I i = min(outs,ref.Vectors())-1; i >= 0; --i) {
 			Vasp v(ref.Frames(),ref.Vector(i));
@@ -165,6 +170,11 @@ public:
 
 	virtual V m_bang() 
 	{ 
+		if(!ref.Ok()) {
+			post("%s - Invalid vasp!",thisName());
+			return;
+		}
+
 		I outs = CntOut()-1,rem = ref.Vectors();
 		for(I vi = 0; rem;) {
 			I r = min(rem,outs);

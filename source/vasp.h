@@ -69,6 +69,11 @@ public:
 	// set frame count differentially
 	V FramesD(I frd) { frames += frd; }
 
+	// set buffer sizes
+	V Size(I fr);
+	// set frame count differentially
+	V SizeD(I frd);
+
 	// actual length of the vasp (in frames)
 	I ChkFrames() const;
 
