@@ -90,6 +90,12 @@ VASP_UNARY("vasp*bevel-",mbeveldn)
 VASP_BINARY("vasp.window",window)
 VASP_BINARY("vasp*window",mwindow)
 
+VASP_ANYOP("vasp.flp",flp)
+VASP_ANYOP("vasp.fhp",fhp)
+
+VASP_ANYOP("vasp.tilt",tilt)
+VASP_ANYOP("vasp.xtilt",xtilt)
+
 VASP_UNARY("vasp.rfft",rfft)
 VASP_UNARY("vasp.rfft-",rifft)
 VASP_UNARY("vasp.cfft",cfft)

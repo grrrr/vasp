@@ -99,11 +99,9 @@ Argument &Argument::Clear()
 	case tp_vasp:
 		if(dt.v) { delete dt.v; dt.v = NULL; }
 		break;
-/*
 	case tp_list:
 		if(dt.atoms) { delete dt.atoms; dt.atoms = NULL; }
 		break;
-*/
 	case tp_vx:
 		if(dt.vx) { delete dt.vx; dt.vx = NULL; }
 		break;

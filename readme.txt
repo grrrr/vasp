@@ -66,6 +66,8 @@ features:
 - optimize (c)osc with table lookup, phasor with Höldrichs code (in pd)
 - check for dst/src-overlaps in binary functions
 
+- clear samples outside transform domain (e.g. tilt)?
+
 objects:
 - buffer reference modification (offset, length)
 - sync several parallel threads

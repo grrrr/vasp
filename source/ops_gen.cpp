@@ -11,17 +11,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 #include <math.h>
 
-#ifndef PI
-#define PI 3.1415926535897932385
-#endif
-
-
 // --- osc ---------------------------------------
 
 static BL d_osc(I cnt,F *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
 	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt = cos(cph);
 	return true;
 }
@@ -29,7 +24,7 @@ static BL d_osc(I cnt,F *dt,I str,Argument &a)
 static BL d_cosc(I cnt,F *re,I rstr,F *im,I istr,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
 	for(I i = 0; i < cnt; ++i,cph += phinc,re += rstr,im += istr) *re = cos(cph),*im = sin(cph);
 	return true;
 }
@@ -37,7 +32,7 @@ static BL d_cosc(I cnt,F *re,I rstr,F *im,I istr,Argument &a)
 static BL d_mosc(I cnt,F *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
 	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt *= cos(cph);
 	return true;
 }
@@ -45,7 +40,7 @@ static BL d_mosc(I cnt,F *dt,I str,Argument &a)
 static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
 	for(I i = 0; i < cnt; ++i,cph += phinc,re += rstr,im += istr) {
 		*re = cos(cph),*im = sin(cph);
 	}
@@ -104,7 +99,7 @@ Vasp *Vasp::m_mcosc(const Argument &arg)
 static BL d_phasor(I cnt,F *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
 	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt = fmod(cph,1.F);
 	return true;
 }
@@ -112,7 +107,7 @@ static BL d_phasor(I cnt,F *dt,I str,Argument &a)
 static BL d_mphasor(I cnt,F *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
-	D frq = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/frq; 
+	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
 	for(I i = 0; i < cnt; ++i,cph += phinc,dt += str) *dt *= fmod(cph,1.F);
 	return true;
 }

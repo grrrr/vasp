@@ -11,10 +11,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 #include <math.h>
 
-#ifndef PI
-#define PI 3.1415926535897932385
-#endif
-
 
 // --- power functions ---------------------
 
@@ -133,7 +129,7 @@ static BL d_cart(I cnt,F *re,I rstr,F *im,I istr,F,F)
 	return true; 
 }
 
-Vasp *Vasp::m_abs() { return fr_arg("inv",0,d_inv); }
+Vasp *Vasp::m_abs() { return fr_arg("abs",0,d_abs); }
 Vasp *Vasp::m_sign() { return fr_arg("sign",0,d_sign); }
 Vasp *Vasp::m_polar() { return fc_arg("polar",CX(),d_polar); }
 Vasp *Vasp::m_cart() { return fc_arg("cart",CX(),d_cart); }
@@ -148,7 +144,7 @@ static BL d_norm(I cnt,F *dst,I str,F)
 	I i;
 	for(i = 0; i < cnt; ++i,dst += str) { F s = fabs(*dst); if(s > v) v = s; }
 
-	if(v != 1) {
+	if(v && v != 1) {
 		v = 1./v;
 		for(i = 0; i < cnt; ++i) *(dst -= str) *= v;
 	}
@@ -164,7 +160,7 @@ static BL d_cnorm(I cnt,F *re,I rstr,F *im,I istr,F,F)
 		if(abs > v) v = abs; 
 	}
 
-	if(v != 1) {
+	if(v && v != 1) {
 		v = 1./sqrt(v);
 		for(i = 0; i < cnt; ++i) *(re -= rstr) *= v,*(im -= istr) *= v;
 	}

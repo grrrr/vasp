@@ -128,11 +128,19 @@ SOURCE=.\vasp__fft.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\vasp__flt.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\vasp__gen.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\vasp__math.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp__resmp.cpp
 # End Source File
 # Begin Source File
 

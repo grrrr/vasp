@@ -54,6 +54,11 @@ protected:
 	I dim; F *data; 
 };
 
+#ifndef PI
+#define PI 3.1415926535897932385
+#endif
+
+
 
 class VBuffer:
 	public flext_base::buffer
@@ -277,6 +282,8 @@ public:
 	V Refresh();
 	
 
+	// -------- transformations -----------------------------------
+
 	// copy functions
 	Vasp *m_copy(const Argument &arg); // copy to (one vec or real)
 	Vasp *m_ccopy(const Argument &arg); // complex copy (pairs of vecs or complex)
@@ -367,11 +374,22 @@ public:
 	Vasp *m_window(const Argument &arg);  // window curve
 	Vasp *m_mwindow(const Argument &arg);  // * window curve
 
+	// Filter transforms 
+	Vasp *m_fhp(const Argument &arg); // time-domain high pass
+	Vasp *m_flp(const Argument &arg); // time-domain low pass
+
+	// Resampling
+	Vasp *m_tilt(const Argument &arg); // resampling (around center sample)
+	Vasp *m_xtilt(const Argument &arg); // symmetric resampling (around center sample)
+
 	// Fourier transforms 
-	Vasp *m_rfft();
-	Vasp *m_rifft();
-	Vasp *m_cfft();
-	Vasp *m_cifft();
+	Vasp *m_rfft();  // real forward
+	Vasp *m_rifft(); // real inverse
+	Vasp *m_cfft(); // complex forward
+	Vasp *m_cifft(); // complex inverse
+
+	// --------------------------------------------------------------------
+
 
 	typedef BL (*argfunRA)(I,F *,I,Argument &);
 	typedef BL (*argfunCA)(I,F *,I,F *,I,Argument &);
