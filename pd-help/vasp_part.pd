@@ -1,6 +1,4 @@
-#N canvas 218 99 713 541 10;
-#X text 67 101 left inlet: a vasp to define the buffername and the
-maximum lenght;
+#N canvas 218 99 715 543 10;
 #X text 69 160 right outlet: a vasp with remaining length (if there
 is one) of the input vasp;
 #X text 69 144 left outlet: the new vasps one after the other;
@@ -24,10 +22,14 @@ at the output;
 window;
 #X obj 66 498 VASP;
 #X text 108 498 - vasp overview;
-#X connect 8 0 7 0;
-#X connect 8 1 6 0;
-#X connect 10 0 8 0;
-#X connect 13 0 14 1;
-#X connect 14 0 12 0;
-#X connect 14 1 11 0;
-#X connect 16 0 14 0;
+#X text 67 101 left inlet: a vasp to define the buffername and the
+maximum length;
+#X obj 441 477 table bufpart1 2000;
+#X obj 441 499 table bufpart2 2000;
+#X connect 7 0 6 0;
+#X connect 7 1 5 0;
+#X connect 9 0 7 0;
+#X connect 12 0 13 1;
+#X connect 13 0 11 0;
+#X connect 13 1 10 0;
+#X connect 15 0 13 0;
