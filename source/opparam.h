@@ -105,7 +105,7 @@ public:
 		struct { R factor,center; I mode,fill; } tilt; 
 		struct { R cur,inc; } bvl;
 		struct { R sh; I ish; I fill; } sh;
-		struct { I wndtp; BL inv,mul; } wnd;
+		struct { I wndtp; BL inv,mul; R p1,p2,p3; } wnd;
 		struct { R minmax,scl; } norm;
 		struct { I arg; } ibin;
 		struct { R arg; } rbin; 
