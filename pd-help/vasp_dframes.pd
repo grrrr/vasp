@@ -1,4 +1,4 @@
-#N canvas 114 118 895 502 10;
+#N canvas 114 118 897 504 10;
 #X obj 62 303 vasp.osc 22050;
 #X obj 58 31 cnv 15 15 15 empty empty vasp.frames+ 0 10 1 14 -262144
 -1 0;
@@ -33,18 +33,18 @@
 ;
 #X obj 233 221 cnv 15 110 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
-#X obj 90 258 prepend set;
+#X obj 77 252 prepend set;
 #X obj 233 303 vasp.osc 22050;
 #X obj 233 335 vasp.update;
-#X obj 261 258 prepend set;
+#X obj 248 254 prepend set;
 #X floatatom 336 199 5 0 0;
 #X obj 62 220 vasp.frames+ 30000;
 #X obj 233 221 vasp.frames+ 22050;
 #X obj 62 397 vasp.f+;
 #X msg 62 153 vasp 20000 bufdfram1;
 #X msg 233 151 vasp 20000 bufdfram1 bufdfram2 44100;
-#X msg 90 280;
-#X msg 261 280;
+#X msg 77 274 vasp 50000 bufdfram1 0 0;
+#X msg 248 276 vasp 42050 bufdfram1 0 0 bufdfram2 44100 0;
 #X text 57 69 adds a value to the frames to a vasp;
 #X connect 0 0 5 0;
 #X connect 12 0 22 0;

@@ -1,4 +1,4 @@
-#N canvas 32 16 802 578 10;
+#N canvas 32 16 804 580 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.cnorm 0 10 1 14 -262144
 -1 0;
 #X obj 72 113 filelist \$0;
@@ -44,8 +44,6 @@
 #X connect 7 0 6 0;
 #X connect 10 0 0 0;
 #X restore 668 495 pd inside;
-#X text 69 59 sets all samples to maximum (1);
-#X text 70 73 needs two buffers;
 #X obj 397 118 wavedisplay-simple bufcnorm1 \$0;
 #X obj 398 275 wavedisplay-simple bufcnorm2 \$0;
 #X msg 59 207 vasp bufcnorm1 bufcnorm2;
@@ -71,19 +69,22 @@
 #X text 668 97 real;
 #X text 643 253 imaginary;
 #X msg 479 475 vasp bufcnorm1 bufcnorm2;
+#X text 70 73 needs two buffers (or multiple pairs);
+#X text 69 59 sets radius of all complex sample pairs to unity (1)
+;
 #X connect 3 0 4 0;
-#X connect 6 0 26 0;
-#X connect 14 0 16 0;
-#X connect 16 0 3 0;
+#X connect 6 0 24 0;
+#X connect 12 0 14 0;
+#X connect 14 0 3 0;
+#X connect 15 0 16 0;
 #X connect 17 0 18 0;
+#X connect 18 0 15 0;
 #X connect 19 0 20 0;
-#X connect 20 0 17 0;
-#X connect 21 0 22 0;
-#X connect 23 0 25 0;
-#X connect 25 0 21 0;
-#X connect 26 0 5 0;
-#X connect 26 0 5 1;
-#X connect 28 0 30 0;
-#X connect 30 0 27 0;
-#X connect 30 0 27 1;
-#X connect 33 0 2 0;
+#X connect 21 0 23 0;
+#X connect 23 0 19 0;
+#X connect 24 0 5 0;
+#X connect 24 0 5 1;
+#X connect 26 0 28 0;
+#X connect 28 0 25 0;
+#X connect 28 0 25 1;
+#X connect 31 0 2 0;
