@@ -112,6 +112,9 @@ static REAL zRe[maxPrimeFactor], zIm[maxPrimeFactor];
 static REAL   vRe[maxPrimeFactorDiv2], vIm[maxPrimeFactorDiv2];
 static REAL   wRe[maxPrimeFactorDiv2], wIm[maxPrimeFactorDiv2];
 
+// T.Grill:
+extern "C" void post(const char *c,...);
+
 void factorize(int n, int *nFact, int fact[])
 {
     int i,j,k;
@@ -193,8 +196,9 @@ bool transTableSetup(int sofar[], int actual[], int remain[],
     factorize(*nPoints, nFact, actual);
     if (actual[1] > maxPrimeFactor)
     {
-        printf("\nPrime factor of FFT length too large : %6d",actual[1]);
-        printf("\nPlease modify the value of maxPrimeFactor in mixfft.c");
+//        printf("\nPrime factor of FFT length too large : %6d",actual[1]);
+//        printf("\nPlease modify the value of maxPrimeFactor in mixfft.c");
+        post("Prime factor of FFT length too large : %d",actual[1]);
         return false;
     }
     remain[0]=*nPoints;
@@ -440,12 +444,12 @@ void twiddleTransf(int sofarRadix, int radix, int remainRadix,
 
 {   /* twiddleTransf */ 
     double cosw, sinw, gem;
-    REAL t1_re,t1_im, t2_re,t2_im, t3_re,t3_im;
-    REAL  t4_re,t4_im, t5_re,t5_im;
-    REAL  m2_re,m2_im, m3_re,m3_im, m4_re,m4_im;
-    REAL  m1_re,m1_im, m5_re,m5_im;
-    REAL  s1_re,s1_im, s2_re,s2_im, s3_re,s3_im;
-    REAL  s4_re,s4_im, s5_re,s5_im;
+    REAL t1_re,t1_im; //, t2_re,t2_im, t3_re,t3_im;
+//    REAL  t4_re,t4_im, t5_re,t5_im;
+    REAL  m2_re,m2_im; //, m3_re,m3_im, m4_re,m4_im;
+    REAL  m1_re,m1_im; //, m5_re,m5_im;
+    REAL  s1_re,s1_im; //, s2_re,s2_im, s3_re,s3_im;
+//    REAL  s4_re,s4_im, s5_re,s5_im;
 
 
     initTrig(radix);
