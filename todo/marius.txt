@@ -1,7 +1,5 @@
 Thomas' Änderungen:
 
-- vasp.equ: die Stufenfunktion sollte besser mit env gemacht werden 
-	(aber vielleicht erst, wenn die env-Transformationsfunktionen existieren)
 - vasp.frames: der Ausdruck "framesize" ist eigentlich irreführend 
 	... die kann bei verschiedenen Buffern in MaxMSP tatsächlich verschieden sein
 	framesize = sample-Länge*Bufferkanäle !!
@@ -18,11 +16,5 @@ Thomas' Änderungen:
 - vasp.cpowi, vasp.csqr und vasp.rpow vorläufig noch mit resize, ...
 
 - alle unnötigen objekte aus der hilfe rausnehemen.
-
-- alle bevels aus den hilfeobjekten entfernen.
-
-- die neu eingesetzten objekte in der VASP in die richtigen ordner tun
-
-- VASP load_object fehler beheben.
 
 - schauen ob alle abkürzungen angeführt sind...
