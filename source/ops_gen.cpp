@@ -18,34 +18,34 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- osc ---------------------------------------
 
-static BL d_osc(I cnt,F *dt,I str,F *,I,F rfrq,F ifrq) 
+static BL d_osc(I cnt,F *dt,I str,F *,I,F frq,F ph) 
 { 
 	// frq and phase defined by complex frequency
-	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	const F phinc = 2*PI/frq; 
 	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt = cos(ph);
 	return true;
 }
 
-static BL d_cosc(I cnt,F *re,I rstr,F *im,I istr,F rfrq,F ifrq) 
+static BL d_cosc(I cnt,F *re,I rstr,F *im,I istr,F frq,F ph) 
 { 
 	// frq and phase defined by complex frequency
-	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	const F phinc = 2*PI/frq; 
 	for(I i = 0; i < cnt; ++i,ph += phinc,re += rstr,im += istr) *re = cos(ph),*im = sin(ph);
 	return true;
 }
 
-static BL d_mosc(I cnt,F *dt,I str,F *,I,F rfrq,F ifrq) 
+static BL d_mosc(I cnt,F *dt,I str,F *,I,F frq,F ph) 
 { 
 	// frq and phase defined by complex frequency
-	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	const F phinc = 2*PI/frq; 
 	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= cos(ph);
 	return true;
 }
 
-static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,F rfrq,F ifrq) 
+static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,F frq,F ph) 
 { 
 	// frq and phase defined by complex frequency
-	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	const F phinc = 2*PI/frq; 
 	for(I i = 0; i < cnt; ++i,ph += phinc,re += rstr,im += istr) {
 		*re = cos(ph),*im = sin(ph);
 	}
@@ -53,43 +53,85 @@ static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,F rfrq,F ifrq)
 }
 
 Vasp *Vasp::m_osc(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_arg("osc",arg.GetAComplex(),d_osc):NULL; }
+{ 
+	if(arg.IsList() && arg.GetList().Count() >= 1) {
+		F frq = flx::GetAFloat(arg.GetList()[0]);
+		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+		return fc_arg("osc",CX(frq,ph),d_osc); 
+	}
+	else return NULL;
+}
 
 Vasp *Vasp::m_cosc(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_arg("cosc",arg.GetAComplex(),d_cosc):NULL; }
+{ 
+	if(arg.IsList() && arg.GetList().Count() >= 1) {
+		F frq = flx::GetAFloat(arg.GetList()[0]);
+		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+		return fc_arg("cosc",CX(frq,ph),d_cosc); 
+	}
+	else return NULL;
+}
 
 Vasp *Vasp::m_mosc(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_arg("*osc",arg.GetAComplex(),d_mosc):NULL; }
+{ 
+	if(arg.IsList() && arg.GetList().Count() >= 1) {
+		F frq = flx::GetAFloat(arg.GetList()[0]);
+		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+		return fc_arg("*osc",CX(frq,ph),d_mosc); 
+	}
+	else return NULL;
+}
 
 Vasp *Vasp::m_mcosc(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_arg("*cosc",arg.GetAComplex(),d_mcosc):NULL; }
+{ 
+	if(arg.IsList() && arg.GetList().Count() >= 1) {
+		F frq = flx::GetAFloat(arg.GetList()[0]);
+		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+		return fc_arg("*cosc",CX(frq,ph),d_mcosc);
+	}
+	else return NULL;
+}
 
 
 // --- phasor ---------------------------------------
 
 // look up Höldrich's pd phasor code
 
-static BL d_phasor(I cnt,F *dt,I str,F *,I,F rfrq,F ifrq) 
+static BL d_phasor(I cnt,F *dt,I str,F *,I,F frq,F ph) 
 { 
 	// frq and phase defined by complex frequency
-	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	const F phinc = 2*PI/frq; 
 	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt = fmod(ph,1.F);
 	return true;
 }
 
-static BL d_mphasor(I cnt,F *dt,I str,F *,I,F rfrq,F ifrq) 
+static BL d_mphasor(I cnt,F *dt,I str,F *,I,F frq,F ph) 
 { 
 	// frq and phase defined by complex frequency
-	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	const F phinc = 2*PI/frq; 
 	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= fmod(ph,1.F);
 	return true;
 }
 
 Vasp *Vasp::m_phasor(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_arg("phasor",arg.GetAComplex(),d_phasor):NULL; }
+{ 
+	if(arg.IsList() && arg.GetList().Count() >= 1) {
+		F frq = flx::GetAFloat(arg.GetList()[0]);
+		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+		return fc_arg("phasor",CX(frq,ph),d_phasor); 
+	}
+	else return NULL;
+}
 
 Vasp *Vasp::m_mphasor(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_arg("*phasor",arg.GetAComplex(),d_mphasor):NULL; }
+{ 
+	if(arg.IsList() && arg.GetList().Count() >= 1) {
+		F frq = flx::GetAFloat(arg.GetList()[0]);
+		F ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
+		return fc_arg("*phasor",CX(frq,ph),d_mphasor); 
+	}
+	else return NULL;
+}
 
 
 // --- noise --------------------------------

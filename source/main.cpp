@@ -19,6 +19,12 @@ V lib_setup()
 	// call the objects' setup routines
 
 	VASP_SETUP(v);
+	VASP_SETUP(split);
+	VASP_SETUP(join);
+	VASP_SETUP(offs);
+//	VASP_SETUP(offs+);
+	VASP_SETUP(len);
+//	VASP_SETUP(len+);
 	VASP_SETUP(update);
 
 	VASP_BINARY_SETUP(copy);
@@ -85,12 +91,12 @@ V lib_setup()
 	VASP_UNARY_SETUP(mirr)
 	VASP_UNARY_SETUP(xmirr)
 
-	VASP_BINARY_SETUP(osc)
-	VASP_BINARY_SETUP(mosc)
-	VASP_BINARY_SETUP(cosc)
-	VASP_BINARY_SETUP(mcosc)
-	VASP_BINARY_SETUP(phasor)
-	VASP_BINARY_SETUP(mphasor)
+	VASP_ANYOP_SETUP(osc)
+	VASP_ANYOP_SETUP(mosc)
+	VASP_ANYOP_SETUP(cosc)
+	VASP_ANYOP_SETUP(mcosc)
+	VASP_ANYOP_SETUP(phasor)
+	VASP_ANYOP_SETUP(mphasor)
 	VASP_UNARY_SETUP(noise)
 	VASP_UNARY_SETUP(cnoise)
 	VASP_UNARY_SETUP(bevelup)
