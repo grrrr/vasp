@@ -1,4 +1,4 @@
-#N canvas 181 1 615 684 10;
+#N canvas 181 1 617 686 10;
 #X obj 104 47 cnv 15 15 15 empty empty vasp_modular 0 10 1 14 -262144
 -1 0;
 #X obj 61 37 cnv 2 2 2 empty 2-1-r empty 20 12 64 14 -225271 -262144
@@ -631,7 +631,7 @@ of an object chain;
 #X connect 79 0 80 0;
 #X restore 191 333 pd moremessages;
 #X text 47 334 additional messages;
-#N canvas 49 0 394 463 objects 0;
+#N canvas 49 0 396 465 objects 0;
 #X obj 59 28 cnv 15 15 15 empty empty vasp_objects 0 10 1 14 -262144
 -1 0;
 #N canvas 408 1 510 295 fftobjects 0;
@@ -833,28 +833,24 @@ one is resampled around a center position;
 #X text 190 160 right part of symmetrical window;
 #X text 77 212 multiply...;
 #X restore 71 303 pd window-functions;
-#N canvas 188 241 791 420 utilities 0;
-#X text 156 275 symmetrical resampling;
-#X obj 77 245 vasp.tilt;
-#X text 155 246 resampling;
-#X obj 415 97 vasp.cnorm;
-#X obj 77 198 vasp.pwrap;
-#X obj 77 97 vasp.opt;
+#N canvas 188 241 508 399 utilities 0;
+#X obj 77 143 vasp.cnorm;
+#X obj 80 321 vasp.pwrap;
+#X obj 80 265 vasp.opt;
 #X obj 77 64 vasp.gate;
-#X text 155 97 optimize buffer content;
-#X text 155 64 gates vasp under a value (amplitude);
-#X text 491 96 sets complex radius of all samples to unity;
-#X obj 416 167 vasp.ropt;
-#X text 507 167 radius optimize;
-#X obj 416 134 vasp.rgate;
-#X text 507 134 radius gate;
-#X text 155 198 wraps value from 0-2 to -1 to 1;
+#X text 158 265 optimize buffer content;
+#X text 157 64 gates vasp under a value (amplitude);
+#X text 158 143 sets complex radius of all samples to unity;
+#X obj 80 292 vasp.ropt;
+#X text 171 292 radius optimize;
+#X obj 77 90 vasp.rgate;
+#X text 158 90 radius gate;
+#X text 158 321 wraps value from 0-2 to -1 to 1;
 #X obj 59 28 cnv 15 15 15 empty empty utilities 0 10 1 14 -262144 -1
 0;
-#X obj 77 276 vasp.xtilt;
-#X obj 78 352 vasp.fix;
-#X obj 255 353 vasp.radio;
-#X obj 382 322 vasp;
+#X obj 77 115 vasp.fix;
+#X obj 76 173 vasp.radio;
+#X text 73 226 abstractions:;
 #X restore 71 326 pd utilities;
 #N canvas 146 -5 837 696 declaration 0;
 #X obj 68 42 cnv 15 15 15 empty empty declaration 0 10 1 14 -262144

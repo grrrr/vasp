@@ -1,4 +1,4 @@
-#N canvas 36 36 806 582 10;
+#N canvas 36 36 808 584 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.gate 0 10 1 14 -262144 -1
 0;
 #X obj 71 131 filelist \$0;
@@ -53,7 +53,6 @@
 #X text 71 66 optional argument/right inlet: value (usually from 0-1
 to gate the soundfile sample for sample (not like a compressor!);
 #X obj 58 497 VASP-HELP;
-#X text 100 497 - vasp overview;
 #X obj 60 391 vasp.update;
 #X floatatom 133 349 5 0 0;
 #X obj 60 411 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
@@ -69,7 +68,7 @@ to gate the soundfile sample for sample (not like a compressor!);
 #X connect 14 0 16 0;
 #X connect 16 0 13 0;
 #X connect 16 0 13 1;
-#X connect 20 0 22 0;
-#X connect 21 0 24 1;
-#X connect 23 0 24 0;
-#X connect 24 0 20 0;
+#X connect 19 0 21 0;
+#X connect 20 0 23 1;
+#X connect 22 0 23 0;
+#X connect 23 0 19 0;

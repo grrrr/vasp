@@ -1,4 +1,4 @@
-#N canvas 40 76 957 600 10;
+#N canvas 40 76 959 602 10;
 #N canvas 40 55 247 122 clear_buffer 0;
 #X obj 45 79 vasp.update;
 #X obj 45 56 vasp.= 0;
@@ -9,7 +9,6 @@
 #X obj 51 19 cnv 15 15 15 empty empty vasp.fix 0 10 1 14 -262144 -1
 0;
 #X obj 52 493 VASP-HELP;
-#X text 94 492 - vasp overview;
 #X text 43 57 NAN (not a number) - values become 0;
 #N canvas 0 0 450 300 graph1 0;
 #X array buffix1 100 float 0;
@@ -53,14 +52,14 @@
 #X text 157 121 generate sine wave;
 #X obj 57 157 vasp.osc 21;
 #X text 316 365 NANs become 0;
-#X connect 9 0 0 0;
-#X connect 10 0 24 0;
-#X connect 12 0 11 0;
-#X connect 14 0 13 0;
-#X connect 22 0 29 0;
-#X connect 23 0 16 0;
-#X connect 23 1 10 0;
-#X connect 24 0 14 0;
-#X connect 24 1 25 0;
-#X connect 25 0 12 0;
-#X connect 29 0 23 0;
+#X connect 8 0 0 0;
+#X connect 9 0 23 0;
+#X connect 11 0 10 0;
+#X connect 13 0 12 0;
+#X connect 21 0 28 0;
+#X connect 22 0 15 0;
+#X connect 22 1 9 0;
+#X connect 23 0 13 0;
+#X connect 23 1 24 0;
+#X connect 24 0 11 0;
+#X connect 28 0 22 0;
