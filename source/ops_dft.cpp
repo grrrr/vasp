@@ -50,7 +50,7 @@ static BL fft_fwd_real_any(I cnt,F *dt)
 			dt[i] = tre[i]*nrm;
 			dt[cnt-i] = tim[i]*nrm;
 		}
-		dt[i] = tre[i]*nrm;
+		if(cnt%2 == 0) dt[i] = tre[i]*nrm;
 	}
 
 	delete[] im;
@@ -71,12 +71,12 @@ static BL fft_inv_real_any(I cnt,F *dt)
 		return false;
 	}
 
-	re[0] = dt[0]; re[cnt/2] = dt[cnt/2];
-	im[0] = im[cnt/2] = 0;
+	re[0] = dt[0]; im[0] = 0;
 	for(I i = 1; i < cnt/2; ++i) {
 		re[i] = re[cnt-i] = dt[i];
-		im[cnt-i] = -(im[i] = -dt[cnt-i]);
+		im[i] = -(im[cnt-i] = dt[cnt-i]);
 	}
+	if(cnt%2 == 0) { re[i] = dt[i]; im[i] = 0; }
 
 	BL ret = mixfft(cnt,re,im,dt,tim);
 
