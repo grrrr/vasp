@@ -121,7 +121,7 @@ public:
 	virtual V m_help() { post("%s - Update graphics of a vasp",thisName()); }
 };
 
-FLEXT_LIB("vasp.update",vasp_update)
+FLEXT_LIB("vasp.upd",vasp_update)
 
 
 

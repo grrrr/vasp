@@ -241,7 +241,7 @@ public:
 	vasp_valleys(I argc,t_atom *argv): vasp_peaks(argc,argv) {}
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_valleys(p,ref,&dst); }
 };																				
-FLEXT_LIB_G("vasp.valleys",vasp_valleys)
+FLEXT_LIB_G("vasp.!peaks",vasp_valleys)
 
 
 class vasp_rpeaks:
@@ -263,5 +263,5 @@ public:
 	vasp_rvalleys(I argc,t_atom *argv): vasp_peaks(argc,argv) {}
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_rvalleys(p,ref,&dst); }
 };																				
-FLEXT_LIB_G("vasp.rvalleys",vasp_rvalleys)
+FLEXT_LIB_G("vasp.r!peaks",vasp_rvalleys)
 

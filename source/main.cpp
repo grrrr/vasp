@@ -24,7 +24,7 @@ V lib_setup()
 	VASP_SETUP(qn); // vasp.n?
 
 	VASP_SETUP(chk);  // vasp.chk
-	VASP_SETUP(update);  // vasp.update
+	VASP_SETUP(update);  // vasp.upd
 	VASP_SETUP(sync);  // vasp.sync
 
 	VASP_SETUP(offs);  // vasp.offs

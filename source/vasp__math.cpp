@@ -165,7 +165,9 @@ public:
 	virtual Vasp *do_opt(OpParam &p) 
 	{ 
 		p.norm.minmax = BIG;
-		return VaspOp::m_qmin(p,ref); 
+		Vasp *ret = VaspOp::m_qmin(p,ref); 
+		if(p.norm.minmax == BIG) p.norm.minmax = 0;
+		return ret;
 	}
 		
 	virtual Vasp *tx_work() 
@@ -202,7 +204,9 @@ public:
 	virtual Vasp *do_opt(OpParam &p) 
 	{ 
 		p.norm.minmax = BIG;
-		return VaspOp::m_qamin(p,ref); 
+		Vasp *ret = VaspOp::m_qamin(p,ref); 
+		if(p.norm.minmax == BIG) p.norm.minmax = 0;
+		return ret;
 	}
 
 	virtual V m_help() { post("%s - Get a vasp's minimum absolute sample value",thisName()); }
@@ -232,7 +236,9 @@ public:
 	virtual Vasp *do_opt(OpParam &p) 
 	{ 
 		p.norm.minmax = -BIG;
-		return VaspOp::m_qmax(p,ref); 
+		Vasp *ret = VaspOp::m_qmax(p,ref); 
+		if(p.norm.minmax == -BIG) p.norm.minmax = 0;
+		return ret;
 	}
 
 	virtual V m_help() { post("%s - Get a vasp's maximum sample value",thisName()); }
@@ -296,7 +302,9 @@ public:
 	virtual Vasp *do_opt(OpParam &p) 
 	{ 
 		p.norm.minmax = BIG;
-		return VaspOp::m_qrmin(p,ref); 
+		Vasp *ret = VaspOp::m_qrmin(p,ref); 
+		if(p.norm.minmax == BIG) p.norm.minmax = 0;
+		return ret;
 	}
 		
 	virtual Vasp *tx_work() 
