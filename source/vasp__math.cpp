@@ -12,45 +12,106 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <math.h>
 
 
-// --- power functions ---------------------
+Vasp *VaspOp::m_rbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+{ 
+	Vasp *ret = NULL;
+	BL argvasp = arg.IsVasp();
+
+	RVecBlock *vecs = argvasp?GetRVecs(opnm,src,arg.GetVasp(),dst):GetRVecs(opnm,src,dst);
+	if(vecs) {
+		OpParam p;
+
+		if(!argvasp) p.rbin.arg = arg.GetADouble(); // if no arg vasp
+
+		BL ok = true;
+		BL sovr = p.SR_In(); // check whether dst is before src 
+		if(argvasp) {
+			BL aovr = p.AR_In(); // check whether dst is before arg
+			if(sovr != aovr) {
+				ok = false;
+			}
+			else p.SADRRev();
+		}
+		else {
+			if(sovr) p.SDR_Rev(); // if overlapping revert src/dst vectors
+		}
+	
+		if(ok) ret = DoOp(vecs,fun,p);
+		delete vecs;
+	}
+
+	return ret;
+}
+
+Vasp *VaspOp::m_cbin(Vasp &src,const Argument &arg,Vasp *dst,VecOp::opfun *fun,const C *opnm) 
+{ 
+	Vasp *ret = NULL;
+	BL argvasp = arg.IsVasp();
+
+	CVecBlock *vecs = argvasp?GetCVecs(opnm,src,arg.GetVasp(),dst):GetCVecs(opnm,src,dst);
+	if(vecs) {
+		OpParam p;
+
+		if(!argvasp) {
+			CX z = arg.GetAComplex();
+			p.cbin.rarg = z.real; 
+			p.cbin.iarg = z.imag; 
+		}
+
+		BL ok = true;
+		BL rovr = p.SROvr(),iovr = p.SIOvr(); // src/dst check
+		if(rovr != iovr) {
+			ok = false;
+		}
+		else if(argvasp) {
+			BL arovr = p.AROvr(),aiovr = p.AIOvr(); // src/arg check
+			if(arovr != aiovr) {
+				ok = false;
+			} 
+			else if(rovr != arovr) {
+				ok = false;
+			}
+			else {
+				// all src/arg/dst have the same character
+				if(rovr) { p.SADRRev(); // revert 
+			}
+		}
+		else {
+			// no arg vectors
+			if(rovr) p.SDRRev(); // revert on src/dst overlap
+		}
+
+		if(ok) ret = DoOp(vecs,fun,p);
+		delete vecs;
+	}
+
+	return ret;
+}
+
+
 
 // \remark sign is preserved
 BL VecOp::d_pow(OpParam &p) 
 { 
-	for(I i = 0; i < p.frames; ++i,src += sstr,dst += dstr) *dst = (F)pow(fabs(*src),v)*sgn(*src);
+	const R v = p.rbin.arg;
+	for(I i = 0; i < p.frames; ++i,p.rsdt += p.rss,p.rddt += p.rds) *p.rddt = (F)pow(fabs(*p.rsdt),v)*sgn(*p.rsdt);
 	return true; 
 }
 
 
-
-BL VecOp::d_root(I cnt,F *dst,I str,F v) 
-{ 
-	if(v == 0) return true;
-	F rad = 1.F/v;
-	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)pow(fabs(*dst),rad)*sgn(*dst);
-	return true; 
-}
-
-Vasp *VaspOp::m_pow(Vasp &src,const Argument &arg,Vasp *dst,BL inv) 
-{ 
-	return arg.IsFloat()?fr_arg("pow",arg.GetFloat(),d_pow):NULL; 
-}
-
-
-
-BL VecOp::d_sqr(I cnt,S *src,I sstr,S *dst,I dstr) 
+BL VecOp::d_sqr(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = *dst * *dst; 
 	return true; 
 }
 
-BL VecOp::d_ssqr(I cnt,S *src,I sstr,S *dst,I dstr) 
+BL VecOp::d_ssqr(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)(*dst * fabs(*dst)); 
 	return true; 
 }
 
-BL VecOp::d_csqr(I cnt,S *re,I rstr,S *im,I istr) 
+BL VecOp::d_csqr(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
 		F r = *re * *re - *im * *im;
@@ -60,39 +121,39 @@ BL VecOp::d_csqr(I cnt,S *re,I rstr,S *im,I istr)
 	return true; 
 }
 
-BL VecOp::d_sqrt(I cnt,F *dst,I str) 
+BL VecOp::d_sqrt(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)sqrt(fabs(*dst));
 	return true; 
 }
 
-BL VecOp::d_ssqrt(I cnt,F *dst,I str) 
+BL VecOp::d_ssqrt(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)sqrt(fabs(*dst))*sgn(*dst);
 	return true; 
 }
 
 
-//Vasp *Vasp::m_cpow(I argc,t_atom *argv) { return fm_arg("cpow",argc,argv,d_max); }
-Vasp *Vasp::m_sqr() { return fr_arg("sqr",0,d_sqr); }
-Vasp *Vasp::m_ssqr() { return fr_arg("ssqr",0,d_ssqr); }
-Vasp *Vasp::m_csqr() { return fc_arg("csqr",CX(),d_csqr); }
-Vasp *Vasp::m_sqrt() { return fr_arg("sqrt",0,d_sqrt); }
-Vasp *Vasp::m_ssqrt() { return fr_arg("ssqrt",0,d_ssqrt); }
-
-
-static BL d_exp(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)exp(*dst); return true; }
+BL VecOp::d_exp(OpParam &p) 
+{ 
+	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)exp(*dst); 
+	return true; 
+}
 
 // how about numbers <= 0?
-static BL d_log(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)log(*dst); return true; }
+BL VecOp::d_log(OpParam &p) 
+{ 
+	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)log(*dst); 
+	return true; 
+}
 
-Vasp *Vasp::m_exp() { return fr_arg("exp",0,d_exp); }
-Vasp *Vasp::m_log() { return fr_arg("log",0,d_log); }
+BL VecOp::d_inv(OpParam &p) 
+{ 
+	for(I i = 0; i < cnt; ++i,dst += str) *dst = 1./ *dst; 
+	return true; 
+}
 
-
-static BL d_inv(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *dst = 1./ *dst; return true; }
-
-static BL d_cinv(I cnt,F *re,I rstr,F *im,I istr,F,F) 
+BL VecOp::d_cinv(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
 		register F den = abs(*re,*im);
@@ -101,25 +162,19 @@ static BL d_cinv(I cnt,F *re,I rstr,F *im,I istr,F,F)
 	return true; 
 }
 
-Vasp *Vasp::m_inv() { return fr_arg("inv",0,d_inv); }
-Vasp *Vasp::m_cinv() { return fc_arg("cinv",CX(),d_cinv); }
-
-
-// --- complex domain functions -----------------
-
-static BL d_abs(I cnt,F *dst,I str,F) 
+BL VecOp::d_abs(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = fabs(*dst);
 	return true; 
 }
 
-static BL d_sign(I cnt,F *dst,I str,F) 
+BL VecOp::d_sign(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = *dst == 0?0:(*dst < 0?-1.F:1.F);
 	return true; 
 }
 
-static BL d_polar(I cnt,F *re,I rstr,F *im,I istr,F,F) 
+BL VecOp::d_polar(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
 		register F _abs = abs(*re,*im);
@@ -129,7 +184,7 @@ static BL d_polar(I cnt,F *re,I rstr,F *im,I istr,F,F)
 	return true; 
 }
 
-static BL d_cart(I cnt,F *re,I rstr,F *im,I istr,F,F) 
+BL VecOp::d_cart(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
 		register F arg = *im;
@@ -139,16 +194,8 @@ static BL d_cart(I cnt,F *re,I rstr,F *im,I istr,F,F)
 	return true; 
 }
 
-Vasp *Vasp::m_abs() { return fr_arg("abs",0,d_abs); }
-Vasp *Vasp::m_sign() { return fr_arg("sign",0,d_sign); }
-Vasp *Vasp::m_polar() { return fc_arg("polar",CX(),d_polar); }
-Vasp *Vasp::m_cart() { return fc_arg("cart",CX(),d_cart); }
 
-
-
-
-
-static BL d_norm(I cnt,F *dst,I str,F) 
+BL VecOp::d_opt(OpParam &p) 
 { 
 	F v = 0;
 	I i;
@@ -161,7 +208,7 @@ static BL d_norm(I cnt,F *dst,I str,F)
 	return true; 
 }
 
-static BL d_cnorm(I cnt,F *re,I rstr,F *im,I istr,F,F) 
+BL VecOp::d_copt(OpParam &p) 
 { 
 	F v = 0;
 	I i;
@@ -177,21 +224,18 @@ static BL d_cnorm(I cnt,F *re,I rstr,F *im,I istr,F,F)
 	return true; 
 }
 
-Vasp *Vasp::m_norm() { return fr_arg("norm",0,d_norm); }
-Vasp *Vasp::m_cnorm() { return fc_arg("cnorm",CX(),d_cnorm); }
-
-
-
-static BL d_cswap(I cnt,F *re,I rstr,F *im,I istr,F,F) 
+BL VecOp::d_cswap(OpParam &p) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) { register F r = *re; *im = *re,*re = r; }
 	return true; 
 }
 
-static BL d_cconj(I cnt,F *,I,F *im,I istr,F,F) { for(I i = 0; i < cnt; ++i,im += istr) *im *= -1.; return true; }
+BL VecOp::d_cconj(OpParam &p) 
+{ 
+	for(I i = 0; i < cnt; ++i,im += istr) *im *= -1.; 
+	return true; 
+}
 
-Vasp *Vasp::m_cswap() { return fc_arg("cswap",CX(),d_cswap); }
-Vasp *Vasp::m_cconj() { return fc_arg("cconj",CX(),d_cconj); }
 
 
 

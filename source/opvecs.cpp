@@ -137,7 +137,7 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
 
 	\todo Support dst vasp
 */
-RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi)
+RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I multi)
 {
 	if(dst && dst->Ok()) {
 		error("%s - sorry, out-of-place operation not supported yet",op);
@@ -222,7 +222,7 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi)
 
 	\todo Support dst vasp
 */
-CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp *dst,I multi,BL full)
+CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I multi,BL full)
 {
 	if(dst && dst->Ok()) {
 		error("%s - sorry, out-of-place operation not supported yet",op);

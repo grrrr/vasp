@@ -269,3 +269,11 @@ Vasp *VecBlock::_ResVasp(I n)
 	return _Dst(0)?_DstVasp(n):_SrcVasp(n);
 }
 
+
+V OpParam::SDR_Rev() { SR_Rev(); DR_Rev(); }
+V OpParam::SDI_Rev() { SI_Rev(); DI_Rev(); }
+V OpParam::SDC_Rev() { SDR_Rev(); SDI_Rev(); }
+V OpParam::SADR_Rev() { SR_Rev(); AR_Rev(); DR_Rev(); }
+V OpParam::SADI_Rev() { SI_Rev(); AI_Rev(); DI_Rev(); }
+V OpParam::SADC_Rev() { SADR_Rev(); SADI_Rev(); }
+
