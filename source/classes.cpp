@@ -135,8 +135,8 @@ V vasp_op::m_update(I argc,t_atom *argv)
 	if(argc == 0) 
 		ref.Refresh();
 	else {
-		if(IsFlint(argv[0]))
-			refresh = GetAFlint(argv[0]) != 0;
+		if(CanbeInt(argv[0]))
+			refresh = GetAInt(argv[0]) != 0;
 		else 
 			post("%s(update) - argument should be omitted or integer",thisName());
 	}
@@ -152,6 +152,9 @@ vasp_tx::vasp_tx(BL to): vasp_op(to) {}
 
 V vasp_tx::m_bang()
 {
+	// Thread has to wait until previous is finished
+	Lock(); 
+
 #ifdef FLEXT_THREADS
 	// lower the thread priority
 	if(detach) LowerPriority();
@@ -185,8 +188,9 @@ V vasp_tx::m_bang()
 
 #ifdef FLEXT_THREADS
 	// back to normal
-	NormalPriority();
+	if(detach) NormalPriority();
 #endif
+	Unlock();
 }
 
 

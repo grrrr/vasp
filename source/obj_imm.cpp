@@ -47,6 +47,9 @@ public:
 	}
 
 	virtual V m_help() { post("%s - Get immediate vasp vectors",thisName()); }
+
+protected:
+
 };
 
 FLEXT_LIB("vasp.imm vasp.!",vasp_imm)

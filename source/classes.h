@@ -90,8 +90,15 @@ protected:
 	FLEXT_CALLBACK(m_dobang)
 #ifdef FLEXT_THREADS
 	FLEXT_THREAD(m_bang)
+
+	ThrMutex runmtx;
+	V Lock() { runmtx.Lock(); }
+	V Unlock() { runmtx.Unlock(); }
 #else
 	FLEXT_CALLBACK(m_bang)
+
+	V Lock() {}
+	V Unlock() {}
 #endif
 	FLEXT_CALLBACK_V(m_vasp)
 	FLEXT_CALLBACK_V(m_set)

@@ -15,9 +15,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_BUFLIB_H
 #define __VASP_BUFLIB_H
 
+#include "classes.h"
+#include "vbuffer.h"
+
 namespace BufLib
 {
-	VBuffer *Get(t_symbol *s);
+	VBuffer *Get(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
 };
 
 

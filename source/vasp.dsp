@@ -177,6 +177,14 @@ SOURCE=.\arg.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\buflib.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\buflib.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\classes.cpp
 # End Source File
 # Begin Source File
@@ -214,6 +222,17 @@ SOURCE=.\vasp.h
 # Begin Source File
 
 SOURCE=.\vbuffer.cpp
+
+!IF  "$(CFG)" == "vasp - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "vasp - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "vasp - Win32 Threads Debug"
+
+!ELSEIF  "$(CFG)" == "vasp - Win32 Threads Release"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

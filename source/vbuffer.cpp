@@ -3,32 +3,35 @@
 
 
 ///////////////////////////////////////////////////////////////////////////
-// VBuffer class
+// SysBuf class
 ///////////////////////////////////////////////////////////////////////////
 
-VBuffer::VBuffer(t_symbol *s,I c,I l,I o): 
-	chn(0),len(0),offs(0) 
+SysBuf::SysBuf(t_symbol *s,I c,I l,I o)
 {	
 	Set(s,c,l,o); 
 }
 
+/*
 VBuffer::VBuffer(const VBuffer &v):
 	chn(0),len(0),offs(0) 
 { 
 	operator =(v); 
 }
+*/
+ 
 
+SysBuf::~SysBuf() {}
 
-VBuffer::~VBuffer() {}
-
+/*
 VBuffer &VBuffer::operator =(const VBuffer &v)
 {
 	return Set(v.Symbol(),v.Channel(),v.Length(),v.Offset());
 }
+*/
 
-VBuffer &VBuffer::Set(t_symbol *s,I c,I l,I o)
+SysBuf &SysBuf::Set(t_symbol *s,I c,I l,I o)
 {
-	parent::Set(s);
+	buf.Set(s);
 
 	chn = c;
 	if(chn > Channels()) chn = Channels()-1; // simply correct the channel??

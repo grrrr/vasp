@@ -10,3 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "buflib.h"
 
+VBuffer *BufLib::Get(t_symbol *s,I chn,I len,I offs)
+{
+	return new SysBuf(s,chn,len,offs);
+}

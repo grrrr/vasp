@@ -10,6 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "classes.h"
 #include "util.h"
+#include "buflib.h"
 
 ///////////////////////////////////////////////////////////////////////////
 // Vasp class
@@ -35,7 +36,7 @@ Vasp::Vasp(const Vasp &v):
 	operator =(v); 
 }
 
-	Vasp::Vasp(I fr,const Ref &r):
+Vasp::Vasp(I fr,const Ref &r):
 	refs(0),chns(0),ref(NULL),
 	frames(fr) 
 {
@@ -213,7 +214,8 @@ VBuffer *Vasp::Buffer(I ix) const
 		return NULL;
 	else {
 		const Ref &r = Vector(ix);
-		return new VBuffer(r.Symbol(),r.Channel(),Frames(),r.Offset());
+		VBuffer *ret = BufLib::Get(r.Symbol(),r.Channel(),Frames(),r.Offset());
+		return ret;
 	}
 }
 
@@ -245,7 +247,7 @@ V Vasp::Refresh()
 	for(I i = 0; i < Vectors(); ++i) {
 		VBuffer *vb = Buffer(i);
 		if(vb) {
-			vb->Dirty(true);
+			vb->Dirty();
 			delete vb;
 		}
 	}
