@@ -32,22 +32,30 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define CX complex
 #define VX vector
 
-struct complex { F real,imag; };
+class complex 
+{ 
+public:
+	complex() {}
+	complex(F re,F im = 0): real(re),imag(im) {}
+
+	F real,imag; 
+};
+
 struct vector { I dim; F *data; };
 
 
-class vbuffer:
+class VBuffer:
 	public flext_base::buffer
 {
 	typedef flext_base::buffer parent;
 
 public:
-	vbuffer(t_symbol *s = NULL,I chn = 0,I len = -1,I offs = 0);
-	vbuffer(const vbuffer &v);
-	~vbuffer();
+	VBuffer(t_symbol *s = NULL,I chn = 0,I len = -1,I offs = 0);
+	VBuffer(const VBuffer &v);
+	~VBuffer();
 
-	vbuffer &operator =(const vbuffer &v);
-	vbuffer &Set(t_symbol *s = NULL,I chn = 0,I len = -1,I offs = 0);
+	VBuffer &operator =(const VBuffer &v);
+	VBuffer &Set(t_symbol *s = NULL,I chn = 0,I len = -1,I offs = 0);
 
 	I Channel() const { return chn; }
 	I Offset() const { return offs; }
@@ -86,13 +94,54 @@ protected:
 };
 
 
-class Argument:
+
+class Vasp;
+
+class Argument
 {
+public:
+	Argument();
+	~Argument();
+	
+	V Parse(I argc,t_atom *argv);
+	V Clear();
+
+	V Set(Vasp *v);
+//	V Set(I argc,t_atom *argv);
+	V Set(F f);
+	V Set(F re,F im);
+	V Set(VX *vec);
+
+	BL IsNone() const { return tp == tp_none; }
+	BL IsVasp() const { return tp == tp_vasp; }
+//	BL IsList() const { return tp == tp_list; }
+	BL IsFloat() const { return tp == tp_float; }
+	BL IsComplex() const { return tp == tp_cx; }
+	BL IsVector() const { return tp == tp_vx; }
+
+	const Vasp &GetVasp() const { return *dt.v; }
+//	const AtomList &GetList() const { return *dt.atoms; }
+	F GetFloat() const { return dt.f; }
+	const CX &GetComplex() const { return *dt.cx; }
+	const VX &GetVector() const { return *dt.vx; }
+
+protected:
+	enum {
+		tp_none,tp_vasp,tp_list,tp_float,tp_cx,tp_vx
+	} tp;
+
+	union {
+		Vasp *v;
+//		AtomList *atoms;
+		F f;
+		CX *cx;
+		VX *vx;
+	} dt;
 };
 
 
 
-class vasp 
+class Vasp 
 {
 public:
 	struct Ref {
@@ -105,18 +154,18 @@ public:
 		I offs; // counted in frames
 	};
 
-	vasp();
-	vasp(I argc,t_atom *argv);
-	vasp(const vasp &v);
-	~vasp();
+	Vasp();
+	Vasp(I argc,t_atom *argv);
+	Vasp(const Vasp &v);
+	~Vasp();
 
 	const C *thisName() const { return typeid(*this).name(); }
 
-	vasp &operator =(const vasp &v);
-	vasp &operator ()(I argc,t_atom *argv /*,BL withvasp = false*/);
+	Vasp &operator =(const Vasp &v);
+	Vasp &operator ()(I argc,t_atom *argv /*,BL withvasp = false*/);
 
 	// set used channels to 0
-	vasp &Clear() { frames = 0; chns = 0; return *this; }
+	Vasp &Clear() { frames = 0; chns = 0; return *this; }
 
 	// used vectors
 	I Vectors() const { return chns; }
@@ -140,95 +189,104 @@ public:
 	Ref &Imag() { return Vector(1); }
 
 	// get buffer associated to a channel
-	vbuffer *Buffer(I ix) const;
+	VBuffer *Buffer(I ix) const;
 
 	// Real/Complex
-	vbuffer *ReBuffer() const { return Buffer(0); }
-	vbuffer *ImBuffer() const { return Buffer(1); }
+	VBuffer *ReBuffer() const { return Buffer(0); }
+	VBuffer *ImBuffer() const { return Buffer(1); }
 
 	// prepare and reference t_atom list for output
-	vasp &MakeList(BL withvasp = true);
+	Vasp &MakeList(BL withvasp = true);
 	I Atoms() const { return atoms; }
 	t_atom *AtomList() { return atomlist; }
 
 
 	// copy functions
-	vasp *m_copy(I argc,t_atom *argv); // copy to (one vec or real)
-	vasp *m_ccopy(I argc,t_atom *argv); // complex copy (pairs of vecs or complex)
-	vasp *m_mcopy(I argc,t_atom *argv); // copy to (multi-channel)
-//	vasp *m_mix(I argc,t_atom *argv); // mix in (one vec or real/complex)
-//	vasp *m_mmix(I argc,t_atom *argv); // mix in (multi-channel)
+	Vasp *m_copy(const Argument &arg); // copy to (one vec or real)
+	Vasp *m_ccopy(const Argument &arg); // complex copy (pairs of vecs or complex)
+	Vasp *m_mcopy(const Argument &arg); // copy to (multi-channel)
+/*
+	Vasp *m_copy(I argc,t_atom *argv); // copy to (one vec or real)
+	Vasp *m_ccopy(I argc,t_atom *argv); // complex copy (pairs of vecs or complex)
+	Vasp *m_mcopy(I argc,t_atom *argv); // copy to (multi-channel)
+*/
+//	Vasp *m_mix(I argc,t_atom *argv); // mix in (one vec or real/complex)
+//	Vasp *m_mmix(I argc,t_atom *argv); // mix in (multi-channel)
 
 	// binary functions
-	vasp *m_add(I argc,t_atom *argv); // add to (one vec or real)
-	vasp *m_cadd(I argc,t_atom *argv); // complex add (pairs of vecs or complex)
-	vasp *m_madd(I argc,t_atom *argv); // add to (multi-channel)
-	vasp *m_sub(I argc,t_atom *argv); // sub from (one vec or real/complex)
-	vasp *m_csub(I argc,t_atom *argv); // complex sub (pairs of vecs or complex)
-	vasp *m_msub(I argc,t_atom *argv); // sub from (multi-channel)
-	vasp *m_mul(I argc,t_atom *argv); // mul with (one vec or real/complex)
-	vasp *m_cmul(I argc,t_atom *argv); // complex mul (pairs of vecs or complex)
-	vasp *m_mmul(I argc,t_atom *argv); // mul with (multi-channel)
-	vasp *m_div(I argc,t_atom *argv); // div by (one vec or real/complex)
-	vasp *m_cdiv(I argc,t_atom *argv); // complex div (pairs of vecs or complex)
-	vasp *m_mdiv(I argc,t_atom *argv); // div by (multi-channel)
+	Vasp *m_add(const Argument &arg); // add to (one vec or real)
+	Vasp *m_cadd(const Argument &arg); // complex add (pairs of vecs or complex)
+	Vasp *m_madd(const Argument &arg); // add to (multi-channel)
 
-	vasp *m_min(I argc,t_atom *argv); // min (one vec or real)
-//	vasp *m_cmin(I argc,t_atom *argv); // complex (abs) min (pairs of vecs or complex)
-	vasp *m_mmin(I argc,t_atom *argv); // min (multi-channel)
-	vasp *m_max(I argc,t_atom *argv); // max (one vec or real)
-//	vasp *m_cmax(I argc,t_atom *argv); // complex (abs) max (pairs of vecs or complex)
-	vasp *m_mmax(I argc,t_atom *argv); // max (multi-channel)
+	Vasp *m_sub(const Argument &arg); // sub from (one vec or real/complex)
+	Vasp *m_csub(const Argument &arg); // complex sub (pairs of vecs or complex)
+	Vasp *m_msub(const Argument &arg); // sub from (multi-channel)
+
+	Vasp *m_mul(const Argument &arg); // mul with (one vec or real/complex)
+	Vasp *m_cmul(const Argument &arg); // complex mul (pairs of vecs or complex)
+	Vasp *m_mmul(const Argument &arg); // mul with (multi-channel)
+
+	Vasp *m_div(const Argument &arg); // div by (one vec or real/complex)
+	Vasp *m_cdiv(const Argument &arg); // complex div (pairs of vecs or complex)
+	Vasp *m_mdiv(const Argument &arg); // div by (multi-channel)
+
+	Vasp *m_min(const Argument &arg); // min (one vec or real)
+//	Vasp *m_cmin(const Argument &arg); // complex (abs) min (pairs of vecs or complex)
+	Vasp *m_mmin(const Argument &arg); // min (multi-channel)
+
+	Vasp *m_max(const Argument &arg); // max (one vec or real)
+//	Vasp *m_cmax(const Argument &arg); // complex (abs) max (pairs of vecs or complex)
+	Vasp *m_mmax(const Argument &arg); // max (multi-channel)
 
 	// "unary" functions
-	vasp *m_pow(F v); // power
-//	vasp *m_cpow(I argc,t_atom *argv); // complex power (with each two channels)
-	vasp *m_sqr();   // unsigned square 
-	vasp *m_ssqr();   // signed square 
-	vasp *m_csqr();  // complex square (with each two channels)
-	vasp *m_root(F v); // real root (from abs value)
-	vasp *m_sqrt();  // square root (from abs value)
-	vasp *m_ssqrt();  // square root (from abs value)
-//	vasp *m_csqrt();  // complex square root (how about branches?)
+	Vasp *m_pow(F v); // power
+//	Vasp *m_cpow(I argc,t_atom *argv); // complex power (with each two channels)
+	Vasp *m_sqr();   // unsigned square 
+	Vasp *m_ssqr();   // signed square 
+	Vasp *m_csqr();  // complex square (with each two channels)
+	Vasp *m_root(F v); // real root (from abs value)
+	Vasp *m_sqrt();  // square root (from abs value)
+	Vasp *m_ssqrt();  // square root (from abs value)
+//	Vasp *m_csqrt();  // complex square root (how about branches?)
 
-	vasp *m_exp();  // exponential function
-//	vasp *m_cexp();  // complex exponential function
-	vasp *m_log(); // natural logarithm
-//	vasp *m_clog(); // complex logarithm (how about branches?)
+	Vasp *m_exp();  // exponential function
+//	Vasp *m_cexp();  // complex exponential function
+	Vasp *m_log(); // natural logarithm
+//	Vasp *m_clog(); // complex logarithm (how about branches?)
 
-	vasp *m_inv();  // invert buffer values
-	vasp *m_cinv(); // complex invert buffer values (each two)
+	Vasp *m_inv();  // invert buffer values
+	Vasp *m_cinv(); // complex invert buffer values (each two)
 
-	vasp *m_abs();  // absolute values
-	vasp *m_sign();  // sign function 
-	vasp *m_polar(); // cartesian -> polar (each two)
-	vasp *m_cart(); // polar -> cartesian (each two)
+	Vasp *m_abs();  // absolute values
+	Vasp *m_sign();  // sign function 
+	Vasp *m_polar(); // cartesian -> polar (each two)
+	Vasp *m_cart(); // polar -> cartesian (each two)
 
-	vasp *m_norm();  // normalize
-	vasp *m_cnorm(); // complex normalize
+	Vasp *m_norm();  // normalize
+	Vasp *m_cnorm(); // complex normalize
 
-	vasp *m_cswap();  // swap real and imaginary parts
-	vasp *m_cconj();  // complex conjugate
+	Vasp *m_cswap();  // swap real and imaginary parts
+	Vasp *m_cconj();  // complex conjugate
 
 	// Rearrange buffer - separate object?
-	vasp *m_shift(F u);  // shift buffer
-	vasp *m_xshift(F u);  // shift buffer (symmetrically)
-	vasp *m_rot(F u);  // rotate buffer
-	vasp *m_xrot(F u);  // rotate buffer (symmetrically)
-	vasp *m_mirr();  // mirror buffer
-	vasp *m_xmirr();  // mirror buffer (symmetrically)
+	Vasp *m_shift(F u);  // shift buffer
+	Vasp *m_xshift(F u);  // shift buffer (symmetrically)
+	Vasp *m_rot(F u);  // rotate buffer
+	Vasp *m_xrot(F u);  // rotate buffer (symmetrically)
+	Vasp *m_mirr();  // mirror buffer
+	Vasp *m_xmirr();  // mirror buffer (symmetrically)
 /*
 	// Generator functions - separate object!
-	vasp *m_osc(I argc,t_atom *argv);  // real osc
-	vasp *m_cosc(I argc,t_atom *argv);  // complex osc (phase rotates)
-	vasp *m_noise(I argc,t_atom *argv);  // real noise
-	vasp *m_cnoise(I argc,t_atom *argv); // complex noise (arg and abs random)
+	Vasp *m_osc(I argc,t_atom *argv);  // real osc
+	Vasp *m_cosc(I argc,t_atom *argv);  // complex osc (phase rotates)
+	Vasp *m_noise(I argc,t_atom *argv);  // real noise
+	Vasp *m_cnoise(I argc,t_atom *argv); // complex noise (arg and abs random)
 
 	// Fourier transforms - separate object!
-	vasp *m_rfft();
-	vasp *m_rifft();
-	vasp *m_cfft();
-	vasp *m_cifft();
+	Vasp *m_rfft();
+	Vasp *m_rifft();
+	Vasp *m_cfft();
+	Vasp *m_cifft();
 */
 
 	struct nop_funcs {
@@ -254,35 +312,39 @@ protected:
 
 	static I min(I a,I b) { return a < b?a:b; }
 	static I max(I a,I b) { return a > b?a:b; }
-
+/*
 	static BL IsFloat(I argc,t_atom *argv) { return argc == 1 && flx::IsFloat(argv[0]); }
 	static BL IsComplex(I argc,t_atom *argv) { return argc == 2 && flx::IsFloat(argv[0]) && flx::IsFloat(argv[1]); }
 	static BL IsVector(I argc,t_atom *argv) { return argc >= 3 && flx::IsFloat(argv[0]) && flx::IsFloat(argv[1]) && flx::IsFloat(argv[3]) ; }
-
+*/
 private:
 	typedef flext_base flx;
 
-//	vasp *f_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f);
-	vasp *fr_nop(const C *op,F v,V (*f)(F *,F,I));
-	vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_nop(op,v,f.funR); }
-	vasp *fc_nop(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I));
-	vasp *fc_nop(const C *op,F vr,F vi,const nop_funcs &f) { return fc_nop(op,vr,vi,f.funC); }
-	vasp *fc_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f);
+//	Vasp *f_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f);
+	Vasp *fr_nop(const C *op,F v,V (*f)(F *,F,I));
+	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_nop(op,v,f.funR); }
+	Vasp *fc_nop(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I));
+	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_nop(op,cx,f.funC); }
+//	Vasp *fc_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f);
+	Vasp *fc_nop(const C *op,const Argument &arg,const nop_funcs &f);
 
-//	vasp *f_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
-	vasp *fr_arg(const C *op,F v,V (*f)(F *,F,I));
-	vasp *fr_arg(const C *op,F v,const arg_funcs &f) { return fr_arg(op,v,f.funR); }
-	vasp *fr_arg(const C *op,const vasp &v,V (*f)(F *,const F *,I));
-	vasp *fr_arg(const C *op,const vasp &v,const arg_funcs &f) { return fr_arg(op,v,f.funV); }
-	vasp *fr_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
-	vasp *fc_arg(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I));
-	vasp *fc_arg(const C *op,F vr,F vi,const arg_funcs &f) { return fc_arg(op,vr,vi,f.funC); }
-	vasp *fc_arg(const C *op,const vasp &v,V (*f)(F *,F *,const F *,const F *,I));
-	vasp *fc_arg(const C *op,const vasp &v,const arg_funcs &f) { return fc_arg(op,v,f.funCV); }
-	vasp *fc_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
-	vasp *fm_arg(const C *op,const vasp &v,V (*f)(F *,const F *,I));
-	vasp *fm_arg(const C *op,const vasp &v,const arg_funcs &f) { return fm_arg(op,v,f.funV); }
-	vasp *fm_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
+//	Vasp *f_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
+	Vasp *fr_arg(const C *op,F v,V (*f)(F *,F,I));
+	Vasp *fr_arg(const C *op,F v,const arg_funcs &f) { return fr_arg(op,v,f.funR); }
+	Vasp *fr_arg(const C *op,const Vasp &v,V (*f)(F *,const F *,I));
+	Vasp *fr_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fr_arg(op,v,f.funV); }
+	Vasp *fr_arg(const C *op,const Argument &arg,const arg_funcs &f);
+//	Vasp *fr_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
+	Vasp *fc_arg(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I));
+	Vasp *fc_arg(const C *op,const CX &cx,const arg_funcs &f) { return fc_arg(op,cx,f.funC); }
+	Vasp *fc_arg(const C *op,const Vasp &v,V (*f)(F *,F *,const F *,const F *,I));
+	Vasp *fc_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fc_arg(op,v,f.funCV); }
+	Vasp *fc_arg(const C *op,const Argument &arg,const arg_funcs &f);
+//	Vasp *fc_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
+	Vasp *fm_arg(const C *op,const Vasp &v,V (*f)(F *,const F *,I));
+	Vasp *fm_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fm_arg(op,v,f.funV); }
+	Vasp *fm_arg(const C *op,const Argument &arg,const arg_funcs &f);
+//	Vasp *fm_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
 };
 
 
@@ -302,26 +364,27 @@ protected:
 	vasp_base();
 	virtual ~vasp_base();
 
-	virtual V m_bang();						// output current vasp
+	virtual V m_bang();						// output current Vasp
 
 	virtual V m_vasp(I argc,t_atom *argv); // trigger
 	virtual I m_set(I argc,t_atom *argv);  // non trigger
 
 	virtual V m_radio(I argc,t_atom *argv);  // commands for all
 
+	virtual V m_argchk(BL chk);  // precheck argument on arrival
 	virtual V m_update(I argc = 0,t_atom *argv = NULL);  // graphics update
 	virtual V m_unit(xs_unit u);  // unit command
 
 	// destination vasp
-	vasp ref;
+	Vasp ref;
 
-	virtual vasp *x_work() = 0;
+	virtual Vasp *x_work() = 0;
 	
 	// immediate graphics refresh?
 	BL refresh;
 
 
-	friend class vasp;
+	friend class Vasp;
 
 	static const t_symbol *sym_vasp;
 	static const t_symbol *sym_complex;
@@ -332,7 +395,7 @@ private:
 	static V setup(t_class *);
 
 	xs_unit unit;
-	BL log;
+	BL argchk,log;
 
 	FLEXT_CALLBACK(m_bang)
 	FLEXT_CALLBACK_G(m_vasp)
@@ -341,6 +404,7 @@ private:
 	FLEXT_CALLBACK_G(m_radio)
 
 	FLEXT_CALLBACK_G(m_update)
+	FLEXT_CALLBACK_B(m_argchk)
 	FLEXT_CALLBACK_1(m_unit,xs_unit)
 };
 
@@ -368,33 +432,11 @@ public:
 	FLEXT_CALLBACK_G(a_vector)
 
 protected:
-	virtual vasp *x_work();
+	virtual Vasp *x_work();
 
-	virtual vasp *tx_vasp(const vasp &v); 
-	virtual vasp *tx_list(I argc,const t_atom *argv); 
-	virtual vasp *tx_float(F f); 
-	virtual vasp *tx_complex(F re,F im); 
-	virtual vasp *tx_vector(const VX &v); 
+	virtual Vasp *tx_work(const Argument &arg);
 
-
-	V ClearArg();
-	V SetArg(vasp *v);
-	V SetArg(I argc,t_atom *argv);
-	V SetArg(F f);
-	V SetArg(F re,F im);
-	V SetArg(VX *vec);
-
-	enum {
-		tp_none,tp_vasp,tp_list,tp_float,tp_cx,tp_vx
-	} argtp;
-
-	union {
-		vasp *v;
-		AtomList *atoms;
-		F f;
-		CX cx;
-		VX *vx;
-	} arg;
+	Argument arg;
 };
 
 

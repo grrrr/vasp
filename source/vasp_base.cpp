@@ -36,6 +36,7 @@ vasp_base::vasp_base()
 	FLEXT_ADDMETHOD_(0,"radio",m_radio);
 
 	FLEXT_ADDMETHOD_E(0,"update",m_update);
+	FLEXT_ADDMETHOD_(0,"argchk",m_argchk);
 	FLEXT_ADDMETHOD_E(0,"unit",m_unit);
 }
 
@@ -45,7 +46,7 @@ vasp_base::~vasp_base()
 
 I vasp_base::m_set(I argc,t_atom *argv)
 {
-	vasp arg(argc,argv);
+	Vasp arg(argc,argv);
 
 	if(argc && !arg.Ok()) {
 		post("%s - invalid vasp detected and ignored",thisName());
@@ -59,7 +60,7 @@ I vasp_base::m_set(I argc,t_atom *argv)
 V vasp_base::m_bang()
 {
 	if(ref.Ok()) {
-		vasp *ret = x_work();
+		Vasp *ret = x_work();
 		if(ret) {
 			ret->MakeList(false);
 			ToOutAnything(0,sym_vasp,ret->Atoms(),ret->AtomList());
@@ -101,7 +102,7 @@ V vasp_base::m_update(I argc,t_atom *argv)
 {
 	if(argc == 0) {
 		for(I i = 0; i < ref.Vectors(); ++i) {
-			vbuffer *vb = ref.Buffer(i);
+			VBuffer *vb = ref.Buffer(i);
 			if(vb) {
 				vb->Dirty(true);
 				delete vb;
@@ -115,6 +116,8 @@ V vasp_base::m_update(I argc,t_atom *argv)
 			post("%s(update) - argument should be omitted or integer",thisName());
 	}
 }
+
+V vasp_base::m_argchk(BL chk) {	argchk = chk; }
 
 
 

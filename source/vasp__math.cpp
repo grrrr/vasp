@@ -7,13 +7,14 @@ inline F sgn(F x) { return x < 0.?-1.F:1.F; }
 
 
 // just transform real vectors
-vasp *vasp::fr_nop(const C *op,F v,V (*f)(F *,F,I))
+Vasp *Vasp::fr_nop(const C *op,F v,V (*f)(F *,F,I))
 {
-	for(I ci = 0; ci < this->Vectors(); ++ci) {
-		vbuffer *bref = this->Buffer(ci);		
+	BL ok = true;
+	for(I ci = 0; ok && ci < this->Vectors(); ++ci) {
+		VBuffer *bref = this->Buffer(ci);		
 		if(!bref->Data()) {
 			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
-			return NULL; // really return?
+			ok = false; // really return?
 		}
 		else {
 			f(bref->Data(),v,bref->Frames());
@@ -22,28 +23,30 @@ vasp *vasp::fr_nop(const C *op,F v,V (*f)(F *,F,I))
 		delete bref;
 	}
 
-	// output vasp
-	return new vasp(*this);
+	// output Vasp
+	return ok?new Vasp(*this):NULL;
 }
 
 // just transform complex vector pairs
-vasp *vasp::fc_nop(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I))
+Vasp *Vasp::fc_nop(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I))
 {
+	BL ok = true;
+
 	if(this->Vectors()%2 != 0) {
 		post("%s(%s) - number of dst vectors is odd - omitting last vector",thisName(),op);
 		// clear superfluous vector?
 	}
 
-	for(I ci = 0; ci < this->Vectors()/2; ++ci) {
-		vbuffer *bre = this->Buffer(ci*2),*bim = this->Buffer(ci*2+1); // complex channels
+	for(I ci = 0; ok && ci < this->Vectors()/2; ++ci) {
+		VBuffer *bre = this->Buffer(ci*2),*bim = this->Buffer(ci*2+1); // complex channels
 
 		if(!bre->Data()) {
 			post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,bre->Name());
-			return NULL; // really return?
+			ok = false; // really return?
 		}
 		else if(!bim->Data()) {
 			post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,bim->Name());
-			return NULL; // really return?
+			ok = false; // really return?
 		}
 		else {
 			I frms = bre->Frames();
@@ -54,7 +57,7 @@ vasp *vasp::fc_nop(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I))
 				// clear the rest?
 			}
 
-			f(bre->Data(),bim->Data(),vr,vi,frms);
+			f(bre->Data(),bim->Data(),cx.real,cx.imag,frms);
 			bre->Dirty(); bim->Dirty();
 		}
 
@@ -62,13 +65,24 @@ vasp *vasp::fc_nop(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I))
 		delete bim;
 	}
 
-	// output corrected!! vasp
-	return new vasp(*this);
+	// output corrected!! Vasp
+	return ok?new Vasp(*this):NULL;
 }
 
-
 // just transform complex vector pairs
-vasp *vasp::fc_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f)
+Vasp *Vasp::fc_nop(const C *op,const Argument &arg,const nop_funcs &f)
+{
+	if(arg.IsFloat()) 
+		return fc_nop(op,CX(arg.GetFloat()),f);
+	else if(arg.IsComplex()) 
+		return fc_nop(op,arg.GetComplex(),f);
+	else 
+		return arg.IsNone()?new Vasp(*this):NULL;
+}
+
+/*
+// just transform complex vector pairs
+Vasp *Vasp::fc_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f)
 {
 	F vr,vi = 0;
 	if(IsFloat(argc,argv) || IsComplex(argc,argv)) {
@@ -84,18 +98,19 @@ vasp *vasp::fc_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f)
 		return NULL;
 	}
 
-	return new vasp(*this);
+	return new Vasp(*this);
 }
-
+*/
 
 // for real values or single real vector
-vasp *vasp::fr_arg(const C *op,F v,V (*f)(F *,F,I))
+Vasp *Vasp::fr_arg(const C *op,F v,V (*f)(F *,F,I))
 {
-	for(I ci = 0; ci < this->Vectors(); ++ci) {
-		vbuffer *bref = this->Buffer(ci);		
+	BL ok = true;
+	for(I ci = 0; ok && ci < this->Vectors(); ++ci) {
+		VBuffer *bref = this->Buffer(ci);		
 		if(!bref->Data()) {
 			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
-			return NULL; // really return?
+			ok = false; // really return?
 		}
 		else {
 			f(bref->Data(),v,bref->Frames());
@@ -104,11 +119,11 @@ vasp *vasp::fr_arg(const C *op,F v,V (*f)(F *,F,I))
 		delete bref;
 	}
 
-	// output vasp
-	return new vasp(*this);
+	// output Vasp
+	return ok?new Vasp(*this):NULL;
 }
 
-vasp *vasp::fr_arg(const C *op,const vasp &arg,V (*f)(F *,const F *,I))
+Vasp *Vasp::fr_arg(const C *op,const Vasp &arg,V (*f)(F *,const F *,I))
 {
 	if(!arg.Ok()) {
 		post("%s(%s) - invalid argument vasp detected and ignored",thisName(),op);
@@ -119,20 +134,22 @@ vasp *vasp::fr_arg(const C *op,const vasp &arg,V (*f)(F *,const F *,I))
 		post("%s(%s) - using only first src vector",thisName(),op);
 	}
 
-	vbuffer *barg = arg.Buffer(0);
+	BL ok = true;
+
+	VBuffer *barg = arg.Buffer(0);
 	if(!barg->Data()) {
 		post("%s(%s) - src vector (%s) is invalid",thisName(),op,barg->Name());
-		return NULL; // really return?
+		ok = false; // really return?
 	}
 	else {
 		I frms = barg->Frames();
 
-		for(I ci = 0; ci < this->Vectors(); ++ci) {
-			vbuffer *bref = this->Buffer(ci);		
+		for(I ci = 0; ok && ci < this->Vectors(); ++ci) {
+			VBuffer *bref = this->Buffer(ci);		
 
 			if(!bref->Data()) {
 				post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
-				return NULL; // really return?
+				ok = false; // really break?
 			}
 			else {
 				I frms1 = frms;
@@ -153,12 +170,24 @@ vasp *vasp::fr_arg(const C *op,const vasp &arg,V (*f)(F *,const F *,I))
 
 	delete barg;
 
-	// output corrected vasp
-	return new vasp(*this);
+	// output corrected Vasp
+	return ok?new Vasp(*this):NULL;
 }
 
 // for real values or single real vector
-vasp *vasp::fr_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
+Vasp *Vasp::fr_arg(const C *op,const Argument &arg,const arg_funcs &f)
+{
+	if(arg.IsFloat()) 
+		return fr_arg(op,arg.GetFloat(),f); // real input
+	else if(arg.IsVasp()) 
+		return fr_arg(op,arg.GetVasp(),f); // single vector source
+	else
+		return NULL;
+}
+
+/*
+// for real values or single real vector
+Vasp *Vasp::fr_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
 {
 	if(IsFloat(argc,argv)) {
 		// real input
@@ -167,13 +196,14 @@ vasp *vasp::fr_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
 	}
 	else {
 		// single vector source
-		vasp arg(argc,argv);
+		Vasp arg(argc,argv);
 		return fr_arg(op,arg,f);
 	}
 }
+*/
 
 // for complex values or complex vector pair
-vasp *vasp::fc_arg(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I))
+Vasp *Vasp::fc_arg(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I))
 {
 	// complex (or real) input
 
@@ -182,16 +212,18 @@ vasp *vasp::fc_arg(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I))
 		// clear superfluous vector?
 	}
 
+	BL ok = true;
+
 	for(I ci = 0; ci < this->Vectors()/2; ++ci) {
-		vbuffer *bre = this->Buffer(ci*2),*bim = this->Buffer(ci*2+1); // complex channels
+		VBuffer *bre = this->Buffer(ci*2),*bim = this->Buffer(ci*2+1); // complex channels
 
 		if(!bre->Data()) {
 			post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,bre->Name());
-			return NULL;
+			ok = false;
 		}
 		if(!bim->Data()) {
 			post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,bim->Name());
-			return NULL;
+			ok = false;
 		}
 		else {
 			I frms = bre->Frames();
@@ -202,7 +234,7 @@ vasp *vasp::fc_arg(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I))
 				// clear the rest?
 			}
 
-			f(bre->Data(),bim->Data(),vr,vi,frms);
+			f(bre->Data(),bim->Data(),cx.real,cx.imag,frms);
 			bre->Dirty(); bim->Dirty();
 		}
 
@@ -211,18 +243,19 @@ vasp *vasp::fc_arg(const C *op,F vr,F vi,V (*f)(F *,F *,F,F,I))
 	}
 
 	// output corrected vasp
-	return new vasp(*this);
+	return ok?new Vasp(*this):NULL;
 }
 
 // for complex values or complex vector pair
-vasp *vasp::fc_arg(const C *op,const vasp &arg,V (*f)(F *,F *,const F *,const F *,I))
+Vasp *Vasp::fc_arg(const C *op,const Vasp &arg,V (*f)(F *,F *,const F *,const F *,I))
 {
 	if(!arg.Ok()) {
 		post("%s(%s) - invalid argument vasp detected and ignored",thisName(),op);
 		return NULL;
 	}
 
-	vbuffer *brarg = arg.Buffer(0),*biarg = arg.Buffer(1);
+	BL ok = true;
+	VBuffer *brarg = arg.Buffer(0),*biarg = arg.Buffer(1);
 
 	if(!biarg) {
 		post("%s(%s) - only one src vector - setting imaginary part to 0",thisName(),op);					
@@ -233,11 +266,11 @@ vasp *vasp::fc_arg(const C *op,const vasp &arg,V (*f)(F *,F *,const F *,const F 
 
 	if(!brarg->Data()) {
 		post("%s(%s) - real src vector (%s) is invalid",thisName(),op,brarg->Name());
-		return NULL; // really return?
+		ok = false;
 	}
 	else if(biarg && !biarg->Data()) {
 		post("%s(%s) - imag src vector (%s) is invalid",thisName(),op,biarg->Name());
-		return NULL; // really return?
+		ok = false;
 	}
 	else {
 		I frms = brarg->Frames();
@@ -251,16 +284,16 @@ vasp *vasp::fc_arg(const C *op,const vasp &arg,V (*f)(F *,F *,const F *,const F 
 			// clear superfluous vector?
 		}
 
-		for(I ci = 0; ci < this->Vectors()/2; ++ci) {
-			vbuffer *brref = this->Buffer(ci*2),*biref = this->Buffer(ci*2+1);		
+		for(I ci = 0; ok && ci < this->Vectors()/2; ++ci) {
+			VBuffer *brref = this->Buffer(ci*2),*biref = this->Buffer(ci*2+1);		
 
 			if(!brref->Data()) {
 				post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,brref->Name());
-				return NULL; // really return?
+				ok = false; // really break?
 			}
 			else if(biref && !biref->Data()) {
 				post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,biref->Name());
-				return NULL; // really return?
+				ok = false; // really break?
 			}
 			else {
 				I frms1 = frms;
@@ -283,11 +316,24 @@ vasp *vasp::fc_arg(const C *op,const vasp &arg,V (*f)(F *,F *,const F *,const F 
 	delete brarg;
 	if(biarg) delete biarg;
 
-	// output corrected!! vasp
-	return new vasp(*this);
+	// output corrected!! Vasp
+	return ok?new Vasp(*this):NULL;
 }
 
-vasp *vasp::fc_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
+Vasp *Vasp::fc_arg(const C *op,const Argument &arg,const arg_funcs &f)
+{
+	if(arg.IsFloat()) 
+		return fc_arg(op,CX(arg.GetFloat()),f);
+	else if(arg.IsComplex()) 
+		return fc_arg(op,arg.GetComplex(),f);
+	else if(arg.IsVasp()) 
+		return fc_arg(op,arg.GetVasp(),f); // pairs of vectors
+	else
+		return NULL;
+}
+
+/*
+Vasp *Vasp::fc_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
 {
 	if(IsFloat(argc,argv) || IsComplex(argc,argv)) {
 		// complex (or real) input
@@ -297,21 +343,22 @@ vasp *vasp::fc_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
 	}
 	else {
 		// pairs of vectors
-		vasp arg(argc,argv);
+		Vasp arg(argc,argv);
 		return fc_arg(op,arg,f);
 	}
 }
+*/
 
 // for multiple vectors
-vasp *vasp::fm_arg(const C *op,const vasp &arg,V (*f)(F *,const F *,I))
+Vasp *Vasp::fm_arg(const C *op,const Vasp &arg,V (*f)(F *,const F *,I))
 {
 	if(!arg.Ok()) {
-		post("%s(%s) - invalid src vasp",thisName(),op);
+		post("%s(%s) - invalid src Vasp",thisName(),op);
 		return NULL;
 	}
 
 	if(!this->Ok()) {
-		post("%s(%s) - invalid dst vasp",thisName(),op);
+		post("%s(%s) - invalid dst Vasp",thisName(),op);
 		return NULL;
 	}
 
@@ -323,19 +370,19 @@ vasp *vasp::fm_arg(const C *op,const vasp &arg,V (*f)(F *,const F *,I))
 		// clear the rest?
 	}
 
-	BL warned = false;
+	BL ok = true,warned = false;
 
 	// do
-	for(I ci = 0; ci < vecs; ++ci) {
-		vbuffer *bref = this->Buffer(ci),*barg = arg.Buffer(ci);
+	for(I ci = 0; ok && ci < vecs; ++ci) {
+		VBuffer *bref = this->Buffer(ci),*barg = arg.Buffer(ci);
 
 		if(!bref->Data()) {
 			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
-			return NULL; // really return?
+			ok = false; // really return?
 		}
 		if(!barg->Data()) {
 			post("%s(%s) - src vector (%s) is invalid",thisName(),op,barg->Name());
-			return NULL; // really return?
+			ok = false; // really return?
 		}
 		else {
 			I frms = bref->Frames();
@@ -357,17 +404,23 @@ vasp *vasp::fm_arg(const C *op,const vasp &arg,V (*f)(F *,const F *,I))
 		delete barg;
 	}
 
-	// output corrected vasp
-	return new vasp(*this);
+	// output corrected Vasp
+	return ok?new Vasp(*this):NULL;
 }
 
 // for multiple vectors
-vasp *vasp::fm_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
+
+Vasp *Vasp::fm_arg(const C *op,const Argument &arg,const arg_funcs &f)
 {
-	vasp arg(argc,argv);
+	return arg.IsVasp()?fm_arg(op,arg.GetVasp(),f):NULL;
+}
+/*
+Vasp *Vasp::fm_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
+{
+	Vasp arg(argc,argv);
 	return fm_arg(op,arg,f);
 }
-
+*/
 
 static V d_copy(F *dst,F val,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] = val; }
 static V d_copy(F *dst,const F *src,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] = src[i]; }
@@ -381,12 +434,16 @@ static V d_copy(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 		for(I i = 0; i < cnt; ++i) rdst[i] = rsrc[i],idst[i] = 0.; 
 }
 
-static const vasp::arg_funcs f_copy = { d_copy,d_copy,d_copy,d_copy };
+static const Vasp::arg_funcs f_copy = { d_copy,d_copy,d_copy,d_copy };
 
-vasp *vasp::m_copy(I argc,t_atom *argv) { return fr_arg("copy",argc,argv,f_copy); }
-vasp *vasp::m_ccopy(I argc,t_atom *argv) { return fc_arg("ccopy",argc,argv,f_copy); }
-vasp *vasp::m_mcopy(I argc,t_atom *argv) { return fm_arg("mcopy",argc,argv,f_copy); }
-
+Vasp *Vasp::m_copy(const Argument &arg) { return fr_arg("copy",arg,f_copy); }
+Vasp *Vasp::m_ccopy(const Argument &arg) { return fc_arg("ccopy",arg,f_copy); }
+Vasp *Vasp::m_mcopy(const Argument &arg) { return fm_arg("mcopy",arg,f_copy); }
+/*
+Vasp *Vasp::m_copy(I argc,t_atom *argv) { return fr_arg("copy",argc,argv,f_copy); }
+Vasp *Vasp::m_ccopy(I argc,t_atom *argv) { return fc_arg("ccopy",argc,argv,f_copy); }
+Vasp *Vasp::m_mcopy(I argc,t_atom *argv) { return fm_arg("mcopy",argc,argv,f_copy); }
+*/
 
 static V d_add(F *dst,F v,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] += v; }
 static V d_add(F *dst,const F *src,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] += src[i]; }
@@ -400,12 +457,16 @@ static V d_add(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 		for(I i = 0; i < cnt; ++i) rdst[i] += rsrc[i]; 
 }
 
-static const vasp::arg_funcs f_add = { d_add,d_add,d_add,d_add };
+static const Vasp::arg_funcs f_add = { d_add,d_add,d_add,d_add };
 
-vasp *vasp::m_add(I argc,t_atom *argv) { return fr_arg("add",argc,argv,f_add); }
-vasp *vasp::m_cadd(I argc,t_atom *argv) { return fc_arg("cadd",argc,argv,f_add); }
-vasp *vasp::m_madd(I argc,t_atom *argv) { return fm_arg("madd",argc,argv,f_add); }
-
+Vasp *Vasp::m_add(const Argument &arg) { return fr_arg("add",arg,f_add); }
+Vasp *Vasp::m_cadd(const Argument &arg) { return fc_arg("cadd",arg,f_add); }
+Vasp *Vasp::m_madd(const Argument &arg) { return fm_arg("madd",arg,f_add); }
+/*
+Vasp *Vasp::m_add(I argc,t_atom *argv) { return fr_arg("add",argc,argv,f_add); }
+Vasp *Vasp::m_cadd(I argc,t_atom *argv) { return fc_arg("cadd",argc,argv,f_add); }
+Vasp *Vasp::m_madd(I argc,t_atom *argv) { return fm_arg("madd",argc,argv,f_add); }
+*/
 
 static V d_sub(F *dst,F v,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] -= v; }
 static V d_sub(F *dst,const F *src,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] -= src[i]; }
@@ -419,11 +480,11 @@ static V d_sub(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 		for(I i = 0; i < cnt; ++i) rdst[i] -= rsrc[i]; 
 }
 
-static const vasp::arg_funcs f_sub = { d_sub,d_sub,d_sub,d_sub };
+static const Vasp::arg_funcs f_sub = { d_sub,d_sub,d_sub,d_sub };
 
-vasp *vasp::m_sub(I argc,t_atom *argv) { return fr_arg("sub",argc,argv,f_sub); }
-vasp *vasp::m_csub(I argc,t_atom *argv) { return fc_arg("csub",argc,argv,f_sub); }
-vasp *vasp::m_msub(I argc,t_atom *argv) { return fm_arg("msub",argc,argv,f_sub); }
+Vasp *Vasp::m_sub(const Argument &arg) { return fr_arg("sub",arg,f_sub); }
+Vasp *Vasp::m_csub(const Argument &arg) { return fc_arg("csub",arg,f_sub); }
+Vasp *Vasp::m_msub(const Argument &arg) { return fm_arg("msub",arg,f_sub); }
 
 
 static V d_mul(F *dst,F v,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] *= v; }
@@ -451,11 +512,11 @@ static V d_mul(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 			rdst[i] *= rsrc[i],idst[i] *= rsrc[i];
 }
 
-static const vasp::arg_funcs f_mul = { d_mul,d_mul,d_mul,d_mul };
+static const Vasp::arg_funcs f_mul = { d_mul,d_mul,d_mul,d_mul };
 
-vasp *vasp::m_mul(I argc,t_atom *argv) { return fr_arg("mul",argc,argv,f_mul); }
-vasp *vasp::m_cmul(I argc,t_atom *argv) { return fc_arg("cmul",argc,argv,f_mul); }
-vasp *vasp::m_mmul(I argc,t_atom *argv) { return fm_arg("mmul",argc,argv,f_mul); }
+Vasp *Vasp::m_mul(const Argument &arg) { return fr_arg("mul",arg,f_mul); }
+Vasp *Vasp::m_cmul(const Argument &arg) { return fc_arg("cmul",arg,f_mul); }
+Vasp *Vasp::m_mmul(const Argument &arg) { return fm_arg("mmul",arg,f_mul); }
 
 
 // how about div by 0?
@@ -488,11 +549,11 @@ static V d_div(F *rdst,F *idst,const F *rsrc,const F *isrc,I cnt)
 		for(I i = 0; i < cnt; ++i) rdst[i] /= rsrc[i],idst[i] /= rsrc[i];
 }
 
-static const vasp::arg_funcs f_div = { d_div,d_div,d_div,d_div };
+static const Vasp::arg_funcs f_div = { d_div,d_div,d_div,d_div };
 
-vasp *vasp::m_div(I argc,t_atom *argv) { return fr_arg("div",argc,argv,f_div); }
-vasp *vasp::m_cdiv(I argc,t_atom *argv) { return fc_arg("cdiv",argc,argv,f_div); }
-vasp *vasp::m_mdiv(I argc,t_atom *argv) { return fm_arg("mdiv",argc,argv,f_div); }
+Vasp *Vasp::m_div(const Argument &arg) { return fr_arg("div",arg,f_div); }
+Vasp *Vasp::m_cdiv(const Argument &arg) { return fc_arg("cdiv",arg,f_div); }
+Vasp *Vasp::m_mdiv(const Argument &arg) { return fm_arg("mdiv",arg,f_div); }
 
 
 
@@ -507,11 +568,11 @@ static V d_min(F *dst,const F *src,I cnt)
 	for(I i = 0; i < cnt; ++i,++dst,++src) if(*dst > *src) *dst = *src;
 }
 
-static const vasp::arg_funcs f_min = { d_min,NULL,d_min,NULL };
+static const Vasp::arg_funcs f_min = { d_min,NULL,d_min,NULL };
 
-vasp *vasp::m_min(I argc,t_atom *argv) { return fr_arg("min",argc,argv,f_min); }
-//vasp *vasp::m_cmin(I argc,t_atom *argv) { return fc_arg(argc,argv,d_min,d_min); }
-vasp *vasp::m_mmin(I argc,t_atom *argv) { return fm_arg("mmin",argc,argv,f_min); }
+Vasp *Vasp::m_min(const Argument &arg) { return fr_arg("min",arg,f_min); }
+//Vasp *Vasp::m_cmin(const Argument &arg) { return fc_arg(argc,arg,d_min); }
+Vasp *Vasp::m_mmin(const Argument &arg) { return fm_arg("mmin",arg,f_min); }
 
 
 
@@ -525,11 +586,11 @@ static V d_max(F *dst,const F *src,I cnt)
 	for(I i = 0; i < cnt; ++i,++dst,++src) if(*dst < *src) *dst = *src;
 }
 
-static const vasp::arg_funcs f_max = { d_max,NULL,d_max,NULL };
+static const Vasp::arg_funcs f_max = { d_max,NULL,d_max,NULL };
 
-vasp *vasp::m_max(I argc,t_atom *argv) { return fr_arg("max",argc,argv,f_max); }
-//vasp *vasp::m_cmax(I argc,t_atom *argv) { return fc_arg(argc,argv,d_max,d_max); }
-vasp *vasp::m_mmax(I argc,t_atom *argv) { return fm_arg("mmax",argc,argv,f_max); }
+Vasp *Vasp::m_max(const Argument &arg) { return fr_arg("max",arg,f_max); }
+//Vasp *Vasp::m_cmax(const Argument &arg) { return fc_arg(arg,d_max,d_max); }
+Vasp *Vasp::m_mmax(const Argument &arg) { return fm_arg("mmax",arg,f_max); }
 
 
 
@@ -569,14 +630,14 @@ static V d_ssqrt(F *dst,F,I cnt)
 	for(I i = 0; i < cnt; ++i,++dst) *dst = (F)sqrt(fabs(*dst))*sgn(*dst);
 }
 
-vasp *vasp::m_pow(F arg) { return fr_nop("pow",arg,d_pow); }
-//vasp *vasp::m_cpow(I argc,t_atom *argv) { return fm_arg("cpow",argc,argv,d_max); }
-vasp *vasp::m_sqr() { return fr_nop("sqr",0,d_sqr); }
-vasp *vasp::m_ssqr() { return fr_nop("ssqr",0,d_ssqr); }
-vasp *vasp::m_csqr() { return fc_nop("csqr",-1,NULL,d_csqr); }
-vasp *vasp::m_root(F arg) { return fr_nop("root",arg,d_root); }
-vasp *vasp::m_sqrt() { return fr_nop("sqrt",0,d_sqrt); }
-vasp *vasp::m_ssqrt() { return fr_nop("ssqrt",0,d_ssqrt); }
+Vasp *Vasp::m_pow(F arg) { return fr_nop("pow",arg,d_pow); }
+//Vasp *Vasp::m_cpow(I argc,t_atom *argv) { return fm_arg("cpow",argc,argv,d_max); }
+Vasp *Vasp::m_sqr() { return fr_nop("sqr",0,d_sqr); }
+Vasp *Vasp::m_ssqr() { return fr_nop("ssqr",0,d_ssqr); }
+Vasp *Vasp::m_csqr() { return fc_nop("csqr",CX(),d_csqr); }
+Vasp *Vasp::m_root(F arg) { return fr_nop("root",arg,d_root); }
+Vasp *Vasp::m_sqrt() { return fr_nop("sqrt",0,d_sqrt); }
+Vasp *Vasp::m_ssqrt() { return fr_nop("ssqrt",0,d_ssqrt); }
 
 
 static V d_exp(F *dst,F,I cnt) { for(I i = 0; i < cnt; ++i,++dst) *dst = (F)exp(*dst); }
@@ -584,8 +645,8 @@ static V d_exp(F *dst,F,I cnt) { for(I i = 0; i < cnt; ++i,++dst) *dst = (F)exp(
 // how about numbers <= 0?
 static V d_log(F *dst,F,I cnt) { for(I i = 0; i < cnt; ++i,++dst) *dst = (F)log(*dst); }
 
-vasp *vasp::m_exp() { return fr_nop("exp",0,d_exp); }
-vasp *vasp::m_log() { return fr_nop("log",0,d_log); }
+Vasp *Vasp::m_exp() { return fr_nop("exp",0,d_exp); }
+Vasp *Vasp::m_log() { return fr_nop("log",0,d_log); }
 
 
 static V d_inv(F *dst,F,I cnt) { for(I i = 0; i < cnt; ++i,++dst) *dst = 1./ *dst; }
@@ -598,8 +659,8 @@ static V d_cinv(F *re,F *im,F,F,I cnt)
 	}
 }
 
-vasp *vasp::m_inv() { return fr_nop("inv",0,d_inv); }
-vasp *vasp::m_cinv() { return fc_nop("cinv",-1,NULL,d_cinv); }
+Vasp *Vasp::m_inv() { return fr_nop("inv",0,d_inv); }
+Vasp *Vasp::m_cinv() { return fc_nop("cinv",CX(),d_cinv); }
 
 
 
@@ -634,10 +695,10 @@ static V d_cart(F *re,F *im,F,F,I cnt)
 	}
 }
 
-vasp *vasp::m_abs() { return fr_nop("inv",0,d_inv); }
-vasp *vasp::m_sign() { return fr_nop("sign",0,d_sign); }
-vasp *vasp::m_polar() { return fc_nop("polar",-1,NULL,d_polar); }
-vasp *vasp::m_cart() { return fc_nop("cart",-1,NULL,d_cart); }
+Vasp *Vasp::m_abs() { return fr_nop("inv",0,d_inv); }
+Vasp *Vasp::m_sign() { return fr_nop("sign",0,d_sign); }
+Vasp *Vasp::m_polar() { return fc_nop("polar",CX(),d_polar); }
+Vasp *Vasp::m_cart() { return fc_nop("cart",CX(),d_cart); }
 
 
 
@@ -664,8 +725,8 @@ static V d_cnorm(F *re,F *im,F,F,I cnt)
 	for(i = 0; i < cnt; ++i) re[i] *= v,im[i] *= v;
 }
 
-vasp *vasp::m_norm() { return fr_nop("norm",0,d_norm); }
-vasp *vasp::m_cnorm() { return fc_nop("cnorm",-1,NULL,d_cnorm); }
+Vasp *Vasp::m_norm() { return fr_nop("norm",0,d_norm); }
+Vasp *Vasp::m_cnorm() { return fc_nop("cnorm",CX(),d_cnorm); }
 
 
 
@@ -676,8 +737,8 @@ static V d_cswap(F *re,F *im,F,F,I cnt)
 
 static V d_cconj(F *,F *im,F,F,I cnt) { for(I i = 0; i < cnt; ++i) *im *= -1.; }
 
-vasp *vasp::m_cswap() { return fc_nop("cswap",-1,NULL,d_cswap); }
-vasp *vasp::m_cconj() { return fc_nop("cconj",-1,NULL,d_cconj); }
+Vasp *Vasp::m_cswap() { return fc_nop("cswap",CX(),d_cswap); }
+Vasp *Vasp::m_cconj() { return fc_nop("cconj",CX(),d_cconj); }
 
 
 
@@ -795,11 +856,11 @@ static V d_xmirr(F *dt,F,I cnt)
 }
 
 
-vasp *vasp::m_shift(F u) { return fr_nop("shift",u,d_shift); }
-vasp *vasp::m_xshift(F u) { return fr_nop("xshift",u,d_xshift); }
-vasp *vasp::m_rot(F u) { return fr_nop("rot",u,d_rot); }
-vasp *vasp::m_xrot(F u) { return fr_nop("xrot",u,d_xrot); }
-vasp *vasp::m_mirr() { return fr_nop("mirr",0,d_mirr); }
-vasp *vasp::m_xmirr() { return fr_nop("xmirr",0,d_xmirr); } 
+Vasp *Vasp::m_shift(F u) { return fr_nop("shift",u,d_shift); }
+Vasp *Vasp::m_xshift(F u) { return fr_nop("xshift",u,d_xshift); }
+Vasp *Vasp::m_rot(F u) { return fr_nop("rot",u,d_rot); }
+Vasp *Vasp::m_xrot(F u) { return fr_nop("xrot",u,d_xrot); }
+Vasp *Vasp::m_mirr() { return fr_nop("mirr",0,d_mirr); }
+Vasp *Vasp::m_xmirr() { return fr_nop("xmirr",0,d_xmirr); } 
 
 

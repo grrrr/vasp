@@ -23,12 +23,7 @@ public:
 	vasp_copy(I argc,t_atom *argv): vasp_tx(argc,argv) {}
 
 protected:
-	virtual vasp *tx_list(I argc,t_atom *argv) { return ref.m_copy(argc,argv); }
-	virtual vasp *tx_vasp(const vasp &v) { return ref.m_copy(v); }
-	virtual vasp *tx_float(F f) { return ref.m_copy(f); }
-	virtual vasp *tx_complex(F re,F im) { return ref.m_copy(re,im); }
-	virtual vasp *tx_vector(const VX &v) { return ref.m_copy(v); }
-
+	virtual Vasp *tx_work(const Argument &arg) { return ref.m_copy(arg); }
 };
 
 FLEXT_NEW_G("vasp.=",vasp_copy)
@@ -47,7 +42,7 @@ public:
 	vasp_ccopy(I argc,t_atom *argv): vasp_tx(argc,argv) {}
 
 protected:
-	virtual vasp *tx_list(I argc,t_atom *argv) { return ref.m_ccopy(argc,argv); }
+	virtual Vasp *tx_work(const Argument &arg) { return ref.m_ccopy(arg); }
 };
 
 FLEXT_NEW_G("vasp.c=",vasp_ccopy)
@@ -66,7 +61,7 @@ public:
 	vasp_mcopy(I argc,t_atom *argv): vasp_tx(argc,argv) {}
 
 protected:
-	virtual vasp *tx_list(I argc,t_atom *argv) { return ref.m_mcopy(argc,argv); }
+	virtual Vasp *tx_work(const Argument &arg) { return ref.m_mcopy(arg); }
 };
 
 FLEXT_NEW_G("vasp.m=",vasp_mcopy)

@@ -66,7 +66,6 @@ features:
 
 objects:
 - buffer reference modification (offset, length)
-- prepend for abstractions
 - sync several parallel threads
 - split und combine vasps into their separate vectors
 

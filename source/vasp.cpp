@@ -12,30 +12,30 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 ///////////////////////////////////////////////////////////////////////////
-// vbuffer class
+// VBuffer class
 ///////////////////////////////////////////////////////////////////////////
 
-vbuffer::vbuffer(t_symbol *s,I c,I l,I o): 
+VBuffer::VBuffer(t_symbol *s,I c,I l,I o): 
 	chn(0),len(0),offs(0) 
 {	
 	Set(s,c,l,o); 
 }
 
-vbuffer::vbuffer(const vbuffer &v):
+VBuffer::VBuffer(const VBuffer &v):
 	chn(0),len(0),offs(0) 
 { 
 	operator =(v); 
 }
 
 
-vbuffer::~vbuffer() {}
+VBuffer::~VBuffer() {}
 
-vbuffer &vbuffer::operator =(const vbuffer &v)
+VBuffer &VBuffer::operator =(const VBuffer &v)
 {
 	return Set(v.Symbol(),v.Channel(),v.Length(),v.Offset());
 }
 
-vbuffer &vbuffer::Set(t_symbol *s,I c,I l,I o)
+VBuffer &VBuffer::Set(t_symbol *s,I c,I l,I o)
 {
 	parent::Set(s);
 
@@ -52,17 +52,17 @@ vbuffer &vbuffer::Set(t_symbol *s,I c,I l,I o)
 
 
 ///////////////////////////////////////////////////////////////////////////
-// vasp class
+// Vasp class
 ///////////////////////////////////////////////////////////////////////////
 
-vasp::vasp(): 
+Vasp::Vasp(): 
 	atoms(0),atomlist(NULL),
 	refs(0),chns(0),ref(NULL),
 	frames(0) 
 { 
 }
 
-vasp::vasp(I argc,t_atom *argv):
+Vasp::Vasp(I argc,t_atom *argv):
 	atoms(0),atomlist(NULL),
 	refs(0),chns(0),ref(NULL),
 	frames(0) 
@@ -70,7 +70,7 @@ vasp::vasp(I argc,t_atom *argv):
 	operator ()(argc,argv); 
 }
 
-vasp::vasp(const vasp &v): 
+Vasp::Vasp(const Vasp &v): 
 	atoms(0),atomlist(NULL),
 	refs(0),chns(0),ref(NULL),
 	frames(0) 
@@ -78,7 +78,7 @@ vasp::vasp(const vasp &v):
 	operator =(v); 
 }
 
-vasp::~vasp()
+Vasp::~Vasp()
 {
 	if(ref) delete[] ref;
 	if(atomlist) delete[] atomlist;
@@ -86,7 +86,7 @@ vasp::~vasp()
 
 
 
-vasp &vasp::operator =(const vasp &v)
+Vasp &Vasp::operator =(const Vasp &v)
 {
 	if(!v.Ok()) 
 		Clear();
@@ -108,7 +108,7 @@ vasp &vasp::operator =(const vasp &v)
 
 
 // parse argument list
-vasp &vasp::operator ()(I argc,t_atom *argv)
+Vasp &Vasp::operator ()(I argc,t_atom *argv)
 {
 	BL lenset = false;
 	I ix = 0;
@@ -173,8 +173,8 @@ vasp &vasp::operator ()(I argc,t_atom *argv)
 }
 
 
-// generate vasp list of buffer references
-vasp &vasp::MakeList(BL withvasp)
+// generate Vasp list of buffer references
+Vasp &Vasp::MakeList(BL withvasp)
 {
 	I voffs = withvasp?1:0;
 	I needed = voffs+1+Vectors()*3;
@@ -198,13 +198,13 @@ vasp &vasp::MakeList(BL withvasp)
 	return *this;
 }
 
-vbuffer *vasp::Buffer(I ix) const
+VBuffer *Vasp::Buffer(I ix) const
 {
 	if(ix >= Vectors()) 
 		return NULL;
 	else {
 		const Ref &r = Vector(ix);
-		return new vbuffer(r.Symbol(),r.Channel(),Frames(),r.Offset());
+		return new VBuffer(r.Symbol(),r.Channel(),Frames(),r.Offset());
 	}
 }
 
