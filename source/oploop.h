@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPLOOP_H
 #define __VASP_OPLOOP_H
 
-#define _D_BLOCK 1024
+#define _D_BLOCK 4096
 
 #define _D_MIN(a,b) ((a) < (b)?(a):(b))
 

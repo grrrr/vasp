@@ -20,8 +20,18 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define BIG 1.e10
 
 
-R arg(R re,R im);
-inline R arg(const CX &c) { return arg(c.real,c.imag); }
+template<class T>
+T arg(T re,T im)
+{
+	if(re) 
+		return fmod(atan(im/re)+(re < 0?2*PI:PI),2*PI)-PI;
+	else
+		if(im || re) return im > 0?PI/2:-PI/2;
+		else return 0;
+}
+
+
+//inline R arg(const CX &c) { return arg(c.real,c.imag); }
 //inline F sqabs(const CX &c) { return sqabs(c.real,c.imag); }
 //inline F sgn(F x) { return x < 0.?-1.F:1.F; }
 
