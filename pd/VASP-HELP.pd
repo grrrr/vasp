@@ -1,4 +1,4 @@
-#N canvas 211 19 614 638 10;
+#N canvas 211 19 616 640 10;
 #N canvas 49 0 352 421 objects 0;
 #N canvas 306 143 558 381 vasp.displace 0;
 #X text 158 163 rotate buffer content symmetrically;
@@ -246,7 +246,7 @@ one is resampled around a center position;
 #X restore 192 357 pd objects;
 #X text 54 169 vasp objects are using a specialized message syntax
 for all objects to refer to a buffer or a part of it.;
-#N canvas 6 13 980 660 syntax 0;
+#N canvas 6 13 982 662 syntax 0;
 #X text 76 52 the vasp message:;
 #X obj 75 20 cnv 15 15 15 empty empty vasp_syntax 0 10 1 14 -262144
 -1 0;
@@ -807,7 +807,7 @@ elements per frame;
 #X restore 192 430 pd glossary;
 #X text 54 90 vasp modular - vector assembling signal processor ©2002
 thomas grill;
-#N canvas 26 0 958 700 moremessages 0;
+#N canvas 26 0 960 702 moremessages 0;
 #X obj 59 74 cnv 15 800 330 empty empty empty 20 12 0 14 -241339 -66577
 0;
 #X obj 330 342 vasp.* 0.5;
@@ -921,6 +921,7 @@ of an object chain;
 #X msg 323 1676 help;
 #X obj 323 1709 vasp.s/;
 #X text 236 1637 print out a short description of the object;
+#X text 361 1178 real fft;
 #X connect 1 0 3 0;
 #X connect 4 0 1 0;
 #X connect 5 0 7 0;
