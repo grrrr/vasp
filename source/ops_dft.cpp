@@ -550,7 +550,7 @@ BL fft_inv_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 static I radix2(I size)
 {
 	I i,j;
-	for(i = j = 1; j < size; i++,j <<= 1);
+	for(i = j = 1; j < size; i++,j <<= 1) (void)0;
 	return j == size?i:-1;
 }
 
