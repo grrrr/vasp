@@ -1,4 +1,4 @@
-#N canvas 83 103 893 500 10;
+#N canvas 83 103 895 502 10;
 #X obj 62 303 vasp.osc 22050;
 #X obj 58 31 cnv 15 15 15 empty empty vasp.frames 0 10 1 14 -262144
 -1 0;
@@ -40,20 +40,20 @@
 #X obj 233 335 vasp.update;
 #X obj 261 258 prepend set;
 #X msg 233 151 vasp buffram1 buffram2 11050;
-#X msg 90 280 vasp 30000 buffram1 0 0;
-#X msg 261 280 vasp 558 buffram1 0 0 buffram2 11050 0;
 #X floatatom 330 197 5 0 0;
 #X obj 233 303 vasp.osc 11025;
 #X text 56 99 !!!all vectors of a vasp have the same frame count/length!!!
 ;
+#X msg 90 280;
+#X msg 261 280;
 #X connect 0 0 5 0;
 #X connect 9 0 10 0;
 #X connect 10 0 15 0;
 #X connect 10 0 0 0;
 #X connect 14 0 18 0;
-#X connect 14 0 23 0;
-#X connect 15 0 20 0;
-#X connect 18 0 21 0;
+#X connect 14 0 21 0;
+#X connect 15 0 23 0;
+#X connect 18 0 24 0;
 #X connect 19 0 14 0;
-#X connect 22 0 14 1;
-#X connect 23 0 17 0;
+#X connect 20 0 14 1;
+#X connect 21 0 17 0;
