@@ -122,7 +122,7 @@ public:
 	V Clear();
 
 	V Set(Vasp *v);
-//	V Set(I argc,t_atom *argv);
+	V Set(I argc,t_atom *argv);
 	V Set(I i);
 	V Set(F f);
 	V Set(F re,F im);
@@ -130,18 +130,26 @@ public:
 
 	BL IsNone() const { return tp == tp_none; }
 	BL IsVasp() const { return tp == tp_vasp; }
-//	BL IsList() const { return tp == tp_list; }
+	BL IsList() const { return tp == tp_list; }
 	BL IsInt() const { return tp == tp_int; }
+	BL CanbeInt() const { return tp == tp_int || tp == tp_float; }
 	BL IsFloat() const { return tp == tp_float; }
+	BL CanbeFloat() const { return tp == tp_float || tp == tp_int; }
 	BL IsComplex() const { return tp == tp_cx; }
+	BL CanbeComplex() const { return tp == tp_cx || CanbeFloat(); }
 	BL IsVector() const { return tp == tp_vx; }
+	BL CanbeVector() const { return tp == tp_vx || CanbeComplex(); }
 
 	const Vasp &GetVasp() const { return *dt.v; }
-//	const AtomList &GetList() const { return *dt.atoms; }
+	const AtomList &GetList() const { return *dt.atoms; }
 	I GetInt() const { return dt.i; }
+	I GetAInt() const;
 	F GetFloat() const { return dt.f; }
+	F GetAFloat() const;
 	const CX &GetComplex() const { return *dt.cx; }
+	CX GetAComplex() const;
 	const VX &GetVector() const { return *dt.vx; }
+	VX GetAVector() const;
 
 protected:
 	enum {
@@ -150,7 +158,7 @@ protected:
 
 	union {
 		Vasp *v;
-//		AtomList *atoms;
+		AtomList *atoms;
 		F f;
 		I i;
 		CX *cx;
@@ -158,6 +166,12 @@ protected:
 	} dt;
 };
 
+
+F arg(F re,F im);
+inline F arg(const CX &c) { return arg(c.real,c.imag); }
+inline F abs(F re,F im) { return re*re+im*im; }
+inline F abs(const CX &c) { return abs(c.real,c.imag); }
+inline F sgn(F x) { return x < 0.?-1.F:1.F; }
 
 
 class Vasp 
@@ -223,35 +237,32 @@ public:
 	// copy functions
 	Vasp *m_copy(const Argument &arg); // copy to (one vec or real)
 	Vasp *m_ccopy(const Argument &arg); // complex copy (pairs of vecs or complex)
-	Vasp *m_mcopy(const Argument &arg); // copy to (multi-channel)
+	Vasp *m_vcopy(const Argument &arg); // copy to (multi-channel)
 
-//	Vasp *m_mix(I argc,t_atom *argv); // mix in (one vec or real/complex)
-//	Vasp *m_mmix(I argc,t_atom *argv); // mix in (multi-channel)
-
-	// binary functions
+	// simple binary math
 	Vasp *m_add(const Argument &arg); // add to (one vec or real)
 	Vasp *m_cadd(const Argument &arg); // complex add (pairs of vecs or complex)
-	Vasp *m_madd(const Argument &arg); // add to (multi-channel)
+	Vasp *m_vadd(const Argument &arg); // add to (multi-channel)
 
 	Vasp *m_sub(const Argument &arg); // sub from (one vec or real/complex)
 	Vasp *m_csub(const Argument &arg); // complex sub (pairs of vecs or complex)
-	Vasp *m_msub(const Argument &arg); // sub from (multi-channel)
+	Vasp *m_vsub(const Argument &arg); // sub from (multi-channel)
 
 	Vasp *m_mul(const Argument &arg); // mul with (one vec or real/complex)
 	Vasp *m_cmul(const Argument &arg); // complex mul (pairs of vecs or complex)
-	Vasp *m_mmul(const Argument &arg); // mul with (multi-channel)
+	Vasp *m_vmul(const Argument &arg); // mul with (multi-channel)
 
 	Vasp *m_div(const Argument &arg); // div by (one vec or real/complex)
 	Vasp *m_cdiv(const Argument &arg); // complex div (pairs of vecs or complex)
-	Vasp *m_mdiv(const Argument &arg); // div by (multi-channel)
+	Vasp *m_vdiv(const Argument &arg); // div by (multi-channel)
 
 	Vasp *m_min(const Argument &arg); // min (one vec or real)
 //	Vasp *m_cmin(const Argument &arg); // complex (abs) min (pairs of vecs or complex)
-	Vasp *m_mmin(const Argument &arg); // min (multi-channel)
+	Vasp *m_vmin(const Argument &arg); // min (multi-channel)
 
 	Vasp *m_max(const Argument &arg); // max (one vec or real)
 //	Vasp *m_cmax(const Argument &arg); // complex (abs) max (pairs of vecs or complex)
-	Vasp *m_mmax(const Argument &arg); // max (multi-channel)
+	Vasp *m_vmax(const Argument &arg); // max (multi-channel)
 
 	// "unary" functions
 	Vasp *m_pow(const Argument &arg); // power
@@ -293,12 +304,19 @@ public:
 
 	// Generator functions 
 	Vasp *m_osc(const Argument &arg);  // real osc
+	Vasp *m_mosc(const Argument &arg);  // * real osc
 	Vasp *m_cosc(const Argument &arg);  // complex osc (phase rotates)
+	Vasp *m_mcosc(const Argument &arg);  // * complex osc (phase rotates)
 	Vasp *m_phasor(const Argument &arg);  // phasor
+	Vasp *m_mphasor(const Argument &arg);  // * phasor
 	Vasp *m_noise();  // real noise
 	Vasp *m_cnoise(); // complex noise (arg and abs random)
-	Vasp *m_bevelup();  // bevel up (fade in)
-	Vasp *m_beveldn();  // bevel down (fade out)
+	Vasp *m_bevelup();  // bevel up 
+	Vasp *m_mbevelup();  // * bevel up (fade in)
+	Vasp *m_beveldn();  // bevel down
+	Vasp *m_mbeveldn();  // * bevel down (fade out)
+	Vasp *m_window(const Argument &arg);  // window curve
+	Vasp *m_mwindow(const Argument &arg);  // * window curve
 
 	// Fourier transforms 
 	Vasp *m_rfft();
@@ -354,9 +372,9 @@ private:
 	Vasp *fc_arg(const C *op,const Vasp &v,argfunCV f);
 	Vasp *fc_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fc_arg(op,v,f.funCV); }
 	Vasp *fc_arg(const C *op,const Argument &arg,const arg_funcs &f);
-	Vasp *fm_arg(const C *op,const Vasp &v,argfunV f);
-	Vasp *fm_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fm_arg(op,v,f.funV); }
-	Vasp *fm_arg(const C *op,const Argument &arg,const arg_funcs &f);
+	Vasp *fv_arg(const C *op,const Vasp &v,argfunV f);
+	Vasp *fv_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fv_arg(op,v,f.funV); }
+	Vasp *fv_arg(const C *op,const Argument &arg,const arg_funcs &f);
 };
 
 

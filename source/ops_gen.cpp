@@ -15,17 +15,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define PI 3.1415926535897932385
 #endif
 
-static F arg(F re,F im)
-{
-	if(re) 
-		return atan(im/re)+(re < 0?PI:0);
-	else
-		if(im || re) return im > 0?PI/2:-PI/2;
-		else return 0;
-}
 
-static F abs(F re,F im) { return re*re+im*im; }
-
+// --- osc ---------------------------------------
 
 static BL d_osc(I cnt,F *dt,I str,F *,I,F rfrq,F ifrq) 
 { 
@@ -43,26 +34,37 @@ static BL d_cosc(I cnt,F *re,I rstr,F *im,I istr,F rfrq,F ifrq)
 	return true;
 }
 
-Vasp *Vasp::m_osc(const Argument &arg) 
+static BL d_mosc(I cnt,F *dt,I str,F *,I,F rfrq,F ifrq) 
 { 
-	if(arg.IsFloat()) 
-		return fc_nop("osc",arg.GetFloat(),d_osc);
-	else if(arg.IsComplex()) 
-		return fc_nop("osc",arg.GetComplex(),d_osc);
-	else
-		return NULL; 
+	// frq and phase defined by complex frequency
+	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= cos(ph);
+	return true;
 }
+
+static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,F rfrq,F ifrq) 
+{ 
+	// frq and phase defined by complex frequency
+	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	for(I i = 0; i < cnt; ++i,ph += phinc,re += rstr,im += istr) {
+		*re = cos(ph),*im = sin(ph);
+	}
+	return true;
+}
+
+Vasp *Vasp::m_osc(const Argument &arg) 
+{ return arg.CanbeComplex()?fc_nop("osc",arg.GetAComplex(),d_osc):NULL; }
 
 Vasp *Vasp::m_cosc(const Argument &arg) 
-{ 
-	if(arg.IsFloat()) 
-		return fc_nop("cosc",arg.GetFloat(),d_osc);
-	else if(arg.IsComplex()) 
-		return fc_nop("cosc",arg.GetComplex(),d_osc);
-	else
-		return NULL; 
-}
+{ return arg.CanbeComplex()?fc_nop("cosc",arg.GetAComplex(),d_cosc):NULL; }
 
+Vasp *Vasp::m_mosc(const Argument &arg) 
+{ return arg.CanbeComplex()?fc_nop("*osc",arg.GetAComplex(),d_mosc):NULL; }
+
+Vasp *Vasp::m_mcosc(const Argument &arg) 
+{ return arg.CanbeComplex()?fc_nop("*cosc",arg.GetAComplex(),d_mcosc):NULL; }
+
+// --- noise --------------------------------
 
 static F rnd() 
 {
@@ -92,10 +94,19 @@ static BL d_cnoise(I cnt,F *re,I rstr,F *im,I istr,F,F)
 Vasp *Vasp::m_noise() { return fr_nop("noise",0,d_noise); }
 Vasp *Vasp::m_cnoise() { return fc_nop("cnoise",0,d_cnoise); }
 
+// --- bevel --------------------------
+
+// Should bevels start from 0 or .5/cnt ??
 
 static BL d_bevelup(I cnt,F *dt,I str,F) 
 { 
 	for(I i = 0; i < cnt; ++i,dt += str) *dt = (i+.5)/cnt;
+	return true;
+}
+
+static BL d_mbevelup(I cnt,F *dt,I str,F) 
+{ 
+	for(I i = 0; i < cnt; ++i,dt += str) *dt *= (i+.5)/cnt;
 	return true;
 }
 
@@ -105,6 +116,37 @@ static BL d_beveldn(I cnt,F *dt,I str,F)
 	return true;
 }
 
+static BL d_mbeveldn(I cnt,F *dt,I str,F) 
+{ 
+	for(I i = cnt-1; i >= 0; -i,dt += str) *dt *= (i+.5)/cnt;
+	return true;
+}
+
 Vasp *Vasp::m_bevelup() { return fr_nop("bevel",0,d_bevelup); }
 Vasp *Vasp::m_beveldn() { return fr_nop("bevel-",0,d_beveldn); }
+Vasp *Vasp::m_mbevelup() { return fr_nop("*bevel",0,d_mbevelup); }
+Vasp *Vasp::m_mbeveldn() { return fr_nop("*bevel-",0,d_mbeveldn); }
+
+
+// --- window --------------------------
+
+static BL d_window(I cnt,F *dt,I str,F wndtp) 
+{ 
+	for(I i = 0; i < cnt; ++i,dt += str) *dt = 0;
+	return true;
+}
+
+static BL d_mwindow(I cnt,F *dt,I str,F wndtp) 
+{ 
+	for(I i = 0; i < cnt; ++i,dt += str) *dt *= 1;
+	return true;
+}
+
+Vasp *Vasp::m_window(const Argument &arg) 
+{ return arg.CanbeInt()?fr_nop("window",arg.GetAInt(),d_window):NULL; }
+
+Vasp *Vasp::m_mwindow(const Argument &arg) 
+{ return arg.CanbeInt()?fr_nop("*window",arg.GetAInt(),d_mwindow):NULL; }
+
+
 

@@ -12,29 +12,29 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 VASP_BINARY("vasp.=",copy)
 VASP_BINARY("vasp.c=",ccopy)
-VASP_BINARY("vasp.m=",mcopy)
+VASP_BINARY("vasp.v=",vcopy)
 
 VASP_BINARY("vasp.+",add)
 VASP_BINARY("vasp.c+",cadd)
-VASP_BINARY("vasp.m+",madd)
+VASP_BINARY("vasp.v+",vadd)
 
 VASP_BINARY("vasp.-",sub)
 VASP_BINARY("vasp.c-",csub)
-VASP_BINARY("vasp.m-",msub)
+VASP_BINARY("vasp.v-",vsub)
 
 VASP_BINARY("vasp.*",mul)
 VASP_BINARY("vasp.c*",cmul)
-VASP_BINARY("vasp.m*",mmul)
+VASP_BINARY("vasp.v*",vmul)
 
 VASP_BINARY("vasp./",div)
 VASP_BINARY("vasp.c/",cdiv)
-VASP_BINARY("vasp.m/",mdiv)
+VASP_BINARY("vasp.v/",vdiv)
 
 VASP_BINARY("vasp.min",min)
-VASP_BINARY("vasp.mmin",mmin)
+VASP_BINARY("vasp.vmin",vmin)
 
 VASP_BINARY("vasp.max",max)
-VASP_BINARY("vasp.mmax",mmax)
+VASP_BINARY("vasp.vmax",vmax)
 
 
 VASP_UNARY("vasp.sqr",sqr) 
@@ -70,11 +70,17 @@ VASP_UNARY("vasp.mirr",mirr)
 VASP_UNARY("vasp.xmirr",xmirr)
 
 VASP_BINARY("vasp.osc",osc)
+VASP_BINARY("vasp*osc",mosc)
 VASP_BINARY("vasp.cosc",cosc)
+VASP_BINARY("vasp*cosc",mcosc)
 VASP_UNARY("vasp.noise",noise)
 VASP_UNARY("vasp.cnoise",cnoise)
 VASP_UNARY("vasp.bevel",bevelup)
 VASP_UNARY("vasp.bevel-",beveldn)
+VASP_UNARY("vasp*bevel",mbevelup)
+VASP_UNARY("vasp*bevel-",mbeveldn)
+VASP_BINARY("vasp.window",window)
+VASP_BINARY("vasp*window",mwindow)
 
 VASP_UNARY("vasp.rfft",rfft)
 VASP_UNARY("vasp.rfft-",rifft)

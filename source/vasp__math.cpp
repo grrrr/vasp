@@ -15,223 +15,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define PI 3.1415926535897932385
 #endif
 
-inline F sgn(F x) { return x < 0.?-1.F:1.F; }
-
-
-static BL d_copy(I cnt,F *dst,I str,F val) 
-{ for(I i = 0; i < cnt; ++i,dst += str) *dst = val; return true; }
-
-static BL d_copy(I cnt,F *dst,I dstr,const F *src,I sstr) 
-{ for(I i = 0; i < cnt; ++i,src += sstr,dst += dstr) *dst = *src; return true; }
-
-static BL d_copy(I cnt,F *rdst,I rstr,F *idst,I istr,F re,F im) 
-{ 
-	for(I i = 0; i < cnt; ++i,rdst += rstr,idst += istr) *rdst = re,*idst = im; 
-	return true; 
-}
-
-static BL d_copy(I cnt,F *rdst,I drstr,F *idst,I distr,const F *rsrc,I srstr,const F *isrc,I sistr) 
-{ 
-	if(isrc)
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,isrc += sistr,rdst += drstr,idst += distr) 
-			*rdst = *rsrc,*idst = *isrc; 
-	else
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,rdst += drstr,idst += distr) 
-			*rdst = *rsrc,*idst = 0.; 
-	return true;
-}
-
-static const Vasp::arg_funcs f_copy = { d_copy,d_copy,d_copy,d_copy };
-
-Vasp *Vasp::m_copy(const Argument &arg) { return fr_arg("copy",arg,f_copy); }
-Vasp *Vasp::m_ccopy(const Argument &arg) { return fc_arg("ccopy",arg,f_copy); }
-Vasp *Vasp::m_mcopy(const Argument &arg) { return fm_arg("mcopy",arg,f_copy); }
-
-
-static BL d_add(I cnt,F *dst,I str,F v) 
-{ for(I i = 0; i < cnt; ++i,dst += str) *dst += v; return true; }
-
-static BL d_add(I cnt,F *dst,I dstr,const F *src,I sstr) 
-{ for(I i = 0; i < cnt; ++i,src += sstr,dst += dstr) *dst += *src; return true; }
-
-static BL d_add(I cnt,F *rdst,I rstr,F *idst,I istr,F re,F im) 
-{ 
-	for(I i = 0; i < cnt; ++i,rdst += rstr,idst += istr) *rdst += re,*idst += im; 
-	return true; 
-}
-
-static BL d_add(I cnt,F *rdst,I drstr,F *idst,I distr,const F *rsrc,I srstr,const F *isrc,I sistr) 
-{ 
-	if(isrc)
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,isrc += sistr,rdst += drstr,idst += distr) 
-			*rdst += *rsrc,*idst += *isrc; 
-	else
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,rdst += drstr) 
-			*rdst += *rsrc; 
-	return true; 
-}
-
-static const Vasp::arg_funcs f_add = { d_add,d_add,d_add,d_add };
-
-Vasp *Vasp::m_add(const Argument &arg) { return fr_arg("add",arg,f_add); }
-Vasp *Vasp::m_cadd(const Argument &arg) { return fc_arg("cadd",arg,f_add); }
-Vasp *Vasp::m_madd(const Argument &arg) { return fm_arg("madd",arg,f_add); }
-
-static BL d_sub(I cnt,F *dst,I str,F v) 
-{ for(I i = 0; i < cnt; ++i,dst += str) *dst -= v; return true; }
-
-static BL d_sub(I cnt,F *dst,I dstr,const F *src,I sstr) 
-{ for(I i = 0; i < cnt; ++i,src += sstr,dst += dstr) *dst -= *src; return true; }
-
-static BL d_sub(I cnt,F *rdst,I rstr,F *idst,I istr,F re,F im) 
-{ 
-	for(I i = 0; i < cnt; ++i,rdst += rstr,idst += istr) *rdst -= re,*idst -= im; 
-	return true; 
-}
-
-static BL d_sub(I cnt,F *rdst,I drstr,F *idst,I distr,const F *rsrc,I srstr,const F *isrc,I sistr) 
-{ 
-	if(isrc)
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,isrc += sistr,rdst += drstr,idst += distr) 
-			*rdst -= *rsrc,*idst -= *isrc; 
-	else
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,rdst += drstr) 
-			*rdst -= *rsrc; 
-	return true; 
-}
-
-static const Vasp::arg_funcs f_sub = { d_sub,d_sub,d_sub,d_sub };
-
-Vasp *Vasp::m_sub(const Argument &arg) { return fr_arg("sub",arg,f_sub); }
-Vasp *Vasp::m_csub(const Argument &arg) { return fc_arg("csub",arg,f_sub); }
-Vasp *Vasp::m_msub(const Argument &arg) { return fm_arg("msub",arg,f_sub); }
-
-
-static BL d_mul(I cnt,F *dst,I str,F v) 
-{ for(I i = 0; i < cnt; ++i,dst += str) *dst *= v; return true; }
-
-static BL d_mul(I cnt,F *dst,I dstr,const F *src,I sstr) 
-{ for(I i = 0; i < cnt; ++i,dst += dstr,src += sstr) *dst *= *src; return true; }
-
-static BL d_mul(I cnt,F *rdst,I rstr,F *idst,I istr,F re,F im) 
-{ 
-	for(I i = 0; i < cnt; ++i,rdst += rstr,idst += istr) {
-		register F r = *rdst *re-*idst *im;
-		*idst = *idst *re+*rdst *im;
-		*rdst = r;
-	}
-	return true; 
-}
-
-static BL d_mul(I cnt,F *rdst,I drstr,F *idst,I distr,const F *rsrc,I srstr,const F *isrc,I sistr) 
-{ 
-	if(isrc) 
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,isrc += sistr,rdst += drstr,idst += distr) {
-			register F r = *rdst * *rsrc-*idst * *isrc;
-			*idst = *idst * *rsrc+*rdst * *isrc;
-			*rdst = r;
-		}
-	else 
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,rdst += drstr,idst += distr) 
-			*rdst *= *rsrc,*idst *= *rsrc;
-	return true; 
-}
-
-static const Vasp::arg_funcs f_mul = { d_mul,d_mul,d_mul,d_mul };
-
-Vasp *Vasp::m_mul(const Argument &arg) { return fr_arg("mul",arg,f_mul); }
-Vasp *Vasp::m_cmul(const Argument &arg) { return fc_arg("cmul",arg,f_mul); }
-Vasp *Vasp::m_mmul(const Argument &arg) { return fm_arg("mmul",arg,f_mul); }
-
-
-// how about div by 0?
-
-static BL d_div(I cnt,F *dst,I str,F v) 
-{ F iv = 1./v; for(I i = 0; i < cnt; ++i,dst += str) *dst *= iv; return true; }
-
-static BL d_div(I cnt,F *dst,I dstr,const F *src,I sstr) 
-{ for(I i = 0; i < cnt; ++i,src += sstr,dst += dstr) *dst /= *src; return true; }
-
-static BL d_div(I cnt,F *rdst,I rstr,F *idst,I istr,F re,F im) 
-{ 
-	F den = re*re+im*im;
-	register F re1 = re/den,im1 = im/den;
-	for(I i = 0; i < cnt; ++i,rdst += rstr,idst += istr) {
-		register F r = *rdst *re1+*idst *im1;
-		*idst = *idst *re1-*rdst *im1;
-		*rdst = r;
-	}
-	return true; 
-}
-
-static BL d_div(I cnt,F *rdst,I drstr,F *idst,I distr,const F *rsrc,I srstr,const F *isrc,I sistr) 
-{ 
-	if(isrc)
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,isrc += sistr,rdst += drstr,idst += distr) {
-			register F den = *rsrc * *rsrc+*isrc * *isrc;
-			register F re1 = *rsrc/den,im1 = *isrc/den;
-			register F r = *rdst * re1+*idst * im1;
-			*idst = *idst * re1-*rdst * im1;
-			*rdst = r;
-		}
-	else
-		for(I i = 0; i < cnt; ++i,rsrc += srstr,rdst += drstr,idst += distr) {
-			register F den = 1./ *rsrc;
-			*rdst *= den,*idst *= den;
-		}	
-	return true; 
-}
-
-static const Vasp::arg_funcs f_div = { d_div,d_div,d_div,d_div };
-
-Vasp *Vasp::m_div(const Argument &arg) { return fr_arg("div",arg,f_div); }
-Vasp *Vasp::m_cdiv(const Argument &arg) { return fc_arg("cdiv",arg,f_div); }
-Vasp *Vasp::m_mdiv(const Argument &arg) { return fm_arg("mdiv",arg,f_div); }
-
-
-
-
-static BL d_min(I cnt,F *dst,I str,F v) 
-{ 
-	for(I i = 0; i < cnt; ++i,dst += str) if(*dst > v) *dst = v;
-	return true; 
-}
-
-static BL d_min(I cnt,F *dst,I dstr,const F *src,I sstr) 
-{ 
-	for(I i = 0; i < cnt; ++i,dst += dstr,src += sstr) if(*dst > *src) *dst = *src;
-	return true; 
-}
-
-static const Vasp::arg_funcs f_min = { d_min,NULL,d_min,NULL };
-
-Vasp *Vasp::m_min(const Argument &arg) { return fr_arg("min",arg,f_min); }
-//Vasp *Vasp::m_cmin(const Argument &arg) { return fc_arg(argc,arg,d_min); }
-Vasp *Vasp::m_mmin(const Argument &arg) { return fm_arg("mmin",arg,f_min); }
-
-
-
-static BL d_max(I cnt,F *dst,I str,F v) 
-{ 
-	for(I i = 0; i < cnt; ++i,dst += str) if(*dst < v) *dst = v;
-	return true; 
-}
-
-static BL d_max(I cnt,F *dst,I dstr,const F *src,I sstr) 
-{ 
-	for(I i = 0; i < cnt; ++i,dst += dstr,src += sstr) if(*dst < *src) *dst = *src;
-	return true; 
-}
-
-static const Vasp::arg_funcs f_max = { d_max,NULL,d_max,NULL };
-
-Vasp *Vasp::m_max(const Argument &arg) { return fr_arg("max",arg,f_max); }
-//Vasp *Vasp::m_cmax(const Argument &arg) { return fc_arg(arg,d_max,d_max); }
-Vasp *Vasp::m_mmax(const Argument &arg) { return fm_arg("mmax",arg,f_max); }
-
-
-
-
 
 static BL d_pow(I cnt,F *dst,I str,F v) 
 { 
@@ -304,7 +87,7 @@ static BL d_inv(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *d
 static BL d_cinv(I cnt,F *re,I rstr,F *im,I istr,F,F) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
-		register F den = *re * *re+*im * *im;
+		register F den = abs(*re,*im);
 		*re /= den,*im /= -den;
 	}
 	return true; 
@@ -330,13 +113,9 @@ static BL d_sign(I cnt,F *dst,I str,F)
 static BL d_polar(I cnt,F *re,I rstr,F *im,I istr,F,F) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
-		register F abs = *re * *re+*im * *im;
-		if(*re) 
-			*im = atan(*im / *re)+(*re < 0?PI:0);
-		else
-			if(abs) *im = *im > 0?PI/2:-PI/2;
-			else *im = 0;
-		*re = abs;
+		register F _abs = abs(*re,*im);
+		*im = arg(*re,*im);
+		*re = _abs;
 	}
 	return true; 
 }

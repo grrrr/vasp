@@ -78,10 +78,8 @@ Vasp *Vasp::fc_nop(const C *op,const CX &cx,nopfunC f)
 // just transform complex vector pairs
 Vasp *Vasp::fc_nop(const C *op,const Argument &arg,const nop_funcs &f)
 {
-	if(arg.IsFloat()) 
-		return fc_nop(op,CX(arg.GetFloat()),f);
-	else if(arg.IsComplex()) 
-		return fc_nop(op,arg.GetComplex(),f);
+	if(arg.CanbeComplex()) 
+		return fc_nop(op,arg.GetAComplex(),f);
 	else 
 		return arg.IsNone()?new Vasp(*this):NULL;
 }
@@ -164,8 +162,8 @@ Vasp *Vasp::fr_arg(const C *op,const Vasp &arg,argfunV f)
 // for real values or single real vector
 Vasp *Vasp::fr_arg(const C *op,const Argument &arg,const arg_funcs &f)
 {
-	if(arg.IsFloat()) 
-		return fr_arg(op,arg.GetFloat(),f); // real input
+	if(arg.CanbeFloat()) 
+		return fr_arg(op,arg.GetAFloat(),f); // real input
 	else if(arg.IsVasp()) 
 		return fr_arg(op,arg.GetVasp(),f); // single vector source
 	else
@@ -295,10 +293,8 @@ Vasp *Vasp::fc_arg(const C *op,const Vasp &arg,argfunCV f)
 
 Vasp *Vasp::fc_arg(const C *op,const Argument &arg,const arg_funcs &f)
 {
-	if(arg.IsFloat()) 
-		return fc_arg(op,CX(arg.GetFloat()),f);
-	else if(arg.IsComplex()) 
-		return fc_arg(op,arg.GetComplex(),f);
+	if(arg.CanbeComplex()) 
+		return fc_arg(op,arg.GetAComplex(),f);
 	else if(arg.IsVasp()) 
 		return fc_arg(op,arg.GetVasp(),f); // pairs of vectors
 	else
@@ -306,7 +302,7 @@ Vasp *Vasp::fc_arg(const C *op,const Argument &arg,const arg_funcs &f)
 }
 
 // for multiple vectors
-Vasp *Vasp::fm_arg(const C *op,const Vasp &arg,argfunV f)
+Vasp *Vasp::fv_arg(const C *op,const Vasp &arg,argfunV f)
 {
 	if(!arg.Ok()) {
 		post("%s(%s) - invalid src Vasp",thisName(),op);
@@ -367,8 +363,8 @@ Vasp *Vasp::fm_arg(const C *op,const Vasp &arg,argfunV f)
 
 // for multiple vectors
 
-Vasp *Vasp::fm_arg(const C *op,const Argument &arg,const arg_funcs &f)
+Vasp *Vasp::fv_arg(const C *op,const Argument &arg,const arg_funcs &f)
 {
-	return arg.IsVasp()?fm_arg(op,arg.GetVasp(),f):NULL;
+	return arg.IsVasp()?fv_arg(op,arg.GetVasp(),f):NULL;
 }
 

@@ -1,4 +1,17 @@
 #include "main.h"
+#include <math.h>
+
+F arg(F re,F im)
+{
+	if(re) 
+		return atan(im/re)+(re < 0?PI:0);
+	else
+		if(im || re) return im > 0?PI/2:-PI/2;
+		else return 0;
+}
+
+
+
 
 AtomList::AtomList(I argc,t_atom *argv):
 	cnt(argc)
@@ -137,3 +150,30 @@ V Argument::Set(VX *vec)
 	dt.vx = vec; tp = tp_vx;
 }
 
+I Argument::GetAInt() const 
+{
+	if(IsInt()) return GetInt();
+	else if(IsFloat()) return (I)GetFloat();
+	else return 0;
+}
+
+F Argument::GetAFloat() const
+{
+	if(IsInt()) return GetInt();
+	else if(IsFloat()) return GetFloat();
+	else return 0;
+}
+
+CX Argument::GetAComplex() const
+{
+	if(IsInt()) return (F)GetInt();
+	else if(IsFloat()) return GetFloat();
+	else if(IsComplex()) return GetComplex();
+	else return 0;
+}
+
+/*
+VX Argument::GetAVector() const
+{
+}
+*/
