@@ -35,7 +35,6 @@ public:
 	{
 		AddInAnything();
 		AddOutAnything(2);
-		SetupInOut();
 
 		FLEXT_ADDMETHOD(0,m_any);
 	}

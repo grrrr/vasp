@@ -35,7 +35,6 @@ public:
 	{
 		AddInAnything();
 		AddOutList();
-		SetupInOut();
 	}
 
 	virtual V m_bang() 
@@ -86,7 +85,6 @@ public:
 	{
 		AddInAnything();
 		AddOutList(2);
-		SetupInOut();
 	}
 
 	virtual V m_bang() 

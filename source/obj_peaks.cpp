@@ -44,9 +44,9 @@ public:
 		AddInAnything();
 		AddInInt();
 		AddOutAnything(2);
-		SetupInOut();
 
 		FLEXT_ADDMETHOD(1,m_peaks);
+		FLEXT_ADDATTR_VAR("peaks",peaks,m_peaks);
 	}
 
 	V m_peaks(I n) { peaks = n;	}
@@ -104,6 +104,8 @@ protected:
 
 private:
 	FLEXT_CALLBACK_I(m_peaks);
+	FLEXT_CALLSET_I(m_peaks);
+	FLEXT_ATTRGET_I(peaks);
 };
 
 FLEXT_LIB_V("vasp, vasp.peaks?",vasp_qpeaks)

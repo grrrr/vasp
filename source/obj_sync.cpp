@@ -51,7 +51,6 @@ public:
 
 		AddInAnything(cnt);
 		AddOutAnything(cnt);
-		SetupInOut();
 
 		FLEXT_ADDMETHOD_(0,"reset",m_reset);
 

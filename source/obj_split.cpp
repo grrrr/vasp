@@ -45,7 +45,6 @@ public:
 
 		AddInAnything();
 		AddOutAnything(cnt+1);
-		SetupInOut();
 	}
 
 	virtual V m_bang() 
@@ -115,7 +114,6 @@ public:
 
 		AddInAnything(cnt);
 		AddOutAnything();
-		SetupInOut();
 
 		FLEXT_ADDMETHOD_(0,"reset",m_reset);
 	}
@@ -185,7 +183,6 @@ public:
 		AddInAnything();
 		AddOutAnything(n);
 		AddOutBang();
-		SetupInOut();
 	}
 
 	virtual V m_bang() 
@@ -248,7 +245,6 @@ public:
 
 		AddInAnything(2);
 		AddOutAnything();
-		SetupInOut();
 
 		FLEXT_ADDMETHOD_(0,"reset",m_reset);
 		FLEXT_ADDMETHOD_(1,"vasp",m_add);

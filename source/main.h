@@ -76,6 +76,9 @@ public:
 	I Dim() const { return dim; }
 	F *Data() { return data; }
 	const F *Data() const { return data; }
+
+	F operator [](I ix) const { return data[ix]; }
+	F &operator [](I ix) { return data[ix]; }
 protected:
 	I dim; F *data; 
 };
