@@ -158,9 +158,9 @@ public:
 	BL IsInt() const { return tp == tp_int; }
 	BL CanbeInt() const { return tp == tp_int || tp == tp_float || tp_double; }
 	BL IsFloat() const { return tp == tp_float; }
-	BL CanbeFloat() const { return tp == tp_float || tp_double || tp == tp_int; }
+	BL CanbeFloat() const { return tp == tp_float || tp == tp_double || tp == tp_int; }
 	BL IsDouble() const { return tp == tp_double; }
-	BL CanbeDouble() const { return tp == tp_double || tp_float || tp == tp_int; }
+	BL CanbeDouble() const { return tp == tp_double || tp == tp_float || tp == tp_int; }
 	BL IsComplex() const { return tp == tp_cx; }
 	BL CanbeComplex() const { return tp == tp_cx || CanbeFloat(); }
 	BL IsVector() const { return tp == tp_vx; }
@@ -309,6 +309,12 @@ public:
 	inline BL AR_Can() const { return radt <= rddt || radt >= rddt+frames*rds; } 
 	inline BL AI_Can() const { return iadt <= iddt || iadt >= iddt+frames*ids; } 
 	
+	// does it overlap? (works only with rss,rds,ras.... > 0)
+	inline BL SR_Ovr() const { return rddt != rsdt && rddt < rsdt+frames*rss && rsdt < rddt+frames*rds; } 
+	inline BL SI_Ovr() const { return iddt != isdt && iddt < isdt+frames*iss && isdt < iddt+frames*ids; } 
+	inline BL AR_Ovr() const { return rddt != rsdt && rddt < radt+frames*ras && radt < rddt+frames*rds; } 
+	inline BL AI_Ovr() const { return iddt != isdt && iddt < iadt+frames*ras && iadt < iddt+frames*ids; } 
+	
 	// reverse direction
 	inline V SR_Rev() { rsdt -= (frames-1)*(rss = -rss); }
 	inline V SI_Rev() { isdt -= (frames-1)*(iss = -iss); }
@@ -322,7 +328,7 @@ public:
 
 	const C *opname;
 	I frames,symm;
-	BL part,ovrlap,revdir;
+	BL ovrlap,revdir;
 	S *rsdt,*isdt; I rss,iss;
 	S *rddt,*iddt; I rds,ids;
 	S *radt,*iadt; I ras,ias;
@@ -333,7 +339,7 @@ public:
 		struct { R ph,phinc; } gen;
 		struct { R factor,center; I mode; } tilt; 
 		struct { R cur,inc; } bvl;
-		struct { R sh; } sh;
+		struct { R sh; I ish; } sh;
 		struct { I wndtp; } wnd;
 		struct { R arg; } rbin; 
 		struct { R rarg,iarg; } cbin; 

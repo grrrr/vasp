@@ -12,113 +12,108 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \brief shift buffer
 	
-	\todo symmetric operation
-	\todo review code
+	\todo flag for zero filling?
 */
 BL VecOp::d_shift(OpParam &p) 
 { 
-	if(p.part || p.ovrlap) {
-		post("%s - cannot operate on partioned or overlapped vectors",p.opname);
-		return false;
-	}
-
-	if(p.symm >= 0) {
-		post("%s - Sorry, symmetric operation not implemented yet",p.opname);
+	if(p.ovrlap) {
+		post("%s - cannot operate on overlapped vectors",p.opname);
 		return false;
 	}
 
 	I ish = (I)p.sh.sh;
-	if(p.sh.sh == ish) { // integer shift
-		// no zero filling!
-
-		I ssh = ish*p.rss;
-		if(ish > 0)
-			for(I i = p.frames-1; i >= ish; ++i,p.rsdt += p.rss,p.rddt += p.rds) 
-				*p.rddt = p.rsdt[-ssh];
-		else
-			for(I i = ish; i < p.frames; ++i,p.rsdt += p.rss,p.rddt += p.rds) 
-				p.rddt[-ssh] = *p.rsdt;
-		return true;
-	}
-	else {
+	if(p.sh.sh != ish) { // integer shift
 		// requires interpolation
 		post("non-integer shift not implemented - truncating to integer");
 		p.sh.sh = ish;
-		return d_shift(p);
 	}
+
+	ish = ish%p.frames;
+	if(p.symm == 1) ish = -ish;
+
+	// no zero filling!
+	I cnt = p.frames-abs(ish);
+	const S *sd = p.rsdt-ish*p.rss;
+	S *dd = p.rddt;
+
+	if(ish > 0) {
+		sd += (p.frames-1)*p.rss,dd += (p.frames-1)*p.rds;
+		p.rss = -p.rss,p.rds = -p.rds;
+	}
+
+	if(p.rss == 1 && p.rds == 1)
+		for(I i = 0; i < cnt; ++i) *(dd++) = *(sd++);
+	else
+		for(I i = 0; i < cnt; ++i,sd += p.rss,dd += p.rds) *dd = *sd;
+
+	return true;
+}
+
+
+
+
+int rotation(int ij, int n,OpParam &p) { return (ij+n-p.sh.ish)%n; }
+
+template <class T,int DIM>
+int permutation(OpParam &p,int (*origination)(int ij, int n,OpParam &p))
+{
+	int di,ij, oij, dij, n_to_do;
+	T b[DIM],*sdt[DIM],*ddt[DIM];
+	I ss[DIM],ds[DIM];
+
+	sdt[0] = p.rsdt,ddt[0] = p.rddt; ss[0] = p.rss,ds[0] = p.rds;
+	if(DIM == 2) {
+		sdt[1] = p.isdt,ddt[1] = p.iddt; ss[1] = p.iss,ds[1] = p.ids;
+	}
+
+	I n = p.frames;
+	n_to_do = n;
+	for(ij = 0; ij < n && n_to_do > 0; ij++,n_to_do--) {
+		/* Test for previously permuted */
+		for (oij = origination(ij,n,p); oij > ij; oij = origination(oij,n,p));
+
+		if (oij < ij) continue;
+
+		/* Chase the cycle */
+		dij = ij;
+		
+		for(di = 0; di < DIM; ++di) b[di] = sdt[di][ij*ss[di]];
+
+		for(oij = origination(dij,n,p); oij != ij; oij = origination(dij,n,p),n_to_do--) {
+			for(di = 0; di < DIM; ++di) ddt[di][dij*ds[di]] = sdt[di][oij*ss[di]];
+			dij = oij;
+		}
+
+		for(di = 0; di < DIM; ++di) ddt[di][dij*ds[di]] = b[di];
+	} 
+	return 0;
 }
 
 
 /*! \brief rotate buffer
-	
-	\todo implement!
 */
 BL VecOp::d_rot(OpParam &p) 
 { 
-	if(p.part || p.ovrlap) {
-		post("%s - cannot operate on partioned or overlapped vectors",p.opname);
+	if(p.ovrlap) {
+		post("%s - cannot operate on overlapped vectors",p.opname);
 		return false;
 	}
 
-	if(p.symm >= 0) {
-		post("%s - Sorry, symmetric operation not implemented yet",p.opname);
-		return false;
-	}
-
-	I ish = (I)p.sh.sh;
-	if(p.sh.sh == ish) { // integer shift
-/*
-		if(ish*2 > cnt) 
-			// if more than half is rotated -> change direction
-			d_rot(dt,ish-cnt,cnt);
-		else {
-*/
-			I ssh = ish*p.rss;
-			if(ish > 0) {
-				for(I i = p.frames-1; i >= 0; ++i) {
-				}
-/*
-	template<class _RI, class _Pd, class _Ty> inline
-		void _Rotate(_RI _F, _RI _M, _RI _L, _Pd *, _Ty *)
-		{_Pd _D = _M - _F;
-		_Pd _N = _L - _F;
-		for (_Pd _I = _D; _I != 0; )
-			{_Pd _J = _N % _I;
-			_N = _I, _I = _J; }
-		if (_N < _L - _F)
-			for (; 0 < _N; --_N)
-				{_RI _X = _F + _N;
-				_RI _Y = _X;
-				_Ty _V = *_X;
-				_RI _Z = _Y + _D == _L ? _F : _Y + _D;
-				while (_Z != _X)
-					{*_Y = *_Z;
-					_Y = _Z;
-					_Z = _D < _L - _Z ? _Z + _D
-						: _F + (_D - (_L - _Z)); }
-				*_Y = _V; }}
-
-				}
-*/
-			}
-			else {
-				for(I i = ish; i < p.frames-ish; ++i,p.rsdt += p.rss,p.rddt += p.rds) 
-					p.rddt[-ssh] = *p.rsdt;
-			}
-//		}
-		return false; 
-	}
-	else {
+	p.sh.ish = (I)p.sh.sh;
+	if(p.sh.sh != p.sh.ish) { 
 		// requires interpolation
-		post("non-integer rot not implemented - truncating to integer");
-		p.sh.sh = ish;
-		return d_rot(p);
+		post("%s - non-integer shift not implemented - truncating to integer",p.opname);
 	}
+
+	p.sh.ish = p.sh.ish%p.frames;
+	if(p.symm == 1) p.sh.ish = -p.sh.ish;
+
+	permutation<S,1>(p,rotation);
+	return true; 
 }
 
 
 /*! \brief vasp shift or rotation
-	\todo symmetric operation
 	\todo units for shift
 */
 Vasp *VaspOp::m_shift(Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm) 
@@ -145,18 +140,11 @@ Vasp *VaspOp::m_shift(Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm)
 
 
 /*! \brief mirror buffer
-	
-	\todo symmetric
 */
 BL VecOp::d_mirr(OpParam &p) 
 { 
-	if(p.part || p.ovrlap) {
-		post("%s - cannot operate on partioned or overlapped vectors",p.opname);
-		return false;
-	}
-
-	if(p.symm >= 0) {
-		post("%s - Sorry, symmetric operation not implemented yet",p.opname);
+	if(p.ovrlap) {
+		post("%s - cannot operate on overlapped vectors",p.opname);
 		return false;
 	}
 
@@ -168,11 +156,13 @@ BL VecOp::d_mirr(OpParam &p)
 	else {
 		const S *ds = p.rsdt;
 		S *dd = p.rddt+(p.frames-1)*p.rds;
-		for(; p.frames--; ds += p.rss,dd -= p.rds) *dd = *ds;
+		for(I i = 0; i < p.frames; ++i,ds += p.rss,dd -= p.rds) *dd = *ds;
 	}
 	return true; 
 }
 
+/*! \brief vasp mirror
+*/
 Vasp *VaspOp::m_mirr(Vasp &src,Vasp *dst,BL symm) 
 {
 	Vasp *ret = NULL;

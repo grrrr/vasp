@@ -16,10 +16,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 BL VecOp::d_opt(OpParam &p) 
 { 
+	/*
 	if(p.part) {
 		post("%s - cannot work on vector parts",p.opname);
 		return false;
 	}
+	*/
 
 	R v = 0;
 	{
@@ -41,10 +43,12 @@ BL VecOp::d_opt(OpParam &p)
 
 BL VecOp::d_copt(OpParam &p) 
 { 
+	/*
 	if(p.part) {
 		post("%s - cannot work on vector parts",p.opname);
 		return false;
 	}
+	*/
 
 	R v = 0;
 	{

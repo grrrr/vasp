@@ -282,7 +282,7 @@ V OpParam::SADC_Rev() { SADR_Rev(); SADI_Rev(); }
 
 OpParam::OpParam(const C *opnm): 
 	opname(opnm),frames(0),rsdt(NULL),
-	part(false),ovrlap(false),revdir(false) 
+	/*part(false),*/ ovrlap(false),revdir(false) 
 {}
 
 /*! \brief Reverse direction of real vector operation 

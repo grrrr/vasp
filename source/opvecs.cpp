@@ -22,35 +22,41 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\param src source vasp
 	\param dst optional destination vasp
 	\return struct with vector data 
-
-	\todo Support dst vasp
 */
 RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
 {
-	if(dst && dst->Ok()) {
-		error("%s - sorry, out-of-place operation not supported yet",op);
-		return NULL;
+	I nvecs = src.Vectors();
+	if(dst && dst->Ok() && dst->Vectors() != nvecs) {
+		nvecs = min(nvecs,dst->Vectors());
+		post("%s - src/dst vector number not equal -> taking minimum",op);
 	}
 
-	RVecBlock *ret = new RVecBlock(src.Vectors());
+	RVecBlock *ret = new RVecBlock(nvecs);
 
 	BL ok = true,frlim = false;
 	I tfrms = -1;
 
-	for(I ci = 0; ok && ci < src.Vectors(); ++ci) {
-		VBuffer *bref = src.Buffer(ci);		
-		if(!bref->Data()) {
-			post("%s - arg vector (%s) is invalid",op,bref->Name());
-			ok = false; // really return?
-		}
-		else {
-			ret->Src(ci,bref);
-			I frms = bref->Length();
+	Vasp *vbl[2] = {&src,dst};
 
-			if(tfrms < 0) tfrms = frms;
-			else if(frms < tfrms) frlim = true,tfrms = frms;
-		}
-	}
+	for(I bli = 0; bli < 2; ++bli)
+		if(vbl[bli] && vbl[bli]->Ok())
+			for(I ci = 0; ok && ci < nvecs; ++ci) {
+				VBuffer *bref = vbl[bli]->Buffer(ci);		
+				if(!bref->Data()) {
+					post("%s - %s vector (%s) is invalid",op,bli?"dst":"src",bref->Name());
+					ok = false; // really break?
+				}
+				else {
+					if(bli == 0) 
+						ret->Src(ci,bref);
+					else 
+						ret->Dst(ci,bref);
+
+					I frms = bref->Length();
+					if(tfrms < 0) tfrms = frms;
+					else if(frms < tfrms) frlim = true,tfrms = frms;
+				}
+			}
 
 	if(frlim) post("%s - vector length has been limited to maximum common length",op);
 
@@ -67,55 +73,59 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,Vasp *dst)
 	\param dst optional destination vasp
 	\param full true if imaginary part is compulsory
 	\return struct with vector data 
-
-	\todo Support dst vasp
 */
 CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
 {
-	if(dst && dst->Ok()) {
-		error("%s - sorry, out-of-place operation not supported yet",op);
-		return NULL;
+	I nvecs = src.Vectors();
+	if(dst && dst->Ok() && dst->Vectors() != nvecs) {
+		nvecs = min(nvecs,dst->Vectors());
+		post("%s - src/dst vector number not equal -> taking minimum",op);
 	}
 
-	I pairs = src.Vectors()/2;
-
-	if(src.Vectors() != pairs*2) 
+	I pairs = nvecs/2;
+	if(nvecs != pairs*2) 
 		if(full) {
-			post("%s - number of src vectors is odd - not allowed",op);
+			post("%s - number of vectors is odd - not allowed",op);
 			return NULL;
 		}
 		else {
-			post("%s - number of src vectors is odd - omitting last vector",op);
+			post("%s - number of vectors is odd - omitting last vector",op);
 		}
 
 	CVecBlock *ret = new CVecBlock(pairs);
 	BL ok = true,frlim = false;
 	I tfrms = -1;
 
-	for(I ci = 0; ci < pairs; ++ci) {
-		VBuffer *bre = src.Buffer(ci*2),*bim = src.Buffer(ci*2+1); // complex channels
+	Vasp *vbl[2] = {&src,dst};
 
-		I frms = bre->Length();
-		if(!bre->Data()) {
-			post("%s - real arg vector (%s) is invalid",op,bre->Name());
-			ok = false;
-		}
-		if(!bim->Data()) {
-			post("%s - imag arg vector (%s) is invalid",op,bim->Name());
-			ok = false;
-		}
-		else {
-			if(frms != bim->Length()) {
-				post("%s - real/imag arg vector length is not equal - using minimum",op);
-				frms = min(frms,bim->Length());
+	for(I bli = 0; bli < 2; ++bli)
+		if(vbl[bli] && vbl[bli]->Ok())
+			for(I ci = 0; ci < pairs; ++ci) {
+				const C *vnm = bli?"src":"dst";
+				VBuffer *bre = vbl[bli]->Buffer(ci*2),*bim = vbl[bli]->Buffer(ci*2+1); // complex channels
+
+				I frms = bre->Length();
+				if(!bre->Data()) {
+					post("%s - real %s vector (%s) is invalid",op,vnm,bre->Name());
+					ok = false;
+				}
+				if(!bim->Data()) {
+					post("%s - imag %s vector (%s) is invalid",op,vnm,bim->Name());
+					ok = false;
+				}
+				else {
+					if(frms != bim->Length()) {
+						post("%s - real/imag %s vector length is not equal - using minimum",op,vnm);
+						frms = min(frms,bim->Length());
+					}
+				}
+
+				if(tfrms < 0) tfrms = frms;
+				else if(frms < tfrms) frlim = true,tfrms = frms;
+
+				if(bli == 0) ret->Src(ci,bre,bim);
+				else ret->Dst(ci,bre,bim);
 			}
-		}
-
-		if(tfrms < 0) tfrms = frms;
-		else if(frms < tfrms) frlim = true,tfrms = frms;
-
-		ret->Src(ci,bre,bim);
-	}
 
 	if(frlim) post("%s - vector length has been limited to maximum common length",op);
 
@@ -134,22 +144,20 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,Vasp *dst,BL full)
 	\param dst optional destination vasp
 	\param multi 0 off/1 on/-1 auto... controls whether argument vector is single- or multi-vectored
 	\return struct with vector data 
-
-	\todo Support dst vasp
 */
 RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I multi)
 {
-	if(dst && dst->Ok()) {
-		error("%s - sorry, out-of-place operation not supported yet",op);
-		return NULL;
-	}
-
 	if(!arg.Ok()) {
 		post("%s - invalid argument vasp detected and ignored",op);
 		return NULL;
 	}
 
 	I nvecs = src.Vectors();
+	if(dst && dst->Ok() && dst->Vectors() != nvecs) {
+		nvecs = min(nvecs,dst->Vectors());
+		post("%s - src/dst vector number not equal -> taking minimum",op);
+	}
+
 	RVecBlock *ret;
 
 	if(multi < 0) { // auto mode
@@ -178,27 +186,27 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 	for(I ci = 0; ok && ci < nvecs; ++ci) {
 		VBuffer *bref = src.Buffer(ci);	
 		VBuffer *barg = ret->Arg(multi?ci:0);
+		VBuffer *bdst = dst && dst->Ok()?dst->Buffer(ci):NULL;
 		I frms = barg->Frames();
 
 		if((multi || ci == 0) && !barg->Data()) {
-			post("%s - src vector (%s) is invalid",op,barg->Name());
+			post("%s - arg vector (%s) is invalid",op,barg->Name());
 			ok = false; // really return?
 		}
 		else if(!bref->Data()) {
-			post("%s - arg vector (%s) is invalid",op,bref->Name());
+			post("%s - src vector (%s) is invalid",op,bref->Name());
 			ok = false; // really break?
 		}
 		else {
-			if(frms != bref->Length()) {
-				post("%s - src/arg vector length not equal - using minimum",op);
-				frms = min(frms,bref->Length());
-			}
+			if(frms != bref->Length()) frlim = true,frms = min(frms,bref->Length());
+			if(bdst && frms != bdst->Length()) frlim = true,frms = min(frms,bdst->Length());
 		}
 
 		if(tfrms < 0) tfrms = frms;
 		else if(frms < tfrms) frlim = true,tfrms = frms;
 
 		ret->Src(ci,bref);
+		if(bdst) ret->Dst(ci,bdst);
 	}
 
 	if(frlim) post("%s - vector length has been limited to maximum common length",op);
@@ -219,22 +227,21 @@ RVecBlock *VaspOp::GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 	\param multi 0 off/1 on/-1 auto... controls whether argument vector is single- or multi-vectored
 	\param full true if imaginary part is compulsory
 	\return struct with vector data 
-
-	\todo Support dst vasp
 */
 CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I multi,BL full)
 {
-	if(dst && dst->Ok()) {
-		error("%s - sorry, out-of-place operation not supported yet",op);
-		return NULL;
-	}
-
 	if(!arg.Ok()) {
 		post("%s - invalid argument vasp detected and ignored",op);
 		return NULL;
 	}
 
-	I pairs = src.Vectors()/2;
+	I nvecs = src.Vectors();
+	if(dst && dst->Ok() && dst->Vectors() != nvecs) {
+		nvecs = min(nvecs,dst->Vectors());
+		post("%s - src/dst vector number not equal -> taking minimum",op);
+	}
+
+	I pairs = nvecs/2;
 	CVecBlock *ret;
 
 	if(multi < 0) { // auto mode
@@ -297,14 +304,13 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 			frms = min(frms,biarg->Length());
 		}
 */
-		if(src.Vectors() != pairs*2) {
+		if(nvecs != pairs*2) {
 			post("%s - number of src vectors is odd - omitting last vector",op);
 			// clear superfluous vector?
 		}
 
 		for(I ci = 0; ok && ci < pairs; ++ci) {
 			VBuffer *brarg = ret->ReArg(ci),*biarg = ret->ImArg(ci);
-
 			I frms = brarg?brarg->Length():0;
 
 			if(multi || ci == 0) {
@@ -324,6 +330,9 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 			}
 
 			VBuffer *brref = src.Buffer(ci*2),*biref = src.Buffer(ci*2+1);		
+			VBuffer *brdst,*bidst;
+			if(dst && dst->Ok()) brdst = ret->ReArg(ci),biarg = ret->ImArg(ci);
+			else brdst = bidst = NULL;
 
 			if(ok) {
 				if(!brref->Data()) {
@@ -336,17 +345,18 @@ CVecBlock *VaspOp::GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst,I mu
 				}
 				else {
 					if(frms != brref->Length() || frms != biref->Length()) {
-						post("%s - src/arg vector length not equal - using minimum",op);
+						frlim = true;
 						frms = min(frms,min(biref->Length(),brref->Length()));
-
-						// clear rest?
 					}
+					if(brdst && frms != brdst->Length()) frlim = true,frms = min(frms,brdst->Length());
+					if(bidst && frms != bidst->Length()) frlim = true,frms = min(frms,bidst->Length());
 				}
 			}
 			if(tfrms < 0) tfrms = frms;
 			else if(frms < tfrms) frlim = true,tfrms = frms;
 
 			ret->Src(ci,brref,biref);
+			if(brdst) ret->Dst(ci,brdst,bidst);
 		}
 	}
 
@@ -409,6 +419,8 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					// has argument
 					if(sovr) {
 						// src/dst needs reversal -> check if ok for arg/dst
+						p.ovrlap = true;
+
 						if(p.AR_Can()) 
 							p.R_Rev(); // Revert vectors
 						else {
@@ -418,6 +430,7 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					}
 					else if(p.AR_In()) { 
 						// arg/dst needs reversal -> check if ok for src/dst
+						p.ovrlap = true;
 
 						if(p.SR_Can()) 
 							p.R_Rev(); // Revert vectors
@@ -428,7 +441,12 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					}
 				}
 				else { // No arg
-					if(sovr) p.R_Rev(); // if overlapping revert vectors
+					if(sovr) {
+						p.ovrlap = true;
+						p.R_Rev(); // if overlapping revert vectors
+					}
+					else 
+						p.ovrlap = p.SR_Ovr();
 				}
 			}
 
@@ -511,6 +529,7 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					// has argument
 					if(sovr) {
 						// src/dst needs reversal -> check if ok for arg/dst
+						p.ovrlap = true;
 
 						if(p.AR_Can() && p.AI_Can()) 
 							p.C_Rev(); // Revert vectors
@@ -521,6 +540,7 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					}
 					else if(p.AR_In() || p.AI_In()) { 
 						// arg/dst needs reversal -> check if ok for src/dst
+						p.ovrlap = true;
 
 						if(p.AR_Can() && p.AI_Can() && p.SR_Can() && p.SI_Can()) 
 							p.C_Rev(); // Revert vectors
@@ -531,7 +551,12 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					}
 				}
 				else { // No arg
-					if(sovr) p.C_Rev(); // if overlapping revert vectors
+					if(sovr) {
+						p.ovrlap = true;
+						p.C_Rev(); // if overlapping revert vectors
+					}
+					else 
+						p.ovrlap = p.SR_Ovr() || p.SI_Ovr();
 				}
 			}
 
