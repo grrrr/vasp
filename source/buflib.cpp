@@ -79,7 +79,7 @@ V BufLib::DecRef(t_symbol *s)
 static t_symbol *GetLibSym()
 {
 	char tmp[20];
-	std::sprintf(tmp,"vasp!%04i",libcnt); // what if libcnt has > 4 digits?
+	sprintf(tmp,"vasp!%04i",libcnt); // what if libcnt has > 4 digits?
 	libcnt++;
 	return gensym(tmp);
 }
