@@ -101,10 +101,9 @@ BL VecOp::d_flp(OpParam &p)
 
 
 
-Vasp *VaspOp::m_fhp(Vasp &src,const Argument &arg,Vasp *dst,BL hp) 
+Vasp *VaspOp::m_fhp(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL hp) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(hp?"fhp":"flp");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {

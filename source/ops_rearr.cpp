@@ -117,11 +117,9 @@ BL VecOp::d_rot(OpParam &p)
 	\todo units for shift
 	\todo include padding modes (on command line?)
 */
-Vasp *VaspOp::m_shift(Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm) 
+Vasp *VaspOp::m_shift(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm) 
 {
 	Vasp *ret = NULL;
-	OpParam p(shift?(symm?"xshift":"shift"):(symm?"xrot":"rot"));
-
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		if(arg.CanbeDouble()) {
@@ -165,11 +163,9 @@ BL VecOp::d_mirr(OpParam &p)
 
 /*! \brief vasp mirror
 */
-Vasp *VaspOp::m_mirr(Vasp &src,Vasp *dst,BL symm) 
+Vasp *VaspOp::m_mirr(OpParam &p,Vasp &src,Vasp *dst,BL symm) 
 {
 	Vasp *ret = NULL;
-	OpParam p(symm?"xmirr":"mirr");
-
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		ret = DoOp(vecs,VecOp::d_mirr,p,symm);

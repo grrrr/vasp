@@ -46,10 +46,9 @@ BL VecOp::d_mosc(OpParam &p)
 
 	\todo Replace period length by frequency specification
 */
-Vasp *VaspOp::m_osc(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
+Vasp *VaspOp::m_osc(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(mul?"*osc":"osc");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
@@ -106,10 +105,9 @@ BL VecOp::d_mcosc(OpParam &p)
 
 	\todo Replace period length by frequency specification
 */
-Vasp *VaspOp::m_cosc(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
+Vasp *VaspOp::m_cosc(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(mul?"*cosc":"cosc");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
 		CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 		if(vecs) {
@@ -163,10 +161,9 @@ BL VecOp::d_mphasor(OpParam &p)
 
 	\todo Replace period length by frequency specification
 */
-Vasp *VaspOp::m_phasor(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
+Vasp *VaspOp::m_phasor(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(mul?"*phasor":"phasor");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
@@ -207,10 +204,9 @@ BL VecOp::d_noise(OpParam &p)
 
 	\return normalized destination vasp
 */
-Vasp *VaspOp::m_noise(Vasp &src,Vasp *dst) 
+Vasp *VaspOp::m_noise(OpParam &p,Vasp &src,Vasp *dst) 
 { 
 	Vasp *ret = NULL;
-	OpParam p("noise");
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		ret = DoOp(vecs,VecOp::d_noise,p);
@@ -238,10 +234,9 @@ BL VecOp::d_cnoise(OpParam &p)
 
 	\todo Replace period length by frequency specification
 */
-Vasp *VaspOp::m_cnoise(Vasp &src,Vasp *dst) 
+Vasp *VaspOp::m_cnoise(OpParam &p,Vasp &src,Vasp *dst) 
 { 
 	Vasp *ret = NULL;
-	OpParam p("cnoise");
 	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 	if(vecs) {
 		ret = DoOp(vecs,VecOp::d_cnoise,p);
@@ -298,10 +293,9 @@ BL VecOp::d_mbevel(OpParam &p)
 	\param mul true for multiplcation on existing data (aka fading)
 	\return normalized destination vasp
 */
-Vasp *VaspOp::m_bevelup(Vasp &src,Vasp *dst,BL up,BL mul) 
+Vasp *VaspOp::m_bevelup(OpParam &p,Vasp &src,Vasp *dst,BL up,BL mul) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(up?(mul?"*bevel":"bevel"):(mul?"*bevel-":"bevel-"));
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		p.bvl.cur = up?0:1; // start
@@ -375,10 +369,9 @@ Vasp *Vasp::m_mwindow(const Argument &arg)
 
 */
 
-Vasp *VaspOp::m_window(Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
+Vasp *VaspOp::m_window(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(mul?"*window":"window");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {

@@ -103,10 +103,9 @@ BL VecOp::d_tilt(OpParam &p)
 	
 	\todo symmetric stuff
 */
-Vasp *VaspOp::m_tilt(Vasp &src,const Argument &arg,Vasp *dst,BL symm,I mode) 
+Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm,I mode) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(symm?"xtilt":"tilt");
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {

@@ -61,10 +61,9 @@ BL VecOp::d_dif(OpParam &p)
 	\param inv true for differentiation
 	\return normalized destination vasp
 */
-Vasp *VaspOp::m_int(Vasp &src,const Argument &arg,Vasp *dst,BL inv) 
+Vasp *VaspOp::m_int(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL inv) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(inv?"dif":"int");
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		p.intdif.carry = 0,p.intdif.rep = 1;
@@ -127,10 +126,9 @@ inline BL d_valleys(OpParam &p) { return d_vlpk<lower>(p); }
 	
 	\todo check for correct repetition count (int type)
 */
-Vasp *VaspOp::m_peaks(Vasp &src,const Argument &arg,Vasp *dst,BL inv) 
+Vasp *VaspOp::m_peaks(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL inv) 
 { 
 	Vasp *ret = NULL;
-	OpParam p(inv?"valleys":"peaks");
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		p.peaks.rep = 1;

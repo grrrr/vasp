@@ -190,7 +190,7 @@ public:
 		else if(argc)
 			post("%s - Index argument invalid -> set to 0",thisName());
 
-		AddInAnything();
+		AddInAnything(2);
 		AddOutAnything(2);
 		SetupInOut();
 
