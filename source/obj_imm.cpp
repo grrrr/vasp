@@ -57,7 +57,8 @@ public:
 			const S *src = buf->Pointer();
 			for(I i = 0; i < len; ++i,src += chns,dst++) *dst = *src; 
 
-			ToOutVasp(0,Vasp(len,Vasp::Ref(*imm)));
+			Vasp ret(len,Vasp::Ref(*imm));
+			ToOutVasp(0,ret);
 			delete imm;
 		}
 	}

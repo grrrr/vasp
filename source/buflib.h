@@ -46,7 +46,7 @@ namespace BufLib
 
 	V IncRef(t_symbol *s);
 	V DecRef(t_symbol *s);
-};
+}
 
 
 

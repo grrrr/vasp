@@ -21,6 +21,7 @@ template<class T> inline V f_cset(T &rv,T &iv,T,T,T rb,T ib) { rv = rb,iv = ib; 
 
 BL VecOp::d_copy(OpParam &p) { D__run(f_rcopy<S>,p); }
 BL VecOp::d_ccopy(OpParam &p) { D__cun(f_ccopy<S>,p); }
+
 BL VecOp::d_set(OpParam &p) { D__rbin(f_rset<S>,p); }
 BL VecOp::d_cset(OpParam &p) { D__cbin(f_cset<S>,p); }
 

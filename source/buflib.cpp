@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define LIBTICK 100
 #define LIBTOL 5
 
-#define MAGIC 12349876L
+#define LIBMAGIC 12349876L
 
 static BufEntry *libhead = NULL,*libtail = NULL;
 static I libcnt = 0,libtick = 0;
@@ -25,17 +25,17 @@ static flext_base::ThrMutex libmtx;
 #endif
 
 BufEntry::BufEntry(t_symbol *s,I fr): 
-	sym(s),magic(MAGIC),
+	sym(s),magic(LIBMAGIC),
 	len(fr),data(new S[fr]),
 	refcnt(0),nxt(NULL) 
 {
 	ASSERT(!sym->s_thing);
-	sym->s_thing = (t_class **)this;
+	flext_base::SetThing(sym,this);
 }
 
 BufEntry::~BufEntry()
 {
-	if(sym) sym->s_thing = NULL;
+	if(sym) flext_base::SetThing(sym,NULL);
 	if(data) delete[] data;
 }
 
@@ -45,8 +45,8 @@ V BufEntry::DecRef() { --refcnt; tick = libtick; }
 
 static BufEntry *FindInLib(t_symbol *s) 
 {
-	BufEntry *e = (BufEntry *)s->s_thing;
-	return e && e->magic == MAGIC?e:NULL;
+	BufEntry *e = (BufEntry *)flext_base::GetThing(s);
+	return e && e->magic == LIBMAGIC?e:NULL;
 }
 
 VBuffer *BufLib::Get(t_symbol *s,I chn,I len,I offs)
@@ -61,16 +61,16 @@ VBuffer *BufLib::Get(t_symbol *s,I chn,I len,I offs)
 V BufLib::IncRef(t_symbol *s) 
 { 
 	if(s) {
-		BufEntry *e = (BufEntry *)s->s_thing;
-		if(e && e->magic == MAGIC) e->IncRef();
+		BufEntry *e = (BufEntry *)flext_base::GetThing(s);
+		if(e && e->magic == LIBMAGIC) e->IncRef();
 	}
 }
 
 V BufLib::DecRef(t_symbol *s)
 { 
 	if(s) {
-		BufEntry *e = (BufEntry *)s->s_thing;
-		if(e && e->magic == MAGIC) e->DecRef();
+		BufEntry *e = (BufEntry *)flext_base::GetThing(s);
+		if(e && e->magic == LIBMAGIC) e->DecRef();
 	}
 }
 
@@ -79,14 +79,16 @@ V BufLib::DecRef(t_symbol *s)
 static t_symbol *GetLibSym()
 {
 	char tmp[20];
-	sprintf(tmp,"vasp!%04i",libcnt); // what if libcnt has > 4 digits?
+	std::sprintf(tmp,"vasp!%04i",libcnt); // what if libcnt has > 4 digits?
 	libcnt++;
 	return gensym(tmp);
 }
 
 static V LibTick(V *)
 {
+#ifdef FLEXT_THREADS
 	libmtx.Lock();
+#endif
 
 	// collect garbage
 	BufEntry *p = NULL;
@@ -116,13 +118,15 @@ static V LibTick(V *)
 	++libtick;
 	clock_delay(libclk,LIBTICK);
 
+#ifdef FLEXT_THREADS
 	libmtx.Unlock();
+#endif
 }
 
 ImmBuf *BufLib::NewImm(I fr)
 {
 	if(!libclk) {
-		libclk = clock_new(NULL,(t_method)LibTick);
+		libclk = (t_clock *)clock_new(NULL,(t_method)LibTick);
 		clock_delay(libclk,LIBTICK);
 	}
 
@@ -136,13 +140,17 @@ ImmBuf *BufLib::NewImm(I fr)
 
 	ImmBuf *buf = new ImmBuf(entry);
 
+#ifdef FLEXT_THREADS
 	libmtx.Lock();
+#endif
 
 	if(libtail) libtail->nxt = entry; 
 	else libhead = entry;
 	libtail = entry;
 
+#ifdef FLEXT_THREADS
 	libmtx.Unlock();
+#endif
 
 	return buf;
 }
