@@ -5,7 +5,9 @@ Version history:
 - CHANGE: clear stored vasp of an object if a "set" message with an invalid vasp is received
 - CHANGE: cleaned up the process loops (with thread yield) and fixed a corresponding bug in vasp.peaks/valleys
 - CHANGE: warn - but don't stop - on large FFT prime factors
-- FIX: vasp.radd had wrong argument initialization
+- FIX: vasp.radd and vasp.rpow had wrong argument initialization
+- FIX: mixfft is not thread-safe... introduced thread mutex for it
+- FIX: vasp.shift: shift argument was modulo frame count... why?
 
 0.0.8:
 - CHANGE: vasp.radio got right outlet for non-radio messages

@@ -42,7 +42,6 @@ public:
 
 		AddInAnything(2);
 		AddOutAnything();
-		SetupInOut();
 
 		FLEXT_ADDMETHOD_(0,"list",m_vasp);
 
@@ -85,7 +84,6 @@ public:
 	{
 		AddInAnything();
 		AddOutAnything();
-		SetupInOut();
 	}
 
 	virtual Vasp *x_work() 
@@ -123,7 +121,6 @@ public:
 	{
 		AddInAnything();
 		AddOutAnything();
-		SetupInOut();
 	}
 
 	virtual Vasp *x_work() 
@@ -188,7 +185,6 @@ public:
 
 		AddInAnything();
 		AddOutAnything(cnt);
-		SetupInOut();
 	}
 
 	virtual V m_bang() 
@@ -197,7 +193,7 @@ public:
 		for(I i = CntOut()-1; i >= 0; --i) ToOutVasp(i,r);
 	}
 
-	virtual V m_help() { post("%s - Output a vasp multiply",thisName()); }
+	virtual V m_help() { post("%s - Output a vasp multiple times",thisName()); }
 };
 
 FLEXT_LIB_V("vasp, vasp.multi vasp.m",vasp_multi)

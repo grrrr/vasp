@@ -1,7 +1,7 @@
-#N canvas 24 75 869 488 10;
+#N canvas 24 75 873 492 10;
 #X obj 75 32 cnv 15 15 15 empty empty vasp.shift 0 10 1 14 -262144
 -1 0;
-#X text 433 300 clear;
+#X text 520 322 clear;
 #N canvas 0 0 413 295 clear_buffer 0;
 #X obj 49 73 vasp.= 0;
 #X obj 49 49 inlet;
@@ -11,10 +11,10 @@
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;
-#X restore 433 345 pd clear_buffer;
+#X restore 520 367 pd clear_buffer;
 #X text 71 60 shifts buffer content to a sample index;
 #X text 72 73 optional argument/right inlet: value;
-#X msg 433 322 vasp bufshift;
+#X msg 520 344 vasp bufshift;
 #X obj 70 308 vasp.update;
 #X msg 70 228 vasp bufshift;
 #X floatatom 143 253 0 0 0;
@@ -30,7 +30,7 @@
 #X msg 33 45 symbol bufshift;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
-#X restore 586 346 pd init;
+#X restore 673 368 pd init;
 #X obj 70 281 vasp.shift 10;
 #X obj 70 178 vasp.u;
 #X obj 70 156 vasp.= env 0 0 1 20 -1 100;
@@ -40,9 +40,18 @@
 #X obj 259 388 vasp.xrot;
 #X text 54 387 related objects:;
 #X obj 179 388 vasp.xshift;
+#X msg 225 278 fill 0;
+#X msg 225 298 fill 1;
+#X msg 225 318 fill 2;
+#X text 271 278 no filling;
+#X text 270 318 fill with edge-value;
+#X text 271 298 zero filling (default);
 #X connect 5 0 2 0;
 #X connect 7 0 12 0;
 #X connect 8 0 12 1;
 #X connect 12 0 6 0;
 #X connect 14 0 13 0;
 #X connect 15 0 14 0;
+#X connect 21 0 12 0;
+#X connect 22 0 12 0;
+#X connect 23 0 12 0;

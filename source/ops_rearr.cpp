@@ -55,10 +55,12 @@ BL VecOp::d_shift(OpParam &p)
 
 	p.SkipOddMiddle();
 	
-	ish = ish%p.frames;
 	if(p.symm == 1) ish = -ish;
 
-	I i,cnt = p.frames-abs(ish);
+	I aish = abs(ish);
+	if(aish > p.frames) aish = ish = p.frames;
+
+	I i,cnt = p.frames-aish;
 	const S *sd = p.rsdt-ish*p.rss;
 	S *dd = p.rddt;
 
@@ -68,12 +70,14 @@ BL VecOp::d_shift(OpParam &p)
 	}
 
 	// do shift
-	if(p.rss == 1 && p.rds == 1) 
-		_D_LOOP(i,cnt) *(dd++) = *(sd++); _E_LOOP
-	else if(p.rss == -1 && p.rds == -1) 
-		_D_LOOP(i,cnt) *(dd--) = *(sd--); _E_LOOP
-	else 
-		_D_LOOP(i,cnt) *dd = *sd,sd += p.rss,dd += p.rds; _E_LOOP
+	if(cnt > 0) {
+		if(p.rss == 1 && p.rds == 1) 
+			_D_LOOP(i,cnt) *(dd++) = *(sd++); _E_LOOP
+		else if(p.rss == -1 && p.rds == -1) 
+			_D_LOOP(i,cnt) *(dd--) = *(sd--); _E_LOOP
+		else 
+			_D_LOOP(i,cnt) *dd = *sd,sd += p.rss,dd += p.rds; _E_LOOP
+	}
 
 	// fill spaces
 	if(p.sh.fill) {

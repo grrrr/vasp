@@ -52,7 +52,7 @@ Vasp *VaspOp::m_rpow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 }
 
 VASP_BINARY("vasp.pow",pow,true,VASP_ARG_R(1),"Real power function") 
-VASP_ANYOP("vasp.rpow",rpow,1,true,VASP_ARG_R(1),"Power function acting on complex radius") 
+VASP_ANYOP("vasp.rpow",rpow,0,true,VASP_ARG_R(1),"Power function acting on complex radius") 
 
 
 // --------------------------------------------------------------

@@ -12,8 +12,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\brief Implementation of DFT routines
 
 	\todo align temporary memory allocations
-	\todo make own vasp classes with configuration possibilities
-	\todo clarify mixfft changes/rights/commercialisation
 
 	All DFTs are normalized by 1/sqrt(n), hence the complex ones are repeatable
 
@@ -32,6 +30,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 ///////////////////////////////////////////////////////////////
 
 BL mixfft(I n,F *xRe,F *xIm,F *yRe,F *yIm);
+
+#ifdef FLEXT_THREADS
+static flext::ThrMutex mixmtx;
+#endif
 
 //! Real forward DFT radix-n (managing routine)
 static BL fft_fwd_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds) 
@@ -64,8 +66,17 @@ static BL fft_fwd_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds)
 	F *rdtmp = rdt?new F[cnt]:rddt;
 	F *idtmp = new F[cnt];
 
-	BL ret = mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
-
+	BL ret;
+	{
+		// mixfft is not thread-safe
+#ifdef FLEXT_THREADS
+		mixmtx.Lock();
+#endif
+		ret = mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
+#ifdef FLEXT_THREADS
+		mixmtx.Unlock();
+#endif
+	}
 	if(ret) {
 		const F nrm = 1./sqrt(cnt);
 		const I n2 = cnt/2;
@@ -134,8 +145,17 @@ static BL fft_inv_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds)
 	F *rdtmp = rdt?new F[cnt]:rddt;
 	F *idtmp = new F[cnt];
 
-	BL ret = mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
-
+	BL ret;
+	{
+#ifdef FLEXT_THREADS
+		mixmtx.Lock();
+#endif
+		// mixfft is not thread-safe
+		ret = mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
+#ifdef FLEXT_THREADS
+		mixmtx.Unlock();
+#endif
+	}
 	if(ret) {
 		const F nrm = 1./sqrt(cnt);
 #ifndef VASP_COMPACT
@@ -197,8 +217,17 @@ static BL fft_fwd_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 	F *rdtmp = rdt?new F[cnt]:rddt;
 	F *idtmp = idt?new F[cnt]:iddt;
 
-	BL ret = mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
-
+	BL ret;
+	{
+#ifdef FLEXT_THREADS
+		mixmtx.Lock();
+#endif
+		// mixfft is not thread-safe
+		ret = mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
+#ifdef FLEXT_THREADS
+		mixmtx.Unlock();
+#endif
+	}
 	if(ret) {
 		const F nrm = 1./sqrt(cnt);
 

@@ -230,7 +230,6 @@ vasp_unop::vasp_unop(BL op,UL outcode):
 	AddInAnything();
 	AddOutAnything(1);
 	AddOutlets(outcode);
-	SetupInOut();
 }
 
 Vasp *vasp_unop::x_work() { return tx_work(); }
@@ -255,7 +254,6 @@ vasp_binop::vasp_binop(I argc,t_atom *argv,const Argument &def,BL op,UL outcode)
 	AddInAnything(2);
 	AddOutAnything(1);
 	AddOutlets(outcode);
-	SetupInOut();
 
 	FLEXT_ADDMETHOD(1,a_list);
 	FLEXT_ADDMETHOD_(1,"vasp",a_vasp);
@@ -376,8 +374,6 @@ vasp_anyop::vasp_anyop(I argc,t_atom *argv,const Argument &def,BL op,UL outcode)
 	AddInAnything(2);
 	AddOutAnything(1);
 	AddOutlets(outcode);
-
-	SetupInOut();
 
 	FLEXT_ADDMETHOD(1,a_list);
 	FLEXT_ADDMETHOD_(1,"vasp",a_list);

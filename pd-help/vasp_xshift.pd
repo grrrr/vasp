@@ -1,4 +1,4 @@
-#N canvas 24 75 856 507 10;
+#N canvas 24 75 858 509 10;
 #X obj 75 32 cnv 15 15 15 empty empty vasp.xshift 0 10 1 14 -262144
 -1 0;
 #X text 463 343 clear;
@@ -40,9 +40,18 @@
 #X obj 262 403 vasp.xrot;
 #X text 57 402 related objects:;
 #X obj 182 403 vasp.xshift;
+#X msg 225 278 fill 0;
+#X msg 225 298 fill 1;
+#X msg 225 318 fill 2;
+#X text 271 278 no filling;
+#X text 270 318 fill with edge-value;
+#X text 271 298 zero filling (default);
 #X connect 4 0 2 0;
 #X connect 7 0 12 1;
 #X connect 8 0 12 0;
 #X connect 12 0 6 0;
 #X connect 14 0 15 0;
 #X connect 15 0 13 0;
+#X connect 21 0 12 0;
+#X connect 22 0 12 0;
+#X connect 23 0 12 0;

@@ -106,7 +106,7 @@ extern "C" void post(const char *c,...);
 /************************************************************************/
 
 
-#define  maxPrimeFactor        10000
+#define  maxPrimeFactor        8000  // all static data should fit into 256kB of cache
 #define  maxPrimeFactorDiv2    (maxPrimeFactor+1)/2
 #define  maxFactorCount        100
 
