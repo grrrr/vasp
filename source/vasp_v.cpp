@@ -10,9 +10,11 @@ public:
 	vasp_v(I argc,t_atom *argv);
 	~vasp_v();
 
-protected:
+	virtual V m_vasp(I argc,t_atom *argv); // trigger
 
-	buffer *buf;
+	virtual I m_set(I argc,t_atom *argv); // non-triggering set
+
+protected:
 
 private:
 
@@ -26,12 +28,27 @@ V vasp_v::cb_setup(t_class *c)
 }
 
 
-vasp_v::vasp_v(I argc,t_atom *argv):
-	buf(NULL)
+vasp_v::vasp_v(I argc,t_atom *argv)
 {
+	m_set(argc,argv);
 }
 
 vasp_v::~vasp_v()
 {
-	if(buf) delete buf;
 }
+
+
+V vasp_v::m_vasp(I argc,t_atom *argv)
+{
+	m_set(argc,argv);
+
+
+	to_out_list();
+}
+
+I vasp_v::m_set(I argc,t_atom *argv)
+{
+	vasp_msg::m_set(argc,argv);
+	return 0;
+}
+

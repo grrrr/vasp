@@ -36,12 +36,46 @@ FLEXT_EXT V vasp_setup()
 }
 #endif
 
-
+///////////////////////////////////////////////////////////////////////////
 
 V vasp_msg::cb_setup(t_class *c)
 {
+	FLEXT_ADDMETHOD_G(c,"vasp",m_vasp);
+	FLEXT_ADDMETHOD_G(c,"set",m_set);
+
+	FLEXT_ADDMETHOD_1(c,"offset",m_offset,F);
+	FLEXT_ADDMETHOD_1(c,"length",m_length,F);
+	FLEXT_ADDMETHOD_2(c,"part",m_part,F,F);
 }
 
+vasp_msg::vasp_msg():
+	buf(NULL),
+	chn(0),offs(0),len(1<<31)
+{
+}
+
+vasp_msg::~vasp_msg()
+{
+	if(buf) delete buf;
+}
+
+I vasp_msg::m_set(I argc,t_atom *argv)
+{
+	I ret = buf->Set(atom_getsymbolarg(0,argc,argv));
+	if(ret) {
+		m_offset(Offset());
+		m_length(Length())
+	}
+	return ret;
+}
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////
 
 V vasp_dsp::cb_setup(t_class *c)
 {

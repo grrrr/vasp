@@ -19,7 +19,7 @@ FLEXT_GIMME("vasp.prepend",vasp_prepend)
 
 V vasp_prepend::cb_setup(t_class *c)
 {
-	FLEXT_ADDMETHOD_G(c,"start",m_set);
+	FLEXT_ADDMETHOD_G(c,"set",m_set);
 }
 
 
