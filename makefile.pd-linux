@@ -16,8 +16,7 @@ FLEXTLIB=$(FLEXTPATH)/flext_t.a
 # compiler stuff
 INCLUDES=$(PDPATH) 
 FLAGS=-DPD -DFLEXT_THREADS
-CFLAGS=-O6 -mcpu=pentium -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
-#CFLAGS=-O6 -mcpu=pentiumpro -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
+CFLAGS=-O6 -mcpu=pentiumpro -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
 #CFLAGS=-O6 -mcpu=pentium3 -msse -mfpmath=sse -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
 
 LIBS=m
@@ -38,14 +37,13 @@ TARGET=$(TARGDIR)/$(NAME).pd_linux
 # default target
 all: $(TARGDIR) $(TARGET) 
 
-$(SRCS): $(HDRS) $(MAKEFILE)
-	touch $@
+$(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(MAKEFILE)
+	touch $(patsubst %,$(SRCDIR)/%,$(SRCS))
 
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
 $(TARGDIR)/%.o : $(SRCDIR)/%.cpp 
-	echo $< .. $@
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(FLEXTPATH)) $< -o $@
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) $(FLEXTLIB) 
@@ -57,11 +55,14 @@ $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) $(FLEXTLIB)
 $(INSTDIR):
 	mkdir $(INSTDIR)
 
-install:: $(INSTDIR)
+$(INSTDIR)/vasp: $(INSTDIR)
+	mkdir $(INSTDIR)/vasp
 
-install:: $(TARGET) 
-	cp $^ $(INSTDIR)
-	chown root.root $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+install:: $(INSTDIR)/vasp
+
+install:: $(TARGET) pd
+	cp -R $^ $(INSTDIR)/vasp
+#	chown -R root.root $(INSTDIR)/vasp
 
 
 $(HELPDIR)/vasp:
@@ -71,7 +72,7 @@ install-help:: $(HELPDIR)/vasp
 
 install-help:: ./pd-help
 	cp $^/*.* $(HELPDIR)/vasp
-#	chown root.root $(patsubst %,$(HELPDIR)/%,$(notdir $^))
+#	chown -R root.root $(HELPDIR)/vasp
 
 
 .PHONY: clean

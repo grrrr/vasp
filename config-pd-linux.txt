@@ -18,6 +18,7 @@ TARGDIR=./pd-linux
 
 # where should VASP be installed?
 # (leave blank to omit installation)
+# a subfolder "vasp" will be created for the files
 INSTDIR=/usr/local/lib/pd/extra
 
 # where should the VASP help be installed?
