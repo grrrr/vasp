@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 
 // just transform real vectors
-Vasp *Vasp::fr_nop(const C *op,F v,BL (*f)(F *,F,I))
+Vasp *Vasp::fr_nop(const C *op,F v,nopfunR f)
 {
 	BL ok = true;
 	for(I ci = 0; ok && ci < this->Vectors(); ++ci) {
@@ -21,7 +21,8 @@ Vasp *Vasp::fr_nop(const C *op,F v,BL (*f)(F *,F,I))
 			ok = false; // really return?
 		}
 		else {
-			ok &= f(bref->Data()+bref->Offset(),v,bref->Length());
+			I chns = bref->Channels();
+			ok &= f(bref->Length(),bref->Data()+bref->Offset()*chns+bref->Channel(),chns,v);
 			bref->Dirty();
 		}
 		delete bref;
@@ -32,7 +33,7 @@ Vasp *Vasp::fr_nop(const C *op,F v,BL (*f)(F *,F,I))
 }
 
 // just transform complex vector pairs
-Vasp *Vasp::fc_nop(const C *op,const CX &cx,BL (*f)(F *,F *,F,F,I))
+Vasp *Vasp::fc_nop(const C *op,const CX &cx,nopfunC f)
 {
 	BL ok = true;
 
@@ -61,7 +62,8 @@ Vasp *Vasp::fc_nop(const C *op,const CX &cx,BL (*f)(F *,F *,F,F,I))
 				// clear the rest?
 			}
 
-			ok &= f(bre->Data()+bre->Offset(),bim->Data()+bre->Offset(),cx.real,cx.imag,frms);
+			I rchns = bre->Channels(),ichns = bim->Channels();
+			ok &= f(frms,bre->Data()+bre->Offset()*rchns+bre->Channel(),rchns,bim->Data()+bim->Offset()*ichns+bim->Channel(),ichns,cx.real,cx.imag);
 			bre->Dirty(); bim->Dirty();
 		}
 
@@ -86,7 +88,7 @@ Vasp *Vasp::fc_nop(const C *op,const Argument &arg,const nop_funcs &f)
 
 
 // for real values or single real vector
-Vasp *Vasp::fr_arg(const C *op,F v,BL (*f)(F *,F,I))
+Vasp *Vasp::fr_arg(const C *op,F v,argfunR f)
 {
 	BL ok = true;
 	for(I ci = 0; ok && ci < this->Vectors(); ++ci) {
@@ -96,7 +98,8 @@ Vasp *Vasp::fr_arg(const C *op,F v,BL (*f)(F *,F,I))
 			ok = false; // really return?
 		}
 		else {
-			ok &= f(bref->Data()+bref->Offset(),v,bref->Length());
+			I chns = bref->Channels();
+			ok &= f(bref->Length(),bref->Data()+bref->Offset()*chns+bref->Channel(),chns,v);
 			bref->Dirty();
 		}
 		delete bref;
@@ -106,7 +109,7 @@ Vasp *Vasp::fr_arg(const C *op,F v,BL (*f)(F *,F,I))
 	return ok?new Vasp(*this):NULL;
 }
 
-Vasp *Vasp::fr_arg(const C *op,const Vasp &arg,BL (*f)(F *,const F *,I))
+Vasp *Vasp::fr_arg(const C *op,const Vasp &arg,argfunV f)
 {
 	if(!arg.Ok()) {
 		post("%s(%s) - invalid argument vasp detected and ignored",thisName(),op);
@@ -143,7 +146,8 @@ Vasp *Vasp::fr_arg(const C *op,const Vasp &arg,BL (*f)(F *,const F *,I))
 					// clear rest?
 				}
 
-				ok &= f(bref->Data()+bref->Offset(),barg->Data()+barg->Offset(),frms1);
+				I achns = barg->Channels(),rchns = bref->Channels();
+				ok &= f(frms1,bref->Data()+bref->Offset()*rchns+bref->Channel(),rchns,barg->Data()+barg->Offset()*achns+barg->Channel(),achns);
 				bref->Dirty();
 			}
 
@@ -170,7 +174,7 @@ Vasp *Vasp::fr_arg(const C *op,const Argument &arg,const arg_funcs &f)
 
 
 // for complex values or complex vector pair
-Vasp *Vasp::fc_arg(const C *op,const CX &cx,BL (*f)(F *,F *,F,F,I))
+Vasp *Vasp::fc_arg(const C *op,const CX &cx,argfunC f)
 {
 	// complex (or real) input
 
@@ -201,7 +205,8 @@ Vasp *Vasp::fc_arg(const C *op,const CX &cx,BL (*f)(F *,F *,F,F,I))
 				// clear the rest?
 			}
 
-			ok &= f(bre->Data()+bre->Offset(),bim->Data()+bim->Offset(),cx.real,cx.imag,frms);
+			I rchns = bre->Channels(),ichns = bim->Channels();
+			ok &= f(frms,bre->Data()+bre->Offset()*rchns+bre->Channel(),rchns,bim->Data()+bim->Offset()*ichns+bim->Channel(),ichns,cx.real,cx.imag);
 			bre->Dirty(); bim->Dirty();
 		}
 
@@ -214,7 +219,7 @@ Vasp *Vasp::fc_arg(const C *op,const CX &cx,BL (*f)(F *,F *,F,F,I))
 }
 
 // for complex values or complex vector pair
-Vasp *Vasp::fc_arg(const C *op,const Vasp &arg,BL (*f)(F *,F *,const F *,const F *,I))
+Vasp *Vasp::fc_arg(const C *op,const Vasp &arg,argfunCV f)
 {
 	if(!arg.Ok()) {
 		post("%s(%s) - invalid argument vasp detected and ignored",thisName(),op);
@@ -271,7 +276,8 @@ Vasp *Vasp::fc_arg(const C *op,const Vasp &arg,BL (*f)(F *,F *,const F *,const F
 					// clear rest?
 				}
 
-				ok &= f(brref->Data()+brref->Offset(),biref->Data()+biref->Offset(),brarg->Data()+brarg->Offset(),biarg->Data()+biarg->Offset(),frms1);
+				I rchns = brref->Channels(),ichns = biref->Channels(),archns = brarg->Channels(),aichns = biarg->Channels();
+				ok &= f(frms1,brref->Data()+brref->Offset()*rchns+brref->Channel(),rchns,biref->Data()+biref->Offset()*ichns+biref->Channel(),ichns,brarg->Data()+brarg->Offset()*archns+brarg->Channel(),archns,biarg->Data()+biarg->Offset()*aichns+biarg->Channel(),aichns);
 				brref->Dirty(); biref->Dirty();
 			}
 
@@ -300,7 +306,7 @@ Vasp *Vasp::fc_arg(const C *op,const Argument &arg,const arg_funcs &f)
 }
 
 // for multiple vectors
-Vasp *Vasp::fm_arg(const C *op,const Vasp &arg,BL (*f)(F *,const F *,I))
+Vasp *Vasp::fm_arg(const C *op,const Vasp &arg,argfunV f)
 {
 	if(!arg.Ok()) {
 		post("%s(%s) - invalid src Vasp",thisName(),op);
@@ -346,7 +352,8 @@ Vasp *Vasp::fm_arg(const C *op,const Vasp &arg,BL (*f)(F *,const F *,I))
 				// clear the rest?
 			}
 
-			ok &= f(bref->Data()+bref->Offset(),barg->Data()+barg->Offset(),frms);
+			I rchns = bref->Channels(),achns = barg->Channels();
+			ok &= f(frms,bref->Data()+bref->Offset()*rchns+bref->Channel(),rchns,barg->Data()+barg->Offset()*achns+barg->Channel(),achns);
 			bref->Dirty();
 		}
 

@@ -161,7 +161,7 @@ Vasp &Vasp::operator ()(I argc,t_atom *argv)
 	if(!lenset) {
 		// set length to maximum!
 		// or let it be -1 to represent the maximum?!
-
+		frames = -1;
 		// if len is already set then where to check for oversize?
 	}
 

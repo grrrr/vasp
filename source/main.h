@@ -292,11 +292,13 @@ public:
 	Vasp *m_xmirr();  // mirror buffer (symmetrically)
 
 	// Generator functions 
-	Vasp *m_osc(const Argument &arg,F ph = 0);  // real osc
-	Vasp *m_cosc(const Argument &arg,F ph = 0);  // complex osc (phase rotates)
-	Vasp *m_phasor(const Argument &arg,F ph = 0);  // phasor
+	Vasp *m_osc(const Argument &arg);  // real osc
+	Vasp *m_cosc(const Argument &arg);  // complex osc (phase rotates)
+	Vasp *m_phasor(const Argument &arg);  // phasor
 	Vasp *m_noise();  // real noise
 	Vasp *m_cnoise(); // complex noise (arg and abs random)
+	Vasp *m_bevelup();  // bevel up (fade in)
+	Vasp *m_beveldn();  // bevel down (fade out)
 
 	// Fourier transforms 
 	Vasp *m_rfft();
@@ -304,17 +306,24 @@ public:
 	Vasp *m_cfft();
 	Vasp *m_cifft();
 
+	typedef BL (*nopfunR)(I,F *,I,F);
+	typedef BL (*nopfunC)(I,F *,I,F *,I,F,F);
+
+	typedef BL (*argfunR)(I,F *,I,F);
+	typedef BL (*argfunC)(I,F *,I,F *,I,F,F);
+	typedef BL (*argfunV)(I,F *,I,const F *,I);
+	typedef BL (*argfunCV)(I,F *,I,F *,I,const F *,I,const F *,I);
 
 	struct nop_funcs {
-		BL (*funR)(F *,F,I);
-		BL (*funC)(F *,F *,F,F,I);
+		nopfunR funR;
+		nopfunC funC;
 	};
 
 	struct arg_funcs {
-		BL (*funR)(F *,F,I);
-		BL (*funC)(F *,F *,F,F,I);
-		BL (*funV)(F *,const F *,I);
-		BL (*funCV)(F *,F *,const F *,const F *,I);
+		argfunR funR;
+		argfunC funC;
+		argfunV funV;
+		argfunCV funCV;
 	};
 
 protected:
@@ -329,23 +338,23 @@ protected:
 private:
 	typedef flext_base flx;
 
-	Vasp *fr_nop(const C *op,F v,BL (*f)(F *,F,I));
+	Vasp *fr_nop(const C *op,F v,nopfunR f);
 	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_nop(op,v,f.funR); }
-	Vasp *fc_nop(const C *op,const CX &cx,BL (*f)(F *,F *,F,F,I));
+	Vasp *fc_nop(const C *op,const CX &cx,nopfunC f);
 	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_nop(op,cx,f.funC); }
 	Vasp *fc_nop(const C *op,const Argument &arg,const nop_funcs &f);
 
-	Vasp *fr_arg(const C *op,F v,BL (*f)(F *,F,I));
+	Vasp *fr_arg(const C *op,F v,argfunR f);
 	Vasp *fr_arg(const C *op,F v,const arg_funcs &f) { return fr_arg(op,v,f.funR); }
-	Vasp *fr_arg(const C *op,const Vasp &v,BL (*f)(F *,const F *,I));
+	Vasp *fr_arg(const C *op,const Vasp &v,argfunV f);
 	Vasp *fr_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fr_arg(op,v,f.funV); }
 	Vasp *fr_arg(const C *op,const Argument &arg,const arg_funcs &f);
-	Vasp *fc_arg(const C *op,const CX &cx,BL (*f)(F *,F *,F,F,I));
+	Vasp *fc_arg(const C *op,const CX &cx,argfunC f);
 	Vasp *fc_arg(const C *op,const CX &cx,const arg_funcs &f) { return fc_arg(op,cx,f.funC); }
-	Vasp *fc_arg(const C *op,const Vasp &v,BL (*f)(F *,F *,const F *,const F *,I));
+	Vasp *fc_arg(const C *op,const Vasp &v,argfunCV f);
 	Vasp *fc_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fc_arg(op,v,f.funCV); }
 	Vasp *fc_arg(const C *op,const Argument &arg,const arg_funcs &f);
-	Vasp *fm_arg(const C *op,const Vasp &v,BL (*f)(F *,const F *,I));
+	Vasp *fm_arg(const C *op,const Vasp &v,argfunV f);
 	Vasp *fm_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fm_arg(op,v,f.funV); }
 	Vasp *fm_arg(const C *op,const Argument &arg,const arg_funcs &f);
 };

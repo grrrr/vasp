@@ -73,9 +73,11 @@ VASP_BINARY("vasp.osc",osc)
 VASP_BINARY("vasp.cosc",cosc)
 VASP_UNARY("vasp.noise",noise)
 VASP_UNARY("vasp.cnoise",cnoise)
+VASP_UNARY("vasp.bevel",bevelup)
+VASP_UNARY("vasp.bevel-",beveldn)
 
 VASP_UNARY("vasp.rfft",rfft)
-VASP_UNARY("vasp.rifft",rifft)
+VASP_UNARY("vasp.rfft-",rifft)
 VASP_UNARY("vasp.cfft",cfft)
-VASP_UNARY("vasp.cifft",cifft)
+VASP_UNARY("vasp.cfft-",cifft)
 

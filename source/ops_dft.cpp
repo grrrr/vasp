@@ -134,7 +134,7 @@ BL fft_inv_complex_radix2(I cnt,F *re,F *im);
 
 ///////////////////////////////////////////////////////////////
 
-static BL d_rfft(F *dt,F,I cnt) 
+static BL d_rfft(I cnt,F *dt,I str,F) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -145,7 +145,7 @@ static BL d_rfft(F *dt,F,I cnt)
 		return true;
 }
 
-static BL d_rifft(F *dt,F,I cnt) 
+static BL d_rifft(I cnt,F *dt,I str,F) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -160,7 +160,7 @@ Vasp *Vasp::m_rfft() { return fr_nop("rfft",0,d_rfft); }
 Vasp *Vasp::m_rifft() { return fr_nop("rifft",0,d_rifft); }
 
 
-static BL d_cfft(F *re,F *im,F,F,I cnt) 
+static BL d_cfft(I cnt,F *re,I rstr,F *im,I istr,F,F) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -171,7 +171,7 @@ static BL d_cfft(F *re,F *im,F,F,I cnt)
 		return true;
 }
 
-static BL d_cifft(F *re,F *im,F,F,I cnt) 
+static BL d_cifft(I cnt,F *re,I rstr,F *im,I istr,F,F) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 

@@ -83,6 +83,8 @@ V lib_setup()
 	VASP_BINARY_SETUP(cosc)
 	VASP_UNARY_SETUP(noise)
 	VASP_UNARY_SETUP(cnoise)
+	VASP_UNARY_SETUP(bevelup)
+	VASP_UNARY_SETUP(beveldn)
 
 	VASP_UNARY_SETUP(rfft)
 	VASP_UNARY_SETUP(rifft)
