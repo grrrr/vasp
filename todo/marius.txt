@@ -1,5 +1,5 @@
 Thomas' Änderungen:
-- vasp.cnorm: Erklärung geändert
+
 - vasp.equ: die Stufenfunktion sollte besser mit env gemacht werden 
 	(aber vielleicht erst, wenn die env-Transformationsfunktionen existieren)
 - vasp.frames: der Ausdruck "framesize" ist eigentlich irreführend 
@@ -8,13 +8,15 @@ Thomas' Änderungen:
 	besser ist frame count
 	Ich frage mich auch, ob wir die Nummernboxen bei Periodenlängen nicht durch ein 
 	paar Standard-float-messages ersetzen sollten (die meisten werden wohl zu kurbeln versuchen....)
-- vasp.gate ... Erklärung geändert
+
 - vasp.join / vasp.split.... man sollte vielleicht sagen, dass es sich um EInzelvektoren der vasps handelt=======
-- in alle objekte die vasp_main reinsetzen.
-- restliche files durchchecken. das ist erst eine erste überprüfung...
+
 - wavedisplay-select überprüfen.
+
 - die default-längen und resize einstellungen noch einmal überprüfen
+
 - vasp.cpowi, vasp.csqr und vasp.rpow vorläufig noch mit resize, ...
 
--vasp.radio nicht vergessen
+- alle unnötigen objekte aus der hilfe rausnehemen.
 
+- alle bevels aus den hilfeobjekten entfernen.

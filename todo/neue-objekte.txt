@@ -7,3 +7,4 @@ NAN-behandlung (vasp.fix)
 threads
 vasp.tilt, vasp.xtilt
 vasp.offset=,vasp.frames=
+vasp.window
