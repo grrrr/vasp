@@ -55,8 +55,9 @@ public:
 
 		FLEXT_ADDMETHOD_(0,"reset",m_reset);
 
-		m_reset();
 	}
+
+	virtual BL Init() { BL ret = vasp_op::Init(); m_reset(); return ret; }
 
 	~vasp_sync()	
 	{ 

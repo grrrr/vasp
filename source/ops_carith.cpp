@@ -56,7 +56,7 @@ template<class T> inline V f_csqr(T &rv,T &iv,T ra,T ia) { rv = ra*ra-ia*ia; iv 
 
 BL VecOp::d_csqr(OpParam &p) { D__cun(f_csqr<S>,p); }
 
-VASP_UNARY("vasp.csqr",csqr,true,"") 
+VASP_UNARY("vasp.csqr",csqr,true,"complex square") 
 
 // -----------------------------------------------------
 
@@ -113,7 +113,7 @@ Vasp *VaspOp::m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	return ret;
 }
 
-VASP_ANYOP("vasp.cpowi",cpowi,0,true,VASP_ARG_I(1),"") 
+VASP_ANYOP("vasp.cpowi",cpowi,0,true,VASP_ARG_I(1),"complex integer power") 
 
 // -----------------------------------------------------
 
@@ -121,5 +121,5 @@ template<class T> inline V f_cabs(T &rv,T &iv,T ra,T ia) { rv = sqrt(ra*ra+ia*ia
 
 BL VecOp::d_cabs(OpParam &p) { D__cun(f_cabs<S>,p); }
 
-VASP_UNARY("vasp.cabs",cabs,true,"") 
+VASP_UNARY("vasp.cabs",cabs,true,"set real part to complex absolute value, imaginary part becomes zero") 
 

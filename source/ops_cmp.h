@@ -18,8 +18,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 namespace VecOp {
 	BL d_lwr(OpParam &p); 
 	BL d_gtr(OpParam &p); 
+	BL d_alwr(OpParam &p); 
+	BL d_agtr(OpParam &p); 
 	BL d_leq(OpParam &p); 
 	BL d_geq(OpParam &p); 
+	BL d_aleq(OpParam &p); 
+	BL d_ageq(OpParam &p); 
 	BL d_equ(OpParam &p); 
 	BL d_neq(OpParam &p); 
 
@@ -48,8 +52,12 @@ namespace VecOp {
 namespace VaspOp {
 	inline Vasp *m_lwr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_lwr); } // lower than
 	inline Vasp *m_gtr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_gtr); } // greater than
-	inline Vasp *m_leq(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_leq); } // lower than
-	inline Vasp *m_geq(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_geq); } // greater than
+	inline Vasp *m_alwr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_alwr); } // abs lower than
+	inline Vasp *m_agtr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_agtr); } // abs greater than
+	inline Vasp *m_leq(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_leq); } // abs lower than
+	inline Vasp *m_geq(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_geq); } // abs greater than
+	inline Vasp *m_aleq(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_aleq); } // lower than
+	inline Vasp *m_ageq(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_ageq); } // greater than
 	inline Vasp *m_equ(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_equ); } // lower than
 	inline Vasp *m_neq(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_neq); } // greater than
 

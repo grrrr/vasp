@@ -22,8 +22,8 @@ BL VecOp::d_polar(OpParam &p) { d__cun(f_polar<S>,p); }
 BL VecOp::d_rect(OpParam &p) { d__cun(f_rect<S>,p); }
 
 
-VASP_UNARY("vasp.polar",polar,true,"") 
-VASP_UNARY("vasp.rect",rect,true,"") 
+VASP_UNARY("vasp.polar",polar,true,"convert complex vector pair from rectangular to polar coordinates") 
+VASP_UNARY("vasp.rect",rect,true,"convert complex vector pair from polar to rectangular coordinates") 
 
 
 // -----------------------------------------------------
@@ -59,7 +59,7 @@ Vasp *VaspOp::m_radd(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 }
 
 
-VASP_ANYOP("vasp.r+",radd,1,true,VASP_ARG_R(0),"") 
+VASP_ANYOP("vasp.r+",radd,1,true,VASP_ARG_R(0),"add offset to complex radius (of complex vector pair)") 
 
 
 // -----------------------------------------------------
@@ -73,7 +73,7 @@ template<class T> V f_cnorm(T &rv,T &iv,T ra,T ia)
 
 BL VecOp::d_cnorm(OpParam &p) { d__cun(f_cnorm<S>,p); }
 
-VASP_UNARY("vasp.cnorm",cnorm,true,"")
+VASP_UNARY("vasp.cnorm",cnorm,true,"normalize complex radius to 1 (but preserve angle)")
 
 // -----------------------------------------------------
 
@@ -81,5 +81,5 @@ template<class T> inline V f_cconj(T &,T &iv,T,T ia) { iv = -ia; }
 
 BL VecOp::d_cconj(OpParam &p) { D__cun(f_cconj<S>,p); }
 
-VASP_UNARY("vasp.cconj",cconj,true,"")  // should be replaced by an abstraction
+VASP_UNARY("vasp.cconj",cconj,true,"complex conjugate: multiply imaginary part with -1")  // should be replaced by an abstraction
 

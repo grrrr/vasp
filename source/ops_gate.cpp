@@ -80,8 +80,8 @@ Vasp *VaspOp::m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	return ret;
 }
 
-VASP_ANYOP("vasp.gate",gate,1,true,VASP_ARG_R(1),"") 
-VASP_ANYOP("vasp.rgate",rgate,1,true,VASP_ARG_R(1),"") 
+VASP_ANYOP("vasp.gate",gate,1,true,VASP_ARG_R(1),"set destination to 0 if source < argument") 
+VASP_ANYOP("vasp.rgate",rgate,1,true,VASP_ARG_R(1),"complex radius gate: set destination to 0 if rad(complex source) < rad(complex argument)") 
 
 
 // --------------------------------------------------------------

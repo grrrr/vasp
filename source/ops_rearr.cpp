@@ -130,7 +130,7 @@ protected:
 private:
 	FLEXT_CALLBACK_1(m_fill,xs_fill)
 };																				
-FLEXT_LIB_V("vasp.shift",vasp_shift)
+FLEXT_LIB_V("vasp, vasp.shift",vasp_shift)
 
 
 class vasp_xshift:
@@ -145,7 +145,7 @@ public:
 		
 	virtual V m_help() { post("%s - Shifts buffer data symmetrically (in two halves)",thisName()); }
 };																				
-FLEXT_LIB_V("vasp.xshift",vasp_xshift)
+FLEXT_LIB_V("vasp, vasp.xshift",vasp_xshift)
 
 
 inline int rotation(int ij, int n,OpParam &p) { return (ij+n-p.sh.ish)%n; }

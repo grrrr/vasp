@@ -88,7 +88,7 @@ public:
 
 	virtual V m_help() { post("%s - Copies the triggering vasp to the argument vasp",thisName()); }
 };																				
-FLEXT_LIB_V("vasp.copy vasp.->",vasp_copy)
+FLEXT_LIB_V("vasp, vasp.copy vasp.->",vasp_copy)
 
 
 class vasp_ccopy:
@@ -103,6 +103,6 @@ public:
 
 	virtual V m_help() { post("%s - Copies complex pairs of the triggering vasp to the argument vasp",thisName()); }
 };																				
-FLEXT_LIB_V("vasp.ccopy vasp.c->",vasp_ccopy)
+FLEXT_LIB_V("vasp, vasp.ccopy vasp.c->",vasp_ccopy)
 
 

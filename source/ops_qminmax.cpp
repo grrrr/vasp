@@ -99,7 +99,7 @@ public:
 	virtual V m_help() { post("%s - Get a vasp's minimum sample value",thisName()); }
 };
 
-FLEXT_LIB("vasp.min?",vasp_qmin)
+FLEXT_LIB("vasp, vasp.min?",vasp_qmin)
 
 
 /*! \class vasp_qamin
@@ -131,7 +131,7 @@ public:
 	virtual V m_help() { post("%s - Get a vasp's minimum absolute sample value",thisName()); }
 };
 
-FLEXT_LIB("vasp.amin?",vasp_qamin)
+FLEXT_LIB("vasp, vasp.amin?",vasp_qamin)
 
 
 
@@ -164,7 +164,7 @@ public:
 	virtual V m_help() { post("%s - Get a vasp's maximum sample value",thisName()); }
 };
 
-FLEXT_LIB("vasp.max?",vasp_qmax)
+FLEXT_LIB("vasp, vasp.max?",vasp_qmax)
 
 
 
@@ -195,7 +195,7 @@ public:
 	virtual V m_help() { post("%s - Get a vasp's maximum absolute sample value",thisName()); }
 };
 
-FLEXT_LIB("vasp.amax?",vasp_qamax)
+FLEXT_LIB("vasp, vasp.amax?",vasp_qamax)
 
 
 
@@ -240,7 +240,7 @@ public:
 	virtual V m_help() { post("%s - Get a vasp's minimum complex radius",thisName()); }
 };
 
-FLEXT_LIB("vasp.rmin?",vasp_qrmin)
+FLEXT_LIB("vasp, vasp.rmin?",vasp_qrmin)
 
 
 
@@ -271,6 +271,6 @@ public:
 	virtual V m_help() { post("%s - Get a vasp's maximum complex radius",thisName()); }
 };
 
-FLEXT_LIB("vasp.rmax?",vasp_qrmax)
+FLEXT_LIB("vasp, vasp.rmax?",vasp_qrmax)
 
 
