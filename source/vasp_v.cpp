@@ -328,11 +328,14 @@ public:
 		for(I i = 0; i < CntIn(); ++i) flags[i] = false;
 	}
 
-	virtual V m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv)
+	virtual bool m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	{
-		if(inlet > 0 && (!vasponly || s == sym_vasp)) chkbang(inlet);
+		if(inlet > 0 && (!vasponly || s == sym_vasp)) {
+			chkbang(inlet);
+			return true;
+		}
 		else
-			m_method_(inlet,s,argc,argv);
+			return vasp_op::m_method_(inlet,s,argc,argv);
 	}
 
 	virtual V m_help() { post("%s - Synchronize a number of vasps",thisName()); }
@@ -444,14 +447,15 @@ public:
 		for(I i = 0; i < cnt-1; ++i) if(vi[i]) { delete vi[i]; vi[i] = NULL; }
 	}
 
-	virtual V m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv)
+	virtual bool m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	{
 		if(inlet > 0 && s == sym_vasp) {
 			if(vi[inlet-1]) delete vi[inlet-1];
 			vi[inlet-1] = new Vasp(argc,argv);
+			return true;
 		}
 		else
-			m_method_(inlet,s,argc,argv);
+			return vasp_tx::m_method_(inlet,s,argc,argv);
 	}
 
 	virtual V m_help() { post("%s - Join several vasps into one",thisName()); }

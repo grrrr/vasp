@@ -25,6 +25,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define I int
 #define L long
+#define UL unsigned long
 #define F float
 #define D double
 #define C char
@@ -870,7 +871,7 @@ class vasp_unop:
 	FLEXT_HEADER(vasp_unop,vasp_tx)
 
 protected:
-	vasp_unop(BL withto = false,I addouts = 0);
+	vasp_unop(BL withto = false,UL outcode = 0);
 
 	virtual Vasp *x_work();
 	virtual Vasp *tx_work();
@@ -885,7 +886,7 @@ class vasp_binop:
 	FLEXT_HEADER(vasp_binop,vasp_tx)
 
 protected:
-	vasp_binop(I argc,t_atom *argv,BL withto = false,I addouts = 0);
+	vasp_binop(I argc,t_atom *argv,BL withto = false,UL outcode = 0);
 
 	// assignment functions
 	virtual V a_vasp(I argc,t_atom *argv);
@@ -916,7 +917,7 @@ class vasp_anyop:
 	FLEXT_HEADER(vasp_anyop,vasp_tx)
 
 protected:
-	vasp_anyop(I argc,t_atom *argv,BL withto = false,I addouts = 0);
+	vasp_anyop(I argc,t_atom *argv,BL withto = false,UL outcode = 0);
 
 	// assignment functions
 	virtual V a_list(I argc,t_atom *argv); 
@@ -980,7 +981,6 @@ protected:																		\
 		return VaspOp::m_##op(p,ref,arg,&dst); }								\
 };																				\
 FLEXT_LIB_G(name,vasp__##op)
-
 
 #define VASP__SETUP(op) FLEXT_SETUP(vasp__##op);  
 

@@ -209,8 +209,7 @@ class vasp_peaks:
 	FLEXT_HEADER(vasp_peaks,vasp_anyop)
 public:			
 	
-	// \todo should have float outlet to connect to number box!!
-	vasp_peaks(I argc,t_atom *argv): vasp_anyop(argc,argv,true,1) {}
+	vasp_peaks(I argc,t_atom *argv): vasp_anyop(argc,argv,true) {}
 
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_peaks(p,ref,&dst); }
 		

@@ -9,17 +9,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "main.h"
+#include <stdarg.h>
 
 
 ///////////////////////////////////////////////////////////////////////////
 // vasp_unop class
 ///////////////////////////////////////////////////////////////////////////
 
-vasp_unop::vasp_unop(BL op,I outs):
+vasp_unop::vasp_unop(BL op,UL outcode):
 	vasp_tx(op)
 {
 	AddInAnything();
-	AddOutAnything(1+outs);
+	AddOutAnything(1);
+	AddOutlets(outcode);
 	SetupInOut();
 }
 
@@ -36,13 +38,14 @@ Vasp *vasp_unop::tx_work()
 ///////////////////////////////////////////////////////////////////////////
 
 
-vasp_binop::vasp_binop(I argc,t_atom *argv,BL op,I outs):
+vasp_binop::vasp_binop(I argc,t_atom *argv,BL op,UL outcode):
 	vasp_tx(op)
 {
 	a_list(argc,argv);
 
 	AddInAnything(2);
-	AddOutAnything(1+outs);
+	AddOutAnything(1);
+	AddOutlets(outcode);
 	SetupInOut();
 
 	FLEXT_ADDMETHOD(1,a_list);
@@ -119,13 +122,15 @@ Vasp *vasp_binop::tx_work(const Argument &arg)
 ///////////////////////////////////////////////////////////////////////////
 
 
-vasp_anyop::vasp_anyop(I argc,t_atom *argv,BL op,I outs):
+vasp_anyop::vasp_anyop(I argc,t_atom *argv,BL op,UL outcode):
 	vasp_tx(op)
 {
 	a_list(argc,argv);
 
 	AddInAnything(2);
-	AddOutAnything(1+outs);
+	AddOutAnything(1);
+	AddOutlets(outcode);
+
 	SetupInOut();
 
 	FLEXT_ADDMETHOD(1,a_list);

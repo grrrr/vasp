@@ -15,162 +15,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define BIG 1.e10
 
-#if 0
-Vasp *VaspOp::m_opt(OpParam &p,Vasp &src,Vasp *dst) 
-{ 
-	Vasp *ret = NULL;
-	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
-	if(vecs) {
-		p.norm.minmax = 0;
-		ret = DoOp(vecs,VecOp::d_maxq,p);
-		if(ret) {
-			delete ret;
-
-			if(p.norm.minmax && p.norm.minmax != 1) {
-				R f = p.norm.minmax; // save for later
-				p.rbin.arg = 1/f;
-				ret = DoOp(vecs,VecOp::d_mul,p);
-				p.norm.minmax = f;  // return to object
-			}
-			else
-				ret = DoOp(vecs,VecOp::d_copy,p);
-		}
-		delete vecs;
-	}
-	return ret;
-}
-
-
-/*
-//! \todo opt could be replaced by *
-Vasp *VaspOp::m_optf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) 
-{ 
-	post("%s - sorry, not implemented yet",p.opname);
-	return NULL;
-
-	Vasp *ret = NULL;
-	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
-	if(vecs) {
-		if(arg.IsList() && arg.GetList().Count() >= 1 && flx::CanbeFloat(arg.GetList()[0]))
-			p.norm.scl = flx::GetAFloat(arg.GetList()[0]);
-		else {
-			post("%s - scaling factor is invalid -> set to 1",p.opname);
-			p.norm.scl = 1;
-		}
-
-		p.norm.minmax = 0;
-		ret = DoOp(vecs,VecOp::d_amaxq,p);
-		if(ret) {
-			delete ret;
-
-			if(p.norm.minmax)
-				ret = DoOp(vecs,VecOp::d_optf,p);
-			else
-				ret = DoOp(vecs,VecOp::d_copy,p);
-		}
-		delete vecs;
-	}
-	return ret;
-}
-*/
-
-
-class vasp_opt:
-	public vasp_unop
-{																				
-	FLEXT_HEADER(vasp_opt,vasp_unop)
-public:			
-	
-	vasp_opt():	vasp_unop(true,1) {}
-
-	virtual Vasp *do_opt(OpParam &p) { return VaspOp::m_opt(p,ref,&dst); }
-		
-	virtual Vasp *tx_work() 
-	{ 
-		OpParam p(thisName(),0);													
-		Vasp *ret = do_opt(p);
-		ToOutFloat(1,p.norm.minmax);
-		return ret;
-	}
-
-	virtual V m_help() { post("%s - Optimize a vasp",thisName()); }
-};																				
-FLEXT_LIB("vasp.opt",vasp_opt)
-
-
-
-Vasp *VaspOp::m_ropt(OpParam &p,Vasp &src,Vasp *dst) 
-{ 
-	Vasp *ret = NULL;
-	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
-	if(vecs) {
-		p.norm.minmax = 0;
-		ret = DoOp(vecs,VecOp::d_rmaxq,p);
-		if(ret) {
-			delete ret;
-
-			if(p.norm.minmax && p.norm.minmax != 1) {
-				R f = sqrt(p.norm.minmax); // save for later
-				p.rbin.arg = 1/f;
-				ret = DoOp(vecs,VecOp::d_cmul,p);
-				p.norm.minmax = f;  // return to object
-			}
-			else
-				ret = DoOp(vecs,VecOp::d_ccopy,p);
-		}
-		delete vecs;
-	}
-	return ret;
-}
-
-
-class vasp_ropt: public vasp_opt	
-{																				
-	FLEXT_HEADER(vasp_ropt,vasp_opt)
-public:			
-	virtual Vasp *do_opt(OpParam &p) { return VaspOp::m_ropt(p,ref,&dst); }
-	virtual V m_help() { post("%s - Optimize a vasp by its complex radius",thisName()); }
-};																				
-FLEXT_LIB("vasp.ropt",vasp_ropt)
-
-
-/*
-Vasp *VaspOp::m_roptf(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) 
-{ 
-	post("%s - sorry, not implemented yet",p.opname);
-	return NULL;
-
-	Vasp *ret = NULL;
-	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
-	if(vecs) {
-		if(arg.IsList() && arg.GetList().Count() >= 1 && flx::CanbeFloat(arg.GetList()[0]))
-			p.norm.scl = flx::GetAFloat(arg.GetList()[0]);
-		else {
-			post("%s - scaling factor is invalid -> set to 1",p.opname);
-			p.norm.scl = 1;
-		}
-
-		p.norm.minmax = 0;
-		ret = DoOp(vecs,VecOp::d_rmaxq,p);
-		if(ret) {
-			delete ret;
-
-			if(p.norm.minmax) 
-				ret = DoOp(vecs,VecOp::d_roptf,p);
-			else
-				ret = DoOp(vecs,VecOp::d_ccopy,p);
-		}
-		delete vecs;
-	}
-	return ret;
-}
-*/
-
-
-#endif
-
-
-
 
 Vasp *VaspOp::m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst) 
 { 
@@ -316,7 +160,7 @@ class vasp_qmin:
 	FLEXT_HEADER(vasp_qmin,vasp_unop)
 
 public:
-	vasp_qmin(): vasp_unop(true,1) {}
+	vasp_qmin(): vasp_unop(true,XletCode(xlet::tp_float,0)) {}
 
 	virtual Vasp *do_opt(OpParam &p) 
 	{ 
@@ -447,7 +291,7 @@ class vasp_qrmin:
 	FLEXT_HEADER(vasp_qrmin,vasp_unop)
 
 public:
-	vasp_qrmin(): vasp_unop(true,1) {}
+	vasp_qrmin(): vasp_unop(true,XletCode(xlet::tp_float,0)) {}
 
 	virtual Vasp *do_opt(OpParam &p) 
 	{ 
