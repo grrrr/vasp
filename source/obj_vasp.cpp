@@ -150,7 +150,7 @@ FLEXT_LIB("vasp.check vasp.chk",vasp_check)
 
 
 
-/*! \class vasp_m 
+/*! \class vasp_multi 
 	\remark \b vasp.m
 	\brief Outputs multiple (identical) vasps.
 	\since 0.0.1
@@ -162,15 +162,22 @@ FLEXT_LIB("vasp.check vasp.chk",vasp_check)
 
 	\note Outputs in right to left order.
 */
-class vasp_m:
+class vasp_multi:
 	public vasp_op
 {
-	FLEXT_HEADER(vasp_m,vasp_op)
+	FLEXT_HEADER(vasp_multi,vasp_op)
 
 public:
 
-	vasp_m(I n)
+	vasp_multi(I argc,t_atom *argv)
 	{
+		I n = 2;
+		if(argc) {
+			if(CanbeInt(argv[0])) n = GetAInt(argv[0]);
+			else 
+				post("%s - integer argument invalid: set to 2",thisName());
+		}
+
 		AddInAnything();
 		AddOutAnything(n);
 		SetupInOut();
@@ -185,7 +192,7 @@ public:
 	virtual V m_help() { post("%s - Output a vasp multiply",thisName()); }
 };
 
-FLEXT_LIB_1("vasp.m",vasp_m,I)
+FLEXT_LIB_V("vasp.multi vasp.m",vasp_multi)
 
 
 

@@ -260,7 +260,7 @@ V Vasp::Refresh()
 	for(I i = 0; i < Vectors(); ++i) {
 		VBuffer *vb = Buffer(i);
 		if(vb) {
-			vb->Dirty();
+			vb->Refresh();
 			delete vb;
 		}
 	}

@@ -11,6 +11,10 @@ Goals/features of the package:
 
 Version history:
 
+0.0.7:
+- CHANGE: vasp.m is now called vasp.multi by default
+- CHANGE: vasp.sync and vasp.multi now have a default argument = 2
+
 0.0.6:
 - reorganized file structure
 - ADD: main names of vasp.n and vasp.n? are now vasp.vector and vasp.vectors?, respectively

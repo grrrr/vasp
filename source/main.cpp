@@ -22,7 +22,7 @@ V lib_setup()
 	// call the objects' setup routines
 
 	VASP_SETUP(v); // vasp
-	VASP_SETUP(m); // vasp.m
+	VASP_SETUP(multi); // vasp.m
 
 	VASP_SETUP(check);  // vasp.check
 	VASP_SETUP(update);  // vasp.update

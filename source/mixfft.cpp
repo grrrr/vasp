@@ -3,7 +3,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "oppermute.h"
+
 #define REAL float
+
+/************************************************************************
+
+	changes by Thomas Grill:
+
+	- introduced REAL type for numbers
+	- made functions static
+	- threw fft_n functions out of twiddleTransf
+	- changed LOG prints (to post)
+
+************************************************************************/
 
 /************************************************************************
   fft(int n, double xRe[], double xIm[], double yRe[], double yIm[])
@@ -113,9 +126,9 @@ static REAL   vRe[maxPrimeFactorDiv2], vIm[maxPrimeFactorDiv2];
 static REAL   wRe[maxPrimeFactorDiv2], wIm[maxPrimeFactorDiv2];
 
 // T.Grill:
-extern "C" void post(const char *c,...);
+//extern "C" void post(const char *c,...);
 
-void factorize(int n, int *nFact, int fact[])
+static void factorize(int n, int *nFact, int fact[])
 {
     int i,j,k;
     int nRadix;
@@ -187,7 +200,7 @@ void factorize(int n, int *nFact, int fact[])
     remain  : the product of the remaining radices.
  ****************************************************************************/
 
-bool transTableSetup(int sofar[], int actual[], int remain[],
+static bool transTableSetup(int sofar[], int actual[], int remain[],
                      int *nFact,
                      int *nPoints)
 {
@@ -219,7 +232,7 @@ bool transTableSetup(int sofar[], int actual[], int remain[],
  ****************************************************************************/
 
 #if 0
-void permute(int nPoint, int nFact,
+static void permute(int nPoint, int nFact,
              int fact[], int remain[],
              REAL xRe[], REAL xIm[],
              REAL yRe[], REAL yIm[])
@@ -249,24 +262,30 @@ void permute(int nPoint, int nFact,
     yIm[nPoint-1]=xIm[nPoint-1];
 }   /* permute */
 #else
-void permute(int nPoint, int nFact,
+static int permfun(int ij, int n,OpParam &p) { return p.perm.order[ij]; }
+
+static void permute(int nPoint, int nFact,
              int fact[], int remain[],
              REAL xRe[], REAL xIm[],
              REAL yRe[], REAL yIm[])
 
 {
+	int i,j,k;
+
 	if(xRe == yRe && xIm == yIm) {
 		// in-place
+		OpParam p("mixfft",0);
+		I *perm = new I[nPoint-1];
+		p.perm.order = perm;
 
-		int i,j,k;
 		int count[maxFactorCount]; 
 
 		for (i=1; i<=nFact; i++) count[i]=0;
 		k=0;
 		for (i=0; i<=nPoint-2; i++)
 		{
-			yRe[i] = xRe[k];
-			yIm[i] = xIm[k];
+			perm[i] = k;
+
 			j=1;
 			k=k+remain[j];
 			count[1] = count[1]+1;
@@ -279,9 +298,17 @@ void permute(int nPoint, int nFact,
 			}
 		}
 
+		p.frames = nPoint-1;
+		p.rsdt = xRe; p.rddt = yRe; p.rss = 1; p.rds = 1;
+		p.isdt = xIm; p.iddt = yIm; p.iss = 1; p.ids = 1;
+		PERMUTATION(REAL,2,p,permfun);
+
+		delete[] perm;
+
+//		yRe[nPoint-1]=xRe[nPoint-1]; //!
+//		yIm[nPoint-1]=xIm[nPoint-1]; //!
 	}
 	else {
-		int i,j,k;
 		int count[maxFactorCount]; 
 
 		for (i=1; i<=nFact; i++) count[i]=0;
@@ -314,7 +341,7 @@ void permute(int nPoint, int nFact,
   following stages.
  ***************************************************************************/
 
-void initTrig(int radix)
+static void initTrig(int radix)
 {
     int i;
     double w,xre,xim,xre1,xim1;
@@ -333,7 +360,32 @@ void initTrig(int radix)
     }
 }   /* initTrig */
 
-void fft_4(REAL aRe[], REAL aIm[])
+static void fft_2(REAL aRe[], REAL aIm[])
+{
+	double gem;
+	gem=zRe[0] + zRe[1];
+	zRe[1]=zRe[0] -  zRe[1]; zRe[0]=gem;
+	gem=zIm[0] + zIm[1];
+	zIm[1]=zIm[0] - zIm[1]; zIm[0]=gem;
+}
+
+static void fft_3(REAL aRe[], REAL aIm[])
+{
+	REAL t1_re,t1_im;
+    REAL  m2_re,m2_im; 
+    REAL  m1_re,m1_im; 
+    REAL  s1_re,s1_im; 
+	t1_re=zRe[1] + zRe[2]; t1_im=zIm[1] + zIm[2];
+	zRe[0]=zRe[0] + t1_re; zIm[0]=zIm[0] + t1_im;
+	m1_re=c3_1*t1_re; m1_im=c3_1*t1_im;
+	m2_re=c3_2*(zIm[1] - zIm[2]); 
+	m2_im=c3_2*(zRe[2] -  zRe[1]);
+	s1_re=zRe[0] + m1_re; s1_im=zIm[0] + m1_im;
+	zRe[1]=s1_re + m2_re; zIm[1]=s1_im + m2_im;
+	zRe[2]=s1_re - m2_re; zIm[2]=s1_im - m2_im;
+}
+
+static void fft_4(REAL aRe[], REAL aIm[])
 {
     REAL t1_re,t1_im, t2_re,t2_im;
     REAL m2_re,m2_im, m3_re,m3_im;
@@ -351,7 +403,7 @@ void fft_4(REAL aRe[], REAL aIm[])
 }   /* fft_4 */
 
 
-void fft_5(REAL aRe[], REAL aIm[])
+static void fft_5(REAL aRe[], REAL aIm[])
 {    
     REAL t1_re,t1_im, t2_re,t2_im, t3_re,t3_im;
     REAL t4_re,t4_im, t5_re,t5_im;
@@ -385,7 +437,7 @@ void fft_5(REAL aRe[], REAL aIm[])
     aRe[4]=s2_re - s3_re; aIm[4]=s2_im - s3_im;
 }   /* fft_5 */
 
-void fft_8()
+static void fft_8()
 {
     REAL aRe[4], aIm[4], bRe[4], bIm[4], gem;
 
@@ -422,7 +474,7 @@ void fft_8()
     zIm[3] = aIm[3] + bIm[3]; zIm[7] = aIm[3] - bIm[3];
 }   /* fft_8 */
 
-void fft_10()
+static void fft_10()
 {
     REAL aRe[5], aIm[5], bRe[5], bIm[5];
 
@@ -453,7 +505,7 @@ void fft_10()
     zIm[4] = aIm[4] + bIm[4]; zIm[9] = aIm[4] - bIm[4];
 }   /* fft_10 */
 
-void fft_odd(int radix)
+static void fft_odd(int radix)
 {
     REAL  rere, reim, imre, imim;
     int     i,j,k,n,max;
@@ -499,18 +551,19 @@ void fft_odd(int radix)
 }   /* fft_odd */
 
 
-void twiddleTransf(int sofarRadix, int radix, int remainRadix,
+static void twiddleTransf(int sofarRadix, int radix, int remainRadix,
                     REAL yRe[], REAL yIm[])
 
 {   /* twiddleTransf */ 
     double cosw, sinw, gem;
+#if 0
     REAL t1_re,t1_im; //, t2_re,t2_im, t3_re,t3_im;
 //    REAL  t4_re,t4_im, t5_re,t5_im;
     REAL  m2_re,m2_im; //, m3_re,m3_im, m4_re,m4_im;
     REAL  m1_re,m1_im; //, m5_re,m5_im;
     REAL  s1_re,s1_im; //, s2_re,s2_im, s3_re,s3_im;
 //    REAL  s4_re,s4_im, s5_re,s5_im;
-
+#endif
 
     initTrig(radix);
     omega = 2*pi/(double)(sofarRadix*radix);
@@ -565,6 +618,7 @@ void twiddleTransf(int sofarRadix, int radix, int remainRadix,
                    adr=adr+sofarRadix;
                 }
             switch(radix) {
+			/*
               case  2  : gem=zRe[0] + zRe[1];
                          zRe[1]=zRe[0] -  zRe[1]; zRe[0]=gem;
                          gem=zIm[0] + zIm[1];
@@ -579,49 +633,11 @@ void twiddleTransf(int sofarRadix, int radix, int remainRadix,
                          zRe[1]=s1_re + m2_re; zIm[1]=s1_im + m2_im;
                          zRe[2]=s1_re - m2_re; zIm[2]=s1_im - m2_im;
                          break;
-              case  4  : fft_4(zRe,zIm);
-				  /*
-						 t1_re=zRe[0] + zRe[2]; t1_im=zIm[0] + zIm[2];
-                         t2_re=zRe[1] + zRe[3]; t2_im=zIm[1] + zIm[3];
-
-                         m2_re=zRe[0] - zRe[2]; m2_im=zIm[0] - zIm[2];
-                         m3_re=zIm[1] - zIm[3]; m3_im=zRe[3] - zRe[1];
-
-                         zRe[0]=t1_re + t2_re; zIm[0]=t1_im + t2_im;
-                         zRe[2]=t1_re - t2_re; zIm[2]=t1_im - t2_im;
-                         zRe[1]=m2_re + m3_re; zIm[1]=m2_im + m3_im;
-                         zRe[3]=m2_re - m3_re; zIm[3]=m2_im - m3_im;
-					*/
-                         break;
-              case  5  : fft_5(zRe,zIm);
-				  /*
-						 t1_re=zRe[1] + zRe[4]; t1_im=zIm[1] + zIm[4];
-                         t2_re=zRe[2] + zRe[3]; t2_im=zIm[2] + zIm[3];
-                         t3_re=zRe[1] - zRe[4]; t3_im=zIm[1] - zIm[4];
-                         t4_re=zRe[3] - zRe[2]; t4_im=zIm[3] - zIm[2];
-                         t5_re=t1_re + t2_re; t5_im=t1_im + t2_im;
-                         zRe[0]=zRe[0] + t5_re; zIm[0]=zIm[0] + t5_im;
-                         m1_re=c5_1*t5_re; m1_im=c5_1*t5_im;
-                         m2_re=c5_2*(t1_re - t2_re); 
-                         m2_im=c5_2*(t1_im - t2_im);
-
-                         m3_re=-c5_3*(t3_im + t4_im); 
-                         m3_im=c5_3*(t3_re + t4_re);
-                         m4_re=-c5_4*t4_im; m4_im=c5_4*t4_re;
-                         m5_re=-c5_5*t3_im; m5_im=c5_5*t3_re;
-
-                         s3_re=m3_re - m4_re; s3_im=m3_im - m4_im;
-                         s5_re=m3_re + m5_re; s5_im=m3_im + m5_im;
-                         s1_re=zRe[0] + m1_re; s1_im=zIm[0] + m1_im;
-                         s2_re=s1_re + m2_re; s2_im=s1_im + m2_im;
-                         s4_re=s1_re - m2_re; s4_im=s1_im - m2_im;
-
-                         zRe[1]=s2_re + s3_re; zIm[1]=s2_im + s3_im;
-                         zRe[2]=s4_re + s5_re; zIm[2]=s4_im + s5_im;
-                         zRe[3]=s4_re - s5_re; zIm[3]=s4_im - s5_im;
-                         zRe[4]=s2_re - s3_re; zIm[4]=s2_im - s3_im;
-					*/
-                         break;
+			 */
+			  case  2  : fft_2(zRe,zIm); break;
+			  case  3  : fft_3(zRe,zIm); break;
+              case  4  : fft_4(zRe,zIm); break;
+              case  5  : fft_5(zRe,zIm); break;
               case  8  : fft_8(); break;
               case 10  : fft_10(); break;
               default  : fft_odd(radix); break;

@@ -51,7 +51,8 @@ public:
 	virtual I Channels() const = 0;
 	virtual S *Data() = 0;
 
-	virtual V Dirty() = 0;
+	virtual V Refresh() {}
+	virtual V Dirty() {}
 
 	S *Pointer() { return Data()+Offset()*Channels()+Channel(); }
 
@@ -81,7 +82,8 @@ public:
 	SysBuf(const VSymbol &s,I chn = 0,I len = -1,I offs = 0) { Set(s,chn,len,offs); }
 
 	virtual BL Ok() const { return buf.Ok(); }
-	virtual V Dirty() { buf.Dirty(true); }
+	virtual V Refresh() { buf.Dirty(true); }
+	virtual V Dirty() { buf.Dirty(false); }
 
 	virtual VSymbol Symbol() const { return buf.Symbol(); }
 
@@ -108,7 +110,6 @@ public:
 	ImmBuf(BufEntry *e,I len = -1,I offs = 0);
 
 	virtual BL Ok() const { return entry != NULL; }
-	virtual V Dirty() {}
 
 	virtual VSymbol Symbol() const;
 

@@ -93,9 +93,22 @@ static BL fft_inv_real_any(I cnt,F *dt)
 BL fft_fwd_real_radix2(I cnt,F *dt); 
 BL fft_inv_real_radix2(I cnt,F *dt);
 
-static BL fft_fwd_complex_any(I cnt,F *re,F *im) 
+static BL fft_fwd_complex_any(I cnt,F *rsdt,F *isdt,F *rddt,F *iddt) 
+#if 1
 {
-	float *tre,*tim;
+	BL ret = mixfft(cnt,rsdt,isdt,rddt,iddt);
+
+	if(ret) {
+		F nrm = 1./sqrt(cnt);
+		for(I i = 0; i < cnt; ++i) rddt[i] *= nrm,iddt[i] *= nrm;
+	}
+
+	return ret;
+}
+#else
+{
+	float *tre = NULL,*tim = NULL;
+#if 1
 	try {
 		tre = new float[cnt];
 		tim = new float[cnt];
@@ -103,6 +116,10 @@ static BL fft_fwd_complex_any(I cnt,F *re,F *im)
 	catch(...) {
 		return false;
 	}
+#else
+	tre = re,tim = im;
+#endif
+
 	BL ret = mixfft(cnt,re,im,tre,tim);
 
 	if(ret) {
@@ -113,12 +130,29 @@ static BL fft_fwd_complex_any(I cnt,F *re,F *im)
 		}
 	}
 
+#if 1
 	delete[] tre;
 	delete[] tim;
+#endif
 	return ret;
 }
+#endif
 
-static BL fft_inv_complex_any(I cnt,F *re,F *im) 
+static BL fft_inv_complex_any(I cnt,F *rsdt,F *isdt,F *rddt,F *iddt) 
+#if 1
+{
+	I i;
+	for(i = 0; i < cnt; ++i) isdt[i] = -isdt[i];
+	BL ret = fft_fwd_complex_any(cnt,rsdt,isdt,rddt,iddt);
+	if(ret) {
+		for(i = 0; i < cnt; ++i) iddt[i] = -iddt[i];
+	}
+	if(isdt != iddt) {
+		for(i = 0; i < cnt; ++i) isdt[i] = -isdt[i];
+	}
+	return ret;
+}
+#else
 {
 	I i;
 	for(i = 0; i < cnt; ++i) im[i] = -im[i];
@@ -128,6 +162,7 @@ static BL fft_inv_complex_any(I cnt,F *re,F *im)
 	}
 	return ret;
 }
+#endif
 
 BL fft_fwd_complex_radix2(I cnt,F *re,F *im); 
 BL fft_inv_complex_radix2(I cnt,F *re,F *im);
@@ -161,24 +196,28 @@ Vasp *Vasp::m_rfft() { return fr_arg("rfft",0,d_rfft); }
 Vasp *Vasp::m_rifft() { return fr_arg("rifft",0,d_rifft); }
 */
 
-static BL d_cfft(I cnt,S *re,I rstr,S *im,I istr) 
+static BL d_cfft(I cnt,S *rsdt,I rss,S *isdt,I iss,S *rddt,I rds,S *iddt,I ids) 
 { 
 	if(cnt)
+/*
 		if(radix2(cnt) >= 1) 
-			return fft_fwd_complex_radix2(cnt,re,im);
+			return fft_fwd_complex_radix2(cnt,rsdt,isdt);
 		else
-			return fft_fwd_complex_any(cnt,re,im);
+*/
+			return fft_fwd_complex_any(cnt,rsdt,isdt,rddt,iddt);
 	else
 		return true;
 }
 
-static BL d_cifft(I cnt,S *re,I rstr,S *im,I istr) 
+static BL d_cifft(I cnt,S *rsdt,I rss,S *isdt,I iss,S *rddt,I rds,S *iddt,I ids)
 { 
 	if(cnt)
+/*
 		if(radix2(cnt) >= 1) 
-			return fft_inv_complex_radix2(cnt,re,im);
+			return fft_inv_complex_radix2(cnt,rsdt,isdt);
 		else
-			return fft_inv_complex_any(cnt,re,im);
+*/
+			return fft_inv_complex_any(cnt,rsdt,isdt,rddt,iddt);
 	else
 		return true;
 }
@@ -187,11 +226,12 @@ static BL d_cifft(I cnt,S *re,I rstr,S *im,I istr)
 
 Vasp *VaspOp::m_rfft(OpParam &p,Vasp &src,Vasp *dst,BL inv) 
 { 
+/*
 	if(dst && dst->Ok()) {
 		error("rfft: out-of-place operation not implemented yet");
 		return NULL;
 	}
-
+*/
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		BL ok = true;
@@ -210,20 +250,24 @@ Vasp *VaspOp::m_rfft(OpParam &p,Vasp &src,Vasp *dst,BL inv)
 
 Vasp *VaspOp::m_cfft(OpParam &p,Vasp &src,Vasp *dst,BL inv) 
 { 
+/*
 	if(dst && dst->Ok()) {
 		error("rfft: out-of-place operation not implemented yet");
 		return NULL;
 	}
-
+*/
 	CVecBlock *vecs = GetCVecs(p.opname,src,dst,true);
 	if(vecs) {
 		BL ok = true;
 		for(I i = 0; ok && i < vecs->Pairs(); ++i) {
-			VBuffer *re = vecs->ReSrc(i),*im = vecs->ImSrc(i);
+			VBuffer *sre = vecs->ReSrc(i),*sim = vecs->ImSrc(i);
+			VBuffer *dre = vecs->ReDst(i),*dim = vecs->ImDst(i);
+			if(!dre) dre = sre;
+			if(!dim) dim = sim;
 			if(inv)
-				ok = d_cifft(vecs->Frames(),re->Pointer(),re->Channels(),im?im->Pointer():NULL,im?im->Channels():0);
+				ok = d_cifft(vecs->Frames(),sre->Pointer(),sre->Channels(),sim?sim->Pointer():NULL,sim?sim->Channels():0,dre->Pointer(),dre->Channels(),dim?dim->Pointer():NULL,dim?dim->Channels():0);
 			else
-				ok = d_cfft(vecs->Frames(),re->Pointer(),re->Channels(),im?im->Pointer():NULL,im?im->Channels():0);
+				ok = d_cfft(vecs->Frames(),sre->Pointer(),sre->Channels(),sim?sim->Pointer():NULL,sim?sim->Channels():0,dre->Pointer(),dre->Channels(),dim?dim->Pointer():NULL,dim?dim->Channels():0);
 		}
 		return ok?vecs->ResVasp():NULL;
 	}

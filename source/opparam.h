@@ -108,6 +108,7 @@ public:
 		struct { I arg; } ibin;
 		struct { R arg; } rbin; 
 		struct { R rarg,iarg; } cbin; 
+		struct { I *order; } perm;
 	};
 
 private:

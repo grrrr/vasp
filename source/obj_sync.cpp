@@ -33,11 +33,19 @@ class vasp_sync:
 	FLEXT_HEADER(vasp_sync,vasp_op)
 
 public:
-	vasp_sync(I n):
-		flags(new BL[n]),
-		autoreset(true),vasponly(false),
-		stored(new Vasp[n-1] )
+	vasp_sync(I argc,t_atom *argv):
+		autoreset(true),vasponly(false)
 	{
+		I n = 2;
+		if(argc) {
+			if(CanbeInt(argv[0])) n = GetAInt(argv[0]);
+			else 
+				post("%s - integer argument invalid: set to 2",thisName());
+		}
+
+		flags = new BL[n];
+		stored = new Vasp[n-1];
+
 		AddInAnything(n);
 		AddOutAnything(n);
 		SetupInOut();
@@ -97,7 +105,7 @@ public:
 			return vasp_op::m_method_(inlet,s,argc,argv);
 	}
 
-	virtual V m_help() { post("%s - Synchronize a number of vasps",thisName()); }
+	virtual V m_help() { post("%s - Synchronize a number of vasps (default 2)",thisName()); }
 private:
 	BL autoreset,vasponly;
 	BL *flags;
@@ -106,7 +114,7 @@ private:
 	FLEXT_CALLBACK(m_reset)
 };
 
-FLEXT_LIB_1("vasp.sync",vasp_sync,I)
+FLEXT_LIB_V("vasp.sync",vasp_sync)
 
 
 
