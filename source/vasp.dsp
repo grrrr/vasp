@@ -201,10 +201,6 @@ SOURCE=.\env.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\util.cpp
 # End Source File
 # Begin Source File
@@ -443,6 +439,10 @@ SOURCE=.\obj_vecs.cpp
 # Begin Source File
 
 SOURCE=.\main.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\main.h
 # End Source File
 # End Target
 # End Project

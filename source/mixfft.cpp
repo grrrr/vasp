@@ -218,6 +218,7 @@ bool transTableSetup(int sofar[], int actual[], int remain[],
   normal order.
  ****************************************************************************/
 
+#if 0
 void permute(int nPoint, int nFact,
              int fact[], int remain[],
              REAL xRe[], REAL xIm[],
@@ -247,7 +248,64 @@ void permute(int nPoint, int nFact,
     yRe[nPoint-1]=xRe[nPoint-1];
     yIm[nPoint-1]=xIm[nPoint-1];
 }   /* permute */
+#else
+void permute(int nPoint, int nFact,
+             int fact[], int remain[],
+             REAL xRe[], REAL xIm[],
+             REAL yRe[], REAL yIm[])
 
+{
+	if(xRe == yRe && xIm == yIm) {
+		// in-place
+
+		int i,j,k;
+		int count[maxFactorCount]; 
+
+		for (i=1; i<=nFact; i++) count[i]=0;
+		k=0;
+		for (i=0; i<=nPoint-2; i++)
+		{
+			yRe[i] = xRe[k];
+			yIm[i] = xIm[k];
+			j=1;
+			k=k+remain[j];
+			count[1] = count[1]+1;
+			while (count[j] >= fact[j])
+			{
+				count[j]=0;
+				k=k-remain[j-1]+remain[j+1];
+				j=j+1;
+				count[j]=count[j]+1;
+			}
+		}
+
+	}
+	else {
+		int i,j,k;
+		int count[maxFactorCount]; 
+
+		for (i=1; i<=nFact; i++) count[i]=0;
+		k=0;
+		for (i=0; i<=nPoint-2; i++)
+		{
+			yRe[i] = xRe[k];
+			yIm[i] = xIm[k];
+			j=1;
+			k=k+remain[j];
+			count[1] = count[1]+1;
+			while (count[j] >= fact[j])
+			{
+				count[j]=0;
+				k=k-remain[j-1]+remain[j+1];
+				j=j+1;
+				count[j]=count[j]+1;
+			}
+		}
+		yRe[nPoint-1]=xRe[nPoint-1];
+		yIm[nPoint-1]=xIm[nPoint-1];
+	}
+}   /* permute */
+#endif
 
 /****************************************************************************
   Twiddle factor multiplications and transformations are performed on a
