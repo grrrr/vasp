@@ -1,0 +1,63 @@
+#N canvas 71 74 878 585 10;
+#X text 86 89 vasp works "out-of-time" \, it does not relay on the
+usual blocksizes of Pd. A vasp algorithm can be assigned to any buffersize
+according to your own definition \, for example the whole sound-data
+of an array.;
+#X text 88 260 How to use:;
+#X obj 294 318 bng 15 250 50 0 1displays 1displayr empty 0 -6 192 8
+-225271 -1 -1;
+#X text 322 317 1) Have a messagebox with the name of the array.;
+#X obj 294 365 bng 15 250 50 0 2displays 2displayr empty 0 -6 192 8
+-225271 -1 -1;
+#X text 324 364 2) Connect it to a vasp-object-box that determines
+the processing-algorithm.;
+#X obj 294 448 bng 15 250 50 0 3displays 3displayr empty 0 -6 192 8
+-225271 -1 -1;
+#X text 325 422 3) At that point \, after clicking the message-box
+\, data processing is executed. To display the new vasp in a graph
+you may want to update the graphic display.;
+#N canvas 323 136 522 521 inside 0;
+#X obj 144 38 r 1displays;
+#X obj 176 281 delay 500;
+#X obj 144 156 r 2displays;
+#X obj 144 80 change;
+#X msg 144 59 1;
+#X obj 144 198 change;
+#X msg 144 177 1;
+#X msg 144 101 bang;
+#X msg 144 221 bang;
+#X obj 64 327 change;
+#X msg 64 306 1;
+#X obj 64 284 r 3displays;
+#X obj 64 349 t b b b;
+#X obj 315 37 table buffer1;
+#X text 314 55 (dummy-table);
+#X msg 176 302 \; pd-1_vasp_intro.pd connect 13 0 14 0;
+#X msg 64 452 \; pd-1_vasp_intro.pd connect 15 0 16 0;
+#X msg 143 122 \; pd-1_vasp_intro.pd msg 130 310 vasp buffer1;
+#X msg 144 244 \; pd-1_vasp_intro.pd obj 130 360 vasp.shift 100;
+#X msg 108 374 \; pd-1_vasp_intro.pd msg 130 410 vasp buffer1;
+#X msg 86 410 \; pd-1_vasp_intro.pd obj 130 440 vasp.update;
+#X connect 0 0 4 0;
+#X connect 1 0 15 0;
+#X connect 2 0 6 0;
+#X connect 3 0 7 0;
+#X connect 4 0 3 0;
+#X connect 5 0 8 0;
+#X connect 6 0 5 0;
+#X connect 7 0 17 0;
+#X connect 8 0 18 0;
+#X connect 8 0 1 0;
+#X connect 9 0 12 0;
+#X connect 10 0 9 0;
+#X connect 11 0 10 0;
+#X connect 12 0 16 0;
+#X connect 12 1 20 0;
+#X connect 12 2 19 0;
+#X restore 765 58 pd inside;
+#X text 87 54 The vasp modular system does calculation on buffers.
+;
+#X text 86 156 there is a general help-patch called "VASP" object \,
+and there is a reference-patch for every vasp-object.;
+#X obj 88 207 VASP;
+#X text 127 207 <-- vasp overview;

@@ -1,0 +1,27 @@
+#N canvas 108 98 754 512 10;
+#N canvas 40 55 255 173 clear_buffer 0;
+#X obj 59 79 vasp.update;
+#X obj 59 56 vasp.= 0;
+#X obj 59 26 inlet;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X restore 530 459 pd clear_buffer;
+#N canvas 0 0 450 300 graph167 0;
+#X array buffer1 44100 float 0;
+#X coords 0 1 44099 -1 300 120 1;
+#X restore 286 43 graph;
+#N canvas 0 0 400 276 init 0;
+#X obj 36 19 loadbang;
+#X msg 36 45 symbol buffer1;
+#X msg 37 73 \; \$1 xticks 0 4410 10 \; \$1 xlabel 1.1 0 22050 44100
+\; \$1 yticks 0 0.25 2 \; \$1 ylabel 47000 -1 -0.5 0 0.5 1;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X restore 654 459 pd init;
+#X msg 530 438 vasp buffer1;
+#X text 72 236 noch einmal erklaeren;
+#X obj 104 319 vasp.-> buffer1;
+#X msg 173 272 to vasp buffer1;
+#X obj 162 366 vasp.!;
+#X text 335 273 wie man mit den buffern umgehen muss.;
+#X connect 3 0 0 0;

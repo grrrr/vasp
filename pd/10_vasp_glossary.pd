@@ -1,0 +1,22 @@
+#N canvas 78 0 565 610 10;
+#X obj 111 546 VASP;
+#X text 129 52 glossary:;
+#X text 105 84 buffer~ (MaxMSP) / array (Pd);
+#X text 129 100 resident data-field (can be channel-interleaved in
+Max/MSP) in system memory containing a number of frames;
+#X text 106 313 channel;
+#X text 105 379 vector;
+#X text 107 435 vasp;
+#X text 128 397 reference (with an offset and length \, with frames
+as units) to one channel of a buffer~ or array vector;
+#X text 130 452 contains one or more vectors in parallel with one common
+length but in general different offsets/channels per vector;
+#X text 130 330 a buffer~ (in MaxMSP) consists of one or more channels
+\, resulting in 1 \, 2 or 4 data elements per frame \, 0-indexed;
+#X text 131 183 32 bit IEEE floating point value \, typically (but
+not necessarily) normalized to the range -1...1 \;;
+#X text 105 161 data element (representing a sample);
+#X text 130 247 (aka "sample") time unit of sampled data - if multiple
+channels (typically 2 or 4) are sampled \, there are multiple data
+elements per frame;
+#X text 104 227 frame;
