@@ -11,6 +11,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_OPDEFS_H
 #define __VASP_OPDEFS_H
 
+#define _D_BLOCK 1024
+
+#define _D_MIN(a,b) ((a) < (b)?(a):(b))
+
+#ifdef FLEXT_THREADS
+#define _D_LOOP(VAR,LEN) \
+	for(I i = 0; i < p.frames; flext_base::ThrYield()) \
+	for(I m = _D_MIN(p.frames,i+_D_BLOCK); i < m; ++i)
+#else
+#define _D_LOOP(VAR,LEN) \
+	for(I i = 0; i < p.frames; ++i)
+#endif
+
 /*! \brief skeleton for unary real operations
 */
 #define _D__run(fun,p)											\
@@ -19,18 +32,18 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	register S *dr = p.rddt;									\
 	if(sr == dr)												\
 		if(p.rds == 1)											\
-			for(I i = 0; i < p.frames; ++i,dr++)				\
-				fun(*dr,*dr);									\
+			_D_LOOP(i,p.frames)									\
+			{ fun(*dr,*dr); dr++; }								\
 		else													\
-			for(I i = 0; i < p.frames; ++i,dr += p.rds)			\
-				fun(*dr,*dr);									\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*dr); dr += p.rds; }						\
 	else														\
 		if(p.rss == 1 && p.rds == 1)							\
-			for(I i = 0; i < p.frames; ++i,sr++,dr++)			\
-				fun(*dr,*sr);									\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*sr); sr++,dr++; }						\
 		else													\
-			for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds)	\
-				fun(*dr,*sr);									\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*sr); sr += p.rss,dr += p.rds; }			\
 	return true;												\
 }
 
@@ -44,18 +57,18 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	register S *dr = p.rddt,*di = p.iddt;						\
 	if(sr == dr && si == di)									\
 		if(p.rds == 1 && p.ids == 1)							\
-			for(I i = 0; i < p.frames; ++i,dr++,di++)			\
-				fun(*dr,*di,*dr,*di);							\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*di,*dr,*di); dr++,di++; }				\
 		else													\
-			for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
-				fun(*dr,*di,*dr,*di);							\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*di,*dr,*di); dr += p.rds,di += p.ids; }	\
 	else														\
 		if(p.rss == 1 && p.iss == 1 && p.rds == 1 && p.ids == 1) \
-			for(I i = 0; i < p.frames; ++i,sr++,si++,dr++,di++) \
-				fun(*dr,*di,*sr,*si);							\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*di,*sr,*si); sr++,si++,dr++,di++; }		\
 		else													\
-			for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
-				fun(*dr,*di,*sr,*si);							\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*di,*sr,*si);	sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; } \
 	return true;												\
 }
 
@@ -74,54 +87,54 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 			register const S *ar = p.arg[0].v.rdt;					\
 			if(p.rsdt == p.rddt)									\
 				if(p.rds == 1 && p.arg[0].v.rs == 1)				\
-					for(I i = 0; i < p.frames; ++i,dr++,ar++)		\
-						fun(*dr,*dr,*ar);							\
+					_D_LOOP(i,p.frames)									\
+					{ fun(*dr,*dr,*ar); dr++,ar++; }				\
 				else												\
-					for(I i = 0; i < p.frames; ++i,dr += p.rds,ar += p.arg[0].v.rs) \
-						fun(*dr,*dr,*ar);							\
+					_D_LOOP(i,p.frames)									\
+					{ fun(*dr,*dr,*ar);	dr += p.rds,ar += p.arg[0].v.rs; } \
 			else													\
 				if(p.rss == 1 && p.rds == 1 && p.arg[0].v.rs == 1)	\
-					for(I i = 0; i < p.frames; ++i,sr++,dr++,ar++)  \
-						fun(*dr,*sr,*ar);							\
+					_D_LOOP(i,p.frames)									\
+					{ fun(*dr,*sr,*ar); sr++,dr++,ar++; }			\
 				else												\
-					for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds,ar += p.arg[0].v.rs) \
-						fun(*dr,*sr,*ar);							\
+					_D_LOOP(i,p.frames)									\
+					{ fun(*dr,*sr,*ar);	sr += p.rss,dr += p.rds,ar += p.arg[0].v.rs; } \
 			break;												\
 		}														\
 		case OpParam::Arg::arg_env: {							\
 			Env::Iter it(*p.arg[0].e.env); it.Init(0);			\
 			if(p.rsdt == p.rddt)									\
 				if(p.rds == 1)										\
-					for(I i = 0; i < p.frames; ++i,dr++)			\
-						fun(*dr,*dr,it.ValFwd(i));								\
+					_D_LOOP(i,p.frames)									\
+					{ fun(*dr,*dr,it.ValFwd(i)); dr++; }			\
 				else												\
-					for(I i = 0; i < p.frames; ++i,dr += p.rds) 	\
-						fun(*dr,*dr,it.ValFwd(i));								\
+					_D_LOOP(i,p.frames)									\
+					{ fun(*dr,*dr,it.ValFwd(i)); dr += p.rds; }		\
 			else													\
 				if(p.rss == 1 && p.rds == 1)						\
-					for(I i = 0; i < p.frames; ++i,sr++,dr++)		\
-						fun(*dr,*sr,it.ValFwd(i));								\
+					_D_LOOP(i,p.frames)									\
+					{ fun(*dr,*sr,it.ValFwd(i)); sr++,dr++; }		\
 				else												\
-					for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds) 	\
-						fun(*dr,*sr,it.ValFwd(i));							\
+					_D_LOOP(i,p.frames)								 	\
+					{ fun(*dr,*sr,it.ValFwd(i)); sr += p.rss,dr += p.rds; }	\
 			break;												\
 		}														\
 		case OpParam::Arg::arg_x: {							\
 			const R v =  p.arg[0].x.r;							\
 			if(p.rsdt == p.rddt)									\
 				if(p.rds == 1)										\
-					for(I i = 0; i < p.frames; ++i,dr++)			\
-						fun(*dr,*dr,v);								\
+					_D_LOOP(i,p.frames)									\
+					{ fun(*dr,*dr,v); dr++; }						\
 				else												\
-					for(I i = 0; i < p.frames; ++i,dr += p.rds) 	\
-						fun(*dr,*dr,v);								\
+					_D_LOOP(i,p.frames)								 	\
+					{ fun(*dr,*dr,v); dr += p.rds; }				\
 			else													\
 				if(p.rss == 1 && p.rds == 1)						\
-					for(I i = 0; i < p.frames; ++i,sr++,dr++)		\
-						fun(*dr,*sr,v);								\
+					_D_LOOP(i,p.frames)									\
+					{ fun(*dr,*sr,v); sr++,dr++; }					\
 				else												\
-					for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds) 	\
-						fun(*dr,*sr,v);							\
+					_D_LOOP(i,p.frames)								 	\
+					{ fun(*dr,*sr,v); sr += p.rss,dr += p.rds; }	\
 			break;												\
 		}														\
 		}														\
@@ -130,18 +143,18 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		register const S v = p.rbin.arg;						\
 		if(p.rsdt == p.rddt)									\
 			if(p.rds == 1)										\
-				for(I i = 0; i < p.frames; ++i,dr++)			\
-					fun(*dr,*dr,v);								\
+				_D_LOOP(i,p.frames)									\
+				{ fun(*dr,*dr,v); dr++; }						\
 			else												\
-				for(I i = 0; i < p.frames; ++i,dr += p.rds)		\
-					fun(*dr,*dr,v);								\
+				_D_LOOP(i,p.frames)									\
+				{ fun(*dr,*dr,v); dr += p.rds; }				\
 		else													\
 			if(p.rss == 1 && p.rds == 1)						\
-				for(I i = 0; i < p.frames; ++i,sr++,dr++)		\
-					fun(*dr,*sr,v);								\
+				_D_LOOP(i,p.frames)									\
+				{ fun(*dr,*sr,v); sr++,dr++; }					\
 			else												\
-				for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds) \
-					fun(*dr,*sr,v);								\
+				_D_LOOP(i,p.frames)									\
+				{ fun(*dr,*sr,v); sr += p.rss,dr += p.rds; }	\
 	}															\
 	return true;												\
 }
@@ -162,49 +175,49 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 			if(ai)													\
 				if(sr == dr && si == di)							\
 					if(p.rds == 1 && p.ids == 1 && p.arg[0].v.rs == 1 && p.arg[0].v.is == 1) \
-						for(I i = 0; i < p.frames; ++i,dr++,di++,ar++,ai++) \
-							fun(*dr,*di,*dr,*di,*ar,*ai);			\
+						_D_LOOP(i,p.frames)				 \
+						{ fun(*dr,*di,*dr,*di,*ar,*ai);	dr++,di++,ar++,ai++; }		\
 					else											\
-						for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids,ar += p.arg[0].v.rs,ai += p.arg[0].v.is) \
-							fun(*dr,*di,*dr,*di,*ar,*ai);			\
+						_D_LOOP(i,p.frames)				 \
+						{ fun(*dr,*di,*dr,*di,*ar,*ai);	dr += p.rds,di += p.ids,ar += p.arg[0].v.rs,ai += p.arg[0].v.is; }		\
 				else												\
-					for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.arg[0].v.rs,ai += p.arg[0].v.is) \
-						fun(*dr,*di,*sr,*si,*ar,*ai);				\
+					_D_LOOP(i,p.frames)				 \
+					{ fun(*dr,*di,*sr,*si,*ar,*ai);	sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.arg[0].v.rs,ai += p.arg[0].v.is; }			\
 			else													\
 				if(sr == dr && si == di)							\
-					for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids,ar += p.arg[0].v.rs) \
-						fun(*dr,*di,*dr,*di,*ar,0);					\
+					_D_LOOP(i,p.frames)				 \
+					{ fun(*dr,*di,*dr,*di,*ar,0); dr += p.rds,di += p.ids,ar += p.arg[0].v.rs; }	\
 				else												\
-					for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.arg[0].v.rs) \
-						fun(*dr,*di,*sr,*si,*ar,0);					\
+					_D_LOOP(i,p.frames)				 \
+					{ fun(*dr,*di,*sr,*si,*ar,0); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.arg[0].v.rs; } \
 			break;												\
 		}														\
 		case OpParam::Arg::arg_env: {									\
 			Env::Iter it(*p.arg[0].e.env); it.Init(0);				\
 			if(sr == dr && si == di)							\
 				if(p.rds == 1 && p.ids == 1) \
-					for(I i = 0; i < p.frames; ++i,dr++,di++) \
-						fun(*dr,*di,*dr,*di,it.ValFwd(i),0);			\
+					_D_LOOP(i,p.frames)				 \
+					{ fun(*dr,*di,*dr,*di,it.ValFwd(i),0); dr++,di++; }			\
 				else											\
-					for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
-						fun(*dr,*di,*dr,*di,it.ValFwd(i),0);			\
+					_D_LOOP(i,p.frames)				 \
+					{ fun(*dr,*di,*dr,*di,it.ValFwd(i),0); dr += p.rds,di += p.ids; }			\
 			else												\
-				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
-					fun(*dr,*di,*sr,*si,it.ValFwd(i),0);				\
+				_D_LOOP(i,p.frames)				 \
+					{ fun(*dr,*di,*sr,*si,it.ValFwd(i),0); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; }	\
 			break;												\
 		}														\
 		case OpParam::Arg::arg_x: {									\
 			register const R ar = p.arg[0].x.r,ai = p.arg[0].x.i;				\
 			if(sr == dr && si == di)							\
 				if(p.rds == 1 && p.ids == 1) \
-					for(I i = 0; i < p.frames; ++i,dr++,di++) \
-						fun(*dr,*di,*dr,*di,ar,ai);			\
+					_D_LOOP(i,p.frames)				 \
+					{ fun(*dr,*di,*dr,*di,ar,ai); dr++,di++; }			\
 				else											\
-					for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
-						fun(*dr,*di,*dr,*di,ar,ai);			\
+					_D_LOOP(i,p.frames)				 \
+					{ fun(*dr,*di,*dr,*di,ar,ai); dr += p.rds,di += p.ids; }			\
 			else												\
-				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
-					fun(*dr,*di,*sr,*si,ar,ai);				\
+				_D_LOOP(i,p.frames)				 \
+				{ fun(*dr,*di,*sr,*si,ar,ai); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; }	\
 			break;												\
 		}														\
 		}														\
@@ -213,18 +226,18 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		register const S rv = p.cbin.rarg,iv = p.cbin.iarg;		\
 		if(sr == dr && si == di)								\
 			if(p.rds == 1 && p.ids == 1)						\
-				for(I i = 0; i < p.frames; ++i,dr++,di++)		\
-					fun(*dr,*di,*dr,*di,rv,iv);					\
+				_D_LOOP(i,p.frames)						\
+				{ fun(*dr,*di,*dr,*di,rv,iv); dr++,di++; }					\
 			else												\
-				for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
-					fun(*dr,*di,*dr,*di,rv,iv);					\
+				_D_LOOP(i,p.frames)				 \
+				{ fun(*dr,*di,*dr,*di,rv,iv); dr += p.rds,di += p.ids; }					\
 		else													\
 			if(p.rds == 1 && p.ids == 1 && p.rss == 1 && p.iss == 1) \
-				for(I i = 0; i < p.frames; ++i,sr++,si++,dr++,di++) \
-					fun(*dr,*di,*sr,*si,rv,iv);					\
+				_D_LOOP(i,p.frames)				 \
+				{ fun(*dr,*di,*sr,*si,rv,iv); sr++,si++,dr++,di++; }					\
 			else												\
-				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
-					fun(*dr,*di,*sr,*si,rv,iv);					\
+				_D_LOOP(i,p.frames)				 \
+				{ fun(*dr,*di,*sr,*si,rv,iv); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; }					\
 	}															\
 	return true;												\
 }
@@ -240,18 +253,18 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	register S *dr = p.rddt;									\
 	if(sr == dr)												\
 		if(p.rds == 1)											\
-			for(I i = 0; i < p.frames; ++i,dr++)				\
-				fun(*dr,*dr,p);									\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*dr,p); dr++; }							\
 		else													\
-			for(I i = 0; i < p.frames; ++i,dr += p.rds)			\
-				fun(*dr,*dr,p);									\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*dr,p); dr += p.rds; }					\
 	else														\
 		if(p.rss == 1 && p.rds == 1)							\
-			for(I i = 0; i < p.frames; ++i,sr++,dr++)			\
-				fun(*dr,*sr,p);									\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*sr,p); sr++,dr++; }						\
 		else													\
-			for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds)	\
-				fun(*dr,*sr,p);									\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*sr,p); sr += p.rss,dr += p.rds; }		\
 	return true;												\
 }
 
@@ -266,18 +279,18 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	register S *dr = p.rddt,*di = p.iddt;						\
 	if(sr == dr && si == di)									\
 		if(p.rds == 1 && p.ids == 1)							\
-			for(I i = 0; i < p.frames; ++i,dr++,di++)			\
-				fun(*dr,*di,*dr,*di,p);							\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*di,*dr,*di,p); dr++,di++; }				\
 		else													\
-			for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
-				fun(*dr,*di,*dr,*di,p);							\
+			_D_LOOP(i,p.frames)										\
+			{ fun(*dr,*di,*dr,*di,p); dr += p.rds,di += p.ids; } \
 	else														\
 		if(p.rss == 1 && p.iss == 1 && p.rds == 1 && p.ids == 1) \
-			for(I i = 0; i < p.frames; ++i,sr++,si++,dr++,di++) \
-				fun(*dr,*di,*sr,*si,p);							\
+			_D_LOOP(i,p.frames)				 \
+			{ fun(*dr,*di,*sr,*si,p); sr++,si++,dr++,di++; }	\
 		else													\
-			for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
-				fun(*dr,*di,*sr,*si,p);							\
+			_D_LOOP(i,p.frames)				 \
+			{ fun(*dr,*di,*sr,*si,p); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; }	\
 	return true;												\
 }
 

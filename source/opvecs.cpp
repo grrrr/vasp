@@ -517,6 +517,10 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 			}
 
 			ok = fun(p);
+
+#ifdef FLEXT_THREAD
+			flext_base::ThrYield();
+#endif
 		}
 	return ok?vecs->ResVasp():NULL;
 }
@@ -640,6 +644,10 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 			}
 
 			ok = fun(p);
+
+#ifdef FLEXT_THREAD
+			flext_base::ThrYield();
+#endif
 		}
 	return ok?vecs->ResVasp():NULL;
 }

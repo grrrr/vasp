@@ -87,7 +87,11 @@ public:
 		SetupInOut();
 	}
 
-	virtual Vasp *x_work() { ref.Refresh(); return new Vasp(ref); }
+	virtual Vasp *x_work() 
+	{ 
+		ref.Refresh(); 
+		return new Vasp(ref); 
+	}
 
 	virtual V m_help() { post("%s - Update graphics of a vasp",thisName()); }
 };

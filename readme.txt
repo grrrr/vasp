@@ -11,6 +11,10 @@ Goals/features of the package:
 
 Version history:
 
+0.0.8:
+- CHANGE: vasp.radio got right outlet for non-radio messages
+- ADD: thread yield for all simple vasp objects
+
 0.0.7:
 - CHANGE: vasp.m is now called vasp.multi by default
 - CHANGE: vasp.sync and vasp.multi now have a default argument = 2
@@ -22,7 +26,7 @@ Version history:
 - ADD: full DFT implementation (radix-2/radix-n) - also support of "to" message
 - ADD: full implementation of vasp.(x)tilt with several interpolation methods
 - CHANGE: vasp.split and vasp.join now have default argument = 2
-- ADD: vasp.offset= and vasp.frames=: search for sample values (eg. zero crossings)
+- ADD: vasp.offset= (vasp.o=) and vasp.frames= (vasp.f=): search for sample values (eg. zero crossings)
 - ADD: checks and log messages for out-of-range buffer offset and length
 
 0.0.6:
@@ -99,22 +103,16 @@ features:
 - how to handle beyond buffer-domain:
 warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay on last frame
 
-- set thread priority (introduce feature into flext!)
 - better algorithm for vasp.fix
 
 - make loops granular and interruptible
 - make in place rotation more efficient (use temporary space)
 
-- introduce default values (2) for vasp.split and vasp.join
-
-- vasp.clip for 0..1 clipping
 
 objects:
 ---------------------
 - wave object for table-lookup oscs.
 - various random distributions for noise
-
-- search functions for values -> offset
 
 - slope: frequency distortion with given exponent
 
@@ -130,7 +128,7 @@ tests:
 ---------------------
 - vasp.size always keeps the data... do we want that? -> flag if yes/no
 - in-place operation (src == dst), test if strides are equal!
-
+- should frame count always be pre-evaluated (e.g. in vasp.f+ etc. ?)
 
 premature thoughts:
 ---------------------

@@ -3,6 +3,7 @@ liste aller objekte, die noch in die hilfe aufgenommen werden müssen
 envelopes
 immediate vasps
 vasp.->
-NAN-behandlung
+NAN-behandlung (vasp.fix)
 threads
-tilt, xtilt
+vasp.tilt, vasp.xtilt
+vasp.offset=,vasp.frames=

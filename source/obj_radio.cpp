@@ -20,7 +20,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\brief Lets only radio messages pass through.
 	\since 0.0.6
 	\param inlet.1 * - any message
-	\retval outlet radio messages
+	\retval outlet.1 radio messages
+	\retval outlet.2 other messages
 */
 class vasp_radio:
 	public flext_base
@@ -32,7 +33,7 @@ public:
 	vasp_radio()
 	{
 		AddInAnything();
-		AddOutAnything();
+		AddOutAnything(2);
 		SetupInOut();
 
 		FLEXT_ADDMETHOD(0,m_any);
@@ -40,7 +41,7 @@ public:
 
 	virtual V m_any(const t_symbol *s,I argc,t_atom *argv);
 
-	virtual V m_help() { post("%s - lets only radio messages pass through",thisName()); }
+	virtual V m_help() { post("%s - split into radio and non-radio messages",thisName()); }
 private:
 	FLEXT_CALLBACK_A(m_any);
 };
@@ -50,7 +51,7 @@ FLEXT_LIB("vasp, vasp.radio",vasp_radio)
 
 V vasp_radio::m_any(const t_symbol *s,I argc,t_atom *argv) 
 {
-	if(s == vasp_base::sym_radio) ToOutAnything(0,s,argc,argv);
+	ToOutAnything(s == vasp_base::sym_radio?0:1,s,argc,argv);
 }
 
 
@@ -74,7 +75,7 @@ public:
 	virtual V m_help() { post("%s - filters out all radio messages",thisName()); }
 };
 
-FLEXT_LIB("vasp.noradio vasp.!radio",vasp_noradio)
+FLEXT_LIB("vasp, vasp.noradio vasp.!radio",vasp_noradio)
 
 
 V vasp_noradio::m_any(t_symbol *s,I argc,t_atom *argv) 
