@@ -9,6 +9,7 @@ Version history:
 - ADD: vasp.sum? to get sum of sample values
 - ADD: all objects: attribute "defer" to queue outgoing vasps  - to avoid stack faults for message loops
 - CHANGE: enable attributes "detach" and "prior" also for non-threaded builds to ensure patch compatibility
+- FIX: vasp.size - Max/MSP bug for @keep=1
 
 0.1.2:
 - FIX: bug in vasp.frames* ... wrong argument
