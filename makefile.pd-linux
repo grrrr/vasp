@@ -19,8 +19,6 @@ INCLUDES=$(PDINC)
 FLAGS=-DFLEXT_SYS=2 -DFLEXT_THREADS 
 CFLAGS=-O2 ${UFLAGS} 
 LDFLAGS=-Wl,-s
-LIBS=flext
-
 
 ifdef FLEXT_SHARED
 CFLAGS+=-shared -DFLEXT_SHARED
@@ -30,7 +28,10 @@ LDFLAGS+=-i_dynamic
 else
 LDFLAGS+=-Wl,-Bdynamic
 endif
+LIBS=flext
 
+else
+LIBS=flext_t
 endif
 
 
