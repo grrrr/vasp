@@ -1,4 +1,4 @@
-#N canvas 211 19 608 632 10;
+#N canvas 211 19 612 636 10;
 #N canvas 49 0 352 421 objects 0;
 #N canvas 306 143 558 381 vasp.displace 0;
 #X text 158 163 rotate buffer content symmetrically;
@@ -246,7 +246,7 @@ one is resampled around a center position;
 #X restore 192 357 pd objects;
 #X text 54 169 vasp objects are using a specialized message syntax
 for all objects to refer to a buffer or a part of it.;
-#N canvas 6 13 976 656 syntax 0;
+#N canvas 6 13 978 658 syntax 0;
 #X text 76 52 the vasp message:;
 #X obj 75 20 cnv 15 15 15 empty empty vasp_syntax 0 10 1 14 -262144
 -1 0;
@@ -807,7 +807,7 @@ elements per frame;
 #X restore 192 430 pd glossary;
 #X text 54 90 vasp modular - vector assembling signal processor ©2002
 thomas grill;
-#N canvas 26 0 954 696 moremessages 0;
+#N canvas 26 0 956 698 moremessages 0;
 #X obj 58 57 cnv 15 800 350 empty empty empty 20 12 0 14 -241339 -66577
 0;
 #X obj 330 342 vasp.* 0.5;
@@ -951,5 +951,5 @@ of an object chain;
 #X text 48 313 additional messages;
 #X text 49 550 vasp help patches by florian bogner and oliver grimm
 - ©2002 patcherboys - www.patcherboys.com;
-#X text 47 585 revised & extended version for PD by smedge - www.parasitaere-kapazitaeten.com/vasp
+#X text 47 585 revised & extended version for PD by smedge - www.parasitaere-kapazitaeten.net/vasp
 ;
