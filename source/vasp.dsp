@@ -222,17 +222,6 @@ SOURCE=.\vasp.h
 # Begin Source File
 
 SOURCE=.\vbuffer.cpp
-
-!IF  "$(CFG)" == "vasp - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "vasp - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "vasp - Win32 Threads Debug"
-
-!ELSEIF  "$(CFG)" == "vasp - Win32 Threads Release"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

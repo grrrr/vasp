@@ -15,7 +15,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "classes.h"
 #include "util.h"
-
+#include "buflib.h"
 
 /*! \class vasp_imm
 	\remark \b vasp.imm
@@ -43,7 +43,23 @@ public:
 
 	virtual V m_bang() 
 	{ 
-		post("%s - Sorry, not implemented yet",thisName());
+		if(!ref.Ok())
+			post("%s - Invalid vasp!",thisName());
+		else if(ref.Vectors() > 1) 
+			post("%s - More than one vector in vasp!",thisName());
+		else {
+			VBuffer *buf = ref.Buffer(0);
+			I len = buf->Length(),chns = buf->Channels();
+
+			ImmBuf *imm = BufLib::NewImm(len);
+
+			S *dst = imm->Pointer();
+			const S *src = buf->Pointer();
+			for(I i = 0; i < len; ++i,src += chns,dst++) *dst = *src; 
+
+			ToOutVasp(0,Vasp(len,Vasp::Ref(*imm)));
+			delete imm;
+		}
 	}
 
 	virtual V m_help() { post("%s - Get immediate vasp vectors",thisName()); }

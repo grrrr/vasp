@@ -25,6 +25,7 @@ Version history:
 - ADD: vasp.frames* (vasp.f*), vasp.frames/ (vasp.f/), vasp.size* (vasp.s*), vasp.size/ (vasp.s/)
 - ADD: detached operation: operations run as threads, according to detach flag/message
 - CHANGE: vasp.sync has as many outputs as inputs and outputs all input vasps
+- ADD: vasp.! : like vasp but stores the content temporarily
 
 0.0.5:
 - FIX: lacking sqrt in [vasp.rmin?],[vasp.rmax?]

@@ -19,14 +19,18 @@ public:
 	class Ref {
 	public:
 		Ref(): sym(NULL) {}
-		Ref(VBuffer &b): sym(b.Symbol()),chn(b.Channel()),offs(b.Offset()) {}
-		Ref(t_symbol *s,I c,I o): sym(s),chn(c),offs(o) {}
+		Ref(VBuffer &b);
+		Ref(t_symbol *s,I c,I o);
+		Ref(const Ref &r) { operator =(r); }
+		~Ref();
+
+		Ref &operator =(const Ref &r);
 
 		V Clear() { sym = NULL; }
 		BL Ok() const { return sym != NULL; }
 
 		t_symbol *Symbol() const { return sym; }
-		V Symbol(t_symbol *s) { sym = s; }
+		V Symbol(t_symbol *s);
 		I Channel() const { return chn; }
 		V Channel(I c) { chn = c; }
 		I Offset() const { return offs; }

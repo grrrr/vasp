@@ -52,6 +52,11 @@ public:
 
 	virtual V Dirty() = 0;
 
+/*
+	virtual V IncRef() = 0;
+	virtual V DecRef() = 0;
+*/
+
 	S *Pointer() { return Data()+Offset()*Channels()+Channel(); }
 
 	virtual t_symbol *Symbol() const = 0;
@@ -67,7 +72,7 @@ public:
 	V Length(I l) { len = l; }
 
 protected:
-	VBuffer(): chn(0),offs(0),len(0) {}
+	VBuffer(I c = 0,I l = 0,I o = 0): chn(c),offs(o),len(l) {}
 
 	I chn,offs,len;
 };
@@ -82,6 +87,12 @@ public:
 
 	virtual BL Ok() const { return buf.Ok(); }
 	virtual V Dirty() { buf.Dirty(true); }
+
+/*
+	virtual V IncRef() {};
+	virtual V DecRef() {};
+*/
+
 	virtual t_symbol *Symbol() const { return buf.Symbol(); }
 
 	SysBuf &Set(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
@@ -97,29 +108,35 @@ protected:
 };
 
 
+class BufEntry;
+
 class ImmBuf:
 	public VBuffer
 {
 public:
-	ImmBuf(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
+	ImmBuf(BufEntry *e = NULL,I len = -1,I offs = 0);
 	virtual ~ImmBuf();
 
-	virtual BL Ok() const;
+	virtual BL Ok() const { return entry != NULL; }
 	virtual V Dirty() {}
-	virtual t_symbol *Symbol() const { return sym; }
 
-	ImmBuf &Set(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
+/*
+	virtual V IncRef();
+	virtual V DecRef();
+*/
 
-	virtual I Frames() const { return len; }
+	virtual t_symbol *Symbol() const;
+
+//	ImmBuf &Set(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
+
+	virtual I Frames() const;
 	virtual V Frames(I fr,BL keep);
 
-	virtual I Channels() const { return 0; }
-	virtual S *Data() { return data; }
+	virtual I Channels() const { return 1; }
+	virtual S *Data();
 
 protected:
-	t_symbol *sym;
-	I len;
-	S *data;
+	BufEntry *entry;
 };
 
 

@@ -16,6 +16,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // Vasp class
 ///////////////////////////////////////////////////////////////////////////
 
+Vasp::Ref::Ref(VBuffer &b): sym(b.Symbol()),chn(b.Channel()),offs(b.Offset()) { BufLib::IncRef(sym); }
+Vasp::Ref::Ref(t_symbol *s,I c,I o): sym(s),chn(c),offs(o) { BufLib::IncRef(sym); }
+Vasp::Ref::~Ref() { BufLib::DecRef(sym); }
+
+Vasp::Ref &Vasp::Ref::operator =(const Ref &r)
+{
+	sym = r.sym,chn = r.chn,offs = r.offs;
+	BufLib::IncRef(sym);
+	return *this;
+}
+
+V Vasp::Ref::Symbol(t_symbol *s) { BufLib::DecRef(sym); sym = s; BufLib::IncRef(sym); }
+
+
 Vasp::Vasp(): 
 	refs(0),chns(0),ref(NULL),
 	frames(0) 

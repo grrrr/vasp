@@ -18,9 +18,34 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "vbuffer.h"
 
+
+class BufEntry
+{
+public:
+	BufEntry(t_symbol *s,I fr);
+	~BufEntry();
+
+	V IncRef();
+	V DecRef();
+
+	t_symbol *sym;
+	I refcnt,tick;
+	BufEntry *nxt;
+
+	UL magic;
+	I len;
+	S *data;
+};
+
+
 namespace BufLib
 {
 	VBuffer *Get(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
+
+	ImmBuf *NewImm(I fr);
+
+	V IncRef(t_symbol *s);
+	V DecRef(t_symbol *s);
 };
 
 
