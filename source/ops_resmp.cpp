@@ -10,9 +10,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \file vasp__resmp.cpp
 	\brief Routines for resampling
-
-	\todo check for src/dst overlap
-	\todo support negative tilt factors
 */
 
 #include "ops_resmp.h"
@@ -32,51 +29,124 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\param mode interpolation mode
 	\return true on success
 
-	\todo implement more interpolation methods
+	\todo implement averaging interpolation methods
 	\todo check for operation direction!
-	\todo symmetric operation!
-	\todo flag for filling remaining space
+	\todo check for src/dst overlap
+	\todo support different frame lengths for src and dst
 */
 
 static V do_tilt(OpParam &p)
 {
-	const I icenter = p.tilt.center;
+	I mode = p.tilt.mode;
+	if(mode == 0&& (p.tilt.factor < 0 || p.tilt.center < 0 || p.tilt.factor >= p.frames)) mode = 1;
 
-	switch(p.tilt.mode) {
-	case 1: {
-//		break;
+	const R center = p.tilt.center;
+	const I icenter = (I)center;
+	S fll,flr;
+	if(p.tilt.fill) 
+		fll = p.rsdt[0],flr = p.rsdt[p.frames-1];
+	else
+		fll = flr = 0;
+
+	if(mode >= 1 && mode <= 3) {
+		S *tmp;
+		I rss;
+		if(p.rsdt == p.rddt) {
+			tmp = new S[p.frames],rss = 1;
+			for(int i = 0; i < p.frames; ++i) tmp[i] = p.rsdt[i*p.rss];
+		}
+		else tmp = p.rsdt,rss = p.rss;
+
+		switch(mode) {
+		case 1: {
+			// no interpolation
+			for(int i = 0; i < p.frames; ++i) {
+				I pi = (I)(center+(i-center)*p.tilt.factor);
+				p.rddt[i*p.rds] = pi >= 0?(pi < p.frames?tmp[pi*rss]:flr):fll;
+			}
+			break;
+		}
+		case 2: {
+			// linear interpolation
+			for(int i = 0; i < p.frames; ++i) {
+				R pr = (I)(center+(i-center)*p.tilt.factor),v;
+				I ip = (I)pr;
+				if(ip >= 0)
+					if(ip < p.frames-1) {
+						R r = pr-ip;
+						v = (1-r)*tmp[ip*rss]+r*tmp[(ip+1)*rss];
+					}
+					else
+						v = ip == p.frames-1?tmp[ip*rss]:flr;
+				else
+					v = fll;
+				p.rddt[i*p.rds] = v;
+			}
+			break;
+		}
+		case 3: {
+			// 4-point interpolation
+			R f[4];
+			for(int i = 0; i < p.frames; ++i) {
+				R pr = (I)(center+(i-center)*p.tilt.factor);
+				const I ip = (I)pr;
+				const S *t = tmp+ip*rss;
+				const R r = pr-ip;
+				if(ip >= 1) 
+					if(ip < p.frames-2) {
+						f[0] = t[-rss];
+						f[1] = t[0];
+						f[2] = t[rss];
+						f[3] = t[rss*2];
+					}
+					else {
+						f[0] = ip < p.frames+1?t[-rss]:flr;
+						f[1] = ip < p.frames?t[0]:flr;
+						f[2] = ip < p.frames-1?t[rss]:flr;
+						f[3] = flr;
+					}
+				else {
+					f[0] = fll;
+					f[1] = ip >= 0?t[0]:fll;
+					f[2] = ip >= -1?t[rss]:fll;
+					f[3] = ip >= -2?t[rss*2]:fll;
+				}
+
+				const R cmb = f[2]-f[1];
+				p.rddt[i*p.rds] = f[1]+r*(cmb-0.5*(r-1.)*((f[0]-f[3]+3.*cmb)*r+(f[1]-f[0]-cmb)));
+			}
+			break;
+		}
+		}
+
+		if(p.rsdt == p.rddt) delete[] tmp;
 	}
-	case 2: {
-//		break;
-	}
-	case 0: 
-	default: {
-		if(p.rsdt != p.rddt) p.rddt[icenter*p.rds] = p.rsdt[icenter*p.rss];
+	else {
+		const R rem = center-icenter; // 0 <= rem < 1
+		// quick and dirty... but in-place!
 
 		if(p.tilt.factor > 1) {
 			I i;
-			for(i = 1; i <= icenter; ++i) {
-				R sp = icenter-i*p.tilt.factor;
-				p.rddt[(icenter-i)*p.rds] = sp >= 0 && sp < p.frames?p.rsdt[(I)sp*p.rss]:0;
+			for(i = 0; i <= icenter; ++i) {
+				I sp = (I)(center-(i+rem)*p.tilt.factor);
+				p.rddt[(icenter-i)*p.rds] = sp >= 0?(sp < p.frames?p.rsdt[sp*p.rss]:flr):fll;
 			}
 			for(i = 1; i < p.frames-icenter; ++i) {
-				R sp = icenter+i*p.tilt.factor;
-				p.rddt[(icenter+i)*p.rds] = sp >= 0 && sp < p.frames?p.rsdt[(I)sp*p.rss]:0;
+				I sp = (I)(center+(i-rem)*p.tilt.factor);
+				p.rddt[(icenter+i)*p.rds] = sp >= 0?(sp < p.frames?p.rsdt[sp*p.rss]:flr):fll;
 			}
 		}
 		else {
 			I i;
-			for(i = icenter; i > 0; --i) {
-				R sp = icenter-i*p.tilt.factor;
-				p.rddt[(icenter-i)*p.rds] = p.rsdt[(I)sp*p.rss];
+			for(i = icenter; i >= 0; --i) {
+				I sp = (I)(center-(i+rem)*p.tilt.factor);
+				p.rddt[(icenter-i)*p.rds] = p.rsdt[sp*p.rss];
 			}
 			for(i = p.frames-1-icenter; i > 0; --i) {
-				R sp = icenter+i*p.tilt.factor;
-				p.rddt[(icenter+i)*p.rds] = p.rsdt[(I)sp*p.rss];
+				I sp = (I)(center+(i-rem)*p.tilt.factor);
+				p.rddt[(icenter+i)*p.rds] = p.rsdt[sp*p.rss];
 			}
 		}
-		break;
-	}
 	}
 }
 
@@ -84,26 +154,6 @@ static V do_tilt(OpParam &p)
 BL VecOp::d_tilt(OpParam &p) 
 { 
 	if(p.frames <= 1 || p.tilt.factor == 1) return true;
-
-	if(p.tilt.factor <= 0) {
-		post("%s - invalid factor value (%f)",p.opname,p.tilt.factor);
-		return false;
-	}
-
-	I icenter = (I)p.tilt.center;
-	if(p.tilt.center != icenter) {
-		p.tilt.center = icenter;
-		post("tilt: center position truncated to integer sample");
-	}
-
-	if(p.tilt.center < 0) {
-		post("tilt: center position < 0 -> set to 0");
-		p.tilt.center = 0;
-	}
-	else if(p.tilt.center >= p.frames) {
-		post("tilt: center position >= buffer length -> set to max. position");
-		p.tilt.center = p.frames;
-	}
 
 	// symmetric operation
 	if(p.symm == 1) 
@@ -125,7 +175,7 @@ BL VecOp::d_tilt(OpParam &p)
 	\param mode interpolation mode
 	\return normalized destination vasp
 */
-Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm,I mode) 
+Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm) 
 { 
 	Vasp *ret = NULL;
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
@@ -133,7 +183,6 @@ Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm,
 		if(vecs) {
 			p.tilt.factor = flx::GetAFloat(arg.GetList()[0]);
 			p.tilt.center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
-			p.tilt.mode = mode;
 
 			ret = DoOp(vecs,VecOp::d_tilt,p,symm);
 
@@ -146,5 +195,71 @@ Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm,
 	return ret;
 }
 
-VASP_ANYOP("vasp.tilt",tilt,1,true,VASP_ARG_R(1),"")
-VASP_ANYOP("vasp.xtilt",xtilt,1,true,VASP_ARG_R(1),"")
+
+
+class vasp_tilt:
+	public vasp_anyop
+{																				
+	FLEXT_HEADER(vasp_tilt,vasp_anyop)
+public:			
+	
+	vasp_tilt(I argc,t_atom *argv): 
+		vasp_anyop(argc,argv,VASP_ARG_R(1),true),
+		fill(xtf_zero),inter(xti_none)
+	{
+		FLEXT_ADDMETHOD_E(0,"fill",m_fill);
+		FLEXT_ADDMETHOD_E(0,"inter",m_inter);
+	}
+
+	enum xt_fill {
+		xtf__ = -1,  // don't change
+		xtf_zero = 0,xtf_edge
+	};	
+
+	enum xt_inter {
+		xti__ = -1,  // don't change
+		xti_inpl = 0,xti_none,xti_lin,xti_4p
+	};	
+
+	V m_fill(xt_fill f) { fill = f; }
+	V m_inter(xt_inter m) { inter = m; }
+
+	virtual Vasp *do_shift(OpParam &p) { return VaspOp::m_tilt(p,ref,arg,&dst); }
+		
+	virtual Vasp *tx_work(const Argument &arg) 
+	{ 
+		OpParam p(thisName(),1);													
+		p.tilt.fill  = (I)fill;
+		p.tilt.mode  = (I)inter;
+
+		Vasp *ret = do_shift(p);
+		return ret;
+	}
+
+	virtual V m_help() { post("%s - Resamples buffer data",thisName()); }
+
+protected:
+	xt_fill fill;
+	xt_inter inter;
+
+private:
+	FLEXT_CALLBACK_1(m_fill,xt_fill)
+	FLEXT_CALLBACK_1(m_inter,xt_inter)
+};																				
+FLEXT_LIB_V("vasp, vasp.tilt",vasp_tilt)
+
+
+class vasp_xtilt:
+	public vasp_tilt
+{																				
+	FLEXT_HEADER(vasp_xtilt,vasp_tilt)
+public:			
+	
+	vasp_xtilt(I argc,t_atom *argv): vasp_tilt(argc,argv) {}
+
+	virtual Vasp *do_shift(OpParam &p) { return VaspOp::m_xtilt(p,ref,arg,&dst); }
+		
+	virtual V m_help() { post("%s - Resamples buffer data symmetrically (in two halves)",thisName()); }
+};																				
+FLEXT_LIB_V("vasp, vasp.xtilt",vasp_xtilt)
+

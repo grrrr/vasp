@@ -100,7 +100,7 @@ public:
 		struct { R carry; I rep; } intdif;
 		struct { BL cx; R density; I cnt; } peaks;
 		struct { R ph,phinc; } gen;
-		struct { R factor,center; I mode; } tilt; 
+		struct { R factor,center; I mode,fill; } tilt; 
 		struct { R cur,inc; } bvl;
 		struct { R sh; I ish; I fill; } sh;
 		struct { I wndtp; } wnd;
