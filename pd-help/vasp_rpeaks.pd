@@ -1,4 +1,4 @@
-#N canvas 32 16 810 586 10;
+#N canvas 32 16 812 588 10;
 #X obj 72 26 cnv 15 15 15 empty empty vasp.rpeaks 0 10 1 14 -262144
 -1 0;
 #X obj 76 131 filelist \$0;
@@ -12,15 +12,15 @@
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X restore 500 505 pd clear_buffers;
-#X obj 65 253 vasp.update;
-#X obj 65 273 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+#X obj 65 264 vasp.update;
+#X obj 65 284 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
 #X obj 65 354 cnv 15 98 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
 #X obj 411 132 wavedisplay-simple bufrpeaks1 \$0;
 #X obj 412 289 wavedisplay-simple bufrpeaks2 \$0;
-#X msg 65 213 vasp bufrpeaks1 bufrpeaks2;
-#X obj 65 233 vasp.cfft;
+#X msg 65 224 vasp bufrpeaks1 bufrpeaks2;
+#X obj 65 244 vasp.cfft;
 #X obj 65 374 vasp.update;
 #X obj 65 394 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
