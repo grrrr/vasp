@@ -57,7 +57,6 @@ public:
 	virtual Vasp *x_work() 
 	{ 
 		Vasp *ret = new Vasp(ref); 
-		//! \todo test if Buffer is long enough
 		if(setf) ret->Frames(frms);
 		return ret;
 	}

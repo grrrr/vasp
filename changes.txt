@@ -2,7 +2,7 @@ Version history:
 
 0.1.1:
 - FIX: bug in resize of immediate buffers
-- CHANGE: check whether vector exceeds buffer size (GetRVecs, GetCVecs -> corrlen)
+- CHANGE: check (at actual operation!) whether vector exceeds buffer size (GetRVecs, GetCVecs -> corrlen)
 
 0.1.0:
 - NEW: vasp.a<, vasp.a>, vasp.a<=, vasp.a>= for absolute comparisons
