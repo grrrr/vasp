@@ -81,7 +81,7 @@ BL vasp_base::ToOutVasp(I oix,Vasp &v)
 ///////////////////////////////////////////////////////////////////////////
 
 vasp_op::vasp_op(BL op):
-	detach(false),prior(0),
+	detach(false),prior(-2),
 	thrid(0)
 {
 	FLEXT_ADDBANG(0,m_dobang);
@@ -156,12 +156,7 @@ V vasp_op::m_detach(BL thr)
 #endif
 }
 
-V vasp_op::m_prior(I p) 
-{ 
-#ifdef FLEXT_THREADS
-	if(thrid) ChangePriority(prior = p);
-#endif
-}
+V vasp_op::m_prior(I p) { prior = p; }
 
 V vasp_op::m_stop() {}
 
@@ -178,8 +173,7 @@ V vasp_tx::m_bang()
 	Lock(); 
 
 #ifdef FLEXT_THREADS
-	thrid = GetThreadId();
-	ChangePriority(prior);
+//	ChangePriority(prior);
 #endif
 
 //	if(ref.Ok()) 

@@ -96,7 +96,7 @@ protected:
 
 	BL detach;	// detached operation?
 	I prior;  // thread priority
-	pthread_t thrid;
+	thrid_t thrid;
 #else
 	FLEXT_CALLBACK(m_bang)
 
