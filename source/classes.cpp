@@ -201,7 +201,7 @@ V vasp_tx::m_bang()
 	Lock(); 
 
 #ifdef FLEXT_THREADS
-//	ChangePriority(prior);
+//	RelPriority(prior);
 #endif
 
 	if(ref.Ok()) 
