@@ -15,7 +15,7 @@ FLEXTLIB=$(FLEXTPATH)/flext_t.a
 
 # compiler stuff
 INCLUDES=$(PDINC) 
-FLAGS=-DFLEXT_SYS=2 -DFLEXT_THREADS
+FLAGS=-DFLEXT_SYS=2 -DFLEXT_THREADS -fno-exceptions
 CFLAGS=-O6 -mcpu=pentiumpro -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
 #CFLAGS=-O6 -mcpu=pentium3 -msse -mfpmath=sse -fmove-all-movables -frerun-loop-opt -finline-functions # -funroll-loops 
 LDFLAGS=-Wl,-s
