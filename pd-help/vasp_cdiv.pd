@@ -12,6 +12,6 @@ as pairs;
 0;
 #X obj 277 86 vasp.c/;
 #X obj 173 280 vasp.c!/;
-#X obj 54 317 VASP;
+#X obj 54 317 VASP-HELP;
 #X text 96 317 - vasp overview;
 #X text 51 281 related object:;

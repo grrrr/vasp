@@ -16,6 +16,6 @@ as pairs;
 #X obj 277 287 vasp.c/;
 #X obj 277 266 vasp.c*;
 #X obj 194 287 vasp.c-;
-#X obj 57 352 VASP;
+#X obj 57 352 VASP-HELP;
 #X text 99 352 - vasp overview;
 #X obj 194 266 vasp.c+;

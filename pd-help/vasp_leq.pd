@@ -42,7 +42,7 @@
 #X msg 61 150 vasp bufleq;
 #X msg 58 236 vasp bufleq1;
 #X obj 58 262 vasp.= bufleq;
-#X obj 57 418 VASP;
+#X obj 57 418 VASP-HELP;
 #X text 99 418 - vasp overview;
 #X connect 5 0 4 0;
 #X connect 9 0 10 0;

@@ -34,7 +34,7 @@
 #X msg 460 364 vasp bufgeq bufgeq1;
 #X text 60 80 sample >= value;
 #X msg 61 150 vasp bufgeq;
-#X obj 57 418 VASP;
+#X obj 57 418 VASP-HELP;
 #X text 99 418 - vasp overview;
 #X obj 58 366 vasp.update;
 #X floatatom 119 308 5 0 0;

@@ -123,7 +123,7 @@
 #X obj 45 229 vasp.* 0.5;
 #X msg 45 140 vasp bufmul;
 #X text 134 206 change gain;
-#X obj 45 375 VASP;
+#X obj 45 375 VASP-HELP;
 #X text 87 375 - vasp overview;
 #X connect 6 0 0 0;
 #X connect 11 0 13 0;

@@ -49,7 +49,7 @@
 #X msg 68 231 vasp bufshift;
 #X obj 68 306 vasp.shift 10000;
 #X floatatom 159 278 8 0 0;
-#X obj 48 455 VASP;
+#X obj 48 455 VASP-HELP;
 #X text 90 455 - vasp overview;
 #X connect 2 0 10 0;
 #X connect 10 0 1 0;

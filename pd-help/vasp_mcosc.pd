@@ -58,7 +58,7 @@
 #X obj 65 334 vasp.* 0.5;
 #X msg 65 267 vasp bufmcosc1 bufmcosc2;
 #X obj 65 311 vasp.*cosc 44100;
-#X obj 64 448 VASP;
+#X obj 64 448 VASP-HELP;
 #X text 106 448 - vasp overview;
 #X obj 65 154 vasp.window lin;
 #X connect 8 0 4 0;

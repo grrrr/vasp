@@ -74,7 +74,7 @@
 #X text 71 66 needs two buffers (or multiple pairs);
 #X text 71 49 sets radius of all complex sample pairs to unity (1)
 ;
-#X obj 58 549 VASP;
+#X obj 58 549 VASP-HELP;
 #X text 100 548 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 6 0 23 0;

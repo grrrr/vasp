@@ -40,7 +40,7 @@
 #X msg 504 366 vasp bufcnoise1 bufcnoise2;
 #X obj 324 366 tabplay~ bufcnoise1;
 #X obj 343 388 tabplay~ bufcnoise2;
-#X obj 64 505 VASP;
+#X obj 64 505 VASP-HELP;
 #X text 106 504 - vasp overview;
 #X obj 189 472 vasp.noise;
 #X text 64 471 related object:;

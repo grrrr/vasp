@@ -71,7 +71,7 @@
 #X msg 567 504 vasp bufrect1 bufrect2;
 #X msg 59 285 vasp bufrect1 bufrect2;
 #X msg 59 376 vasp bufrect1 bufrect2;
-#X obj 58 622 VASP;
+#X obj 58 622 VASP-HELP;
 #X text 100 622 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 5 0 6 0;

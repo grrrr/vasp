@@ -4,7 +4,7 @@
 #X text 51 95 left inlet triggers the output;
 #X obj 51 19 cnv 15 15 15 empty empty vasp.join 0 10 1 14 -262144 -1
 0;
-#X obj 62 382 VASP;
+#X obj 62 382 VASP-HELP;
 #X text 104 382 - vasp overview;
 #X msg 230 159 vasp bufjoin1 bufjoin2 bufjoin3;
 #X obj 128 214 prepend set;

@@ -25,7 +25,7 @@
 #X connect 2 0 3 0;
 #X restore 569 326 pd clear_buffers;
 #X text 173 148 generate a function;
-#X obj 60 503 VASP;
+#X obj 60 503 VASP-HELP;
 #X text 102 502 - vasp overview;
 #X msg 61 149 vasp bufxwindow;
 #X msg 569 301 vasp bufxwindow;

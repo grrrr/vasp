@@ -49,7 +49,7 @@
 #X floatatom 153 279 8 0 0;
 #X msg 68 231 vasp bufxrot;
 #X obj 68 305 vasp.xrot 10000;
-#X obj 56 436 VASP;
+#X obj 56 436 VASP-HELP;
 #X text 98 436 - vasp overview;
 #X connect 2 0 10 0;
 #X connect 10 0 1 0;

@@ -42,7 +42,7 @@
 #X obj 380 144 vasp.osc 44100;
 #X obj 380 166 vasp.* 0.5;
 #X msg 380 112 vasp bufsub;
-#X obj 61 313 VASP;
+#X obj 61 313 VASP-HELP;
 #X text 103 313 - vasp overview;
 #X connect 11 0 10 0;
 #X connect 12 0 13 0;

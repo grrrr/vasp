@@ -147,7 +147,7 @@
 #X obj 99 455 prepend set;
 #X msg 62 415;
 #X msg 99 481;
-#X obj 34 521 VASP;
+#X obj 34 521 VASP-HELP;
 #X text 76 521 - vasp overview;
 #X connect 5 0 4 0;
 #X connect 19 0 23 0;

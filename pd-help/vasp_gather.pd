@@ -36,7 +36,7 @@ of all gathered vasps for the new one!;
 #X obj 78 474 vasp.gather 2;
 #X msg 125 386 vasp bufgather1;
 #X text 71 366 gather two vasps (opt. argument) an put them out;
-#X obj 77 561 VASP;
+#X obj 77 561 VASP-HELP;
 #X text 119 561 - vasp overview;
 #X connect 9 0 15 1;
 #X connect 10 0 15 1;

@@ -65,7 +65,7 @@ mouse+spacebar (select) or mouse+"s" (shift).;
 #X text 177 472 <-- click to open more examples;
 #X text 57 138 use vasp.= to clear a buffer;
 #X obj 53 473 vaspset_examples;
-#X obj 51 533 VASP;
+#X obj 51 533 VASP-HELP;
 #X text 93 533 - vasp overview;
 #N canvas 280 291 407 308 inside 0;
 #X obj 82 165 s \$0-sample-length;

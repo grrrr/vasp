@@ -55,7 +55,7 @@ you may want to update the graphic display.;
 ;
 #X text 86 156 there is a general help-patch called "VASP" object \,
 and there is a reference-patch for every vasp-object.;
-#X obj 88 207 VASP;
+#X obj 88 207 VASP-HELP;
 #X text 127 207 <-- vasp overview;
 #X text 86 89 vasp works "out-of-time" \, it does not relay on the
 usual blocksizes of Pd. A vasp algorithm can be assigned to any buffer

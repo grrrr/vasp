@@ -36,7 +36,7 @@ yticks 0 0.25 2 \; \$1 ylabel 20.5 -1 -0.5 0 0.5 1;
 #X msg 77 293 vasp bufdif;
 #X text 170 293 find the gradient of the curve;
 #X text 187 101 generate triangular wave;
-#X obj 79 422 VASP;
+#X obj 79 422 VASP-HELP;
 #X text 121 422 - vasp overview;
 #X connect 4 0 2 0;
 #X connect 5 0 4 0;

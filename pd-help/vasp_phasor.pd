@@ -55,7 +55,7 @@ in samples;
 #X obj 77 239 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
 #X obj 77 171 vasp.phasor 2205;
-#X obj 77 371 VASP;
+#X obj 77 371 VASP-HELP;
 #X text 119 371 - vasp overview;
 #X connect 5 0 8 0;
 #X connect 8 0 4 0;

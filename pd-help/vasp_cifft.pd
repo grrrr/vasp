@@ -73,7 +73,7 @@ use 3 more times vasp.cfft or just once vasp.c!fft;
 #X obj 525 112 wavedisplay-simple bufrei \$0;
 #X obj 527 263 wavedisplay-simple bufimi \$0;
 #X text 59 538 related objects:;
-#X obj 59 574 VASP;
+#X obj 59 574 VASP-HELP;
 #X text 101 573 - vasp overview;
 #X obj 371 539 vasp.r!fft;
 #X obj 288 539 vasp.rfft;

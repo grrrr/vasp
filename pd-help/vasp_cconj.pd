@@ -2,7 +2,7 @@
 #X obj 51 19 cnv 15 15 15 empty empty vasp.cconj 0 10 1 14 -262144
 -1 0;
 #X obj 51 208 vasp.update;
-#X obj 53 367 VASP;
+#X obj 53 367 VASP-HELP;
 #X text 95 367 - vasp overview;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufconre 21 float 1;

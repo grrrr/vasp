@@ -33,7 +33,7 @@
 #X msg 77 126 vasp bufnoise;
 #X text 175 125 generate white noise;
 #X obj 77 171 vasp.noise;
-#X obj 65 369 VASP;
+#X obj 65 369 VASP-HELP;
 #X text 107 369 - vasp overview;
 #X connect 5 0 8 0;
 #X connect 8 0 4 0;

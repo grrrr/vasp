@@ -53,7 +53,7 @@ in samples;
 #X obj 77 194 vasp.* 0.5;
 #X msg 77 127 vasp bufosc;
 #X obj 77 171 vasp.osc 44.1;
-#X obj 66 380 VASP;
+#X obj 66 380 VASP-HELP;
 #X text 108 380 - vasp overview;
 #X connect 6 0 10 0;
 #X connect 10 0 5 0;

@@ -67,7 +67,7 @@
 #X obj 65 379 vasp.r+ 0.05;
 #X floatatom 132 352 5 0 0;
 #X text 183 350 value;
-#X obj 59 579 VASP;
+#X obj 59 579 VASP-HELP;
 #X text 101 579 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 5 0 3 0;

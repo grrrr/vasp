@@ -47,7 +47,7 @@
 #X floatatom 104 299 5 0 0;
 #X text 142 243 find the absolute minimum of this soundfile;
 #X text 147 298 -> current absolute minimum;
-#X obj 45 365 VASP;
+#X obj 45 365 VASP-HELP;
 #X text 87 365 - vasp overview;
 #X connect 2 0 10 0;
 #X connect 10 0 1 0;

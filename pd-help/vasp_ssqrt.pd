@@ -88,7 +88,7 @@
 #X obj 77 297 vasp.update;
 #X msg 77 246 vasp bufssqrt;
 #X obj 77 271 vasp.ssqrt;
-#X obj 73 413 VASP;
+#X obj 73 413 VASP-HELP;
 #X text 115 413 - vasp overview;
 #X connect 5 0 3 0;
 #X connect 9 0 5 0;

@@ -36,7 +36,7 @@
 #X obj 69 258 vasp.+ 1;
 #X floatatom 133 127 5 0 0;
 #X obj 133 147 t b f;
-#X obj 70 405 VASP;
+#X obj 70 405 VASP-HELP;
 #X text 112 405 - vasp overview;
 #X connect 5 0 1 0;
 #X connect 12 0 11 0;

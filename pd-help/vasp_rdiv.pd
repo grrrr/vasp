@@ -30,7 +30,7 @@
 #X obj 49 194 vasp.!/ 1;
 #X text 136 191 1/x;
 #X obj 49 171 vasp.+ 1;
-#X obj 43 321 VASP;
+#X obj 43 321 VASP-HELP;
 #X text 85 321 - vasp overview;
 #X obj 49 149 vasp.window lin;
 #X connect 4 0 0 0;

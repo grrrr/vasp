@@ -35,7 +35,7 @@
 #X msg 75 230 vasp bufqmax;
 #X obj 75 251 vasp.max?;
 #X text 167 282 >>>> maximum value;
-#X obj 64 339 VASP;
+#X obj 64 339 VASP-HELP;
 #X text 106 339 - vasp overview;
 #X connect 5 0 6 0;
 #X connect 6 0 7 0;

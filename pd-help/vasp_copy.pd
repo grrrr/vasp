@@ -10,7 +10,7 @@
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X restore 380 379 pd clear_buffer;
-#X obj 50 500 VASP;
+#X obj 50 500 VASP-HELP;
 #X text 92 500 - vasp overview;
 #X text 55 62 copy an array/buffer to a new one;
 #X obj 57 452 vasp.->;

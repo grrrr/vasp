@@ -1,7 +1,7 @@
 #N canvas 128 36 359 452 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.radio 0 10 1 14 -262144
 -1 0;
-#X obj 66 406 VASP;
+#X obj 66 406 VASP-HELP;
 #X text 105 406 - vasp overview;
 #X text 71 63 filters radio messages;
 #X floatatom 208 126 5 0 0;

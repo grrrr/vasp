@@ -59,7 +59,7 @@ default 1;
 #X obj 428 165 wavedisplay-simple bufflp \$0;
 #X msg 533 426 vasp bufflp;
 #X obj 401 426 tabplay~ bufflp;
-#X obj 78 496 VASP;
+#X obj 78 496 VASP-HELP;
 #X text 120 496 - vasp overview;
 #X obj 77 371 vasp.update;
 #X obj 77 394 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152

@@ -35,7 +35,7 @@
 #X obj 75 251 vasp.min?;
 #X msg 75 230 vasp bufqmin;
 #X text 167 282 >>>> minimum value;
-#X obj 56 344 VASP;
+#X obj 56 344 VASP-HELP;
 #X text 98 344 - vasp overview;
 #X connect 6 0 1 0;
 #X connect 7 0 8 0;

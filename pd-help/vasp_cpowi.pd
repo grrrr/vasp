@@ -64,7 +64,7 @@
 #X msg 59 422 vasp bufcpowi1 bufcpowi2;
 #X obj 59 462 vasp.opt;
 #X text 75 88 needs two vectors (or more complex pairs);
-#X obj 59 552 VASP;
+#X obj 59 552 VASP-HELP;
 #X text 101 552 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 5 0 27 0;

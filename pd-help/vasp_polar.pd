@@ -64,7 +64,7 @@
 8 -262144 -1 -1;
 #X msg 59 314 vasp bufpol1 bufpol2;
 #X obj 59 337 vasp.polar;
-#X obj 59 522 VASP;
+#X obj 59 522 VASP-HELP;
 #X text 101 522 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;

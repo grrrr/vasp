@@ -34,7 +34,7 @@
 #X msg 77 260 vasp bufsign;
 #X text 79 237 use sign to generate a square wave out of a sine wave
 ;
-#X obj 46 370 VASP;
+#X obj 46 370 VASP-HELP;
 #X text 88 370 - vasp overview;
 #X connect 9 0 10 0;
 #X connect 10 0 5 0;

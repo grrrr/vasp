@@ -52,7 +52,7 @@
 #X obj 337 475 tabplay~ bufgate2;
 #X text 71 66 optional argument/right inlet: value (usually from 0-1
 to gate the soundfile sample for sample (not like a compressor!);
-#X obj 58 497 VASP;
+#X obj 58 497 VASP-HELP;
 #X text 100 497 - vasp overview;
 #X obj 60 391 vasp.update;
 #X floatatom 133 349 5 0 0;

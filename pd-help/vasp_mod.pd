@@ -36,7 +36,7 @@
 #X obj 100 268 vasp.% 0.25;
 #X text 187 260 modulo;
 #X msg 100 219 vasp bufmod;
-#X obj 53 388 VASP;
+#X obj 53 388 VASP-HELP;
 #X text 95 388 - vasp overview;
 #X obj 286 148 vasp.window lin;
 #X connect 5 0 3 0;

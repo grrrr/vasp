@@ -24,7 +24,7 @@
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;
 #X restore 569 325 pd clear_buffers;
-#X obj 63 495 VASP;
+#X obj 63 495 VASP-HELP;
 #X text 105 495 - vasp overview;
 #X obj 61 302 vasp.u;
 #X floatatom 194 210 5 0 0;

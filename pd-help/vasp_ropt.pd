@@ -69,7 +69,7 @@
 8 -262144 -1 -1;
 #X msg 63 346 vasp bufropt1 bufropt2;
 #X obj 63 373 vasp.ropt 0.2;
-#X obj 51 569 VASP;
+#X obj 51 569 VASP-HELP;
 #X text 93 569 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 7 0 8 0;

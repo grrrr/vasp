@@ -64,7 +64,7 @@
 8 -262144 -1 -1;
 #X obj 78 268 vasp.*phasor 22050;
 #X msg 78 245 vasp bufmphasor;
-#X obj 79 449 VASP;
+#X obj 79 449 VASP-HELP;
 #X text 121 449 - vasp overview;
 #X connect 1 0 10 0;
 #X connect 2 0 1 0;

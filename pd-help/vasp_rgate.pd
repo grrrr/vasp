@@ -69,7 +69,7 @@ the radius;
 #X obj 63 393 vasp.rgate 0.2;
 #X floatatom 142 367 5 0 0;
 #X text 192 366 value;
-#X obj 56 582 VASP;
+#X obj 56 582 VASP-HELP;
 #X text 98 582 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 7 0 8 0;

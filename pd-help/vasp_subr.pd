@@ -30,7 +30,7 @@
 #X obj 52 168 vasp.osc 44100;
 #X obj 52 191 vasp.* 0.5;
 #X msg 52 136 vasp bufsubr;
-#X obj 50 321 VASP;
+#X obj 50 321 VASP-HELP;
 #X text 92 321 - vasp overview;
 #X connect 6 0 0 0;
 #X connect 9 0 8 0;

@@ -26,7 +26,7 @@
 #X msg 77 131 vasp bufint;
 #X obj 77 178 vasp.update;
 #X text 70 77 argument: repetition count;
-#X obj 76 336 VASP;
+#X obj 76 336 VASP-HELP;
 #X text 118 336 - vasp overview;
 #X obj 77 289 vasp.update;
 #X msg 77 211 vasp bufint;

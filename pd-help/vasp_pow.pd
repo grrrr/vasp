@@ -34,7 +34,7 @@
 #X obj 77 303 vasp.pow 0.1;
 #X floatatom 144 279 5 0 0;
 #X text 202 278 exponent;
-#X obj 79 397 VASP;
+#X obj 79 397 VASP-HELP;
 #X text 121 397 - vasp overview;
 #X connect 7 0 9 0;
 #X connect 8 0 2 0;

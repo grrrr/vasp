@@ -42,7 +42,7 @@
 #X msg 58 236 vasp buflwr1;
 #X floatatom 113 308 5 0 0;
 #X obj 58 335 vasp.< 0.4;
-#X obj 59 418 VASP;
+#X obj 59 418 VASP-HELP;
 #X text 101 418 - vasp overview;
 #X connect 6 0 7 0;
 #X connect 7 0 8 0;

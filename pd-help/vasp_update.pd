@@ -27,7 +27,7 @@
 #X obj 62 374 vasp.u;
 #X text 119 374 abbreviation;
 #X msg 62 351 vasp bufup;
-#X obj 57 424 VASP;
+#X obj 57 424 VASP-HELP;
 #X text 99 424 - vasp overview;
 #X connect 0 0 1 0;
 #X connect 4 0 10 0;

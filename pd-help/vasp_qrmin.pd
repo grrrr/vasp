@@ -50,7 +50,7 @@
 #X text 112 435 -> current absolute minimum;
 #X obj 55 383 vasp.rmin?;
 #X msg 55 360 vasp bufqrmin1 bufqrmin2;
-#X obj 41 508 VASP;
+#X obj 41 508 VASP-HELP;
 #X text 83 508 - vasp overview;
 #X connect 8 0 9 0;
 #X connect 9 0 10 0;

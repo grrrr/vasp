@@ -65,7 +65,7 @@ and then outputs them and resets its status;
 -1;
 #X text 356 413 play;
 #X text 55 111 argument: number of vasps to be synced (default 2);
-#X obj 48 525 VASP;
+#X obj 48 525 VASP-HELP;
 #X text 90 525 - vasp overview;
 #X connect 5 0 6 0;
 #X connect 6 0 14 0;

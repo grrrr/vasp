@@ -12,7 +12,7 @@
 #X connect 2 0 3 0;
 #X restore 575 494 pd clear_buffer;
 #X text 177 472 <-- click to open more examples;
-#X obj 51 533 VASP;
+#X obj 51 533 VASP-HELP;
 #X text 93 532 - vasp overview;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufxtilt1 100 float 1;

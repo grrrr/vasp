@@ -30,7 +30,7 @@
 #X obj 77 297 vasp.update;
 #X obj 77 271 vasp.sqr;
 #X msg 77 246 vasp bufsqr;
-#X obj 45 375 VASP;
+#X obj 45 375 VASP-HELP;
 #X text 87 375 - vasp overview;
 #X connect 5 0 3 0;
 #X connect 7 0 5 0;

@@ -36,7 +36,7 @@
 #X msg 491 367 vasp bufgtr bufgtr1;
 #X text 338 218 1/true;
 #X text 337 258 0/false;
-#X obj 57 418 VASP;
+#X obj 57 418 VASP-HELP;
 #X text 99 418 - vasp overview;
 #X obj 58 366 vasp.update;
 #X floatatom 113 308 5 0 0;

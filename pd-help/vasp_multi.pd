@@ -12,7 +12,7 @@
 #X msg 56 257;
 #X obj 56 190 vasp.multi 2;
 #X obj 58 311 vasp.m;
-#X obj 58 366 VASP;
+#X obj 58 366 VASP-HELP;
 #X text 100 366 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 7 0 9 0;

@@ -8,7 +8,7 @@
 #X restore 567 519 pd clear_buffer;
 #X obj 51 19 cnv 15 15 15 empty empty vasp.fix 0 10 1 14 -262144 -1
 0;
-#X obj 52 493 VASP;
+#X obj 52 493 VASP-HELP;
 #X text 94 492 - vasp overview;
 #X text 43 57 NAN (not a number) - values become 0;
 #N canvas 0 0 450 300 graph1 0;

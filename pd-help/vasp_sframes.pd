@@ -31,7 +31,7 @@
 #X obj 63 396 vasp.f+;
 #X text 57 66 adds a value to the frames to a vasp;
 #X msg 319 195;
-#X obj 63 452 VASP;
+#X obj 63 452 VASP-HELP;
 #X text 105 452 - vasp overview;
 #X obj 61 169 vasp.window lin;
 #X obj 58 327 vasp.noise;

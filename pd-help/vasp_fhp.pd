@@ -70,7 +70,7 @@ default 1;
 #X msg 533 426 vasp buffhp;
 #X obj 260 319 t b f;
 #X obj 77 366 vasp.fhp 220;
-#X obj 78 503 VASP;
+#X obj 78 503 VASP-HELP;
 #X text 120 503 - vasp overview;
 #X connect 1 0 9 0;
 #X connect 2 0 1 0;

@@ -48,7 +48,7 @@ ylabel 94000 -1 -0.5 0 0.5 1;
 #X obj 67 411 vasp.update;
 #X obj 67 390 vasp.minmax;
 #X msg 67 363 vasp bufmm2 bufmm3;
-#X obj 65 534 VASP;
+#X obj 65 534 VASP-HELP;
 #X text 107 534 - vasp overview;
 #X connect 7 0 8 0;
 #X connect 8 0 4 0;

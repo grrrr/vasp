@@ -43,7 +43,7 @@
 #X msg 72 255 vasp bufmin1;
 #X obj 72 281 vasp.= bufmin;
 #X obj 72 328 vasp.min 0.4;
-#X obj 66 460 VASP;
+#X obj 66 460 VASP-HELP;
 #X text 108 460 - vasp overview;
 #X connect 4 0 5 0;
 #X connect 10 0 4 0;

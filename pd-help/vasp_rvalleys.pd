@@ -71,7 +71,7 @@
 #X floatatom 168 383 12 0 0;
 #X text 257 382 current density;
 #X obj 65 362 vasp.rvalleys 0.05;
-#X obj 54 595 VASP;
+#X obj 54 595 VASP-HELP;
 #X text 96 595 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 7 0 8 0;

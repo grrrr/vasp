@@ -14,7 +14,7 @@
 #X obj 65 334 vasp.chk;
 #X text 139 333 abbreviation;
 #X text 64 363 related objects:;
-#X obj 67 393 VASP;
+#X obj 67 393 VASP-HELP;
 #X text 109 392 - vasp overview;
 #X text 52 226 *;
 #X text 62 432 * prepend-object from iemlib2 (http://pd.iem.at/iemlib)

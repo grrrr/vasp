@@ -20,7 +20,7 @@ at the output;
 #X msg 76 328 vasp 1100 bufpart1 bufpart2;
 #X text 202 430 so there are just 4 vasps and no rest.... watch pd
 window;
-#X obj 66 498 VASP;
+#X obj 66 498 VASP-HELP;
 #X text 108 498 - vasp overview;
 #X text 67 101 left inlet: a vasp to define the buffername and the
 maximum length;

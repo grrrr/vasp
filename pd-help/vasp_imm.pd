@@ -11,7 +11,7 @@
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;
 #X restore 656 460 pd clear_buffer;
-#X obj 51 533 VASP;
+#X obj 51 533 VASP-HELP;
 #X text 93 532 - vasp overview;
 #X obj 159 477 vasp.!;
 #X text 58 476 abbreviation:;

@@ -66,7 +66,7 @@
 #X obj 78 292 vasp.update;
 #X obj 78 315 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
-#X obj 60 460 VASP;
+#X obj 60 460 VASP-HELP;
 #X text 102 460 - vasp overview;
 #X connect 1 0 13 0;
 #X connect 2 0 1 0;

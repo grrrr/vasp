@@ -1,5 +1,5 @@
 #N canvas 78 0 565 610 10;
-#X obj 111 546 VASP;
+#X obj 111 546 VASP-HELP;
 #X text 129 52 glossary:;
 #X text 105 84 buffer~ (MaxMSP) / array (Pd);
 #X text 129 100 resident data-field (can be channel-interleaved in

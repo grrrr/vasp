@@ -73,7 +73,7 @@
 #X text 206 329 density;
 #X obj 156 376 * 88200;
 #X text 242 396 current peaks;
-#X obj 46 559 VASP;
+#X obj 46 559 VASP-HELP;
 #X text 88 559 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 7 0 8 0;

@@ -69,7 +69,7 @@
 #X text 712 253 valleys;
 #X text 69 81 outlet: current density value;
 #X text 185 389 optimize the buffer content;
-#X obj 44 530 VASP;
+#X obj 44 530 VASP-HELP;
 #X text 86 530 - vasp overview;
 #X connect 4 0 7 0;
 #X connect 5 0 6 0;

@@ -61,7 +61,7 @@
 8 -262144 -1 -1;
 #X obj 68 345 vasp.r!fft;
 #X msg 68 320 vasp bufrifft;
-#X obj 61 461 VASP;
+#X obj 61 461 VASP-HELP;
 #X text 103 461 - vasp overview;
 #X connect 3 0 16 0;
 #X connect 9 0 10 0;

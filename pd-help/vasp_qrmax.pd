@@ -77,7 +77,7 @@
 #X text 136 346 use it to optimise radius;
 #X msg 53 234 vasp bufqrmax1 bufqrmax2;
 #X msg 53 282 vasp bufqrmax1 bufqrmax2;
-#X obj 50 618 VASP;
+#X obj 50 618 VASP-HELP;
 #X text 92 618 - vasp overview;
 #X connect 7 0 26 0;
 #X connect 12 0 5 0;

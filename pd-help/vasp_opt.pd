@@ -53,7 +53,7 @@
 #X msg 59 204 vasp bufopt;
 #X obj 59 227 vasp.opt;
 #X floatatom 102 250 8 0 0;
-#X obj 60 514 VASP;
+#X obj 60 514 VASP-HELP;
 #X text 102 514 - vasp overview;
 #X connect 3 0 11 0;
 #X connect 6 0 7 0;

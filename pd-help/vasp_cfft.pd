@@ -77,7 +77,7 @@ kHz).;
 #X obj 352 455 tabplay~ bufre;
 #X msg 486 449 vasp bufre bufim;
 #X text 67 556 related objects:;
-#X obj 68 596 VASP;
+#X obj 68 596 VASP-HELP;
 #X text 110 595 - vasp overview;
 #X obj 379 557 vasp.r!fft;
 #X obj 296 557 vasp.rfft;

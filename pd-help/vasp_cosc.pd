@@ -55,7 +55,7 @@ in samples;
 #X msg 77 127 vasp bufcosc1 bufcosc2;
 #X floatatom 162 168 7 0 0;
 #X text 239 168 set period length (samples);
-#X obj 79 424 VASP;
+#X obj 79 424 VASP-HELP;
 #X text 121 424 - vasp overview;
 #X connect 6 0 5 0;
 #X connect 7 0 8 0;
