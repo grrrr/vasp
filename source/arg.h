@@ -14,6 +14,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "vasp.h"
 #include "env.h"
 
+#define VASP_ARG() Argument()
+#define VASP_ARG_I(VAL) Argument().SetR(VAL)
+#define VASP_ARG_R(VAL) Argument().SetR(VAL)
+#define VASP_ARG_CX(RV,IV) Argument().SetCX(RV,IV)
+
 class Argument
 {
 public:
@@ -24,27 +29,29 @@ public:
 	Argument &Clear();
 	Argument &ClearAll();
 
-	Argument &Set(Vasp *v);
-	Argument &Set(Env *e);
-	Argument &Set(I argc,t_atom *argv);
-	Argument &Set(I i);
-	Argument &Set(F f);
-	Argument &Set(D d);
-	Argument &Set(F re,F im);
-	Argument &Set(VX *vec);
+	Argument &SetVasp(Vasp *v);
+	Argument &SetEnv(Env *e);
+	Argument &SetList(I argc,t_atom *argv);
+	Argument &SetI(I i);
+	Argument &SetR(F f);
+	Argument &SetR(D d);
+	Argument &SetR(I i) { return SetR((F)i); }
+	Argument &SetCX(F re,F im);
+	Argument &SetVX(VX *vec);
 
 	Argument *Next() { return nxt; }
 	Argument &Next(I i);
 	Argument &Add(Argument *a);
 
-	Argument &Add(Vasp *v);
-	Argument &Add(Env *e);
-	Argument &Add(I argc,t_atom *argv);
-	Argument &Add(I i);
-	Argument &Add(F f);
-	Argument &Add(D d);
-	Argument &Add(F re,F im);
-	Argument &Add(VX *vec);
+	Argument &AddVasp(Vasp *v);
+	Argument &AddEnv(Env *e);
+	Argument &AddList(I argc,t_atom *argv);
+	Argument &AddI(I i);
+	Argument &AddR(F f);
+	Argument &AddR(D d);
+	Argument &AddR(I i) { return AddR((F)i); }
+	Argument &AddCX(F re,F im);
+	Argument &AddVX(VX *vec);
 
 	BL IsNone() const { return tp == tp_none; }
 	BL IsList() const { return tp == tp_list; }

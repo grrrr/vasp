@@ -24,6 +24,8 @@ public:
 
 	BL HasArg() const { return arg != NULL; }
 
+	const C *opName() const { return opname; }
+
 	// check for overlap 
 	// \remark if on same vector, stride is the same for src, arg, dst!
 	inline BL SR_In() const { return rddt > rsdt && rddt < rsdt+frames*rss; } 

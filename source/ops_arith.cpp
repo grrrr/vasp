@@ -30,13 +30,13 @@ BL VecOp::d_divr(OpParam &p) { D__rbin(f_rdivr<S>,p); }
 BL VecOp::d_mod(OpParam &p) { D__rbin(f_rmod<S>,p); }
 
 
-VASP_BINARY("vasp.+",add,true,"adds a value or vasp")
-VASP_BINARY("vasp.-",sub,true,"subtracts a value or vasp")
-VASP_BINARY("vasp.!-",subr,true,"reverse subtracts a value or vasp")
-VASP_BINARY("vasp.*",mul,true,"multiplies by a value or vasp")
-VASP_BINARY("vasp./",div,true,"divides by a value or vasp")
-VASP_BINARY("vasp.!/",divr,true,"reverse divides by a value or vasp")
-VASP_BINARY("vasp.%",mod,true,"calculates the remainder of the division by a value or vasp")
+VASP_BINARY("vasp.+",add,true,VASP_ARG_R(0),"adds a value or vasp")
+VASP_BINARY("vasp.-",sub,true,VASP_ARG_R(0),"subtracts a value or vasp")
+VASP_BINARY("vasp.!-",subr,true,VASP_ARG_R(0),"reverse subtracts a value or vasp")
+VASP_BINARY("vasp.*",mul,true,VASP_ARG_R(1),"multiplies by a value or vasp")
+VASP_BINARY("vasp./",div,true,VASP_ARG_R(1),"divides by a value or vasp")
+VASP_BINARY("vasp.!/",divr,true,VASP_ARG_R(1),"reverse divides by a value or vasp")
+VASP_BINARY("vasp.%",mod,true,VASP_ARG_R(0),"calculates the remainder of the division by a value or vasp")
 
 // -----------------------------------------------------
 

@@ -62,6 +62,8 @@ Vasp *VaspOp::m_osc(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 			delete vecs;
 		}
 	}
+	else
+		post("%s - no arguments: no operation",p.opName());
 
 	return ret;
 }
@@ -121,15 +123,17 @@ Vasp *VaspOp::m_cosc(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 			delete vecs;
 		}
 	}
+	else
+		post("%s - no arguments: no operation",p.opName());
 
 	return ret;
 }
 
 
-VASP_ANYOP("vasp.osc",osc,1,false,"")
-VASP_ANYOP("vasp.*osc",mosc,1,true,"")
-VASP_ANYOP("vasp.cosc",cosc,1,false,"")
-VASP_ANYOP("vasp.*cosc",mcosc,1,true,"")
+VASP_ANYOP("vasp.osc",osc,1,false,VASP_ARG(),"")
+VASP_ANYOP("vasp.*osc",mosc,1,true,VASP_ARG(),"")
+VASP_ANYOP("vasp.cosc",cosc,1,false,VASP_ARG(),"")
+VASP_ANYOP("vasp.*cosc",mcosc,1,true,VASP_ARG(),"")
 
 // --- phasor ---------------------------------------
 
@@ -182,13 +186,15 @@ Vasp *VaspOp::m_phasor(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul
 			delete vecs;
 		}
 	}
+	else
+		post("%s - no arguments: no operation",p.opName());
 
 	return ret;
 }
 
 
-VASP_ANYOP("vasp.phasor",phasor,1,false,"")
-VASP_ANYOP("vasp.*phasor",mphasor,1,true,"")
+VASP_ANYOP("vasp.phasor",phasor,1,false,VASP_ARG(),"")
+VASP_ANYOP("vasp.*phasor",mphasor,1,true,VASP_ARG(),"")
 
 // --- noise --------------------------------
 

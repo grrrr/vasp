@@ -35,7 +35,7 @@ public:
 		size(0),sets(false)
 	{
 		if(argc >= 1 && CanbeFloat(argv[0]))
-			m_size(GetAFloat(argv[0]));
+			m_arg(GetAFloat(argv[0]));
 		else if(argc)
 			post("%s - Offset argument invalid -> ignored",thisName());
 
@@ -44,10 +44,10 @@ public:
 		AddOutAnything();
 		SetupInOut();
 
-		FLEXT_ADDMETHOD(1,m_size);
+		FLEXT_ADDMETHOD(1,m_arg);
 	}
 
-	V m_size(F s) 
+	virtual V m_arg(F s) 
 	{ 
 		size = s; 
 		sets = true;
@@ -66,7 +66,7 @@ protected:
 	BL sets;
 
 private:
-	FLEXT_CALLBACK_F(m_size);
+	FLEXT_CALLBACK_F(m_arg);
 };
 
 FLEXT_LIB_V("vasp.size vasp.s",vasp_size)
@@ -106,6 +106,85 @@ public:
 };
 
 FLEXT_LIB_V("vasp.size+ vasp.s+",vasp_dsize)
+
+
+
+/*! \class vasp_msize
+	\remark \b vasp.size*
+	\brief Sets vector buffer sizes by a factor
+	\since 0.0.6
+	\param cmdln.1 [_number=1] - factor for size
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+    \param inlet.2 _number - factor for size
+	\retval outlet vasp - modified vasp
+*/
+class vasp_msize:
+	public vasp_size
+{
+	FLEXT_HEADER(vasp_msize,vasp_size)
+
+public:
+	vasp_msize(I argc,t_atom *argv): 
+		vasp_size(argc,argv) 
+	{
+		if(argc && CanbeFloat(argv[0])) m_arg(GetAFloat(argv[0]));
+	}
+
+	virtual Vasp *x_work() 
+	{ 
+		Vasp *ret = new Vasp(ref); 
+		if(sets) ret->SizeM(factor);
+		return ret;
+	}
+
+	virtual V m_help() { post("%s - Multiply the size of the vector buffers",thisName()); }
+
+	virtual V m_arg(F f) 
+	{ 
+		factor = f; 
+		sets = true;
+	}
+
+protected:
+	R factor;
+};
+
+FLEXT_LIB_V("vasp.size* vasp.s*",vasp_msize)
+
+
+
+/*! \class vasp_rsize
+	\remark \b vasp.size/
+	\brief Sets vector buffer sizes by a factor
+	\since 0.0.6
+	\param cmdln.1 [_number=1] - divisor for size
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+    \param inlet.2 _number - divisor for size
+	\retval outlet vasp - modified vasp
+*/
+class vasp_rsize:
+	public vasp_msize
+{
+	FLEXT_HEADER(vasp_rsize,vasp_msize)
+
+public:
+	vasp_rsize(I argc,t_atom *argv): vasp_msize(argc,argv) {}
+
+	virtual Vasp *x_work() 
+	{ 
+		Vasp *ret = new Vasp(ref); 
+		if(sets) ret->SizeR(factor);
+		return ret;
+	}
+
+	virtual V m_help() { post("%s - Divide the size of the vector buffers",thisName()); }
+};
+
+FLEXT_LIB_V("vasp.size/ vasp.s/",vasp_rsize)
 
 
 

@@ -155,8 +155,8 @@ Vasp *VaspOp::m_window(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul
 	return ret;
 }
 
-VASP_ANYOP("vasp.window",window,0,false,"")
-VASP_ANYOP("vasp.*window",mwindow,0,true,"")
+VASP_ANYOP("vasp.window",window,0,false,VASP_ARG(),"")
+VASP_ANYOP("vasp.*window",mwindow,0,true,VASP_ARG(),"")
 
 
 

@@ -118,9 +118,11 @@ Vasp *VaspOp::m_tilt(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL symm,
 			delete vecs;
 		}
 	}
+	else
+		post("%s - no arguments: no operation",p.opName());
 
 	return ret;
 }
 
-VASP_ANYOP("vasp.tilt",tilt,1,true,"")
-VASP_ANYOP("vasp.xtilt",xtilt,1,true,"")
+VASP_ANYOP("vasp.tilt",tilt,1,true,VASP_ARG_R(1),"")
+VASP_ANYOP("vasp.xtilt",xtilt,1,true,VASP_ARG_R(1),"")

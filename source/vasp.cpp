@@ -49,6 +49,37 @@ Vasp::~Vasp()
 }
 
 
+BL Vasp::ChkArgs(I argc,t_atom *argv)
+{
+	I ix = 0;
+
+	// vasp keyword
+	t_symbol *v = ix < argc?flext_base::GetASymbol(argv[ix]):NULL;
+	if(v && v == vasp_base::sym_vasp) ix++; // if it is "vasp" ignore it
+
+	// length argument
+	if(argc > ix && flext_base::CanbeInt(argv[ix])) ix++;
+
+	while(argc > ix) {
+		// check for symbol
+		t_symbol *bsym = flext_base::GetASymbol(argv[ix]);
+		if(!bsym || !flext_base::GetString(bsym) || !flext_base::GetString(bsym)[0]) {  // expect a symbol
+			// not symbol -> bail out
+			return false;
+		}
+		else
+			ix++;
+
+		// check for offset
+		if(argc > ix && flext_base::CanbeInt(argv[ix])) ix++;
+
+		// check for channel
+		if(argc > ix && flext_base::CanbeInt(argv[ix])) ix++;
+	}
+
+	return true;
+}
+
 V Vasp::Resize(I rcnt) {
 	if(!ref) {
 		ref = new Ref[refs = rcnt];
@@ -248,6 +279,19 @@ V Vasp::SizeD(I sd)
 		VBuffer *buf = Buffer(i);
 		if(buf) { 
 			I s = buf->Frames()+sd;
+			buf->Frames(s >= 0?s:0,true);
+			delete buf;
+		}
+	}
+}
+
+
+V Vasp::SizeM(R f)
+{
+	for(I i = 0; i < Vectors(); ++i) {
+		VBuffer *buf = Buffer(i);
+		if(buf) { 
+			I s = buf->Frames()*f;
 			buf->Frames(s >= 0?s:0,true);
 			delete buf;
 		}

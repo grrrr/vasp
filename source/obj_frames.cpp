@@ -33,20 +33,21 @@ public:
 	vasp_frames(I argc,t_atom *argv):
 		frms(0),setf(false)
 	{
-		if(argc >= 1 && CanbeInt(argv[0])) 
-			m_frms(GetAInt(argv[0]));
-		else if(argc)
-			post("%s - Frame count argument invalid -> ignored",thisName());
+		if(argc && CanbeFloat(argv[0]))
+			m_arg(GetAFloat(argv[0]));
+		else if(argc) {
+			post("%s - argument invalid -> ignored",thisName());
+		}
 
 		AddInAnything();
 		AddInFloat();
 		AddOutAnything();
 		SetupInOut();
 
-		FLEXT_ADDMETHOD(1,m_frms);
+		FLEXT_ADDMETHOD(1,m_arg);
 	}
 
-	V m_frms(F f) 
+	virtual V m_arg(F f) 
 	{ 
 		frms = f; //! \todo unit processing
 		setf = true; 
@@ -65,7 +66,7 @@ protected:
 	BL setf;
 
 private:
-	FLEXT_CALLBACK_F(m_frms);
+	FLEXT_CALLBACK_F(m_arg);
 };
 
 FLEXT_LIB_V("vasp.frames vasp.f",vasp_frames)
@@ -105,6 +106,85 @@ public:
 };
 
 FLEXT_LIB_V("vasp.frames+ vasp.f+",vasp_dframes)
+
+
+
+/*! \class vasp_mframes
+	\remark \b vasp.frames*
+	\brief Sets frame count of vasp by a factor
+	\since 0.0.6
+	\param cmdln.1 [_number=1] - multiply of frame count 
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+    \param inlet.2 _number - multiply of frame count 
+	\retval outlet vasp - modified vasp
+*/
+class vasp_mframes:
+	public vasp_frames
+{
+	FLEXT_HEADER(vasp_mframes,vasp_frames)
+
+public:
+	vasp_mframes(I argc,t_atom *argv): 
+		vasp_frames(argc,argv) 
+	{
+		if(argc && CanbeFloat(argv[0])) m_arg(GetAFloat(argv[0]));
+	}
+
+	virtual Vasp *x_work() 
+	{ 
+		Vasp *ret = new Vasp(ref); 
+		if(setf) ret->FramesM(frms);
+		return ret;
+	}
+
+	virtual V m_help() { post("%s - Multiply a vasp's frame count",thisName()); }
+	
+	virtual V m_arg(F f) 
+	{ 
+		factor = f; 
+		setf = true; 
+	}
+
+protected:
+	F factor;
+};
+
+FLEXT_LIB_V("vasp.frames* vasp.f*",vasp_mframes)
+
+
+
+/*! \class vasp_rframes
+	\remark \b vasp.frames/
+	\brief Sets frame count of vasp by a divisor
+	\since 0.0.6
+	\param cmdln.1 [_number=1] - multiply of frame count 
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+    \param inlet.2 _number - divisor of frame count 
+	\retval outlet vasp - modified vasp
+*/
+class vasp_rframes:
+	public vasp_mframes
+{
+	FLEXT_HEADER(vasp_rframes,vasp_mframes)
+
+public:
+	vasp_rframes(I argc,t_atom *argv): vasp_mframes(argc,argv) {}
+
+	virtual Vasp *x_work() 
+	{ 
+		Vasp *ret = new Vasp(ref); 
+		if(setf) ret->FramesR(factor);
+		return ret;
+	}
+
+	virtual V m_help() { post("%s - Divide a vasp's frame count",thisName()); }
+};
+
+FLEXT_LIB_V("vasp.frames/ vasp.f/",vasp_rframes)
 
 
 

@@ -35,13 +35,18 @@ V lib_setup()
 	VASP_SETUP(size);  // vasp.size 
 	VASP_SETUP(dsize);  // vasp.size+ 
 	VASP_SETUP(qsize);  // vasp.size?
+	VASP_SETUP(msize);  // vasp.size*
+	VASP_SETUP(rsize);  // vasp.size/
 
 	VASP_SETUP(offset);  // vasp.offset
 	VASP_SETUP(doffset); // vasp.offset+
 	VASP_SETUP(qoffset);  // vasp.offset?
+
 	VASP_SETUP(frames);  // vasp.frames
 	VASP_SETUP(dframes);  // vasp.frames+
 	VASP_SETUP(qframes);  // vasp.frames?
+	VASP_SETUP(mframes);  // vasp.frames*
+	VASP_SETUP(rframes);  // vasp.frames/
 
 	VASP_SETUP(split);
 	VASP_SETUP(join);

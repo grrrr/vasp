@@ -20,6 +20,8 @@ public:
 //	Env(const Env &p);
 	~Env();
 
+	static BL ChkArgs(I argc,t_atom *argv);
+
 	V Clear();
 
 	BL Ok() const { return cnt && pos != NULL && val != NULL; }

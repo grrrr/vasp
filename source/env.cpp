@@ -9,21 +9,30 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "env.h"
+#include "classes.h"
 #include "util.h"
 
-Env::Env(I argc,t_atom *argv):
-	cnt(argc/2)
+Env::Env(I argc,t_atom *argv)
 {
+	I ix = 0;
+	t_symbol *v = ix < argc?flext_base::GetASymbol(argv[ix]):NULL;
+	if(v && v == vasp_base::sym_env) ix++; // if it is "env" ignore it
+
+	cnt = (argc-ix)/2;
 	pos = new R[cnt];
 	val = new R[cnt];
 
 	R prev = -BIG;
 	BL ok = true;
 	for(I i = 0; i < cnt; ++i) {
-		pos[i] = flext_base::GetAFloat(argv[i*2]);
+		pos[i] = flext_base::GetAFloat(argv[ix++]);
 		if(pos[i] < prev) ok = false;
 		prev = pos[i];
-		val[i] = flext_base::GetAFloat(argv[i*2+1]);
+		val[i] = flext_base::GetAFloat(argv[ix++]);
+	}
+
+	if(ix < argc) {
+		post("vasp - env pos/value pairs incomplete, omitted dangling value");
 	}
 
 	if(!ok) Clear();
@@ -38,6 +47,33 @@ Env::Env(const Env &s):
 */
 
 Env::~Env() { Clear(); }
+
+
+BL Env::ChkArgs(I argc,t_atom *argv)
+{
+	I ix = 0;
+
+	// vasp keyword
+	t_symbol *v = ix < argc?flext_base::GetASymbol(argv[ix]):NULL;
+	if(v && v == vasp_base::sym_env) ix++; // if it is "env" ignore it
+
+	while(argc > ix) {
+		// check for position
+		if(flext_base::CanbeFloat(argv[ix])) ix++;
+		else 
+			return false;
+
+		// check for value
+		if(argc > ix)
+			if(flext_base::CanbeFloat(argv[ix])) ix++;
+			else 
+				return false;
+	}
+
+	return true;
+}
+
+
 
 V Env::Clear()
 {

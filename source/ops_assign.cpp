@@ -25,5 +25,5 @@ BL VecOp::d_set(OpParam &p) { D__rbin(f_rset<S>,p); }
 BL VecOp::d_cset(OpParam &p) { D__cbin(f_cset<S>,p); }
 
 
-VASP_BINARY("vasp.=",set,false,"assigns a value or vasp")
-VASP_BINARY("vasp.c=",cset,false,"assigns a complex value or vasp")
+VASP_BINARY("vasp.=",set,false,VASP_ARG_R(0),"assigns a value or vasp")
+VASP_BINARY("vasp.c=",cset,false,VASP_ARG_R(0),"assigns a complex value or vasp")

@@ -20,18 +20,23 @@ Version history:
 - ADD: shortcuts for vasp.frames,vasp.frames+,vasp.frames? -> vasp.f,vasp.f+,vasp.f?
 - CHANGE: changed vasp.offs,vasp.offs+,vasp.offs? to vasp.offset,vasp.offset+,vasp.offset?
 - ADD: shortcuts for vasp.offset,vasp.offset+,vasp.offset? -> vasp.o,vasp.o+,vasp.o?
+- ADD: envelopes (env ...) as arguments to all operations where vasps are used
+- FIX: default arguments for all binary/anytype operations
+- ADD: vasp.frames* (vasp.f*), vasp.frames/ (vasp.f/), vasp.size* (vasp.s*), vasp.size/ (vasp.s/)
+- ADD: detached operation: operations run as threads, according to detach flag/message
+- CHANGE: vasp.sync has as many outputs as inputs and outputs all input vasps
 
 0.0.5:
-- FIXED: lacking sqrt in [vasp.rmin?],[vasp.rmax?]
-- FIXED: (offs >= frames) bug in [vasp.offs?] 
+- FIX: lacking sqrt in [vasp.rmin?],[vasp.rmax?]
+- FIX: (offs >= frames) bug in [vasp.offs?] 
 - ADD: lacking setup of [vasp.!-] and [vasp.c!-] objects 
-- FIXED: buggy [vasp.int] code
-- FIXED: recognition of integer arguments
+- FIX: buggy [vasp.int] code
+- FIX: recognition of integer arguments
 
 0.0.4:
 - CHANGE: vasp.min/max functions so that a vasp length 0 results in 0
 - REMOVED: [vasp.inv], [vasp.cinv].... already replaced by [vasp.!/ 1]
-- FIXED: outlet bug in [vasp.?]
+- FIX: outlet bug in [vasp.?]
 - ADD: right inlet to [vasp]... just like in [float] etc.
 
 0.0.3:
@@ -62,7 +67,7 @@ TODO list:
 features:
 ---------------------
 - introduce several log levels (for warning posts)
-- flags how to handle special situations (div/0, log(<0) etc.)
+- flags how to handle special situations (div/0, log(<0) etc.) -> NAN-filter
 - how handle symmetric data operations (x*): leave 0 and n-1 bin, odd remainder bin?
 - progress % - outlet?
 - asynchrone operations (multithreading, re-triggering) and interruptibility 
@@ -95,7 +100,9 @@ objects:
 - vasp.trigger object
 - vasp.expr
 
-- vasp.noradio vasp.!radio: filter object for radio commands
+- vasp.radio, vasp.noradio (vasp.!radio): filter objects for radio commands
+
+- vasp.!nan: NAN filter
 
 
 bugs:
@@ -117,3 +124,13 @@ documentation:
 ---------------------
 - have all the objects written in their full names
 - no special characters!
+
+
+
+
+4 fundamental parameter types:
+real - float 
+complex - list with 2 floats
+env - list with >= 3 float values
+vasp - list with ([f] s [f] [f] ) structure
+

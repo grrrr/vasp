@@ -140,7 +140,7 @@ class vasp_peaks:
 	FLEXT_HEADER(vasp_peaks,vasp_anyop)
 public:			
 	
-	vasp_peaks(I argc,t_atom *argv): vasp_anyop(argc,argv,true,XletCode(xlet::tp_float,0)) {}
+	vasp_peaks(I argc,t_atom *argv): vasp_anyop(argc,argv,VASP_ARG(),true,XletCode(xlet::tp_float,0)) {}
 
 	virtual Vasp *do_peaks(OpParam &p) { return VaspOp::m_peaks(p,ref,&dst); }
 		

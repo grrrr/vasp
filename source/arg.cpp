@@ -8,28 +8,35 @@ Argument &Argument::Parse(I argc,t_atom *argv)
 {
 	if(argc == 0)
 		Clear();
-	else if(argc == 1 && (flext_base::IsFloat(argv[0]) || flext_base::IsInt(argv[0]))) 
-		Set(flext_base::GetAFloat(argv[0]));
-	else if(argc == 2 && (flext_base::IsFloat(argv[0]) || flext_base::IsInt(argv[0])) && (flext_base::IsFloat(argv[1]) || flext_base::IsInt(argv[1])))
-		Set(flext_base::GetAFloat(argv[1]),flext_base::GetAFloat(argv[2]));
-/*
-	else if(argc == 3 && flext_base::IsFloat(argv[0]) && flext_base::IsFloat(argv[1]) && flext_base::IsFloat(argv[2])) {
-		VX *v = new VX(argc,argv);
-		if(v && v->Ok()) Set(v);
+	else // real?
+	if(argc == 1 && (flext_base::IsFloat(argv[0]) || flext_base::IsInt(argv[0]))) 
+		SetR(flext_base::GetAFloat(argv[0]));
+	else // complex?
+	if(argc == 2 && (flext_base::IsFloat(argv[0]) || flext_base::IsInt(argv[0])) && (flext_base::IsFloat(argv[1]) || flext_base::IsInt(argv[1])))
+		SetCX(flext_base::GetAFloat(argv[1]),flext_base::GetAFloat(argv[2]));
+	else // envelope?
+	if(Env::ChkArgs(argc,argv)) {
+		Env *e = new Env(argc,argv);
+		if(e && e->Ok()) SetEnv(e);
 		else {
-			post("Argument: vector is invalid");
+			Clear();
+			post("vasp - env argument is invalid");
+			delete e;
+		}
+	}
+	else // vasp?
+	if(Vasp::ChkArgs(argc,argv)) {
+		Vasp *v = new Vasp(argc,argv);
+		if(v && v->Ok()) SetVasp(v);
+		else {
+			Clear();
+			post("vasp - vasp argument is invalid");
 			delete v;
 		}
 	}
-*/
 	else {
-		Vasp *v = new Vasp(argc,argv);
-		if(v && v->Ok()) Set(v);
-		else {
-			Clear();
-			post("Argument: vasp is invalid");
-			delete v;
-		}
+		Clear();
+		post("vasp - invalid arguments");
 	}
 	return *this;
 }
@@ -72,49 +79,49 @@ Argument &Argument::ClearAll()
 	return *this;
 }
 
-Argument &Argument::Set(Vasp *v)
+Argument &Argument::SetVasp(Vasp *v)
 {
 	if(tp != tp_none) Clear();
 	dt.v = v; tp = tp_vasp;
 	return *this;
 }
 
-Argument &Argument::Set(Env *e)
+Argument &Argument::SetEnv(Env *e)
 {
 	if(tp != tp_none) Clear();
 	dt.env = e; tp = tp_env;
 	return *this;
 }
 
-Argument &Argument::Set(I argc,t_atom *argv)
+Argument &Argument::SetList(I argc,t_atom *argv)
 {
 	if(tp != tp_none) Clear();
 	dt.atoms = new flext_base::AtomList(argc,argv); tp = tp_list;
 	return *this;
 }
 
-Argument &Argument::Set(F f)
+Argument &Argument::SetR(F f)
 {
 	if(tp != tp_none) Clear();
 	dt.f = f; tp = tp_float;
 	return *this;
 }
 
-Argument &Argument::Set(I i)
+Argument &Argument::SetI(I i)
 {
 	if(tp != tp_none) Clear();
 	dt.i = i; tp = tp_int;
 	return *this;
 }
 
-Argument &Argument::Set(F re,F im)
+Argument &Argument::SetCX(F re,F im)
 {
 	if(tp != tp_none) Clear();
 	dt.cx = new CX(re,im); tp = tp_cx;
 	return *this;
 }
 
-Argument &Argument::Set(VX *vec)
+Argument &Argument::SetVX(VX *vec)
 {
 	if(tp != tp_none) Clear();
 	dt.vx = vec; tp = tp_vx;
@@ -169,19 +176,19 @@ Argument &Argument::Next(I i)
 	}
 }
 
-Argument &Argument::Add(Vasp *v) { Argument *a = new Argument; a->Set(v); return Add(a); }
+Argument &Argument::AddVasp(Vasp *v) { Argument *a = new Argument; a->SetVasp(v); return Add(a); }
 
-Argument &Argument::Add(Env *e) { Argument *a = new Argument; a->Set(e); return Add(a); }
+Argument &Argument::AddEnv(Env *e) { Argument *a = new Argument; a->SetEnv(e); return Add(a); }
 
-Argument &Argument::Add(I argc,t_atom *argv) { Argument *a = new Argument; a->Set(argc,argv); return Add(a); }
+Argument &Argument::AddList(I argc,t_atom *argv) { Argument *a = new Argument; a->SetList(argc,argv); return Add(a); }
 
-Argument &Argument::Add(I i) { Argument *a = new Argument; a->Set(i); return Add(a); }
+Argument &Argument::AddI(I i) { Argument *a = new Argument; a->SetI(i); return Add(a); }
 
-Argument &Argument::Add(F f) { Argument *a = new Argument; a->Set(f); return Add(a); }
+Argument &Argument::AddR(F f) { Argument *a = new Argument; a->SetR(f); return Add(a); }
 
-Argument &Argument::Add(F re,F im) { Argument *a = new Argument; a->Set(re,im); return Add(a); }
+Argument &Argument::AddCX(F re,F im) { Argument *a = new Argument; a->SetCX(re,im); return Add(a); }
 
-Argument &Argument::Add(VX *vec) { Argument *a = new Argument; a->Set(vec); return Add(a); }
+Argument &Argument::AddVX(VX *vec) { Argument *a = new Argument; a->SetVX(vec); return Add(a); }
 
 
 

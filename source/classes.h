@@ -19,10 +19,17 @@ class vasp_base:
 {
 	FLEXT_HEADER_S(vasp_base,flext_base,setup)
 
+public:
 	enum xs_unit {
 		xsu__ = -1,  // don't change
 		xsu_sample = 0,xsu_buffer,xsu_ms,xsu_s
 	};	
+
+	static const t_symbol *sym_vasp;
+	static const t_symbol *sym_env;
+	static const t_symbol *sym_complex;
+	static const t_symbol *sym_vector;
+	static const t_symbol *sym_radio;
 
 protected:
 	vasp_base();
@@ -43,12 +50,6 @@ protected:
 	BL detach;	// detached operation?
 
 	friend class Vasp;
-
-	static const t_symbol *sym_vasp;
-	static const t_symbol *sym_env;
-	static const t_symbol *sym_complex;
-	static const t_symbol *sym_vector;
-	static const t_symbol *sym_radio;
 
 	BL ToOutVasp(I outlet,Vasp &v);
 
@@ -73,7 +74,7 @@ class vasp_op:
 protected:
 	vasp_op(BL withto = false);
 
-	virtual V m_bang() = 0;						// do! and output current Vasp
+	virtual V m_dobang();						// bang method
 
 	virtual V m_vasp(I argc,t_atom *argv); // trigger
 	virtual I m_set(I argc,t_atom *argv);  // non trigger
@@ -86,10 +87,18 @@ protected:
 
 	FLEXT_CALLBACK_V(m_to)
 
+	FLEXT_CALLBACK(m_dobang)
+#ifdef FLEXT_THREADS
+	FLEXT_THREAD(m_bang)
+#else
 	FLEXT_CALLBACK(m_bang)
+#endif
 	FLEXT_CALLBACK_V(m_vasp)
 	FLEXT_CALLBACK_V(m_set)
 	FLEXT_CALLBACK_V(m_update)
+
+private:
+	virtual V m_bang() = 0;						// do! and output current Vasp
 };
 
 
@@ -137,7 +146,7 @@ class vasp_binop:
 	FLEXT_HEADER(vasp_binop,vasp_tx)
 
 protected:
-	vasp_binop(I argc,t_atom *argv,BL withto = false,UL outcode = 0);
+	vasp_binop(I argc,t_atom *argv,const Argument &def = Argument(),BL withto = false,UL outcode = 0);
 
 	// assignment functions
 	virtual V a_list(I argc,t_atom *argv); 
@@ -147,6 +156,8 @@ protected:
 	virtual V a_int(I f); 
 	virtual V a_complex(I argc,t_atom *argv); 
 	virtual V a_vector(I argc,t_atom *argv); 
+
+	V a_radio(I,t_atom *) {}
 
 	virtual Vasp *x_work();
 	virtual Vasp *tx_work(const Argument &arg);
@@ -161,6 +172,7 @@ private:
 	FLEXT_CALLBACK_1(a_int,I)
 	FLEXT_CALLBACK_V(a_complex)
 	FLEXT_CALLBACK_V(a_vector)
+	FLEXT_CALLBACK_V(a_radio)
 };
 
 
@@ -172,10 +184,12 @@ class vasp_anyop:
 	FLEXT_HEADER(vasp_anyop,vasp_tx)
 
 protected:
-	vasp_anyop(I argc,t_atom *argv,BL withto = false,UL outcode = 0);
+	vasp_anyop(I argc,t_atom *argv,const Argument &def = Argument(),BL withto = false,UL outcode = 0);
 
 	// assignment functions
 	virtual V a_list(I argc,t_atom *argv); 
+
+	V a_radio(I,t_atom *) {}
 
 	virtual Vasp *x_work();
 	virtual Vasp *tx_work(const Argument &arg);
@@ -184,6 +198,7 @@ protected:
 
 private:
 	FLEXT_CALLBACK_V(a_list)
+	FLEXT_CALLBACK_V(a_radio)
 };
 
 
@@ -206,13 +221,13 @@ protected:																		\
 FLEXT_LIB(name,vasp__##op)
 
 
-#define VASP_BINARY(name,op,to,help)											\
+#define VASP_BINARY(name,op,to,def,help)											\
 class vasp__ ## op:																\
 	public vasp_binop															\
 {																				\
 	FLEXT_HEADER(vasp__##op,vasp_binop)											\
 public:																			\
-	vasp__##op(I argc,t_atom *argv): vasp_binop(argc,argv,to) {}				\
+	vasp__##op(I argc,t_atom *argv): vasp_binop(argc,argv,def,to) {}			\
 protected:																		\
 	virtual Vasp *tx_work(const Argument &arg)									\
 	{																			\
@@ -224,13 +239,13 @@ protected:																		\
 FLEXT_LIB_V(name,vasp__##op)
 
 
-#define VASP_ANYOP(name,op,args,to,help)										\
+#define VASP_ANYOP(name,op,args,to,def,help)									\
 class vasp__ ## op:																\
 	public vasp_anyop															\
 {																				\
 	FLEXT_HEADER(vasp__##op,vasp_anyop)											\
 public:																			\
-	vasp__##op(I argc,t_atom *argv): vasp_anyop(argc,argv,to) {}				\
+	vasp__##op(I argc,t_atom *argv): vasp_anyop(argc,argv,def,to) {}			\
 protected:																		\
 	virtual Vasp *tx_work(const Argument &arg)									\
 	{																			\

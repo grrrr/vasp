@@ -45,6 +45,8 @@ public:
 	Vasp(I frames,const Ref &r);
 	~Vasp();
 
+	static BL ChkArgs(I argc,t_atom *argv);
+
 	const C *thisName() const { return typeid(*this).name(); }
 
 	Vasp &operator =(const Vasp &v);
@@ -66,12 +68,20 @@ public:
 	// set frame count
 	V Frames(I fr) { frames = fr; }
 	// set frame count differentially
-	V FramesD(I frd) { frames += frd; }
+	V FramesD(I frd) { if(frames >= 0) frames += frd; }
+	// set frame count 
+	V FramesM(R f) { if(frames >= 0) frames = (int)(frames*f); }
+	// set frame count 
+	V FramesR(R f) { if(f) FramesM(1./f); else Frames(0); }
 
 	// set buffer sizes
 	V Size(I fr);
 	// set frame count differentially
 	V SizeD(I frd);
+	// set frame count 
+	V SizeM(R f);
+	// set frame count 
+	V SizeR(R f) { if(f) SizeM(1./f); else Size(0); }
 
 	// actual length of the vasp (in frames)
 	I ChkFrames() const;

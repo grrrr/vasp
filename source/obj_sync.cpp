@@ -22,7 +22,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\param inlet.1 set - vasp to be stored 
 	\param inlet.1 reset - clear all hit flags
 	\param inlet.+n vasp/anything - sets hit flag
-	\retval outlet vasp - stored vasp 
+	\retval outlet.* vasp - stored vasps
 
 	\todo Message for selection if only vasp input triggers (or any one).
 	\todo Message for selection of manual or auto reset upon trigger
@@ -35,10 +35,11 @@ class vasp_sync:
 public:
 	vasp_sync(I n):
 		flags(new BL[n]),
-		autoreset(true),vasponly(false)
+		autoreset(true),vasponly(false),
+		stored(new Vasp[n-1] )
 	{
 		AddInAnything(n);
-		AddOutAnything();
+		AddOutAnything(n);
 		SetupInOut();
 
 		FLEXT_ADDMETHOD_(0,"reset",m_reset);
@@ -46,10 +47,19 @@ public:
 		m_reset();
 	}
 
-	~vasp_sync()	{ if(flags) delete[] flags; }
+	~vasp_sync()	
+	{ 
+		if(flags) delete[] flags; 
+		if(stored) delete[] stored; 
+	}
 
-	V chkbang(I n) 
+	V chkbang(I n,Vasp *a = NULL) 
 	{
+		if(a && n > 0) { 
+			stored[n-1] = *a;
+			delete a;
+		}
+
 		BL f = flags[n]; 
 		flags[n] = true; 
 		if(!f) { // flags have changed
@@ -58,7 +68,10 @@ public:
 			for(I i = 0; i < CntIn(); ++i) all = all && flags[i];
 
 			if(all) {
-				if(ref.Ok()) ToOutVasp(0,ref);
+				if(ref.Ok()) {
+					for(I i = CntIn()-1; i > 0; --i) ToOutVasp(i,stored[i-1]);
+					ToOutVasp(0,ref);
+				}
 				else ToOutBang(0);
 
 				if(autoreset) m_reset();
@@ -76,7 +89,8 @@ public:
 	virtual bool m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	{
 		if(inlet > 0 && (!vasponly || s == sym_vasp)) {
-			chkbang(inlet);
+			Vasp *a = new Vasp(argc,argv);
+			chkbang(inlet,a);
 			return true;
 		}
 		else
@@ -87,6 +101,7 @@ public:
 private:
 	BL autoreset,vasponly;
 	BL *flags;
+	Vasp *stored;
 
 	FLEXT_CALLBACK(m_reset)
 };

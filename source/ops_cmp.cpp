@@ -29,12 +29,12 @@ BL VecOp::d_geq(OpParam &p) { D__rbin(f_rgeq<S>,p); }
 BL VecOp::d_equ(OpParam &p) { D__rbin(f_requ<S>,p); }
 BL VecOp::d_neq(OpParam &p) { D__rbin(f_rneq<S>,p); }
 
-VASP_BINARY("vasp.<",lwr,true,"")
-VASP_BINARY("vasp.>",gtr,true,"")
-VASP_BINARY("vasp.<=",leq,true,"")
-VASP_BINARY("vasp.>=",geq,true,"")
-VASP_BINARY("vasp.==",equ,true,"")
-VASP_BINARY("vasp.!=",neq,true,"")
+VASP_BINARY("vasp.<",lwr,true,VASP_ARG_R(0),"")
+VASP_BINARY("vasp.>",gtr,true,VASP_ARG_R(0),"")
+VASP_BINARY("vasp.<=",leq,true,VASP_ARG_R(0),"")
+VASP_BINARY("vasp.>=",geq,true,VASP_ARG_R(0),"")
+VASP_BINARY("vasp.==",equ,true,VASP_ARG_R(0),"")
+VASP_BINARY("vasp.!=",neq,true,VASP_ARG_R(0),"")
 
 
 // --------------------------------------------------------------
@@ -60,11 +60,11 @@ BL VecOp::d_rmin(OpParam &p) { return d__cbin(f_rmin<S>,p); }
 BL VecOp::d_rmax(OpParam &p) { return d__cbin(f_rmax<S>,p); }
 
 
-VASP_BINARY("vasp.min",min,true,"assigns the minimum of the comparison with a value or vasp")
-VASP_BINARY("vasp.max",max,true,"assigns the maximum of the comparison with a value or vasp")
+VASP_BINARY("vasp.min",min,true,VASP_ARG_R(0),"assigns the minimum of the comparison with a value or vasp")
+VASP_BINARY("vasp.max",max,true,VASP_ARG_R(0),"assigns the maximum of the comparison with a value or vasp")
 
-VASP_BINARY("vasp.rmin",rmin,true,"assigns the minimum of the radius comparison with a complex value or vasp")
-VASP_BINARY("vasp.rmax",rmax,true,"assigns the maximum of the radius comparison with a complex value or vasp")
+VASP_BINARY("vasp.rmin",rmin,true,VASP_ARG_R(0),"assigns the minimum of the radius comparison with a complex value or vasp")
+VASP_BINARY("vasp.rmax",rmax,true,VASP_ARG_R(0),"assigns the maximum of the radius comparison with a complex value or vasp")
 
 
 // --------------------------------------------------------------
@@ -177,9 +177,9 @@ Vasp *VaspOp::m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	return ret;
 }
 
-VASP_ANYOP("vasp.gate",gate,1,true,"") 
+VASP_ANYOP("vasp.gate",gate,1,true,VASP_ARG_R(1),"") 
 //VASP_ANYOP("vasp.!gate",igate,1,true,"") 
-VASP_ANYOP("vasp.rgate",rgate,1,true,"") 
+VASP_ANYOP("vasp.rgate",rgate,1,true,VASP_ARG_R(1),"") 
 //VASP_ANYOP("vasp.r!gate",rigate,1,true,"") 
 
 // --------------------------------------------------------------

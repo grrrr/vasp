@@ -51,8 +51,8 @@ Vasp *VaspOp::m_rpow(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	return ret;
 }
 
-VASP_BINARY("vasp.pow",pow,true,"") 
-VASP_ANYOP("vasp.rpow",rpow,1,true,"") 
+VASP_BINARY("vasp.pow",pow,true,VASP_ARG_R(1),"") 
+VASP_ANYOP("vasp.rpow",rpow,1,true,VASP_ARG_R(1),"") 
 
 
 // --------------------------------------------------------------

@@ -41,12 +41,12 @@ BL VecOp::d_cdiv(OpParam &p) { return d__cbin(f_cdiv<S>,p); }
 BL VecOp::d_cdivr(OpParam &p) { return d__cbin(f_cdivr<S>,p); }
 
 
-VASP_BINARY("vasp.c+",cadd,true,"adds a complex value or vasp")
-VASP_BINARY("vasp.c-",csub,true,"subtracts a complex value or vasp")
-VASP_BINARY("vasp.c!-",csubr,true,"reverse subtracts a complex value or vasp")
-VASP_BINARY("vasp.c*",cmul,true,"multiplies by a complex value or vasp")
-VASP_BINARY("vasp.c/",cdiv,true,"divides by a complex value or vasp")
-VASP_BINARY("vasp.c!/",cdivr,true,"reverse divides by a complex value or vasp")
+VASP_BINARY("vasp.c+",cadd,true,VASP_ARG_R(0),"adds a complex value or vasp")
+VASP_BINARY("vasp.c-",csub,true,VASP_ARG_R(0),"subtracts a complex value or vasp")
+VASP_BINARY("vasp.c!-",csubr,true,VASP_ARG_R(0),"reverse subtracts a complex value or vasp")
+VASP_BINARY("vasp.c*",cmul,true,VASP_ARG_R(1),"multiplies by a complex value or vasp")
+VASP_BINARY("vasp.c/",cdiv,true,VASP_ARG_R(1),"divides by a complex value or vasp")
+VASP_BINARY("vasp.c!/",cdivr,true,VASP_ARG_R(1),"reverse divides by a complex value or vasp")
 
 
 // -----------------------------------------------------
@@ -113,7 +113,7 @@ Vasp *VaspOp::m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 	return ret;
 }
 
-VASP_ANYOP("vasp.cpowi",cpowi,0,true,"") 
+VASP_ANYOP("vasp.cpowi",cpowi,0,true,VASP_ARG_I(1),"") 
 
 // -----------------------------------------------------
 

@@ -175,10 +175,10 @@ Vasp *VaspOp::m_mirr(OpParam &p,Vasp &src,Vasp *dst,BL symm)
 }
 
 
-VASP_ANYOP("vasp.shift",shift,0,true,"")
-VASP_ANYOP("vasp.xshift",xshift,0,true,"")
-VASP_ANYOP("vasp.rot",rot,0,true,"")
-VASP_ANYOP("vasp.xrot",xrot,0,true,"")
+VASP_ANYOP("vasp.shift",shift,0,true,VASP_ARG_I(0),"")
+VASP_ANYOP("vasp.xshift",xshift,0,true,VASP_ARG_I(0),"")
+VASP_ANYOP("vasp.rot",rot,0,true,VASP_ARG_I(0),"")
+VASP_ANYOP("vasp.xrot",xrot,0,true,VASP_ARG_I(0),"")
 VASP_UNARY("vasp.mirr",mirr,true,"")
 VASP_UNARY("vasp.xmirr",xmirr,true,"")
 
