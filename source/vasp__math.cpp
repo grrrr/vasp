@@ -1,366 +1,19 @@
+/* 
+
+VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+
+Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+For information on usage and redistribution, and for a DISCLAIMER OF ALL
+WARRANTIES, see the file, "license.txt," in this distribution.  
+
+*/
+
 #include "main.h"
 #include <math.h>
 
 #define PI 3.1415926535897932385
 
 inline F sgn(F x) { return x < 0.?-1.F:1.F; }
-
-
-// just transform real vectors
-Vasp *Vasp::fr_nop(const C *op,F v,V (*f)(F *,F,I))
-{
-	BL ok = true;
-	for(I ci = 0; ok && ci < this->Vectors(); ++ci) {
-		VBuffer *bref = this->Buffer(ci);		
-		if(!bref->Data()) {
-			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
-			ok = false; // really return?
-		}
-		else {
-			f(bref->Data()+bref->Offset(),v,bref->Length());
-			bref->Dirty();
-		}
-		delete bref;
-	}
-
-	// output Vasp
-	return ok?new Vasp(*this):NULL;
-}
-
-// just transform complex vector pairs
-Vasp *Vasp::fc_nop(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I))
-{
-	BL ok = true;
-
-	if(this->Vectors()%2 != 0) {
-		post("%s(%s) - number of dst vectors is odd - omitting last vector",thisName(),op);
-		// clear superfluous vector?
-	}
-
-	for(I ci = 0; ok && ci < this->Vectors()/2; ++ci) {
-		VBuffer *bre = this->Buffer(ci*2),*bim = this->Buffer(ci*2+1); // complex channels
-
-		if(!bre->Data()) {
-			post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,bre->Name());
-			ok = false; // really return?
-		}
-		else if(!bim->Data()) {
-			post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,bim->Name());
-			ok = false; // really return?
-		}
-		else {
-			I frms = bre->Length();
-			if(frms != bim->Length()) {
-				post("%s - real/imag dst vector length is not equal - using minimum",thisName());
-				frms = min(frms,bim->Length());
-
-				// clear the rest?
-			}
-
-			f(bre->Data()+bre->Offset(),bim->Data()+bre->Offset(),cx.real,cx.imag,frms);
-			bre->Dirty(); bim->Dirty();
-		}
-
-		delete bre;
-		delete bim;
-	}
-
-	// output corrected!! Vasp
-	return ok?new Vasp(*this):NULL;
-}
-
-// just transform complex vector pairs
-Vasp *Vasp::fc_nop(const C *op,const Argument &arg,const nop_funcs &f)
-{
-	if(arg.IsFloat()) 
-		return fc_nop(op,CX(arg.GetFloat()),f);
-	else if(arg.IsComplex()) 
-		return fc_nop(op,arg.GetComplex(),f);
-	else 
-		return arg.IsNone()?new Vasp(*this):NULL;
-}
-
-
-// for real values or single real vector
-Vasp *Vasp::fr_arg(const C *op,F v,V (*f)(F *,F,I))
-{
-	BL ok = true;
-	for(I ci = 0; ok && ci < this->Vectors(); ++ci) {
-		VBuffer *bref = this->Buffer(ci);		
-		if(!bref->Data()) {
-			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
-			ok = false; // really return?
-		}
-		else {
-			f(bref->Data()+bref->Offset(),v,bref->Length());
-			bref->Dirty();
-		}
-		delete bref;
-	}
-
-	// output Vasp
-	return ok?new Vasp(*this):NULL;
-}
-
-Vasp *Vasp::fr_arg(const C *op,const Vasp &arg,V (*f)(F *,const F *,I))
-{
-	if(!arg.Ok()) {
-		post("%s(%s) - invalid argument vasp detected and ignored",thisName(),op);
-		return NULL;
-	}
-
-	if(arg.Vectors() > 1) {
-		post("%s(%s) - using only first src vector",thisName(),op);
-	}
-
-	BL ok = true;
-
-	VBuffer *barg = arg.Buffer(0);
-	if(!barg->Data()) {
-		post("%s(%s) - src vector (%s) is invalid",thisName(),op,barg->Name());
-		ok = false; // really return?
-	}
-	else {
-		I frms = barg->Frames();
-
-		for(I ci = 0; ok && ci < this->Vectors(); ++ci) {
-			VBuffer *bref = this->Buffer(ci);		
-
-			if(!bref->Data()) {
-				post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
-				ok = false; // really break?
-			}
-			else {
-				I frms1 = frms;
-				if(frms1 != bref->Length()) {
-					post("%s(%s) - src/dst vector length not equal - using minimum",thisName(),op);
-					frms1 = min(frms1,bref->Length());
-
-					// clear rest?
-				}
-
-				f(bref->Data()+bref->Offset(),barg->Data()+barg->Offset(),frms1);
-				bref->Dirty();
-			}
-
-			delete bref;
-		}
-	}
-
-	delete barg;
-
-	// output corrected Vasp
-	return ok?new Vasp(*this):NULL;
-}
-
-// for real values or single real vector
-Vasp *Vasp::fr_arg(const C *op,const Argument &arg,const arg_funcs &f)
-{
-	if(arg.IsFloat()) 
-		return fr_arg(op,arg.GetFloat(),f); // real input
-	else if(arg.IsVasp()) 
-		return fr_arg(op,arg.GetVasp(),f); // single vector source
-	else
-		return NULL;
-}
-
-
-// for complex values or complex vector pair
-Vasp *Vasp::fc_arg(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I))
-{
-	// complex (or real) input
-
-	if(this->Vectors()%2 != 0) {
-		post("%s(%s) - number of src vectors is odd - omitting last vector",thisName(),op);
-		// clear superfluous vector?
-	}
-
-	BL ok = true;
-
-	for(I ci = 0; ci < this->Vectors()/2; ++ci) {
-		VBuffer *bre = this->Buffer(ci*2),*bim = this->Buffer(ci*2+1); // complex channels
-
-		if(!bre->Data()) {
-			post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,bre->Name());
-			ok = false;
-		}
-		if(!bim->Data()) {
-			post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,bim->Name());
-			ok = false;
-		}
-		else {
-			I frms = bre->Length();
-			if(frms != bim->Length()) {
-				post("%s(%s) - real/imag dst vector length is not equal - using minimum",thisName(),op);
-				frms = min(frms,bim->Length());
-
-				// clear the rest?
-			}
-
-			f(bre->Data()+bre->Offset(),bim->Data()+bim->Offset(),cx.real,cx.imag,frms);
-			bre->Dirty(); bim->Dirty();
-		}
-
-		delete bre;
-		delete bim;
-	}
-
-	// output corrected vasp
-	return ok?new Vasp(*this):NULL;
-}
-
-// for complex values or complex vector pair
-Vasp *Vasp::fc_arg(const C *op,const Vasp &arg,V (*f)(F *,F *,const F *,const F *,I))
-{
-	if(!arg.Ok()) {
-		post("%s(%s) - invalid argument vasp detected and ignored",thisName(),op);
-		return NULL;
-	}
-
-	BL ok = true;
-	VBuffer *brarg = arg.Buffer(0),*biarg = arg.Buffer(1);
-
-	if(!biarg) {
-		post("%s(%s) - only one src vector - setting imaginary part to 0",thisName(),op);					
-	}
-	else if(arg.Vectors() > 2) {
-		post("%s(%s) - using only first two src vectors",thisName(),op);
-	}
-
-	if(!brarg->Data()) {
-		post("%s(%s) - real src vector (%s) is invalid",thisName(),op,brarg->Name());
-		ok = false;
-	}
-	else if(biarg && !biarg->Data()) {
-		post("%s(%s) - imag src vector (%s) is invalid",thisName(),op,biarg->Name());
-		ok = false;
-	}
-	else {
-		I frms = brarg->Length();
-		if(biarg && frms != biarg->Length()) {
-			post("%s(%s) - real/imag src vector length is not equal - using minimum",thisName(),op);
-			frms = min(frms,biarg->Length());
-		}
-
-		if(this->Vectors()%2 != 0) {
-			post("%s(%s) - number of dst vectors is odd - omitting last vector",thisName(),op);
-			// clear superfluous vector?
-		}
-
-		for(I ci = 0; ok && ci < this->Vectors()/2; ++ci) {
-			VBuffer *brref = this->Buffer(ci*2),*biref = this->Buffer(ci*2+1);		
-
-			if(!brref->Data()) {
-				post("%s(%s) - real dst vector (%s) is invalid",thisName(),op,brref->Name());
-				ok = false; // really break?
-			}
-			else if(biref && !biref->Data()) {
-				post("%s(%s) - imag dst vector (%s) is invalid",thisName(),op,biref->Name());
-				ok = false; // really break?
-			}
-			else {
-				I frms1 = frms;
-				if(frms1 != brref->Length() || frms1 != biref->Length()) {
-					post("%s(%s) - source/target vector length not equal - using minimum",thisName(),op);
-					frms1 = min(frms1,min(biref->Length(),brref->Length()));
-
-					// clear rest?
-				}
-
-				f(brref->Data()+brref->Offset(),biref->Data()+biref->Offset(),brarg->Data()+brarg->Offset(),biarg->Data()+biarg->Offset(),frms1);
-				brref->Dirty(); biref->Dirty();
-			}
-
-			delete brref;
-			delete biref;
-		}
-	}
-
-	delete brarg;
-	if(biarg) delete biarg;
-
-	// output corrected!! Vasp
-	return ok?new Vasp(*this):NULL;
-}
-
-Vasp *Vasp::fc_arg(const C *op,const Argument &arg,const arg_funcs &f)
-{
-	if(arg.IsFloat()) 
-		return fc_arg(op,CX(arg.GetFloat()),f);
-	else if(arg.IsComplex()) 
-		return fc_arg(op,arg.GetComplex(),f);
-	else if(arg.IsVasp()) 
-		return fc_arg(op,arg.GetVasp(),f); // pairs of vectors
-	else
-		return NULL;
-}
-
-// for multiple vectors
-Vasp *Vasp::fm_arg(const C *op,const Vasp &arg,V (*f)(F *,const F *,I))
-{
-	if(!arg.Ok()) {
-		post("%s(%s) - invalid src Vasp",thisName(),op);
-		return NULL;
-	}
-
-	if(!this->Ok()) {
-		post("%s(%s) - invalid dst Vasp",thisName(),op);
-		return NULL;
-	}
-
-	I vecs = this->Vectors();
-	if(vecs != arg.Vectors()) {
-		post("%s(%s) - unequal src/dst vector count - using minimum",thisName(),op);
-
-		vecs = min(vecs,arg.Vectors());
-		// clear the rest?
-	}
-
-	BL ok = true,warned = false;
-
-	// do
-	for(I ci = 0; ok && ci < vecs; ++ci) {
-		VBuffer *bref = this->Buffer(ci),*barg = arg.Buffer(ci);
-
-		if(!bref->Data()) {
-			post("%s(%s) - dst vector (%s) is invalid",thisName(),op,bref->Name());
-			ok = false; // really return?
-		}
-		if(!barg->Data()) {
-			post("%s(%s) - src vector (%s) is invalid",thisName(),op,barg->Name());
-			ok = false; // really return?
-		}
-		else {
-			I frms = bref->Length();
-			if(frms != barg->Length()) {
-				if(!warned) { // warn only once (or for each vector?) 
-					post("%s(%s) - src/dst vector length not equal - using minimum",thisName(),op);
-					warned = true;
-				}
-
-				frms = min(frms,barg->Length());
-				// clear the rest?
-			}
-
-			f(bref->Data()+bref->Offset(),barg->Data()+barg->Offset(),frms);
-			bref->Dirty();
-		}
-
-		delete bref;
-		delete barg;
-	}
-
-	// output corrected Vasp
-	return ok?new Vasp(*this):NULL;
-}
-
-// for multiple vectors
-
-Vasp *Vasp::fm_arg(const C *op,const Argument &arg,const arg_funcs &f)
-{
-	return arg.IsVasp()?fm_arg(op,arg.GetVasp(),f):NULL;
-}
-
 
 
 static V d_copy(F *dst,F val,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] = val; }
@@ -454,7 +107,7 @@ Vasp *Vasp::m_mmul(const Argument &arg) { return fm_arg("mmul",arg,f_mul); }
 
 // how about div by 0?
 
-static V d_div(F *dst,F v,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] /= v; }
+static V d_div(F *dst,F v,I cnt) { F iv = 1./v; for(I i = 0; i < cnt; ++i) dst[i] *= iv; }
 static V d_div(F *dst,const F *src,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] /= src[i]; }
 
 static V d_div(F *rdst,F *idst,F re,F im,I cnt) 
@@ -563,12 +216,20 @@ static V d_ssqrt(F *dst,F,I cnt)
 	for(I i = 0; i < cnt; ++i,++dst) *dst = (F)sqrt(fabs(*dst))*sgn(*dst);
 }
 
-Vasp *Vasp::m_pow(F arg) { return fr_nop("pow",arg,d_pow); }
+Vasp *Vasp::m_pow(const Argument &arg) 
+{ 
+	return arg.IsFloat()?fr_nop("pow",arg.GetFloat(),d_pow):NULL; 
+}
+
+Vasp *Vasp::m_root(const Argument &arg) 
+{ 
+	return arg.IsFloat()?fr_nop("root",arg.GetFloat(),d_root):NULL; 
+}
+
 //Vasp *Vasp::m_cpow(I argc,t_atom *argv) { return fm_arg("cpow",argc,argv,d_max); }
 Vasp *Vasp::m_sqr() { return fr_nop("sqr",0,d_sqr); }
 Vasp *Vasp::m_ssqr() { return fr_nop("ssqr",0,d_ssqr); }
 Vasp *Vasp::m_csqr() { return fc_nop("csqr",CX(),d_csqr); }
-Vasp *Vasp::m_root(F arg) { return fr_nop("root",arg,d_root); }
 Vasp *Vasp::m_sqrt() { return fr_nop("sqrt",0,d_sqrt); }
 Vasp *Vasp::m_ssqrt() { return fr_nop("ssqrt",0,d_ssqrt); }
 
@@ -674,126 +335,5 @@ Vasp *Vasp::m_cswap() { return fc_nop("cswap",CX(),d_cswap); }
 Vasp *Vasp::m_cconj() { return fc_nop("cconj",CX(),d_cconj); }
 
 
-
-
-static V d_shift(F *dt,F sh,I cnt) 
-{ 
-	I ish = (I)sh;
-	if(sh == ish) { // integer shift
-		// no zero filling!
-
-		if(ish > 0)
-			for(I i = cnt-1; i >= ish; ++i,++dt) *dt = dt[-ish];
-		else
-			for(I i = ish; i < cnt; ++i,++dt) dt[-ish] = *dt;
-	}
-	else {
-		// requires interpolation
-		post("non-integer shift not implemented - truncating to integer");
-		d_shift(dt,ish,cnt);
-	}
-}
-
-static V d_xshift(F *dt,F sh,I cnt) 
-{ 
-	I ish = (I)sh;
-	if(sh == ish) { // integer shift
-		// no zero filling!
-
-		I i,hcnt = cnt/2;
-		// what to do if one sample remains? -> leave it in the middle
-
-		if(ish > 0) {
-			for(i = hcnt-1; i >= ish; ++i) dt[i] = dt[i-ish];
-			for(i = (cnt-hcnt)+ish; i < cnt; ++i) dt[i-ish] = dt[i];
-		}
-		else {
-			for(i = ish; i < hcnt; ++i) dt[i-ish] = dt[i];
-			for(i = cnt-1; i >= (cnt-hcnt)+ish; ++i) dt[i] = dt[i-ish];
-		}
-	}
-	else {
-		// requires interpolation
-		post("non-integer xshift not implemented - truncating to integer");
-		d_xshift(dt,ish,cnt);
-	}
-}
-
-static V d_rot(F *dt,F sh,I cnt) 
-{ 
-	I ish = (I)sh;
-	if(sh == ish) { // integer shift
-/*
-		if(ish*2 > cnt) 
-			// if more than half is rotated -> change direction
-			d_rot(dt,ish-cnt,cnt);
-		else {
-*/
-			if(ish > 0) {
-				for(I i = cnt-1; i >= 0; ++i) {
-				}
-/*
-	template<class _RI, class _Pd, class _Ty> inline
-		void _Rotate(_RI _F, _RI _M, _RI _L, _Pd *, _Ty *)
-		{_Pd _D = _M - _F;
-		_Pd _N = _L - _F;
-		for (_Pd _I = _D; _I != 0; )
-			{_Pd _J = _N % _I;
-			_N = _I, _I = _J; }
-		if (_N < _L - _F)
-			for (; 0 < _N; --_N)
-				{_RI _X = _F + _N;
-				_RI _Y = _X;
-				_Ty _V = *_X;
-				_RI _Z = _Y + _D == _L ? _F : _Y + _D;
-				while (_Z != _X)
-					{*_Y = *_Z;
-					_Y = _Z;
-					_Z = _D < _L - _Z ? _Z + _D
-						: _F + (_D - (_L - _Z)); }
-				*_Y = _V; }}
-
-				}
-*/
-			}
-			else {
-				for(I i = ish; i < cnt-ish; ++i,++dt) dt[-ish] = *dt;
-			}
-//		}
-	}
-	else {
-		// requires interpolation
-		post("non-integer rot not implemented - truncating to integer");
-		d_rot(dt,ish,cnt);
-	}
-}
-
-static V d_xrot(F *dt,F sh,I cnt) 
-{ 
-	I ish = (I)sh;
-	if(sh == ish) { // integer shift
-	}
-	else {
-		// requires interpolation
-		post("non-integer xrot not implemented - truncating to integer");
-		d_xrot(dt,ish,cnt);
-	}
-}
-
-static V d_mirr(F *dt,F,I cnt) 
-{ 
-}
-
-static V d_xmirr(F *dt,F,I cnt) 
-{ 
-}
-
-
-Vasp *Vasp::m_shift(F u) { return fr_nop("shift",u,d_shift); }
-Vasp *Vasp::m_xshift(F u) { return fr_nop("xshift",u,d_xshift); }
-Vasp *Vasp::m_rot(F u) { return fr_nop("rot",u,d_rot); }
-Vasp *Vasp::m_xrot(F u) { return fr_nop("xrot",u,d_xrot); }
-Vasp *Vasp::m_mirr() { return fr_nop("mirr",0,d_mirr); }
-Vasp *Vasp::m_xmirr() { return fr_nop("xmirr",0,d_xmirr); } 
 
 

@@ -117,15 +117,27 @@ SOURCE=.\main.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\modify.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\util.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\vasp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp__ctrl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp__fft.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp__gen.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp__rng.cpp
 # End Source File
 # Begin Source File
 

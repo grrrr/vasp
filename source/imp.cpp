@@ -30,6 +30,27 @@ VASP_BINARY("vasp./",div)
 VASP_BINARY("vasp.c/",cdiv)
 VASP_BINARY("vasp.m/",mdiv)
 
+VASP_BINARY("vasp.min",min)
+VASP_BINARY("vasp.mmin",mmin)
+
+VASP_BINARY("vasp.max",max)
+VASP_BINARY("vasp.mmax",mmax)
+
+
+VASP_UNARY("vasp.sqr",sqr) 
+VASP_UNARY("vasp.ssqr",ssqr) 
+VASP_UNARY("vasp.csqr",csqr) 
+VASP_UNARY("vasp.sqrt",sqrt) 
+VASP_UNARY("vasp.ssqrt",ssqrt) 
+VASP_BINARY("vasp.pow",pow) 
+VASP_BINARY("vasp.root",root) 
+
+VASP_UNARY("vasp.exp",exp) 
+VASP_UNARY("vasp.log",log) 
+
+VASP_UNARY("vasp.inv",inv) 
+VASP_UNARY("vasp.cinv",cinv) 
+
 VASP_UNARY("vasp.abs",abs) 
 VASP_UNARY("vasp.sign",sign) 
 VASP_UNARY("vasp.polar",polar) 
@@ -41,4 +62,20 @@ VASP_UNARY("vasp.cnorm",cnorm)
 VASP_UNARY("vasp.cswap",cswap)
 VASP_UNARY("vasp.cconj",cconj)
 
+VASP_BINARY("vasp.shift",shift)
+VASP_BINARY("vasp.xshift",xshift)
+VASP_BINARY("vasp.rot",rot)
+VASP_BINARY("vasp.xrot",xrot)
+VASP_UNARY("vasp.mirr",mirr)
+VASP_UNARY("vasp.xmirr",xmirr)
+
+VASP_BINARY("vasp.osc",osc)
+VASP_BINARY("vasp.cosc",cosc)
+VASP_UNARY("vasp.noise",noise)
+VASP_UNARY("vasp.cnoise",cnoise)
+
+VASP_UNARY("vasp.rfft",rfft)
+VASP_UNARY("vasp.rifft",rifft)
+VASP_UNARY("vasp.cfft",cfft)
+VASP_UNARY("vasp.cifft",cifft)
 

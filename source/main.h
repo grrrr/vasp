@@ -123,6 +123,7 @@ public:
 
 	V Set(Vasp *v);
 //	V Set(I argc,t_atom *argv);
+	V Set(I i);
 	V Set(F f);
 	V Set(F re,F im);
 	V Set(VX *vec);
@@ -130,25 +131,28 @@ public:
 	BL IsNone() const { return tp == tp_none; }
 	BL IsVasp() const { return tp == tp_vasp; }
 //	BL IsList() const { return tp == tp_list; }
+	BL IsInt() const { return tp == tp_int; }
 	BL IsFloat() const { return tp == tp_float; }
 	BL IsComplex() const { return tp == tp_cx; }
 	BL IsVector() const { return tp == tp_vx; }
 
 	const Vasp &GetVasp() const { return *dt.v; }
 //	const AtomList &GetList() const { return *dt.atoms; }
+	I GetInt() const { return dt.i; }
 	F GetFloat() const { return dt.f; }
 	const CX &GetComplex() const { return *dt.cx; }
 	const VX &GetVector() const { return *dt.vx; }
 
 protected:
 	enum {
-		tp_none,tp_vasp,tp_list,tp_float,tp_cx,tp_vx
+		tp_none,tp_vasp,tp_list,tp_int,tp_float,tp_cx,tp_vx
 	} tp;
 
 	union {
 		Vasp *v;
 //		AtomList *atoms;
 		F f;
+		I i;
 		CX *cx;
 		VX *vx;
 	} dt;
@@ -250,12 +254,12 @@ public:
 	Vasp *m_mmax(const Argument &arg); // max (multi-channel)
 
 	// "unary" functions
-	Vasp *m_pow(F v); // power
-//	Vasp *m_cpow(I argc,t_atom *argv); // complex power (with each two channels)
+	Vasp *m_pow(const Argument &arg); // power
+	Vasp *m_root(const Argument &arg); // real root (from abs value)
+//	Vasp *m_cpow(const Argument &arg); // complex power (with each two channels)
 	Vasp *m_sqr();   // unsigned square 
 	Vasp *m_ssqr();   // signed square 
 	Vasp *m_csqr();  // complex square (with each two channels)
-	Vasp *m_root(F v); // real root (from abs value)
 	Vasp *m_sqrt();  // square root (from abs value)
 	Vasp *m_ssqrt();  // square root (from abs value)
 //	Vasp *m_csqrt();  // complex square root (how about branches?)
@@ -279,26 +283,26 @@ public:
 	Vasp *m_cswap();  // swap real and imaginary parts
 	Vasp *m_cconj();  // complex conjugate
 
-	// Rearrange buffer - separate object?
-	Vasp *m_shift(F u);  // shift buffer
-	Vasp *m_xshift(F u);  // shift buffer (symmetrically)
-	Vasp *m_rot(F u);  // rotate buffer
-	Vasp *m_xrot(F u);  // rotate buffer (symmetrically)
+	// Rearrange buffer 
+	Vasp *m_shift(const Argument &arg);  // shift buffer
+	Vasp *m_xshift(const Argument &arg);  // shift buffer (symmetrically)
+	Vasp *m_rot(const Argument &arg);  // rotate buffer
+	Vasp *m_xrot(const Argument &arg);  // rotate buffer (symmetrically)
 	Vasp *m_mirr();  // mirror buffer
 	Vasp *m_xmirr();  // mirror buffer (symmetrically)
-/*
-	// Generator functions - separate object!
-	Vasp *m_osc(I argc,t_atom *argv);  // real osc
-	Vasp *m_cosc(I argc,t_atom *argv);  // complex osc (phase rotates)
-	Vasp *m_noise(I argc,t_atom *argv);  // real noise
-	Vasp *m_cnoise(I argc,t_atom *argv); // complex noise (arg and abs random)
 
-	// Fourier transforms - separate object!
+	// Generator functions 
+	Vasp *m_osc(const Argument &arg);  // real osc
+	Vasp *m_cosc(const Argument &arg);  // complex osc (phase rotates)
+	Vasp *m_noise();  // real noise
+	Vasp *m_cnoise(); // complex noise (arg and abs random)
+
+	// Fourier transforms 
 	Vasp *m_rfft();
 	Vasp *m_rifft();
 	Vasp *m_cfft();
 	Vasp *m_cifft();
-*/
+
 
 	struct nop_funcs {
 		V (*funR)(F *,F,I);
