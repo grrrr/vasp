@@ -64,6 +64,34 @@ Vasp *Vasp::m_mosc(const Argument &arg)
 Vasp *Vasp::m_mcosc(const Argument &arg) 
 { return arg.CanbeComplex()?fc_arg("*cosc",arg.GetAComplex(),d_mcosc):NULL; }
 
+
+// --- phasor ---------------------------------------
+
+// look up Höldrich's pd phasor code
+
+static BL d_phasor(I cnt,F *dt,I str,F *,I,F rfrq,F ifrq) 
+{ 
+	// frq and phase defined by complex frequency
+	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt = fmod(ph,1.F);
+	return true;
+}
+
+static BL d_mphasor(I cnt,F *dt,I str,F *,I,F rfrq,F ifrq) 
+{ 
+	// frq and phase defined by complex frequency
+	F phinc = abs(rfrq,ifrq),ph = arg(rfrq,ifrq); 
+	for(I i = 0; i < cnt; ++i,ph += phinc,dt += str) *dt *= fmod(ph,1.F);
+	return true;
+}
+
+Vasp *Vasp::m_phasor(const Argument &arg) 
+{ return arg.CanbeComplex()?fc_arg("phasor",arg.GetAComplex(),d_phasor):NULL; }
+
+Vasp *Vasp::m_mphasor(const Argument &arg) 
+{ return arg.CanbeComplex()?fc_arg("*phasor",arg.GetAComplex(),d_mphasor):NULL; }
+
+
 // --- noise --------------------------------
 
 static F rnd() 

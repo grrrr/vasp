@@ -37,6 +37,9 @@ VASP_BINARY("vasp.max",max)
 VASP_BINARY("vasp.vmax",vmax)
 
 
+VASP_UNARY("vasp.int",int) 
+VASP_UNARY("vasp.dif",dif) 
+
 VASP_UNARY("vasp.sqr",sqr) 
 VASP_UNARY("vasp.ssqr",ssqr) 
 VASP_UNARY("vasp.csqr",csqr) 
@@ -73,6 +76,8 @@ VASP_BINARY("vasp.osc",osc)
 VASP_BINARY("vasp*osc",mosc)
 VASP_BINARY("vasp.cosc",cosc)
 VASP_BINARY("vasp*cosc",mcosc)
+VASP_BINARY("vasp.phasor",phasor)
+VASP_BINARY("vasp*phasor",mphasor)
 VASP_UNARY("vasp.noise",noise)
 VASP_UNARY("vasp.cnoise",cnoise)
 VASP_UNARY("vasp.bevel",bevelup)

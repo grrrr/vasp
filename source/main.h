@@ -265,6 +265,9 @@ public:
 	Vasp *m_vmax(const Argument &arg); // max (multi-channel)
 
 	// "unary" functions
+	Vasp *m_int(); // integrate
+	Vasp *m_dif(); // differentiate
+
 	Vasp *m_pow(const Argument &arg); // power
 	Vasp *m_root(const Argument &arg); // real root (from abs value)
 //	Vasp *m_cpow(const Argument &arg); // complex power (with each two channels)

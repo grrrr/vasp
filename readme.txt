@@ -63,14 +63,15 @@ features:
 - double precision variables?
 
 - check and optimize fft routines
-- optimize (c)osc, also with phase and with (real/complex) vasp input
-- wave object for table-lookup oscs.
-- various random distributions for noise
+- optimize (c)osc with table lookup, phasor with Höldrichs code (in pd)
+- check for dst/src-overlaps in binary functions
 
 objects:
 - buffer reference modification (offset, length)
 - sync several parallel threads
 - split und combine vasps into their separate vectors
+- wave object for table-lookup oscs.
+- various random distributions for noise
 
 
 bugs:

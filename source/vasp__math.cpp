@@ -16,6 +16,28 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 
+// --- integrate/differentiate
+
+static BL d_int(I cnt,F *dst,I str,F) 
+{ 
+	register F d = *dst; 
+	for(I i = 0; i < cnt; ++i) { register F d1 = *(dst += str); *dst += d,d = d1; }
+	return true; 
+}
+
+static BL d_dif(I cnt,F *dst,I str,F) 
+{ 
+	register F d = *dst; 
+	for(I i = 0; i < cnt; ++i) { register F d1 = *(dst += str); *dst -= d,d = d1; }
+	return true; 
+}
+
+Vasp *Vasp::m_int() { return fr_arg("int",0,d_int); }
+Vasp *Vasp::m_dif() { return fr_arg("dif",0,d_dif); }
+
+
+// --- power functions ---------------------
+
 static BL d_pow(I cnt,F *dst,I str,F v) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)pow(fabs(*dst),v)*sgn(*dst);
@@ -97,6 +119,7 @@ Vasp *Vasp::m_inv() { return fr_arg("inv",0,d_inv); }
 Vasp *Vasp::m_cinv() { return fc_arg("cinv",CX(),d_cinv); }
 
 
+// --- complex domain functions -----------------
 
 static BL d_abs(I cnt,F *dst,I str,F) 
 { 
