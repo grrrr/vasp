@@ -11,15 +11,18 @@ Goals/features of the package:
 
 Version history:
 
+0.1.0:
+- NEW: vasp.a<, vasp.a>, vasp.a<=, vasp.a>= for absolute comparisons
+
 0.0.8:
 - CHANGE: vasp.radio got right outlet for non-radio messages
 - ADD: thread yield for all simple vasp objects
 - CHANGE: vasp.? and vasp.??: made explicit list outlets
-- ADD: vasp.window, vasp.*window, vasp.!window, vasp.*!window, vasp.xwindow, vasp.*xwindow
+- NEW: vasp.window, vasp.*window, vasp.!window, vasp.*!window, vasp.xwindow, vasp.*xwindow
 - REMOVE: vasp.bevel, vasp.!bevel... obsolete due to new vasp.window objects
 - REMOVE: vasp.noradio (vasp.!radio)... can easily be an abstraction of vasp.radio
 _ ADD: minimum length parameter for immediate vasps
-- ADD: vasp.channel? (vasp.c?), vasp.channel (vasp.c) for set/query of buffer channel
+- NEW: vasp.channel? (vasp.c?), vasp.channel (vasp.c) for set/query of buffer channel
 - CHANGE: env - reversed time/value pairs to value/time pairs
 - FIX: vasp.! with length arg outputs its reference on bang
 - FIX: on set message check for invalid vasps
