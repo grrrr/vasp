@@ -35,6 +35,11 @@ objects:
 
 - vasp.state.... current vasp, operation, progress meter
 
+- vasp.ahead (vasp.a): abstraction head - set/bang/to handling, radio outlet, attribute processing (?)
+- vasp.print (vasp.p): print vasp messages
+
+- vasp.resmp: resampling with vasp argument, instead of vasp.tilt (?)
+
 bugs:
 ---------------------
 
