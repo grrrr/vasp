@@ -120,6 +120,10 @@ SOURCE=.\vasp__ctrl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\vasp__ext.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\vasp__fft.cpp
 # End Source File
 # Begin Source File
@@ -133,6 +137,10 @@ SOURCE=.\vasp__math.cpp
 # Begin Source File
 
 SOURCE=.\vasp__rng.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vasp__simple.cpp
 # End Source File
 # End Group
 # Begin Source File
