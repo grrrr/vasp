@@ -1,4 +1,4 @@
-#N canvas 21 60 875 570 10;
+#N canvas 21 60 879 574 10;
 #X obj 61 33 cnv 15 15 15 empty empty vasp.= 0 10 1 14 -262144 -1 0
 ;
 #X text 56 66 set a vasp to a value;
@@ -67,6 +67,17 @@ mouse+spacebar (select) or mouse+"s" (shift).;
 #X obj 53 473 vaspset_examples;
 #X obj 51 533 VASP;
 #X text 93 533 - vasp overview;
+#N canvas 280 291 407 308 inside 0;
+#X obj 82 165 s \$0-sample-length;
+#X msg 138 90 resize \$1;
+#X obj 138 43 loadbang;
+#X msg 138 64 88200;
+#X obj 138 112 s bufset;
+#X connect 1 0 4 0;
+#X connect 2 0 3 0;
+#X connect 3 0 1 0;
+#X connect 3 0 0 0;
+#X restore 709 420 pd inside;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
 #X connect 5 0 7 0;
