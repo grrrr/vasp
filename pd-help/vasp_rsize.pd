@@ -1,7 +1,7 @@
-#N canvas 85 111 905 540 10;
+#N canvas 85 111 907 542 10;
 #X obj 58 31 cnv 15 15 15 empty empty vasp.size/ 0 10 1 14 -262144
 -1 0;
-#N canvas 0 0 410 286 init 1;
+#N canvas 0 0 410 286 init 0;
 #X obj 33 19 loadbang;
 #X msg 33 73 \; \$1 xticks 0 2 5 \; \$1 xlabel 1.1 0 10 20 30 40 50
 \; \$1 yticks 0 0.25 2;

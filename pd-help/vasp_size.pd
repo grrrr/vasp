@@ -1,4 +1,4 @@
-#N canvas 85 111 901 536 10;
+#N canvas 85 111 903 538 10;
 #X obj 58 31 cnv 15 15 15 empty empty vasp.size 0 10 1 14 -262144 -1
 0;
 #N canvas 0 0 406 282 init 0;
@@ -11,8 +11,8 @@
 #X restore 714 408 pd init;
 #X text 119 392 abbreviation;
 #X text 58 83 argument/right inlet: value in samples;
-#X obj 62 481 VASP;
-#X text 104 481 - vasp overview;
+#X obj 62 504 VASP;
+#X text 104 504 - vasp overview;
 #X obj 62 335 vasp.update;
 #X obj 90 258 prepend set;
 #X msg 62 152 vasp bufsize;
@@ -25,11 +25,14 @@
 #X obj 62 303 vasp.osc 16;
 #X floatatom 135 200 5 0 0;
 #X obj 63 392 vasp.s;
-#X obj 175 435 vasp.frames;
-#X obj 256 435 vasp.size?;
 #X text 62 433 related objects:;
 #X msg 90 280;
-#X connect 7 0 18 0;
+#X obj 343 460 vasp.frames;
+#X obj 183 460 vasp.size?;
+#X obj 183 436 vasp.s+;
+#X obj 259 460 vasp.size*;
+#X obj 259 437 vasp.size/;
+#X connect 7 0 16 0;
 #X connect 8 0 9 0;
 #X connect 9 0 7 0;
 #X connect 9 0 12 0;
