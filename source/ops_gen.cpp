@@ -13,30 +13,26 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- osc ---------------------------------------
 
-/*!
-	\brief Generator for real (cos) oscillations
-	\todo check for reverse operation!
+/*!	\brief Generator for real (cos) oscillations
 */
 BL VecOp::d_osc(OpParam &p) 
 { 
-	if(p.revdir) {
-	}
-
 	register R ph = p.gen.ph,phinc = p.gen.phinc; 
-	for(; p.frames--; ph += phinc,p.rddt += p.rds) *p.rddt = cos(ph);
-	p.gen.ph = ph;
+	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
+
+	for(I i = 0; i < p.frames; ++i,ph += phinc,p.rddt += p.rds) *p.rddt = cos(ph);
 	return true;
 }
 
-/*!
-	\brief multiplicative generator for real (cos) oscillations
-	\todo check for reverse operation!
+/*!	\brief multiplicative generator for real (cos) oscillations
 */
 BL VecOp::d_mosc(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc; 
-	for(; p.frames--; ph += phinc,p.rsdt += p.rss,p.rddt += p.rds) *p.rddt = *p.rsdt * cos(ph);
-	p.gen.ph = ph;
+	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
+
+	for(I i = 0; i < p.frames; ++i,ph += phinc,p.rsdt += p.rss,p.rddt += p.rds) 
+		*p.rddt = *p.rsdt * cos(ph);
 	return true;
 }
 
@@ -62,14 +58,6 @@ Vasp *VaspOp::m_osc(Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 			// starting phase
 			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 
-/*
-			VecOp::opfun *fun;
-			if(mul) {
-				if(p.SROvr()) p.SDRRev();
-				fun = VecOp::d_mosc;
-			}
-			else fun = VecOp::d_osc;
-*/		
 			ret = DoOp(vecs,mul?VecOp::d_mosc:VecOp::d_osc,p);
 			delete vecs;
 		}
@@ -79,26 +67,25 @@ Vasp *VaspOp::m_osc(Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 }
 
 
-/*!
-	\brief Generator for complex oscillations.
-	\todo check for reverse operation!
+/*!	\brief Generator for complex oscillations.
 */
 BL VecOp::d_cosc(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
+
 	for(; p.frames--; ph += phinc,p.rddt += p.rds,p.iddt += p.ids) 
 		*p.rddt = cos(ph),*p.iddt = sin(ph);
-	p.gen.ph = ph;
 	return true;
 }
 
-/*!
-	\brief Multiplicative generator for complex oscillations.
-	\todo check for reverse operation!
+/*!	\brief Multiplicative generator for complex oscillations.
 */
 BL VecOp::d_mcosc(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
+
 	for(; p.frames--; ph += phinc,p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids) {
 		R zre = cos(ph),zim = sin(ph);
 
@@ -106,7 +93,6 @@ BL VecOp::d_mcosc(OpParam &p)
 		*p.iddt = *p.isdt * zre + *p.rsdt * zim;
 		*p.rddt = r;
 	}
-	p.gen.ph = ph;
 	return true;
 }
 
@@ -132,20 +118,6 @@ Vasp *VaspOp::m_cosc(Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 			// starting phase
 			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 
-/*
-			VecOp::opfun *fun;
-			if(mul) {
-				BL rovr = p.SROvr(),iovr = p.SIOvr(); 
-				if(rovr == iovr) { p.SDRRev(); p.SDIRev(); }
-				else {
-					post("%s: Unresolvable src/dst vector overlap",opnm);
-					return NULL;
-				}
-				fun = VecOp::d_mcosc;
-			}
-			else fun = VecOp::d_cosc;
-*/
-		
 			ret = DoOp(vecs,mul?VecOp::d_mcosc:VecOp::d_cosc,p);
 			delete vecs;
 		}
@@ -159,27 +131,25 @@ Vasp *VaspOp::m_cosc(Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 
 // ! look up Höldrich's pd phasor code
 
-/*!
-	\brief Generator for saw wave oscillations.
-	\todo check for reverse operation!
+/*!	\brief Generator for saw wave oscillations.
 */
 BL VecOp::d_phasor(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
+
 	for(; p.frames--; ph += phinc,p.rddt += p.rds) *p.rddt = fmod(ph,1.F);
-	p.gen.ph = ph;
 	return true;
 }
 
-/*!
-	\brief Multiplicative generator for saw wave oscillations.
-	\todo check for reverse operation!
+/*!	\brief Multiplicative generator for saw wave oscillations.
 */
 BL VecOp::d_mphasor(OpParam &p) 
 { 
 	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
+
 	for(; p.frames--; ph += phinc,p.rddt += p.rds,p.rsdt += p.rss) *p.rddt = *p.rsdt * fmod(ph,1.F);
-	p.gen.ph = ph;
 	return true;
 }
 
@@ -205,14 +175,6 @@ Vasp *VaspOp::m_phasor(Vasp &src,const Argument &arg,Vasp *dst,BL mul)
 			// starting phase
 			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 		
-/*
-			VecOp::opfun *fun;
-			if(mul) {
-				if(p.SROvr()) p.SDRRev();
-				fun = VecOp::d_mphasor;
-			}
-			else fun = VecOp::d_phasor;
-*/		
 			ret = DoOp(vecs,mul?VecOp::d_mphasor:VecOp::d_phasor,p);
 			delete vecs;
 		}
@@ -232,6 +194,8 @@ static F rnd()
 	return ret;
 }
 
+/*!	\brief Vector function for pseudorandom noise.
+*/
 BL VecOp::d_noise(OpParam &p) 
 { 
 	for(; p.frames--; p.rddt += p.rds) *p.rddt = rnd();
@@ -255,6 +219,8 @@ Vasp *VaspOp::m_noise(Vasp &src,Vasp *dst)
 	return ret;
 }
 
+/*!	\brief Vector function for pseudorandom complex noise.
+*/
 BL VecOp::d_cnoise(OpParam &p) 
 { 
 	for(; p.frames--; p.rddt += p.rds,p.iddt += p.ids) {
@@ -289,21 +255,40 @@ Vasp *VaspOp::m_cnoise(Vasp &src,Vasp *dst)
 
 // Should bevels start from 0 or .5/cnt ??  -> 0!
 
-//! \todo check for reverse operation!
+/*!	\brief Vector function for bevel.
+*/
 BL VecOp::d_bevel(OpParam &p) 
 { 
 	register R cur = p.bvl.cur,inc = p.bvl.inc;
-	for(; p.frames--; p.rddt += p.rds,cur += inc) *p.rddt = cur;
-	p.bvl.cur = cur;
+	if(p.revdir) cur -= (p.frames-1)*(inc = -inc);
+
+	register S *dd = p.rddt;
+	if(p.rds == 1)
+		for(I i = 0; i < p.frames; ++i,dd++,cur += inc) *dd = cur;
+	else
+		for(I i = 0; i < p.frames; ++i,dd += p.rds,cur += inc) *dd = cur;
 	return true;
 }
 
-//! \todo check for reverse operation!
+/*!	\brief Vector function for multiplicative bevel ("fade").
+*/
 BL VecOp::d_mbevel(OpParam &p) 
 { 
 	register R cur = p.bvl.cur,inc = p.bvl.inc;
-	for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,cur += inc) *p.rddt = *p.rsdt * cur;
-	p.bvl.cur = cur;
+	if(p.revdir) cur -= (p.frames-1)*(inc = -inc);
+
+	register const S *sd = p.rsdt;
+	register S *dd = p.rddt;
+	if(sd == dd)
+		if(p.rss == 1 && p.rds == 1)
+			for(I i = 0; i < p.frames; ++i,dd++,cur += inc) *dd *= cur;
+		else
+			for(I i = 0; i < p.frames; ++i,dd += p.rds,cur += inc) *dd *= cur;
+	else
+		if(p.rss == 1 && p.rds == 1)
+			for(I i = 0; i < p.frames; ++i,sd++,dd++,cur += inc) *dd = *sd * cur;
+		else
+			for(I i = 0; i < p.frames; ++i,sd += p.rss,dd += p.rds,cur += inc) *dd = *sd * cur;
 	return true;
 }
 
@@ -319,23 +304,10 @@ Vasp *VaspOp::m_bevelup(Vasp &src,Vasp *dst,BL up,BL mul)
 	OpParam p(up?(mul?"*bevel":"bevel"):(mul?"*bevel-":"bevel-"));
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-	
-		VecOp::opfun *fun;
-		if(mul) {
-			p.bvl.cur = up?0:1; // start
-			p.bvl.inc = (up?1.:-1.)/vecs->Frames(); // increase
+		p.bvl.cur = up?0:1; // start
+		p.bvl.inc = (up?1.:-1.)/vecs->Frames(); // increase
 
-//			if(p.SROvr()) p.SDRRev();
-			fun = VecOp::d_mbevel;
-		}
-		else {
-			p.bvl.cur = up?1:0; // start
-			p.bvl.inc = (up?-1.:1.)/vecs->Frames(); // increase
-
-			fun = VecOp::d_bevel;
-		}
-	
-		ret = DoOp(vecs,fun,p);
+		ret = DoOp(vecs,mul?VecOp::d_mbevel:VecOp::d_bevel,p);
 		delete vecs;
 	}
 

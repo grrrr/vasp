@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 #include "vasp__op.h"
 
-
+/*
 #ifdef _MSC_VER
 
 #define TEMPL1(V1) 
@@ -42,7 +42,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define TF3(FUN) FUN<0,0,0>
 
 #endif
+*/
 
+#if 0
 
 /*! \brief skeleton for unary real operations
 	\todo optimization for src=dst
@@ -50,8 +52,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 template <V fun(S &v,S a)>
 static BL d__run(OpParam &p) 
 { 
-	for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds) 
-		fun(*p.rddt,*p.rsdt); 
+	register const S *sr = p.rsdt;
+	register S *dr = p.rddt;
+	if(sr == dr)
+		for(I i = 0; i < p.frames; ++i,dr += p.rds) 
+			fun(*dr,*dr); 
+	else
+		for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds) 
+			fun(*dr,*sr); 
 	return true; 
 }
 
@@ -61,12 +69,14 @@ static BL d__run(OpParam &p)
 template <V fun(S &rv,S &iv,S ra,S ia)>
 static BL d__cun(OpParam &p) 
 { 
-	if(p.isdt)
-		for(; p.frames--; p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids) 
-			fun(*p.rddt,*p.iddt,*p.rsdt,*p.isdt);
+	register const S *sr = p.rsdt,*si = p.isdt;
+	register S *dr = p.rddt,*di = p.iddt;
+	if(sr == dr && si == di)
+		for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) 
+			fun(*dr,*di,*dr,*di);
 	else
-		for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.iddt += p.ids) 
-			fun(*p.rddt,*p.iddt,*p.rsdt,0);
+		for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) 
+			fun(*dr,*di,*sr,*si);
 	return true; 
 }
 
@@ -76,14 +86,25 @@ static BL d__cun(OpParam &p)
 template <V fun(S &v,S a,S b)>
 static BL d__rbin(OpParam &p) 
 { 
+	register const S *sr = p.rsdt;
+	register S *dr = p.rddt;
 	if(p.HasArg()) {
-		for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.radt += p.ras) 
-			fun(*p.rddt,*p.rsdt,*p.radt); 
+		register const S *ar = p.radt;
+		if(p.rsdt == p.rddt)
+			for(I i = 0; i < p.frames; ++i,dr += p.rds,ar += p.ras) 
+				fun(*dr,*dr,*ar); 
+		else
+			for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds,ar += p.ras) 
+				fun(*dr,*sr,*ar); 
 	}
 	else {
-		S v = p.rbin.arg;
-		for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds) 
-			fun(*p.rddt,*p.rsdt,v); 
+		register const S v = p.rbin.arg;
+		if(p.rsdt == p.rddt)
+			for(I i = 0; i < p.frames; ++i,dr += p.rds) 
+				fun(*dr,*dr,v); 
+		else
+			for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds) 
+				fun(*dr,*sr,v); 
 	}
 
 	return true; 
@@ -95,83 +116,243 @@ static BL d__rbin(OpParam &p)
 template <V fun(S &rv,S &iv,S ra,S ia,S rb,S ib)>
 static BL d__cbin(OpParam &p) 
 { 
+	register const S *sr = p.rsdt,*si = p.isdt;
+	register S *dr = p.rddt,*di = p.iddt;
 	if(p.HasArg()) {
-		if(p.isdt)
-			if(p.iadt)
-				for(; p.frames--; p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids,p.radt += p.ras,p.iadt += p.ias) 
-					fun(*p.rddt,*p.iddt,*p.rsdt,*p.isdt,*p.radt,*p.iadt);
+		register const S *ar = p.radt,*ai = p.iadt;
+		if(ai) 
+			// imaginary part exists
+			if(sr == dr && si == di)
+				for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids,ar += p.ras,ai += p.ias) 
+					fun(*dr,*di,*dr,*di,*ar,*ai);
 			else
-				for(; p.frames--; p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids,p.radt += p.ras) 
-					fun(*p.rddt,*p.iddt,*p.rsdt,*p.isdt,*p.radt,0);
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.ras,ai += p.ias) 
+					fun(*dr,*di,*sr,*si,*ar,*ai);
 		else
-			if(p.iadt)
-				for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.iddt += p.ids,p.radt += p.ras,p.iadt += p.ias) 
-					fun(*p.rddt,*p.iddt,*p.rsdt,0,*p.radt,*p.iadt);
+			// no imaginary part
+			if(sr == dr && si == di)
+				for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids,ar += p.ras) 
+					fun(*dr,*di,*dr,*di,*ar,0);
 			else
-				for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.iddt += p.ids,p.radt += p.ras) 
-					fun(*p.rddt,*p.iddt,*p.rsdt,0,*p.radt,0);
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.ras) 
+					fun(*dr,*di,*sr,*si,*ar,0);
 	}
 	else {
-		S rv = p.cbin.rarg,iv = p.cbin.iarg;
-		if(p.isdt)
-			for(; p.frames--; p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids) 
-				fun(*p.rddt,*p.iddt,*p.rsdt,*p.isdt,rv,iv);
+		register const S rv = p.cbin.rarg,iv = p.cbin.iarg;
+		if(sr == dr && si == di)
+			for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) 
+				fun(*dr,*di,*dr,*di,rv,iv);
 		else
-			for(; p.frames--; p.rsdt += p.rss,p.rddt += p.rds,p.iddt += p.ids) 
-				fun(*p.rddt,*p.iddt,*p.rsdt,0,rv,iv);
+			for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) 
+				fun(*dr,*di,*sr,*si,rv,iv);
 	}
 
 	return true; 
 }
 
+#define D__run(fun,p) return d__run< fun >(p);
+#define D__cun(fun,p) return d__cun< fun >(p);
+#define D__rbin(fun,p) return d__rbin< fun >(p);
+#define D__cbin(fun,p) return d__cbin< fun >(p);
 
+
+#else
+
+/*! \brief skeleton for unary real operations
+	\todo optimization for src=dst
+*/
+#define D__run(fun,p)											\
+{																\
+	register const S *sr = p.rsdt;								\
+	register S *dr = p.rddt;									\
+	if(sr == dr)												\
+		if(p.rds == 1)											\
+			for(I i = 0; i < p.frames; ++i,dr++)				\
+				fun(*dr,*dr);									\
+		else													\
+			for(I i = 0; i < p.frames; ++i,dr += p.rds)			\
+				fun(*dr,*dr);									\
+	else														\
+		if(p.rss == 1 && p.rds == 1)							\
+			for(I i = 0; i < p.frames; ++i,sr++,dr++)			\
+				fun(*dr,*sr);									\
+		else													\
+			for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds)	\
+				fun(*dr,*sr);										\
+	return true;												\
+}
+
+/*! \brief skeleton for unary complex operations
+	\todo optimization for src=dst
+*/
+#define D__cun(fun,p)											\
+{																\
+	register const S *sr = p.rsdt,*si = p.isdt;					\
+	register S *dr = p.rddt,*di = p.iddt;						\
+	if(sr == dr && si == di)									\
+		if(p.rds == 1 && p.ids == 1)							\
+			for(I i = 0; i < p.frames; ++i,dr++,di++)			\
+				fun(*dr,*di,*dr,*di);							\
+		else													\
+			for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
+				fun(*dr,*di,*dr,*di);								\
+	else														\
+		if(p.rss == 1 && p.iss == 1 && p.rds == 1 && p.ids == 1) \
+			for(I i = 0; i < p.frames; ++i,sr++,si++,dr++,di++) \
+				fun(*dr,*di,*sr,*si);								\
+		else													\
+			for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
+				fun(*dr,*di,*sr,*si);								\
+	return true;												\
+}
+
+/*! \brief skeleton for binary real operations
+	\todo optimization for src=dst
+*/
+#define D__rbin(fun,p)											\
+{																\
+	register const S *sr = p.rsdt;								\
+	register S *dr = p.rddt;									\
+	if(p.HasArg()) {											\
+		register const S *ar = p.radt;							\
+		if(p.rsdt == p.rddt)									\
+			if(p.rds == 1 && p.ras == 1)						\
+				for(I i = 0; i < p.frames; ++i,dr++,ar++)		\
+					fun(*dr,*dr,*ar);							\
+			else												\
+				for(I i = 0; i < p.frames; ++i,dr += p.rds,ar += p.ras) \
+					fun(*dr,*dr,*ar);							\
+		else													\
+			if(p.rss == 1 && p.rds == 1 && p.ras == 1)			\
+				for(I i = 0; i < p.frames; ++i,sr++,dr++,ar++)  \
+					fun(*dr,*sr,*ar);							\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds,ar += p.ras) \
+					fun(*dr,*sr,*ar);							\
+	}															\
+	else {														\
+		register const S v = p.rbin.arg;						\
+		if(p.rsdt == p.rddt)									\
+			if(p.rds == 1)										\
+				for(I i = 0; i < p.frames; ++i,dr++)			\
+					fun(*dr,*dr,v);								\
+			else												\
+				for(I i = 0; i < p.frames; ++i,dr += p.rds)		\
+					fun(*dr,*dr,v);								\
+		else													\
+			if(p.rss == 1 && p.rds == 1)						\
+				for(I i = 0; i < p.frames; ++i,sr++,dr++)		\
+					fun(*dr,*sr,v);								\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds) \
+					fun(*dr,*sr,v);								\
+	}															\
+	return true;												\
+}
+
+/*! \brief skeleton for binary complex operations
+	\todo optimization for src=dst
+*/
+#define D__cbin(fun,p)											\
+{																\
+	register const S *sr = p.rsdt,*si = p.isdt;					\
+	register S *dr = p.rddt,*di = p.iddt;						\
+	if(p.HasArg()) {											\
+		register const S *ar = p.radt,*ai = p.iadt;				\
+		if(ai)													\
+			if(sr == dr && si == di)							\
+				if(p.rds == 1 && p.ids == 1 && p.ras == 1 && p.ias == 1) \
+					for(I i = 0; i < p.frames; ++i,dr++,di++,ar++,ai++) \
+						fun(*dr,*di,*dr,*di,*ar,*ai);			\
+				else											\
+					for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids,ar += p.ras,ai += p.ias) \
+						fun(*dr,*di,*dr,*di,*ar,*ai);			\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.ras,ai += p.ias) \
+					fun(*dr,*di,*sr,*si,*ar,*ai);				\
+		else													\
+			if(sr == dr && si == di)							\
+				for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids,ar += p.ras) \
+					fun(*dr,*di,*dr,*di,*ar,0);					\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.ras) \
+					fun(*dr,*di,*sr,*si,*ar,0);					\
+	}															\
+	else {														\
+		register const S rv = p.cbin.rarg,iv = p.cbin.iarg;		\
+		if(sr == dr && si == di)								\
+			if(p.rds == 1 && p.ids == 1)						\
+				for(I i = 0; i < p.frames; ++i,dr++,di++)		\
+					fun(*dr,*di,*dr,*di,rv,iv);					\
+			else												\
+				for(I i = 0; i < p.frames; ++i,dr += p.rds,di += p.ids) \
+					fun(*dr,*di,*dr,*di,rv,iv);					\
+		else													\
+			if(p.rds == 1 && p.ids == 1 && p.rss == 1 && p.iss == 1) \
+				for(I i = 0; i < p.frames; ++i,sr++,si++,dr++,di++) \
+					fun(*dr,*di,*sr,*si,rv,iv);					\
+			else												\
+				for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss,dr += p.rds,di += p.ids) \
+					fun(*dr,*di,*sr,*si,rv,iv);					\
+	}															\
+	return true;												\
+}
+
+#endif
 
 // --------------------------------------------------------------
 
-BL VecOp::d_copy(OpParam &p) { return d__rbin<f_rcopy>(p); }
-BL VecOp::d_ccopy(OpParam &p) { return d__cbin<f_ccopy>(p); }
-BL VecOp::d_add(OpParam &p) { return d__rbin<f_radd>(p); }
-BL VecOp::d_cadd(OpParam &p) { return d__cbin<f_cadd>(p); }
-BL VecOp::d_sub(OpParam &p) { return d__rbin<f_rsub>(p); }
-BL VecOp::d_csub(OpParam &p) { return d__cbin<f_csub>(p); }
-BL VecOp::d_mul(OpParam &p) { return d__rbin<f_rmul>(p); }
-BL VecOp::d_cmul(OpParam &p) { return d__cbin<f_cmul>(p); }
-BL VecOp::d_div(OpParam &p) { return d__rbin<f_rdiv>(p); }
-BL VecOp::d_cdiv(OpParam &p) { return d__cbin<f_cdiv>(p); }
+BL VecOp::d_copy(OpParam &p) { D__rbin(f_rcopy<S>,p); }
+BL VecOp::d_ccopy(OpParam &p) { D__cbin(f_ccopy<S>,p); }
+BL VecOp::d_add(OpParam &p) { D__rbin(f_radd<S>,p); }
+BL VecOp::d_cadd(OpParam &p) { D__cbin(f_cadd<S>,p); }
+BL VecOp::d_sub(OpParam &p) { D__rbin(f_rsub<S>,p); }
+BL VecOp::d_csub(OpParam &p) { D__cbin(f_csub<S>,p); }
+BL VecOp::d_mul(OpParam &p) { D__rbin(f_rmul<S>,p); }
+BL VecOp::d_cmul(OpParam &p) { D__cbin(f_cmul<S>,p); }
+BL VecOp::d_div(OpParam &p) { D__rbin(f_rdiv<S>,p); }
+BL VecOp::d_cdiv(OpParam &p) { D__cbin(f_cdiv<S>,p); }
+BL VecOp::d_divr(OpParam &p) { D__rbin(f_rdivr<S>,p); }
+BL VecOp::d_cdivr(OpParam &p) { D__cbin(f_cdivr<S>,p); }
+BL VecOp::d_mod(OpParam &p) { D__rbin(f_rmod<S>,p); }
 
-BL VecOp::d_min(OpParam &p) { return d__rbin<f_rmin>(p); }
-BL VecOp::d_cmin(OpParam &p) { return d__cbin<f_cmin>(p); }
-BL VecOp::d_max(OpParam &p) { return d__rbin<f_rmax>(p); }
-BL VecOp::d_cmax(OpParam &p) { return d__cbin<f_cmax>(p); }
+BL VecOp::d_min(OpParam &p) { D__rbin(f_rmin<S>,p); }
+BL VecOp::d_cmin(OpParam &p) { D__cbin(f_cmin<S>,p); }
+BL VecOp::d_max(OpParam &p) { D__rbin(f_rmax<S>,p); }
+BL VecOp::d_cmax(OpParam &p) { D__cbin(f_cmax<S>,p); }
 
-BL VecOp::d_minmax(OpParam &p) { return d__cbin<f_minmax>(p); }
+BL VecOp::d_lwr(OpParam &p) { D__rbin(f_rlwr<S>,p); }
+BL VecOp::d_gtr(OpParam &p) { D__rbin(f_rgtr<S>,p); }
+BL VecOp::d_leq(OpParam &p) { D__rbin(f_rleq<S>,p); }
+BL VecOp::d_geq(OpParam &p) { D__rbin(f_rgeq<S>,p); }
+BL VecOp::d_equ(OpParam &p) { D__rbin(f_requ<S>,p); }
+BL VecOp::d_neq(OpParam &p) { D__rbin(f_rneq<S>,p); }
 
-BL VecOp::d_lwr(OpParam &p) { return d__rbin<f_rlwr>(p); }
-BL VecOp::d_gtr(OpParam &p) { return d__rbin<f_rgtr>(p); }
+BL VecOp::d_pow(OpParam &p) { D__rbin(f_rpow<S>,p); }
 
-BL VecOp::d_pow(OpParam &p) { return d__rbin<f_rpow>(p); }
+BL VecOp::d_sqr(OpParam &p) { D__run(f_rsqr<S>,p); }
+BL VecOp::d_ssqr(OpParam &p) { D__run(f_rssqr<S>,p); }
+BL VecOp::d_csqr(OpParam &p) { D__cun(f_csqr<S>,p); }
+BL VecOp::d_sqrt(OpParam &p) { D__run(f_rsqrt<S>,p); }
+BL VecOp::d_ssqrt(OpParam &p) { D__run(f_rssqrt<S>,p); }
 
-BL VecOp::d_sqr(OpParam &p) { return d__run<f_rsqr>(p); }
-BL VecOp::d_ssqr(OpParam &p) { return d__run<f_rssqr>(p); }
-BL VecOp::d_csqr(OpParam &p) { return d__cun<f_csqr>(p); }
-BL VecOp::d_sqrt(OpParam &p) { return d__run<f_rsqrt>(p); }
-BL VecOp::d_ssqrt(OpParam &p) { return d__run<f_rssqrt>(p); }
+BL VecOp::d_exp(OpParam &p) { D__run(f_rexp<S>,p); }
+BL VecOp::d_log(OpParam &p) { D__run(f_rlog<S>,p); }
 
-BL VecOp::d_exp(OpParam &p) { return d__run<f_rexp>(p); }
-BL VecOp::d_log(OpParam &p) { return d__run<f_rlog>(p); }
+BL VecOp::d_inv(OpParam &p) { D__run(f_rinv<S>,p); }
+BL VecOp::d_cinv(OpParam &p) { D__cun(f_cinv<S>,p); }
 
-BL VecOp::d_inv(OpParam &p) { return d__run<f_rinv>(p); }
-BL VecOp::d_cinv(OpParam &p) { return d__cun<f_cinv>(p); }
+BL VecOp::d_cnorm(OpParam &p) { D__cun(f_cnorm<S>,p); }
 
-BL VecOp::d_cnorm(OpParam &p) { return d__cun<f_cnorm>(p); }
+BL VecOp::d_abs(OpParam &p) { D__run(f_rabs<S>,p); }
+BL VecOp::d_sign(OpParam &p) { D__run(f_rsign<S>,p); }
 
-BL VecOp::d_abs(OpParam &p) { return d__run<f_rabs>(p); }
-BL VecOp::d_sign(OpParam &p) { return d__run<f_rsign>(p); }
+BL VecOp::d_polar(OpParam &p) { D__cun(f_polar<S>,p); }
+BL VecOp::d_cart(OpParam &p) { D__cun(f_cart<S>,p); }
+BL VecOp::d_cswap(OpParam &p) { D__cun(f_cswap<S>,p); }
+BL VecOp::d_cconj(OpParam &p) { D__cun(f_cconj<S>,p); }
 
-BL VecOp::d_polar(OpParam &p) { return d__cun<f_polar>(p); }
-BL VecOp::d_cart(OpParam &p) { return d__cun<f_cart>(p); }
-BL VecOp::d_cswap(OpParam &p) { return d__cun<f_cswap>(p); }
-BL VecOp::d_cconj(OpParam &p) { return d__cun<f_cconj>(p); }
+BL VecOp::d_minmax(OpParam &p) { D__cun(f_minmax<S>,p); }
 
 
 

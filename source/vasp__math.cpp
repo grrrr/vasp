@@ -22,16 +22,19 @@ BL VecOp::d_opt(OpParam &p)
 	}
 
 	R v = 0;
-	I i;
-	for(i = 0; i < p.frames; ++i,p.rsdt += p.rss) { 
-		register R s = fabs(*p.rsdt); 
-		if(s > v) v = s; 
+	{
+		const S *sr = p.rsdt;
+		for(I i = 0; i < p.frames; ++i,sr += p.rss) { 
+			register R s = fabs(*sr); 
+			if(s > v) v = s; 
+		}
 	}
 
 	if(v && v != 1) {
 		v = 1./v;
-		for(i = 0; i < p.frames; ++i,p.rddt += p.rds) 
-			*p.rddt = (*p.rsdt -= p.rss)*v;
+		const S *sr = p.rsdt;
+		for(I i = 0; i < p.frames; ++i,p.rddt += p.rds,sr += p.rss) 
+			*p.rddt = *sr * v;
 	}
 	return true; 
 }
@@ -44,17 +47,20 @@ BL VecOp::d_copt(OpParam &p)
 	}
 
 	R v = 0;
-	I i;
-	for(i = 0; i < p.frames; ++i,p.rsdt += p.rss,p.isdt += p.iss) { 
-		register R s = sqabs(*p.rsdt,*p.isdt); 
-		if(s > v) v = s; 
+	{
+		const S *sr = p.rsdt,*si = p.isdt;
+		for(I i = 0; i < p.frames; ++i,sr += p.rss,si += p.iss) { 
+			register R s = sqabs(*sr,*si); 
+			if(s > v) v = s; 
+		}
 	}
 
 	if(v && v != 1) {
 		v = 1./sqrt(v);
-		for(i = 0; i < p.frames; ++i,p.rddt += p.rds,p.iddt += p.ids) {
-			*p.rddt = (*p.rsdt -= p.rss)*v;
-			*p.iddt = (*p.isdt -= p.iss)*v;
+		const S *sr = p.rsdt,*si = p.isdt;
+		for(I i = 0; i < p.frames; ++i,p.rddt += p.rds,p.iddt += p.ids,sr += p.rss,si += p.iss) {
+			*p.rddt = *sr * v;
+			*p.iddt = *si * v;
 		}
 	}
 	return true; 

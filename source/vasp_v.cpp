@@ -20,7 +20,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\brief Stores vasp messages.
 	\since 0.0.1
 	\param cmdln.* vasp - to be stored
-	\param inlet vasp - is stored and output, Bang will trigger stored Vasp output
+	\param inlet vasp - is stored and output
+	\param inlet list - if possible list is converted to vasp format
 	\param inlet bang - triggers stored Vasp output
 	\param inlet set - Vasp is stored (and not immediately output)
 	\retval outlet vasp
@@ -39,6 +40,8 @@ public:
 		AddInAnything();
 		AddOutAnything();
 		SetupInOut();
+
+		FLEXT_ADDMETHOD_(0,"list",m_vasp);
 	}
 
 	virtual Vasp *x_work() { return new Vasp(ref); }
@@ -318,10 +321,18 @@ public:
 
 	virtual V m_bang() 
 	{ 
-		for(I i = ref.Vectors()-1; i >= 0; --i) {
+		I outs = CntOut()-1,rem = ref.Vectors()-outs;
+		for(I i = min(outs,ref.Vectors())-1; i >= 0; --i) {
 			Vasp v(ref.Frames(),ref.Vector(i));
 			ToOutVasp(i,v);
 		}
+		if(rem > 0) {
+			Vasp v(ref.Frames(),ref.Vector(outs));
+			for(I i = 1; i < rem; ++i) v += ref.Vector(outs+i);
+			ToOutVasp(outs,v);
+		}
+		else
+			ToOutBang(outs);
 	}
 
 	virtual V m_help() { post("%s - Split a vasp into its vectors",thisName()); }
@@ -344,7 +355,8 @@ FLEXT_LIB_1("vasp.split",vasp_split,I)
 
 	The several vectors of the several vasps are all joined into one vasp.
 
-	\note On different vasp frame count the frame count of the leftmost vasp is taken.
+	\note On different vasp frame count the minmum frame count is taken.
+	\note The latest vector input to a slot is taken for the resulting vasp
 */
 class vasp_join:
 	public vasp_tx
@@ -397,6 +409,126 @@ private:
 };
 
 FLEXT_LIB_1("vasp.join",vasp_join,I)
+
+
+
+/*! \class vasp_spit
+	\remark \b vasp.spit
+	\brief Spit out vectors of a vasp consecutively.
+	\since 0.0.1
+	\param inlet.1 vasp - is stored and triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+	\retval outlet.n vasp - vectors of stored vasp
+	\retval outlet.+ bang - triggered after last spit 
+
+	\todo Output remainder to additional outlet.
+*/
+class vasp_spit:
+	public vasp_op
+{
+	FLEXT_HEADER(vasp_spit,vasp_op)
+
+public:
+	vasp_spit(I argc,t_atom *argv)
+	{
+		I n = 1;
+		if(argc >= 1) n = GetAInt(argv[0]);
+		if(n < 1) {
+			post("%s - illegal outlet count (%i) -> set to 1",thisName(),n);
+			n = 1;
+		}
+
+		AddInAnything();
+		AddOutAnything(n);
+		AddOutBang();
+		SetupInOut();
+	}
+
+	virtual V m_bang() 
+	{ 
+		for(I i = 0; i < ref.Vectors(); ++i) {
+			Vasp v(ref.Frames(),ref.Vector(i));
+			ToOutVasp(i%(CntOut()-1),v);
+		}
+		ToOutBang(CntOut()-1);
+	}
+
+	virtual V m_help() { post("%s - Spit out vectors of a vasp",thisName()); }
+};
+
+FLEXT_LIB_G("vasp.spit",vasp_spit)
+
+
+/*! \class vasp_gather
+	\remark \b vasp.gather
+	\brief Gathers several consecutive vasps into one.
+	\since 0.0.1
+	\param cmdln.1 int - number of vasp slots
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - sets result vasp 
+	\param inlet.1 reset - clears result
+	\param inlet.2 vasp - add to result vasp
+	\retval outlet vasp - gathered vasp
+
+	The several incoming vectors are all joined into one vasp.
+
+	\note On different vasp frame count the minimum frame count is taken.
+*/
+class vasp_gather:
+	public vasp_tx
+{
+	FLEXT_HEADER(vasp_gather,vasp_tx)
+
+public:
+	vasp_gather(I argc,t_atom *argv)
+	{
+		cnt = 0;
+		if(argc >= 1) cnt = GetAInt(argv[0]);
+		if(cnt < 0) {
+			post("%s - illegal count (%i) -> set to 0 (triggered mode)",thisName(),cnt);
+			cnt = 0;
+		}
+		rem = cnt;
+
+		AddInAnything(2);
+		AddOutAnything();
+		SetupInOut();
+
+		FLEXT_ADDMETHOD_(0,"reset",m_reset);
+		FLEXT_ADDMETHOD_(1,"vasp",m_add);
+	}
+
+	~vasp_gather()	{ }
+
+	virtual Vasp *x_work() 
+	{ 
+		Vasp *ret = new Vasp(ref); 
+		*ret += dst;
+		m_reset(); 
+		return ret; 
+	}
+
+	V m_reset() { ref.Clear(); dst.Clear(); rem = cnt; }
+
+	virtual I m_set(I argc,t_atom *argv) { rem = cnt; return vasp_tx::m_set(argc,argv); }
+
+	V m_add(I argc,t_atom *argv) 
+	{ 
+		dst += Vasp(argc,argv);
+		if(cnt && !--rem) m_bang();
+	}
+
+	virtual V m_help() { post("%s - Gather several vasps into one",thisName()); }
+private:
+	I cnt,rem;
+
+	FLEXT_CALLBACK(m_reset)
+	FLEXT_CALLBACK_G(m_add)
+};
+
+FLEXT_LIB_G("vasp.gather",vasp_gather)
 
 
 

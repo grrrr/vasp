@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-#define VASP_VERSION "0.0.1"
+#define VASP_VERSION "0.0.0"
 
 
 #include <flext.h>
@@ -205,6 +205,9 @@ inline F sqabs(const CX &c) { return sqabs(c.real,c.imag); }
 inline F sgn(F x) { return x < 0.?-1.F:1.F; }
 inline V swap(F &a,F &b) { F c = a; a = b; b = c; }
 
+inline I min(I a,I b) { return a < b?a:b; }
+inline I max(I a,I b) { return a > b?a:b; }
+
 
 class VecBlock 
 {
@@ -301,10 +304,10 @@ public:
 	inline BL AI_In() const { return iddt > iadt && iddt < iadt+frames*ias; } 
 	
 	// Can we reverse direction?
-	inline BL SR_Can() const { return rsdt > rddt && rsdt < rddt+frames*rds; } 
-	inline BL SI_Can() const { return isdt > iddt && isdt < iddt+frames*ids; } 
-	inline BL AR_Can() const { return radt > rddt && radt < rddt+frames*rds; } 
-	inline BL AI_Can() const { return iadt > iddt && iadt < iddt+frames*ids; } 
+	inline BL SR_Can() const { return rsdt <= rddt || rsdt >= rddt+frames*rds; } 
+	inline BL SI_Can() const { return isdt <= iddt || isdt >= iddt+frames*ids; } 
+	inline BL AR_Can() const { return radt <= rddt || radt >= rddt+frames*rds; } 
+	inline BL AI_Can() const { return iadt <= iddt || iadt >= iddt+frames*ids; } 
 	
 	// reverse direction
 	inline V SR_Rev() { rsdt -= (frames-1)*(rss = -rss); }
@@ -314,22 +317,11 @@ public:
 	inline V DR_Rev() { rddt -= (frames-1)*(rds = -rds); }
 	inline V DI_Rev() { iddt -= (frames-1)*(ids = -ids); }
 	
-/*
-	V SDR_Rev();
-	V SDI_Rev();
-	V SDC_Rev();
-	V ADR_Rev();
-	V ADI_Rev();
-	V ADC_Rev();
-	V SADR_Rev();
-	V SADI_Rev();
-	V SADC_Rev();
-*/
 	V R_Rev();
 	V C_Rev();
 
 	const C *opname;
-	I frames;
+	I frames,symm;
 	BL part,ovrlap,revdir;
 	S *rsdt,*isdt; I rss,iss;
 	S *rddt,*iddt; I rds,ids;
@@ -356,17 +348,25 @@ namespace VecOp {
 	BL d_sub(OpParam &p); 
 	BL d_mul(OpParam &p); 
 	BL d_div(OpParam &p); 
+	BL d_divr(OpParam &p); 
+	BL d_mod(OpParam &p); 
 	BL d_min(OpParam &p); 
 	BL d_max(OpParam &p); 
+	BL d_pow(OpParam &p); 
+
 	BL d_lwr(OpParam &p); 
 	BL d_gtr(OpParam &p); 
-	BL d_pow(OpParam &p); 
+	BL d_leq(OpParam &p); 
+	BL d_geq(OpParam &p); 
+	BL d_equ(OpParam &p); 
+	BL d_neq(OpParam &p); 
 
 	BL d_ccopy(OpParam &p); 
 	BL d_cadd(OpParam &p); 
 	BL d_csub(OpParam &p); 
 	BL d_cmul(OpParam &p); 
 	BL d_cdiv(OpParam &p); 
+	BL d_cdivr(OpParam &p); 
 	BL d_cmin(OpParam &p); 
 	BL d_cmax(OpParam &p); 
 	BL d_cpowi(OpParam &p); 
@@ -392,7 +392,6 @@ namespace VecOp {
 	BL d_cart(OpParam &p); 
 	BL d_copt(OpParam &p); 
 	BL d_cnorm(OpParam &p); 
-
 
 	BL d_int(OpParam &p);
 	BL d_dif(OpParam &p); 
@@ -427,16 +426,13 @@ namespace VecOp {
 namespace VaspOp {
 	typedef flext_base flx;
 
-	inline I min(I a,I b) { return a < b?a:b; }
-	inline I max(I a,I b) { return a > b?a:b; }
-
 	RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp *dst = NULL);
 	CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp *dst = NULL,BL full = false);
 	RVecBlock *GetRVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst = NULL,I multi = -1);
 	CVecBlock *GetCVecs(const C *op,Vasp &src,const Vasp &arg,Vasp *dst = NULL,I multi = -1,BL full = false);
 	
-	Vasp *DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p);
-	Vasp *DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p);
+	Vasp *DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm = false);
+	Vasp *DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm = false);
 
 	// -------- transformations -----------------------------------
 
@@ -452,11 +448,18 @@ namespace VaspOp {
 	inline Vasp *m_sub(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_sub,"sub"); } // sub from (one vec or real)
 	inline Vasp *m_mul(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_mul,"mul"); } // mul with (one vec or real)
 	inline Vasp *m_div(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_div,"div"); } // div by (one vec or real)
+	inline Vasp *m_divr(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_divr,"divr"); } // reserve div by (one vec or real)
+	inline Vasp *m_mod(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_mod,"mod"); } // modulo by (one vec or real)
 	inline Vasp *m_min(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_min,"min"); } // min (one vec or real)
 	inline Vasp *m_max(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_max,"max"); } // max (one vec or real)
+	inline Vasp *m_pow(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_pow,"pow"); } // power
+
 	inline Vasp *m_lwr(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_lwr,"lwr"); } // lower than
 	inline Vasp *m_gtr(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_gtr,"gtr"); } // greater than
-	inline Vasp *m_pow(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_pow,"pow"); } // power
+	inline Vasp *m_leq(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_leq,"leq"); } // lower than
+	inline Vasp *m_geq(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_geq,"geq"); } // greater than
+	inline Vasp *m_equ(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_equ,"equ"); } // lower than
+	inline Vasp *m_neq(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(src,arg,dst,VecOp::d_neq,"neq"); } // greater than
 
 	Vasp *m_cpowi(Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex integer power (with each two channels)
 
@@ -465,6 +468,7 @@ namespace VaspOp {
 	inline Vasp *m_csub(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_csub,"csub"); }  // complex sub (pairs of vecs or complex)
 	inline Vasp *m_cmul(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmul,"cmul"); }  // complex mul (pairs of vecs or complex)
 	inline Vasp *m_cdiv(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cdiv,"cdiv"); }  // complex div (pairs of vecs or complex)
+	inline Vasp *m_cdivr(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cdivr,"cdivr"); }  // complex reverse div (pairs of vecs or complex)
 	inline Vasp *m_cmin(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmin,"cmin"); }  // complex (abs) min (pairs of vecs or complex)
 	inline Vasp *m_cmax(Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(src,arg,dst,VecOp::d_cmax,"cmax"); }  // complex (abs) max (pairs of vecs or complex)
 
@@ -642,32 +646,6 @@ public:
 	// make a graphical update of all buffers in vasp
 	V Refresh();
 	
-
-#if 0
-
-	// --------------------------------------------------------------------
-
-
-	typedef BL (*argfunRA)(I,F *,I,Argument &);
-	typedef BL (*argfunCA)(I,F *,I,F *,I,Argument &);
-	
-	typedef BL (*argfunR)(I,F *,I,F);
-	typedef BL (*argfunC)(I,F *,I,F *,I,F,F);
-	typedef BL (*argfunV)(I,F *,I,const F *,I);
-	typedef BL (*argfunCV)(I,F *,I,F *,I,const F *,I,const F *,I);
-
-	struct nop_funcs {
-		argfunR funR;
-		argfunC funC;
-	};
-
-	struct arg_funcs {
-		argfunR funR;
-		argfunC funC;
-		argfunV funV;
-		argfunCV funCV;
-	};
-#endif
 protected:
 	I frames; // length counted in frames
 	I chns; // used channels
@@ -675,35 +653,6 @@ protected:
 	Ref *ref;
 
 	V Resize(I rcnt);
-
-#if 0
-private:
-	typedef flext_base flx;
-
-	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_arg(op,v,f.funR); }
-	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_arg(op,cx,f.funC); }
-	Vasp *fc_nop(const C *op,const Argument &params,const nop_funcs &f);
-
-	Vasp *fr_prm(const C *op,argfunRA f,Argument &params);
-	Vasp *fc_prm(const C *op,argfunCA f,Argument &params);
-//	Vasp *fr_arg(const C *op,argfunVA f,Argument &a);
-//	Vasp *fc_arg(const C *op,argfunCV f,Argument &a);
-//	Vasp *fv_arg(const C *op,argfunV f,Argument &a);
-
-	Vasp *fr_arg(const C *op,F v,argfunR f);
-	Vasp *fr_arg(const C *op,F v,const arg_funcs &f) { return fr_arg(op,v,f.funR); }
-	Vasp *fr_arg(const C *op,const Vasp &v,argfunV f);
-	Vasp *fr_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fr_arg(op,v,f.funV); }
-	Vasp *fr_arg(const C *op,const Argument &arg,const arg_funcs &f);
-	Vasp *fc_arg(const C *op,const CX &cx,argfunC f);
-	Vasp *fc_arg(const C *op,const CX &cx,const arg_funcs &f) { return fc_arg(op,cx,f.funC); }
-	Vasp *fc_arg(const C *op,const Vasp &v,argfunCV f);
-	Vasp *fc_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fc_arg(op,v,f.funCV); }
-	Vasp *fc_arg(const C *op,const Argument &arg,const arg_funcs &f);
-	Vasp *fv_arg(const C *op,const Vasp &v,argfunV f);
-	Vasp *fv_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fv_arg(op,v,f.funV); }
-	Vasp *fv_arg(const C *op,const Argument &arg,const arg_funcs &f);
-#endif
 };
 
 
@@ -772,7 +721,7 @@ protected:
 	Vasp ref,dst;
 
 	FLEXT_CALLBACK_G(m_to)
-private:
+
 	FLEXT_CALLBACK(m_bang)
 	FLEXT_CALLBACK_G(m_vasp)
 	FLEXT_CALLBACK_G(m_set)

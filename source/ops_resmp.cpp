@@ -31,13 +31,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 	\todo implement more interpolation methods
 	\todo check for operation direction!
+	\todo symmetric operation!
 */
 BL VecOp::d_tilt(OpParam &p) 
 { 
 	if(p.frames <= 1 || p.tilt.factor == 1) return true;
 
 	if(p.tilt.factor == 0) {
-		post("tilt: invalid factor value");
+		post("%s - invalid factor value",p.opname);
+		return false;
+	}
+
+	if(p.symm >= 0) {
+		post("%s - Sorry, symmetric operation not implemented yet",p.opname);
 		return false;
 	}
 
@@ -54,6 +60,7 @@ BL VecOp::d_tilt(OpParam &p)
 		post("tilt: center position >= buffer length -> set to max. position");
 		icenter = p.frames;
 	}
+
 
 	// !lacking interpolation
 	if(p.tilt.factor > 1) {
@@ -107,25 +114,7 @@ Vasp *VaspOp::m_tilt(Vasp &src,const Argument &arg,Vasp *dst,BL symm,I mode)
 			p.tilt.center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 			p.tilt.mode = mode;
 
-			if(symm) {
-/*
-				I cnt = vecs->Frames();
-				I sc = s->Channels(),dc = d->Channels();
-				I hcnt = cnt/2;
-				ok = 
-					d_tilt(hcnt,s->Pointer(),sc,d->Pointer(),dc,factor,center) &&
-					d_tilt(hcnt,s->Pointer()+(cnt-hcnt),sc,d->Pointer()+(cnt-hcnt),dc,factor,hcnt-1-center);
-*/
-			}
-			else {
-/*
-				if(p.SROvr()) {
-					p.SDRRev();
-					post("%s - reversing operation direction due to overlap: opposite sample delay",opnm);
-				}	
-*/
-				ret = DoOp(vecs,VecOp::d_tilt,p);
-			}
+			ret = DoOp(vecs,VecOp::d_tilt,p,symm);
 
 			delete vecs;
 		}

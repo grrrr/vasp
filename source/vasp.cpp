@@ -135,11 +135,16 @@ Vasp &Vasp::operator +=(const Ref &r)
 Vasp &Vasp::operator +=(const Vasp &v)
 {
 	if(v.Ok()) {
-		if(Frames() != v.Frames())
-			post("%s - Frame count of joined vasps is different - taking the left one's");
+		if(!Ok()) *this = v;
+		else {
+			if(Frames() != v.Frames()) {
+				post("%s - Frame count of joined vasps is different - taking the minimum");
+				Frames(min(Frames(),v.Frames()));
+			}
 
-		Resize(Vectors()+v.Vectors());
-		for(I i = 0; i < v.Vectors(); ++i) *this += v.Vector(i);
+			Resize(Vectors()+v.Vectors());
+			for(I i = 0; i < v.Vectors(); ++i) *this += v.Vector(i);
+		}
 	}
 	return *this;
 }

@@ -135,7 +135,8 @@ V vasp_op::m_update(I argc,t_atom *argv)
 
 V vasp_tx::m_bang()
 {
-	if(ref.Ok()) {
+//	if(ref.Ok()) 
+	{
 		Vasp *ret = x_work();
 		if(ret) {
 			AtomList *lst = ret->MakeList(false);
@@ -152,8 +153,10 @@ V vasp_tx::m_bang()
 			post("%s - no valid return",thisName());
 		}
 	}
+/*
 	else {
 		post("%s - no valid vasp to work with",thisName());
 	}
+*/
 }
 

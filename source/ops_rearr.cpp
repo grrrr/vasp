@@ -12,12 +12,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \brief shift buffer
 	
-	\todo check for src/dst overlap
+	\todo symmetric operation
 */
 BL VecOp::d_shift(OpParam &p) 
 { 
 	if(p.part || p.ovrlap) {
 		post("%s - cannot operate on partioned or overlapped vectors",p.opname);
+		return false;
+	}
+
+	if(p.symm >= 0) {
+		post("%s - Sorry, symmetric operation not implemented yet",p.opname);
 		return false;
 	}
 
@@ -46,12 +51,16 @@ BL VecOp::d_shift(OpParam &p)
 /*! \brief rotate buffer
 	
 	\todo implement!
-	\todo check for src/dst overlap
 */
 BL VecOp::d_rot(OpParam &p) 
 { 
 	if(p.part || p.ovrlap) {
 		post("%s - cannot operate on partioned or overlapped vectors",p.opname);
+		return false;
+	}
+
+	if(p.symm >= 0) {
+		post("%s - Sorry, symmetric operation not implemented yet",p.opname);
 		return false;
 	}
 
@@ -122,12 +131,7 @@ Vasp *VaspOp::m_shift(Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm)
 			// shift length
 			p.sh.sh = flx::GetAFloat(arg.GetList()[0]);
 
-			if(symm) {
-				post("%s - not implemented yet",p.opname);
-			}
-			else {
-				ret = DoOp(vecs,shift?VecOp::d_shift:VecOp::d_rot,p);
-			}
+			ret = DoOp(vecs,shift?VecOp::d_shift:VecOp::d_rot,p,symm);
 			delete vecs;
 		}
 	}
@@ -141,12 +145,17 @@ Vasp *VaspOp::m_shift(Vasp &src,const Argument &arg,Vasp *dst,BL shift,BL symm)
 
 /*! \brief mirror buffer
 	
-	\todo check for src/dst overlap
+	\todo symmetric
 */
 BL VecOp::d_mirr(OpParam &p) 
 { 
 	if(p.part || p.ovrlap) {
 		post("%s - cannot operate on partioned or overlapped vectors",p.opname);
+		return false;
+	}
+
+	if(p.symm >= 0) {
+		post("%s - Sorry, symmetric operation not implemented yet",p.opname);
 		return false;
 	}
 
@@ -170,12 +179,7 @@ Vasp *VaspOp::m_mirr(Vasp &src,Vasp *dst,BL symm)
 
 	RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 	if(vecs) {
-		if(symm) {
-			post("%s - not implemented yet",p.opname);
-		}
-		else {
-			ret = DoOp(vecs,VecOp::d_mirr,p);
-		}
+		ret = DoOp(vecs,VecOp::d_mirr,p,symm);
 		delete vecs;
 	}
 	return ret;
