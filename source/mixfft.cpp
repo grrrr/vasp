@@ -304,9 +304,6 @@ static void permute(int nPoint, int nFact,
 		PERMUTATION(REAL,2,p,permfun);
 
 		delete[] perm;
-
-//		yRe[nPoint-1]=xRe[nPoint-1]; //!
-//		yIm[nPoint-1]=xIm[nPoint-1]; //!
 	}
 	else {
 		int count[maxFactorCount]; 

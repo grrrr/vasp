@@ -96,6 +96,7 @@ warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay 
 - better algorithm for vasp.fix
 
 - make loops granular and interruptible
+- make in place rotation more efficient
 
 objects:
 ---------------------
@@ -118,6 +119,7 @@ bugs:
 tests:
 ---------------------
 - vasp.size always keeps the data... do we want that? -> flag if yes/no
+- in-place operation (src == dst), test if strides are equal!
 
 
 premature thoughts:

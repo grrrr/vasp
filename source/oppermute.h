@@ -15,54 +15,88 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define MAXPERMDIM 2
 
-template <class T,int DIM>
-int permutation(OpParam &p,int (*origination)(int ij, int n,OpParam &p),int _dim = 1)
+template<class T>
+inline void permswap(T &a,T &b) { register T t = a; a = b; b = t; }
+
+template<class T>
+void permutation1(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 {
-	const int dim = DIM?DIM:_dim;
+	T *ddt = p.rddt;
+	const I ds = p.rds;
+	const I sz = p.frames;
 
-	int di,ij, oij, dij, n_to_do;
-	T b[MAXPERMDIM],*sdt[MAXPERMDIM],*ddt[MAXPERMDIM];
-	I ss[MAXPERMDIM],ds[MAXPERMDIM];
-
-	sdt[0] = p.rsdt,ddt[0] = p.rddt; ss[0] = p.rss,ds[0] = p.rds;
-	if(dim == 2) {
-		sdt[1] = p.isdt,ddt[1] = p.iddt; ss[1] = p.iss,ds[1] = p.ids;
+	if(ddt != p.rsdt) {
+		// not in place
+		const T *sdt = p.rsdt;
+		const I ss = p.rss;
+		for(int i = 0; i < sz; ++i) ddt[origination(i,sz,p)*ds] = sdt[i*ss];
 	}
-
-	I n = p.frames;
-	n_to_do = n;
-	for(ij = 0; ij < n && n_to_do > 0; ij++,n_to_do--) {
-		/* Test for previously permuted */
-		for (oij = origination(ij,n,p); oij > ij; oij = origination(oij,n,p)) (void)0;
-
-		if (oij < ij) continue;
-
-		/* Chase the cycle */
-		dij = ij;
-		
-		for(di = 0; di < dim; ++di) { 
-			b[di] = sdt[di][ij*ss[di]];
-		}
-
-		for(oij = origination(dij,n,p); oij != ij; oij = origination(dij,n,p),n_to_do--) {
-			for(di = 0; di < dim; ++di) {
-				ddt[di][dij*ds[di]] = sdt[di][oij*ss[di]];
+	else {
+		// in place 
+		// \todo try to come from both sides!
+		for(int i = 0; i <= sz-2; ++i) {
+			int cur = i;
+			do { cur = origination(cur,sz,p); } while(cur < i);
+			if(cur > i) {
+				// swap
+				permswap(ddt[cur*ds],ddt[i*ds]);
 			}
-			dij = oij;
 		}
-
-		for(di = 0; di < dim; ++di) {
-			ddt[di][dij*ds[di]] = b[di];
-		}
-	} 
-	return 0;
+	}
 }
 
-#if defined(_MSC_VER) && _MSC_VER <= 1200 // MSVC 6 can't handle int templates!!
-#define PERMUTATION(tp,dim,p,func) permutation<tp,0>(p,func,dim)
-#else
-#define PERMUTATION(tp,dim,p,func) permutation<tp,dim>(p,func)
-#endif
+template<class T>
+void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
+{
+	T *rddt = p.rddt,*iddt = p.iddt;
+	const I rds = p.rds,ids = p.ids;
+	const I sz = p.frames;
+	bool rinpl = rddt == p.rsdt,iinpl = iddt == p.isdt;
+
+	if(rinpl == iinpl) {
+		// re and im both in place
+
+		for(int i = 0; i <= sz-2; ++i) {
+			int cur = i;
+			do { cur = origination(cur,sz,p); } while(cur < i);
+			if(cur > i) {
+				// swap
+				permswap(rddt[cur*rds],rddt[i*rds]);
+				permswap(iddt[cur*ids],iddt[i*ids]);
+			}
+		}
+	}
+	else {
+		if(!rinpl) {
+			const T *sdt = p.rsdt;
+			const I ss = p.rss;
+			if(ss == 1 && rds == 1)
+				for(int i = 0; i < sz; ++i) *(rddt++) = *(sdt++);
+			else
+				for(int i = 0; i < sz; ++i,rddt += rds,sdt += ss) *rddt = *sdt;
+			rddt = p.rddt;
+		}
+		else permutation1<T>(p,origination);
+
+		if(!iinpl) {
+			const T *sdt = p.isdt;
+			const I ss = p.iss;
+			if(ss == 1 && ids == 1)
+				for(int i = 0; i < sz; ++i) *(iddt++) = *(sdt++);
+			else
+				for(int i = 0; i < sz; ++i,iddt += ids,sdt += ss) *iddt = *sdt;
+			iddt = p.iddt;
+		}
+		else {
+			permswap(p.rddt,p.iddt); permswap(p.rds,p.ids);
+			permutation1<T>(p,origination);
+			permswap(p.rddt,p.iddt); permswap(p.rds,p.ids);
+		}
+	}
+}
+
+
+#define PERMUTATION(tp,dim,p,func) permutation ## dim <tp>(p,func)
 
 #endif
 
