@@ -3,9 +3,9 @@
 AtomList::AtomList(I argc,t_atom *argv):
 	cnt(argc)
 {
-	if(argv) {
-		lst = new t_atom[cnt];
+	lst = new t_atom[cnt];
 
+	if(argv) {
 		for(I i = 0; i < argc; ++i) {
 			switch(lst[i].a_type = argv[i].a_type) {
 			case A_FLOAT:
@@ -24,8 +24,6 @@ AtomList::AtomList(I argc,t_atom *argv):
 			}
 		}
 	}
-	else
-		lst = NULL;
 }
 
 AtomList::~AtomList()

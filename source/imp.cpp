@@ -10,61 +10,35 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 
-///////////////////////////////////////////////////////////////////////////
-// vasp_copy class
-///////////////////////////////////////////////////////////////////////////
+VASP_BINARY("vasp.=",copy)
+VASP_BINARY("vasp.c=",ccopy)
+VASP_BINARY("vasp.m=",mcopy)
 
-class vasp_copy:
-	public vasp_tx
-{
-	FLEXT_HEADER(vasp_copy,vasp_tx)
+VASP_BINARY("vasp.+",add)
+VASP_BINARY("vasp.c+",cadd)
+VASP_BINARY("vasp.m+",madd)
 
-public:
-	vasp_copy(I argc,t_atom *argv): vasp_tx(argc,argv) {}
+VASP_BINARY("vasp.-",sub)
+VASP_BINARY("vasp.c-",csub)
+VASP_BINARY("vasp.m-",msub)
 
-protected:
-	virtual Vasp *tx_work(const Argument &arg) { return ref.m_copy(arg); }
-};
+VASP_BINARY("vasp.*",mul)
+VASP_BINARY("vasp.c*",cmul)
+VASP_BINARY("vasp.m*",mmul)
 
-FLEXT_NEW_G("vasp.=",vasp_copy)
+VASP_BINARY("vasp./",div)
+VASP_BINARY("vasp.c/",cdiv)
+VASP_BINARY("vasp.m/",mdiv)
 
+VASP_UNARY("vasp.abs",abs) 
+VASP_UNARY("vasp.sign",sign) 
+VASP_UNARY("vasp.polar",polar) 
+VASP_UNARY("vasp.cart",cart) 
 
-///////////////////////////////////////////////////////////////////////////
-// vasp_ccopy class
-///////////////////////////////////////////////////////////////////////////
+VASP_UNARY("vasp.norm",norm)
+VASP_UNARY("vasp.cnorm",cnorm)
 
-class vasp_ccopy:
-	public vasp_tx
-{
-	FLEXT_HEADER(vasp_ccopy,vasp_tx)
-
-public:
-	vasp_ccopy(I argc,t_atom *argv): vasp_tx(argc,argv) {}
-
-protected:
-	virtual Vasp *tx_work(const Argument &arg) { return ref.m_ccopy(arg); }
-};
-
-FLEXT_NEW_G("vasp.c=",vasp_ccopy)
-
-
-///////////////////////////////////////////////////////////////////////////
-// vasp_mcopy class
-///////////////////////////////////////////////////////////////////////////
-
-class vasp_mcopy:
-	public vasp_tx
-{
-	FLEXT_HEADER(vasp_mcopy,vasp_tx)
-
-public:
-	vasp_mcopy(I argc,t_atom *argv): vasp_tx(argc,argv) {}
-
-protected:
-	virtual Vasp *tx_work(const Argument &arg) { return ref.m_mcopy(arg); }
-};
-
-FLEXT_NEW_G("vasp.m=",vasp_mcopy)
-
+VASP_UNARY("vasp.cswap",cswap)
+VASP_UNARY("vasp.cconj",cconj)
 
 

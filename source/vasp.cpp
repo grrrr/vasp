@@ -43,7 +43,7 @@ VBuffer &VBuffer::Set(t_symbol *s,I c,I l,I o)
 	if(chn > Channels()) chn = Channels();
 	offs = o;
 	if(offs > Frames()) offs = Frames();
-	len = l;
+	len = l >= 0?l:Frames();
 	if(offs+len > Frames()) len = Frames()-offs;
 
 	return *this;
@@ -56,14 +56,12 @@ VBuffer &VBuffer::Set(t_symbol *s,I c,I l,I o)
 ///////////////////////////////////////////////////////////////////////////
 
 Vasp::Vasp(): 
-	atoms(0),atomlist(NULL),
 	refs(0),chns(0),ref(NULL),
 	frames(0) 
 { 
 }
 
 Vasp::Vasp(I argc,t_atom *argv):
-	atoms(0),atomlist(NULL),
 	refs(0),chns(0),ref(NULL),
 	frames(0) 
 { 
@@ -71,7 +69,6 @@ Vasp::Vasp(I argc,t_atom *argv):
 }
 
 Vasp::Vasp(const Vasp &v): 
-	atoms(0),atomlist(NULL),
 	refs(0),chns(0),ref(NULL),
 	frames(0) 
 { 
@@ -81,7 +78,6 @@ Vasp::Vasp(const Vasp &v):
 Vasp::~Vasp()
 {
 	if(ref) delete[] ref;
-	if(atomlist) delete[] atomlist;
 }
 
 
@@ -173,31 +169,6 @@ Vasp &Vasp::operator ()(I argc,t_atom *argv)
 }
 
 
-// generate Vasp list of buffer references
-Vasp &Vasp::MakeList(BL withvasp)
-{
-	I voffs = withvasp?1:0;
-	I needed = voffs+1+Vectors()*3;
-	if(!atomlist || needed != atoms) {
-		if(atomlist) delete[] atomlist;
-		atomlist = new t_atom[atoms = needed];
-	}
-
-	if(withvasp)
-		flext_base::SetSymbol(atomlist[0],vasp_base::sym_vasp);  // VASP
-
-	flext_base::SetFlint(atomlist[voffs],frames);  // frames
-
-	for(I ix = 0; ix < Vectors(); ++ix) {
-		Ref &r = Vector(ix);
-		flext_base::SetSymbol(atomlist[voffs+1+ix*3],r.sym);  // buf
-		flext_base::SetFlint(atomlist[voffs+2+ix*3],r.chn);  // chn
-		flext_base::SetFlint(atomlist[voffs+3+ix*3],r.offs);  // offs
-	}
-
-	return *this;
-}
-
 VBuffer *Vasp::Buffer(I ix) const
 {
 	if(ix >= Vectors()) 
@@ -208,6 +179,36 @@ VBuffer *Vasp::Buffer(I ix) const
 	}
 }
 
+// generate Vasp list of buffer references
+AtomList *Vasp::MakeList(BL withvasp)
+{
+	I voffs = withvasp?1:0;
+	I needed = voffs+1+Vectors()*3;
+	AtomList *ret = new AtomList(needed);
+
+	if(withvasp) 
+		flext_base::SetSymbol((*ret)[0],vasp_base::sym_vasp);  // VASP
+
+	flext_base::SetFlint((*ret)[voffs],frames);  // frames
+
+	for(I ix = 0; ix < Vectors(); ++ix) {
+		Ref &r = Vector(ix);
+		flext_base::SetSymbol((*ret)[voffs+1+ix*3],r.sym);  // buf
+		flext_base::SetFlint((*ret)[voffs+2+ix*3],r.chn);  // chn
+		flext_base::SetFlint((*ret)[voffs+3+ix*3],r.offs);  // offs
+	}
+
+	return ret;
+}
 
 
-
+V Vasp::Refresh()
+{
+	for(I i = 0; i < Vectors(); ++i) {
+		VBuffer *vb = Buffer(i);
+		if(vb) {
+			vb->Dirty(true);
+			delete vb;
+		}
+	}
+}

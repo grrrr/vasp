@@ -41,7 +41,18 @@ public:
 	F real,imag; 
 };
 
-struct vector { I dim; F *data; };
+class vector 
+{ 
+public:
+	vector(): dim(0),data(NULL) {}
+	~vector() { if(data) delete[] data; }
+
+	I Dim() const { return dim; }
+	F *Data() { return data; }
+	const F *Data() const { return data; }
+protected:
+	I dim; F *data; 
+};
 
 
 class VBuffer:
@@ -69,10 +80,14 @@ protected:
 class AtomList
 {
 public:
-	AtomList(I argc,t_atom *argv);
+	AtomList(I argc,t_atom *argv = NULL);
 	~AtomList();
 
 	I Count() const { return cnt; }
+	t_atom &operator [](I ix) { return lst[ix]; }
+	const t_atom &operator [](I ix) const { return lst[ix]; }
+
+	t_atom *Atoms() { return lst; }
 	const t_atom *Atoms() const { return lst; }
 	
 protected:
@@ -174,7 +189,7 @@ public:
 	I Frames() const { return frames; }
 
 	BL Ok() const { return ref && Vectors() > 0; }
-	BL Complex() const { return ref && Vectors() >= 2 && ref[1].sym != NULL; }
+	BL IsComplex() const { return ref && Vectors() >= 2 && ref[1].sym != NULL; }
 
 	// get any vector - test if in range 0..Vectors()-1!
 	const Ref &Vector(I ix) const { return ref[ix]; }
@@ -196,20 +211,16 @@ public:
 	VBuffer *ImBuffer() const { return Buffer(1); }
 
 	// prepare and reference t_atom list for output
-	Vasp &MakeList(BL withvasp = true);
-	I Atoms() const { return atoms; }
-	t_atom *AtomList() { return atomlist; }
+	AtomList *MakeList(BL withvasp = true);
 
-
+	// make a graphical update of all buffers in vasp
+	V Refresh();
+	
 	// copy functions
 	Vasp *m_copy(const Argument &arg); // copy to (one vec or real)
 	Vasp *m_ccopy(const Argument &arg); // complex copy (pairs of vecs or complex)
 	Vasp *m_mcopy(const Argument &arg); // copy to (multi-channel)
-/*
-	Vasp *m_copy(I argc,t_atom *argv); // copy to (one vec or real)
-	Vasp *m_ccopy(I argc,t_atom *argv); // complex copy (pairs of vecs or complex)
-	Vasp *m_mcopy(I argc,t_atom *argv); // copy to (multi-channel)
-*/
+
 //	Vasp *m_mix(I argc,t_atom *argv); // mix in (one vec or real/complex)
 //	Vasp *m_mmix(I argc,t_atom *argv); // mix in (multi-channel)
 
@@ -307,44 +318,31 @@ protected:
 	I refs; // allocated channels
 	Ref *ref;
 
-	I atoms; // elements of list
-	t_atom *atomlist;
-
 	static I min(I a,I b) { return a < b?a:b; }
 	static I max(I a,I b) { return a > b?a:b; }
-/*
-	static BL IsFloat(I argc,t_atom *argv) { return argc == 1 && flx::IsFloat(argv[0]); }
-	static BL IsComplex(I argc,t_atom *argv) { return argc == 2 && flx::IsFloat(argv[0]) && flx::IsFloat(argv[1]); }
-	static BL IsVector(I argc,t_atom *argv) { return argc >= 3 && flx::IsFloat(argv[0]) && flx::IsFloat(argv[1]) && flx::IsFloat(argv[3]) ; }
-*/
+
 private:
 	typedef flext_base flx;
 
-//	Vasp *f_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f);
 	Vasp *fr_nop(const C *op,F v,V (*f)(F *,F,I));
 	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_nop(op,v,f.funR); }
 	Vasp *fc_nop(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I));
 	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_nop(op,cx,f.funC); }
-//	Vasp *fc_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f);
 	Vasp *fc_nop(const C *op,const Argument &arg,const nop_funcs &f);
 
-//	Vasp *f_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
 	Vasp *fr_arg(const C *op,F v,V (*f)(F *,F,I));
 	Vasp *fr_arg(const C *op,F v,const arg_funcs &f) { return fr_arg(op,v,f.funR); }
 	Vasp *fr_arg(const C *op,const Vasp &v,V (*f)(F *,const F *,I));
 	Vasp *fr_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fr_arg(op,v,f.funV); }
 	Vasp *fr_arg(const C *op,const Argument &arg,const arg_funcs &f);
-//	Vasp *fr_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
 	Vasp *fc_arg(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I));
 	Vasp *fc_arg(const C *op,const CX &cx,const arg_funcs &f) { return fc_arg(op,cx,f.funC); }
 	Vasp *fc_arg(const C *op,const Vasp &v,V (*f)(F *,F *,const F *,const F *,I));
 	Vasp *fc_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fc_arg(op,v,f.funCV); }
 	Vasp *fc_arg(const C *op,const Argument &arg,const arg_funcs &f);
-//	Vasp *fc_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
 	Vasp *fm_arg(const C *op,const Vasp &v,V (*f)(F *,const F *,I));
 	Vasp *fm_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fm_arg(op,v,f.funV); }
 	Vasp *fm_arg(const C *op,const Argument &arg,const arg_funcs &f);
-//	Vasp *fm_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f);
 };
 
 
@@ -372,6 +370,7 @@ protected:
 	virtual V m_radio(I argc,t_atom *argv);  // commands for all
 
 	virtual V m_argchk(BL chk);  // precheck argument on arrival
+	virtual V m_loglvl(I lvl);  // noise level of log messages
 	virtual V m_update(I argc = 0,t_atom *argv = NULL);  // graphics update
 	virtual V m_unit(xs_unit u);  // unit command
 
@@ -380,9 +379,11 @@ protected:
 
 	virtual Vasp *x_work() = 0;
 	
-	// immediate graphics refresh?
-	BL refresh;
-
+	
+	BL refresh;  // immediate graphics refresh?
+	BL argchk;   // pre-operation argument feasibility check
+	xs_unit unit;  // time units
+	I loglvl;	// noise level for log messages
 
 	friend class Vasp;
 
@@ -394,9 +395,6 @@ protected:
 private:
 	static V setup(t_class *);
 
-	xs_unit unit;
-	BL argchk,log;
-
 	FLEXT_CALLBACK(m_bang)
 	FLEXT_CALLBACK_G(m_vasp)
 	FLEXT_CALLBACK_G(m_set)
@@ -405,18 +403,35 @@ private:
 
 	FLEXT_CALLBACK_G(m_update)
 	FLEXT_CALLBACK_B(m_argchk)
+	FLEXT_CALLBACK_I(m_loglvl)
 	FLEXT_CALLBACK_1(m_unit,xs_unit)
 };
 
 
-class vasp_tx:
+// base class for unary operations
+
+class vasp_unop:
 	public vasp_base
 {
-	FLEXT_HEADER(vasp_tx,vasp_base)
+	FLEXT_HEADER(vasp_unop,vasp_base)
 
-public:
-	vasp_tx(I argc,t_atom *argv);
-	~vasp_tx();
+protected:
+	vasp_unop();
+
+	virtual Vasp *x_work();
+	virtual Vasp *tx_work();
+};
+
+
+// base class for binary operations
+
+class vasp_binop:
+	public vasp_base
+{
+	FLEXT_HEADER(vasp_binop,vasp_base)
+
+protected:
+	vasp_binop(I argc,t_atom *argv);
 
 	// assignment functions
 	virtual V a_vasp(I argc,t_atom *argv);
@@ -425,211 +440,44 @@ public:
 	virtual V a_complex(I argc,t_atom *argv); 
 	virtual V a_vector(I argc,t_atom *argv); 
 
+	virtual Vasp *x_work();
+	virtual Vasp *tx_work(const Argument &arg);
+
+	Argument arg;
+
+private:
 	FLEXT_CALLBACK_G(a_vasp)
 	FLEXT_CALLBACK_G(a_list)
 	FLEXT_CALLBACK_1(a_float,F)
 	FLEXT_CALLBACK_G(a_complex)
 	FLEXT_CALLBACK_G(a_vector)
-
-protected:
-	virtual Vasp *x_work();
-
-	virtual Vasp *tx_work(const Argument &arg);
-
-	Argument arg;
 };
 
 
-#if 0
-
-class vasp_tx:
-	public vasp_base
-{
-	FLEXT_HEADER(vasp_tx,vasp_base)
-
-public:
-	vasp_tx(I argc,t_atom *argv);
-	~vasp_tx();
-
-	virtual I m_set(I argc,t_atom *argv); // set destination (non-triggering)
-
-	// assignment functions
-	virtual V m_copy(I argc,t_atom *argv); // copy to (one vec or real)
-	virtual V m_ccopy(I argc,t_atom *argv); // complex copy (pairs of vecs or complex)
-	virtual V m_mcopy(I argc,t_atom *argv); // copy to (multi-channel)
-//	virtual V m_mix(I argc,t_atom *argv); // mix in (one vec or real/complex)
-//	virtual V m_mmix(I argc,t_atom *argv); // mix in (multi-channel)
-
-	// binary functions
-	virtual V m_add(I argc,t_atom *argv); // add to (one vec or real)
-	virtual V m_cadd(I argc,t_atom *argv); // complex add (pairs of vecs or complex)
-	virtual V m_madd(I argc,t_atom *argv); // add to (multi-channel)
-	virtual V m_sub(I argc,t_atom *argv); // sub from (one vec or real/complex)
-	virtual V m_csub(I argc,t_atom *argv); // complex sub (pairs of vecs or complex)
-	virtual V m_msub(I argc,t_atom *argv); // sub from (multi-channel)
-	virtual V m_mul(I argc,t_atom *argv); // mul with (one vec or real/complex)
-	virtual V m_cmul(I argc,t_atom *argv); // complex mul (pairs of vecs or complex)
-	virtual V m_mmul(I argc,t_atom *argv); // mul with (multi-channel)
-	virtual V m_div(I argc,t_atom *argv); // div by (one vec or real/complex)
-	virtual V m_cdiv(I argc,t_atom *argv); // complex div (pairs of vecs or complex)
-	virtual V m_mdiv(I argc,t_atom *argv); // div by (multi-channel)
-
-	virtual V m_min(I argc,t_atom *argv); // min (one vec or real)
-//	virtual V m_cmin(I argc,t_atom *argv); // complex (abs) min (pairs of vecs or complex)
-	virtual V m_mmin(I argc,t_atom *argv); // min (multi-channel)
-	virtual V m_max(I argc,t_atom *argv); // max (one vec or real)
-//	virtual V m_cmax(I argc,t_atom *argv); // complex (abs) max (pairs of vecs or complex)
-	virtual V m_mmax(I argc,t_atom *argv); // max (multi-channel)
-
-	// "unary" functions
-	virtual V m_pow(F v); // power
-//	virtual V m_cpow(I argc,t_atom *argv); // complex power (with each two channels)
-	virtual V m_sqr();   // unsigned square 
-	virtual V m_ssqr();   // signed square 
-	virtual V m_csqr();  // complex square (with each two channels)
-	virtual V m_root(F v); // real root (from abs value)
-	virtual V m_sqrt();  // square root (from abs value)
-	virtual V m_ssqrt();  // square root (from abs value)
-//	virtual V m_csqrt();  // complex square root (how about branches?)
-
-	virtual V m_exp();  // exponential function
-//	virtual V m_cexp();  // complex exponential function
-	virtual V m_log(); // natural logarithm
-//	virtual V m_clog(); // complex logarithm (how about branches?)
-
-	virtual V m_inv();  // invert buffer values
-	virtual V m_cinv(); // complex invert buffer values (each two)
-
-	virtual V m_abs();  // absolute values
-	virtual V m_sign();  // sign function 
-	virtual V m_polar(); // cartesian -> polar (each two)
-	virtual V m_cart(); // polar -> cartesian (each two)
-
-	virtual V m_norm();  // normalize
-	virtual V m_cnorm(); // complex normalize
+#define VASP_UNARY(name,op)														\
+class vasp_u_##op:																\
+	public vasp_unop															\
+{																				\
+	FLEXT_HEADER(vasp_u_##op,vasp_unop)											\
+public:																			\
+	vasp_u_##op() {}															\
+protected:																		\
+	virtual Vasp *tx_work() { return ref.m_##op(); }							\
+};																				\
+FLEXT_NEW(name,vasp_u_##op)
 
 
-	virtual V m_cswap();  // swap real and imaginary parts
-	virtual V m_cconj();  // complex conjugate
+#define VASP_BINARY(name,op)													\
+class vasp_b_ ## op:															\
+	public vasp_binop															\
+{																				\
+	FLEXT_HEADER(vasp_b_##op,vasp_binop)										\
+public:																			\
+	vasp_b_##op(I argc,t_atom *argv): vasp_binop(argc,argv) {}					\
+protected:																		\
+	virtual Vasp *tx_work(const Argument &arg) { return ref.m_##op(arg); }		\
+};																				\
+FLEXT_NEW_G(name,vasp_b_##op)
 
-	// Rearrange buffer - separate object?
-	virtual V m_shift(F u);  // shift buffer
-	virtual V m_xshift(F u);  // shift buffer (symmetrically)
-	virtual V m_rot(F u);  // rotate buffer
-	virtual V m_xrot(F u);  // rotate buffer (symmetrically)
-	virtual V m_mirr();  // mirror buffer
-	virtual V m_xmirr();  // mirror buffer (symmetrically)
-/*
-	// Generator functions - separate object!
-	virtual V m_osc(I argc,t_atom *argv);  // real osc
-	virtual V m_cosc(I argc,t_atom *argv);  // complex osc (phase rotates)
-	virtual V m_noise(I argc,t_atom *argv);  // real noise
-	virtual V m_cnoise(I argc,t_atom *argv); // complex noise (arg and abs random)
-
-	// Fourier transforms - separate object!
-	virtual V m_rfft();
-	virtual V m_rifft();
-	virtual V m_cfft();
-	virtual V m_cifft();
-*/
-
-private:
-	V fr_transf(const C *op,F v,V (*dofunR)(F *,F,I));
-	V fc_transf(const C *op,I argc,t_atom *argv,V (*dofunC)(F *,F *,F,F,I));
-	V fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I),V (*dofunR)(F *,F,I));
-	V fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const F *,const F *,I),V (*dofunC)(F *,F *,F,F,I));
-	V fm_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I));
-
-
-	FLEXT_CALLBACK_G(m_copy)
-	FLEXT_CALLBACK_G(m_ccopy)
-	FLEXT_CALLBACK_G(m_mcopy)
-//	FLEXT_CALLBACK_G(m_mix)
-//	FLEXT_CALLBACK_G(m_mmix)
-
-	FLEXT_CALLBACK_G(m_add)
-	FLEXT_CALLBACK_G(m_cadd)
-	FLEXT_CALLBACK_G(m_madd)
-	FLEXT_CALLBACK_G(m_sub)
-	FLEXT_CALLBACK_G(m_csub)
-	FLEXT_CALLBACK_G(m_msub)
-	FLEXT_CALLBACK_G(m_mul)
-	FLEXT_CALLBACK_G(m_cmul)
-	FLEXT_CALLBACK_G(m_mmul)
-	FLEXT_CALLBACK_G(m_div)
-	FLEXT_CALLBACK_G(m_cdiv)
-	FLEXT_CALLBACK_G(m_mdiv)
-
-	FLEXT_CALLBACK_G(m_min)
-//	FLEXT_CALLBACK_G(m_cmin)
-	FLEXT_CALLBACK_G(m_mmin)
-	FLEXT_CALLBACK_G(m_max)
-//	FLEXT_CALLBACK_G(m_cmax)
-	FLEXT_CALLBACK_G(m_mmax)
-
-	FLEXT_CALLBACK_1(m_pow,F)
-//	FLEXT_CALLBACK_G(m_cpow)
-	FLEXT_CALLBACK(m_sqr)
-	FLEXT_CALLBACK(m_csqr)
-	FLEXT_CALLBACK_1(m_root,F)
-	FLEXT_CALLBACK(m_sqrt)
-
-	FLEXT_CALLBACK(m_exp)
-//	FLEXT_CALLBACK(m_cexp)
-	FLEXT_CALLBACK(m_log)
-
-	FLEXT_CALLBACK(m_inv)
-	FLEXT_CALLBACK(m_cinv)
-
-	FLEXT_CALLBACK(m_abs)
-	FLEXT_CALLBACK(m_sign)
-	FLEXT_CALLBACK(m_polar)
-	FLEXT_CALLBACK(m_cart)
-
-	FLEXT_CALLBACK(m_norm)
-	FLEXT_CALLBACK(m_cnorm)
-
-	FLEXT_CALLBACK(m_cswap)
-	FLEXT_CALLBACK(m_cconj)
-
-
-	FLEXT_CALLBACK_1(m_shift,F)
-	FLEXT_CALLBACK_1(m_xshift,F)
-	FLEXT_CALLBACK_1(m_rot,F)
-	FLEXT_CALLBACK_1(m_xrot,F)
-	FLEXT_CALLBACK(m_mirr)
-	FLEXT_CALLBACK(m_xmirr)
-/*
-	FLEXT_CALLBACK_G(m_osc)
-	FLEXT_CALLBACK_G(m_cosc)
-	FLEXT_CALLBACK_G(m_noise)
-	FLEXT_CALLBACK_G(m_cnoise)
-
-	FLEXT_CALLBACK(m_rfft)
-	FLEXT_CALLBACK(m_rifft)
-	FLEXT_CALLBACK(m_cfft)
-	FLEXT_CALLBACK(m_cifft)
-*/
-};
-
-
-class vasp_tx_copy:
-	public flext_base
-{
-	FLEXT_HEADER(vasp_tx_copy,flext_base)
-
-public:
-	vasp_tx_copy(I argc,t_atom *argv);
-	~vasp_tx_copy();
-
-	// assignment functions
-	virtual V m_copy(I argc,t_atom *argv); // copy to (one vec or real)
-
-protected:
-
-	FLEXT_CALLBACK_G(m_copy)
-};
-
-#endif
 
 #endif

@@ -17,9 +17,26 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 extern "C" {
 // base classes
 FLEXT_EXT V vasp_v_setup();
-FLEXT_EXT V vasp_copy_setup();
-FLEXT_EXT V vasp_ccopy_setup();
-FLEXT_EXT V vasp_mcopy_setup();
+FLEXT_EXT V vasp_b_copy_setup();
+FLEXT_EXT V vasp_b_ccopy_setup();
+FLEXT_EXT V vasp_b_mcopy_setup();
+
+FLEXT_EXT V vasp_b_add_setup();
+FLEXT_EXT V vasp_b_cadd_setup();
+FLEXT_EXT V vasp_b_madd_setup();
+
+FLEXT_EXT V vasp_b_sub_setup();
+FLEXT_EXT V vasp_b_csub_setup();
+FLEXT_EXT V vasp_b_msub_setup();
+
+FLEXT_EXT V vasp_b_mul_setup();
+FLEXT_EXT V vasp_b_cmul_setup();
+FLEXT_EXT V vasp_b_mmul_setup();
+
+FLEXT_EXT V vasp_b_div_setup();
+FLEXT_EXT V vasp_b_cdiv_setup();
+FLEXT_EXT V vasp_b_mdiv_setup();
+
 
 
 FLEXT_EXT V vasp_setup()
@@ -31,14 +48,28 @@ FLEXT_EXT V vasp_setup()
 
 	vasp_v_setup();
 
-	vasp_copy_setup();
-	vasp_ccopy_setup();
-	vasp_mcopy_setup();
+	vasp_b_copy_setup();
+	vasp_b_ccopy_setup();
+	vasp_b_mcopy_setup();
+
+	vasp_b_add_setup();
+	vasp_b_cadd_setup();
+	vasp_b_madd_setup();
+
+	vasp_b_sub_setup();
+	vasp_b_csub_setup();
+	vasp_b_msub_setup();
+
+	vasp_b_mul_setup();
+	vasp_b_cmul_setup();
+	vasp_b_mmul_setup();
+
+	vasp_b_div_setup();
+	vasp_b_cdiv_setup();
+	vasp_b_mdiv_setup();
 }
 }
 #endif
-
-
 
 ///////////////////////////////////////////////////////////////////////////
 

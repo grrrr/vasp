@@ -17,7 +17,7 @@ Vasp *Vasp::fr_nop(const C *op,F v,V (*f)(F *,F,I))
 			ok = false; // really return?
 		}
 		else {
-			f(bref->Data(),v,bref->Frames());
+			f(bref->Data()+bref->Offset(),v,bref->Length());
 			bref->Dirty();
 		}
 		delete bref;
@@ -49,15 +49,15 @@ Vasp *Vasp::fc_nop(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I))
 			ok = false; // really return?
 		}
 		else {
-			I frms = bre->Frames();
-			if(frms != bim->Frames()) {
+			I frms = bre->Length();
+			if(frms != bim->Length()) {
 				post("%s - real/imag dst vector length is not equal - using minimum",thisName());
-				frms = min(frms,bim->Frames());
+				frms = min(frms,bim->Length());
 
 				// clear the rest?
 			}
 
-			f(bre->Data(),bim->Data(),cx.real,cx.imag,frms);
+			f(bre->Data()+bre->Offset(),bim->Data()+bre->Offset(),cx.real,cx.imag,frms);
 			bre->Dirty(); bim->Dirty();
 		}
 
@@ -80,27 +80,6 @@ Vasp *Vasp::fc_nop(const C *op,const Argument &arg,const nop_funcs &f)
 		return arg.IsNone()?new Vasp(*this):NULL;
 }
 
-/*
-// just transform complex vector pairs
-Vasp *Vasp::fc_nop(const C *op,I argc,t_atom *argv,const nop_funcs &f)
-{
-	F vr,vi = 0;
-	if(IsFloat(argc,argv) || IsComplex(argc,argv)) {
-		// complex (or real) input
-
-		vr = flx::GetFloat(argv[0]);
-		vi = argc >= 2?flx::GetFloat(argv[1]):0; 
-
-		return fc_nop(op,vr,vi,f);
-	}
-	else if(argc >= 0) {
-		post("%s(%s) - invalid argument",thisName(),op);
-		return NULL;
-	}
-
-	return new Vasp(*this);
-}
-*/
 
 // for real values or single real vector
 Vasp *Vasp::fr_arg(const C *op,F v,V (*f)(F *,F,I))
@@ -113,7 +92,7 @@ Vasp *Vasp::fr_arg(const C *op,F v,V (*f)(F *,F,I))
 			ok = false; // really return?
 		}
 		else {
-			f(bref->Data(),v,bref->Frames());
+			f(bref->Data()+bref->Offset(),v,bref->Length());
 			bref->Dirty();
 		}
 		delete bref;
@@ -153,14 +132,14 @@ Vasp *Vasp::fr_arg(const C *op,const Vasp &arg,V (*f)(F *,const F *,I))
 			}
 			else {
 				I frms1 = frms;
-				if(frms1 != bref->Frames()) {
+				if(frms1 != bref->Length()) {
 					post("%s(%s) - src/dst vector length not equal - using minimum",thisName(),op);
-					frms1 = min(frms1,bref->Frames());
+					frms1 = min(frms1,bref->Length());
 
 					// clear rest?
 				}
 
-				f(bref->Data(),barg->Data(),frms1);
+				f(bref->Data()+bref->Offset(),barg->Data()+barg->Offset(),frms1);
 				bref->Dirty();
 			}
 
@@ -185,22 +164,6 @@ Vasp *Vasp::fr_arg(const C *op,const Argument &arg,const arg_funcs &f)
 		return NULL;
 }
 
-/*
-// for real values or single real vector
-Vasp *Vasp::fr_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
-{
-	if(IsFloat(argc,argv)) {
-		// real input
-		F v = flx::GetFloat(argv[0]);
-		return fr_arg(op,v,f);
-	}
-	else {
-		// single vector source
-		Vasp arg(argc,argv);
-		return fr_arg(op,arg,f);
-	}
-}
-*/
 
 // for complex values or complex vector pair
 Vasp *Vasp::fc_arg(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I))
@@ -226,15 +189,15 @@ Vasp *Vasp::fc_arg(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I))
 			ok = false;
 		}
 		else {
-			I frms = bre->Frames();
-			if(frms != bim->Frames()) {
+			I frms = bre->Length();
+			if(frms != bim->Length()) {
 				post("%s(%s) - real/imag dst vector length is not equal - using minimum",thisName(),op);
-				frms = min(frms,bim->Frames());
+				frms = min(frms,bim->Length());
 
 				// clear the rest?
 			}
 
-			f(bre->Data(),bim->Data(),cx.real,cx.imag,frms);
+			f(bre->Data()+bre->Offset(),bim->Data()+bim->Offset(),cx.real,cx.imag,frms);
 			bre->Dirty(); bim->Dirty();
 		}
 
@@ -273,10 +236,10 @@ Vasp *Vasp::fc_arg(const C *op,const Vasp &arg,V (*f)(F *,F *,const F *,const F 
 		ok = false;
 	}
 	else {
-		I frms = brarg->Frames();
-		if(biarg && frms != biarg->Frames()) {
+		I frms = brarg->Length();
+		if(biarg && frms != biarg->Length()) {
 			post("%s(%s) - real/imag src vector length is not equal - using minimum",thisName(),op);
-			frms = min(frms,biarg->Frames());
+			frms = min(frms,biarg->Length());
 		}
 
 		if(this->Vectors()%2 != 0) {
@@ -297,14 +260,14 @@ Vasp *Vasp::fc_arg(const C *op,const Vasp &arg,V (*f)(F *,F *,const F *,const F 
 			}
 			else {
 				I frms1 = frms;
-				if(frms1 != brref->Frames() || frms1 != biref->Frames()) {
+				if(frms1 != brref->Length() || frms1 != biref->Length()) {
 					post("%s(%s) - source/target vector length not equal - using minimum",thisName(),op);
-					frms1 = min(frms1,min(biref->Frames(),brref->Frames()));
+					frms1 = min(frms1,min(biref->Length(),brref->Length()));
 
 					// clear rest?
 				}
 
-				f(brref->Data(),biref->Data(),brarg->Data(),biarg->Data(),frms1);
+				f(brref->Data()+brref->Offset(),biref->Data()+biref->Offset(),brarg->Data()+brarg->Offset(),biarg->Data()+biarg->Offset(),frms1);
 				brref->Dirty(); biref->Dirty();
 			}
 
@@ -331,23 +294,6 @@ Vasp *Vasp::fc_arg(const C *op,const Argument &arg,const arg_funcs &f)
 	else
 		return NULL;
 }
-
-/*
-Vasp *Vasp::fc_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
-{
-	if(IsFloat(argc,argv) || IsComplex(argc,argv)) {
-		// complex (or real) input
-		F vr = flx::GetFloat(argv[0]);
-		F vi = argc >= 2?flx::GetFloat(argv[1]):0; // is zero if lacking
-		return fc_arg(op,vr,vi,f);
-	}
-	else {
-		// pairs of vectors
-		Vasp arg(argc,argv);
-		return fc_arg(op,arg,f);
-	}
-}
-*/
 
 // for multiple vectors
 Vasp *Vasp::fm_arg(const C *op,const Vasp &arg,V (*f)(F *,const F *,I))
@@ -385,18 +331,18 @@ Vasp *Vasp::fm_arg(const C *op,const Vasp &arg,V (*f)(F *,const F *,I))
 			ok = false; // really return?
 		}
 		else {
-			I frms = bref->Frames();
-			if(frms != barg->Frames()) {
+			I frms = bref->Length();
+			if(frms != barg->Length()) {
 				if(!warned) { // warn only once (or for each vector?) 
 					post("%s(%s) - src/dst vector length not equal - using minimum",thisName(),op);
 					warned = true;
 				}
 
-				frms = min(frms,barg->Frames());
+				frms = min(frms,barg->Length());
 				// clear the rest?
 			}
 
-			f(bref->Data(),barg->Data(),frms);
+			f(bref->Data()+bref->Offset(),barg->Data()+barg->Offset(),frms);
 			bref->Dirty();
 		}
 
@@ -414,13 +360,8 @@ Vasp *Vasp::fm_arg(const C *op,const Argument &arg,const arg_funcs &f)
 {
 	return arg.IsVasp()?fm_arg(op,arg.GetVasp(),f):NULL;
 }
-/*
-Vasp *Vasp::fm_arg(const C *op,I argc,t_atom *argv,const arg_funcs &f)
-{
-	Vasp arg(argc,argv);
-	return fm_arg(op,arg,f);
-}
-*/
+
+
 
 static V d_copy(F *dst,F val,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] = val; }
 static V d_copy(F *dst,const F *src,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] = src[i]; }
@@ -439,11 +380,7 @@ static const Vasp::arg_funcs f_copy = { d_copy,d_copy,d_copy,d_copy };
 Vasp *Vasp::m_copy(const Argument &arg) { return fr_arg("copy",arg,f_copy); }
 Vasp *Vasp::m_ccopy(const Argument &arg) { return fc_arg("ccopy",arg,f_copy); }
 Vasp *Vasp::m_mcopy(const Argument &arg) { return fm_arg("mcopy",arg,f_copy); }
-/*
-Vasp *Vasp::m_copy(I argc,t_atom *argv) { return fr_arg("copy",argc,argv,f_copy); }
-Vasp *Vasp::m_ccopy(I argc,t_atom *argv) { return fc_arg("ccopy",argc,argv,f_copy); }
-Vasp *Vasp::m_mcopy(I argc,t_atom *argv) { return fm_arg("mcopy",argc,argv,f_copy); }
-*/
+
 
 static V d_add(F *dst,F v,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] += v; }
 static V d_add(F *dst,const F *src,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] += src[i]; }
@@ -462,11 +399,7 @@ static const Vasp::arg_funcs f_add = { d_add,d_add,d_add,d_add };
 Vasp *Vasp::m_add(const Argument &arg) { return fr_arg("add",arg,f_add); }
 Vasp *Vasp::m_cadd(const Argument &arg) { return fc_arg("cadd",arg,f_add); }
 Vasp *Vasp::m_madd(const Argument &arg) { return fm_arg("madd",arg,f_add); }
-/*
-Vasp *Vasp::m_add(I argc,t_atom *argv) { return fr_arg("add",argc,argv,f_add); }
-Vasp *Vasp::m_cadd(I argc,t_atom *argv) { return fc_arg("cadd",argc,argv,f_add); }
-Vasp *Vasp::m_madd(I argc,t_atom *argv) { return fm_arg("madd",argc,argv,f_add); }
-*/
+
 
 static V d_sub(F *dst,F v,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] -= v; }
 static V d_sub(F *dst,const F *src,I cnt) { for(I i = 0; i < cnt; ++i) dst[i] -= src[i]; }

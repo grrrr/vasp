@@ -35,8 +35,9 @@ vasp_base::vasp_base()
 
 	FLEXT_ADDMETHOD_(0,"radio",m_radio);
 
-	FLEXT_ADDMETHOD_E(0,"update",m_update);
+	FLEXT_ADDMETHOD_(0,"update",m_update);
 	FLEXT_ADDMETHOD_(0,"argchk",m_argchk);
+	FLEXT_ADDMETHOD_(0,"loglvl",m_loglvl);
 	FLEXT_ADDMETHOD_E(0,"unit",m_unit);
 }
 
@@ -62,8 +63,14 @@ V vasp_base::m_bang()
 	if(ref.Ok()) {
 		Vasp *ret = x_work();
 		if(ret) {
-			ret->MakeList(false);
-			ToOutAnything(0,sym_vasp,ret->Atoms(),ret->AtomList());
+			AtomList *lst = ret->MakeList(false);
+			if(lst) {
+				ToOutAnything(0,sym_vasp,lst->Count(),lst->Atoms());
+				delete lst;
+			}
+			else
+				post("%s - empty list",thisName());
+			if(refresh) ret->Refresh();
 			delete ret;
 		}
 		else {
@@ -96,19 +103,12 @@ V vasp_base::m_radio(I argc,t_atom *argv)
 }
 
 
-V vasp_base::m_unit(xs_unit u) {	unit = u; }
+V vasp_base::m_unit(xs_unit u) { unit = u; }
 
 V vasp_base::m_update(I argc,t_atom *argv) 
 {
-	if(argc == 0) {
-		for(I i = 0; i < ref.Vectors(); ++i) {
-			VBuffer *vb = ref.Buffer(i);
-			if(vb) {
-				vb->Dirty(true);
-				delete vb;
-			}
-		}
-	}
+	if(argc == 0) 
+		ref.Refresh();
 	else {
 		if(IsFlint(argv[0]))
 			refresh = GetAFlint(argv[0]) != 0;
@@ -119,5 +119,6 @@ V vasp_base::m_update(I argc,t_atom *argv)
 
 V vasp_base::m_argchk(BL chk) {	argchk = chk; }
 
+V vasp_base::m_loglvl(I lvl) { loglvl = lvl; }
 
 
