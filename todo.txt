@@ -45,6 +45,8 @@ bugs:
 
 - vasp.join doesn't like length -1
 
+- immediate vasp garbage collection causes clicks.... do it in a separate thread!
+
 
 tests:
 ---------------------
