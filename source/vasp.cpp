@@ -306,7 +306,7 @@ V Vasp::SizeM(R f)
 	for(I i = 0; i < Vectors(); ++i) {
 		VBuffer *buf = Buffer(i);
 		if(buf) { 
-			I s = buf->Frames()*f;
+			I s = (I)(buf->Frames()*f);
 			buf->Frames(s >= 0?s:0,true);
 			delete buf;
 		}
