@@ -21,7 +21,7 @@ INSTDIR=/usr/local/lib/pd/extra
 
 ###############################################
 
-FLEXTLIB=$(FLEXTPATH)/flext.a
+FLEXTLIB=$(FLEXTPATH)/flext_t.a
 
 # where to build (temporary)
 TARGDIR=../pd-linux
