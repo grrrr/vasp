@@ -14,20 +14,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- integrate/differentiate
 
-static BL d_int(I cnt,F *dst,I str,F) 
+static BL d_int(I cnt,S *dst,I str,S) 
 { 
 	if(cnt >= 2) {
 		register F d = *dst; 
-		for(I i = 1; i < cnt; ++i) { register F d1 = *(dst += str); *dst = d1+d,d = d1; }
+		for(I i = 1; i < cnt; ++i) { register S d1 = *(dst += str); *dst = d1+d,d = d1; }
 	}
 	return true; 
 }
 
-static BL d_dif(I cnt,F *dst,I str,F) 
+static BL d_dif(I cnt,S *dst,I str,S) 
 { 
 	if(cnt >= 2) {
-		register F d = *dst; *dst = 0;
-		for(I i = 1; i < cnt; ++i) { register F d1 = *(dst += str); *dst = d1-d,d = d1; }
+		register S d = *dst; *dst = 0;
+		for(I i = 1; i < cnt; ++i) { register S d1 = *(dst += str); *dst = d1-d,d = d1; }
 	}
 	return true; 
 }
@@ -42,7 +42,7 @@ Vasp *Vasp::m_dif() { return fr_arg("dif",0,d_dif); }
 
 // how to treat <=,>= ?
 
-static BL d_peaks(I cnt,F *_dst,I str,F tms) 
+static BL d_peaks(I cnt,S *_dst,I str,F tms) 
 { 
 	if(cnt >= 2) {
 		I itms = (I)tms;

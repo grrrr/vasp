@@ -75,7 +75,7 @@ static const Vasp::arg_funcs f_copy = { TF1(d_scopy),TF2(d_ccopy),TF2(d_copy),d_
 
 Vasp *Vasp::m_copy(const Argument &arg) { return fr_arg("copy",arg,f_copy); }
 Vasp *Vasp::m_ccopy(const Argument &arg) { return fc_arg("ccopy",arg,f_copy); }
-Vasp *Vasp::m_vcopy(const Argument &arg) { return fv_arg("vcopy",arg,f_copy); }
+//Vasp *Vasp::m_vcopy(const Argument &arg) { return fv_arg("vcopy",arg,f_copy); }
 
 
 TEMPL1(STR)
@@ -119,7 +119,7 @@ static const Vasp::arg_funcs f_add = { TF1(d_add),TF2(d_add),TF2(d_add),d_add };
 
 Vasp *Vasp::m_add(const Argument &arg) { return fr_arg("add",arg,f_add); }
 Vasp *Vasp::m_cadd(const Argument &arg) { return fc_arg("cadd",arg,f_add); }
-Vasp *Vasp::m_vadd(const Argument &arg) { return fv_arg("vadd",arg,f_add); }
+//Vasp *Vasp::m_vadd(const Argument &arg) { return fv_arg("vadd",arg,f_add); }
 
 
 TEMPL1(STR)
@@ -163,7 +163,7 @@ static const Vasp::arg_funcs f_sub = { TF1(d_sub),TF2(d_sub),TF2(d_sub),d_sub };
 
 Vasp *Vasp::m_sub(const Argument &arg) { return fr_arg("sub",arg,f_sub); }
 Vasp *Vasp::m_csub(const Argument &arg) { return fc_arg("csub",arg,f_sub); }
-Vasp *Vasp::m_vsub(const Argument &arg) { return fv_arg("vsub",arg,f_sub); }
+//Vasp *Vasp::m_vsub(const Argument &arg) { return fv_arg("vsub",arg,f_sub); }
 
 
 TEMPL1(STR)
@@ -214,7 +214,7 @@ static const Vasp::arg_funcs f_mul = { TF1(d_mul),TF2(d_mul),TF2(d_mul),d_mul };
 
 Vasp *Vasp::m_mul(const Argument &arg) { return fr_arg("mul",arg,f_mul); }
 Vasp *Vasp::m_cmul(const Argument &arg) { return fc_arg("cmul",arg,f_mul); }
-Vasp *Vasp::m_vmul(const Argument &arg) { return fv_arg("vmul",arg,f_mul); }
+//Vasp *Vasp::m_vmul(const Argument &arg) { return fv_arg("vmul",arg,f_mul); }
 
 
 // how about div by 0?
@@ -273,7 +273,7 @@ static const Vasp::arg_funcs f_div = { TF1(d_div),TF2(d_div),TF2(d_div),d_div };
 
 Vasp *Vasp::m_div(const Argument &arg) { return fr_arg("div",arg,f_div); }
 Vasp *Vasp::m_cdiv(const Argument &arg) { return fc_arg("cdiv",arg,f_div); }
-Vasp *Vasp::m_vdiv(const Argument &arg) { return fv_arg("vdiv",arg,f_div); }
+//Vasp *Vasp::m_vdiv(const Argument &arg) { return fv_arg("vdiv",arg,f_div); }
 
 
 
@@ -299,7 +299,7 @@ static const Vasp::arg_funcs f_min = { TF1(d_min),NULL,TF2(d_min),NULL };
 
 Vasp *Vasp::m_min(const Argument &arg) { return fr_arg("min",arg,f_min); }
 //Vasp *Vasp::m_cmin(const Argument &arg) { return fc_arg(argc,arg,d_min); }
-Vasp *Vasp::m_vmin(const Argument &arg) { return fv_arg("vmin",arg,f_min); }
+//Vasp *Vasp::m_vmin(const Argument &arg) { return fv_arg("vmin",arg,f_min); }
 
 
 
@@ -324,7 +324,7 @@ static const Vasp::arg_funcs f_max = { TF1(d_max),NULL,TF2(d_max),NULL };
 
 Vasp *Vasp::m_max(const Argument &arg) { return fr_arg("max",arg,f_max); }
 //Vasp *Vasp::m_cmax(const Argument &arg) { return fc_arg(arg,d_max,d_max); }
-Vasp *Vasp::m_vmax(const Argument &arg) { return fv_arg("vmax",arg,f_max); }
+//Vasp *Vasp::m_vmax(const Argument &arg) { return fv_arg("vmax",arg,f_max); }
 
 
 TEMPL2(RSTR,ISTR)

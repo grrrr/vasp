@@ -14,16 +14,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- power functions ---------------------
 
-static BL d_pow(I cnt,F *dst,I str,F v) 
+static BL d_pow(I cnt,S *dst,I str,S v) 
 { 
 	for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)pow(fabs(*dst),v)*sgn(*dst);
 	return true; 
 }
 
-static BL d_sqr(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *dst = *dst * *dst; return true; }
-static BL d_ssqr(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)(*dst * fabs(*dst)); return true; }
+static BL d_sqr(I cnt,S *dst,I str,S) { for(I i = 0; i < cnt; ++i,dst += str) *dst = *dst * *dst; return true; }
+static BL d_ssqr(I cnt,S *dst,I str,S) { for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)(*dst * fabs(*dst)); return true; }
 
-static BL d_csqr(I cnt,F *re,I rstr,F *im,I istr,F,F) 
+static BL d_csqr(I cnt,S *re,I rstr,S *im,I istr,S,S) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
 		F r = *re * *re - *im * *im;

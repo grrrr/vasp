@@ -17,63 +17,83 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 //! return vector block for real data
-RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src)
+RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp * /*dst*/)
 {
-	BL ok = true;
 	RVecBlock *ret = new RVecBlock(src.Vectors());
+
+	BL ok = true,frlim = false;
+	I tfrms = -1;
 
 	for(I ci = 0; ok && ci < src.Vectors(); ++ci) {
 		VBuffer *bref = src.Buffer(ci);		
 		if(!bref->Data()) {
-			post("%s - dst vector (%s) is invalid",op,bref->Name());
+			post("%s - arg vector (%s) is invalid",op,bref->Name());
 			ok = false; // really return?
 		}
-		else 
-			ret->Src(ci,bref,bref->Length());
+		else {
+			ret->Src(ci,bref);
+			I frms = bref->Length();
+
+			if(tfrms < 0) tfrms = frms;
+			else if(frms < tfrms) frlim = true,tfrms = frms;
+		}
 	}
+
+	if(frlim) post("%s - vector length has been limited to maximum common length",op);
+
+	ret->Frames(tfrms < 0?0:tfrms);
 
 	if(ok) return ret;
 	else { delete ret; return NULL;	}
 }
 
-CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src)
+CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp * /*dst*/)
 {
-	if(src.Vectors()%2 != 0) {
+	I pairs = src.Vectors()/2;
+	CVecBlock *ret = new CVecBlock(pairs);
+
+	if(src.Vectors() != pairs*2) {
 		post("%s - number of src vectors is odd - omitting last vector",op);
 		// clear superfluous vector?
 	}
 
-	BL ok = true;
-	I pairs = src.Vectors()/2;
-	CVecBlock *ret = new CVecBlock(pairs);
+	BL ok = true,frlim = false;
+	I tfrms = -1;
 
 	for(I ci = 0; ci < pairs; ++ci) {
 		VBuffer *bre = src.Buffer(ci*2),*bim = src.Buffer(ci*2+1); // complex channels
 
 		I frms = bre->Length();
 		if(!bre->Data()) {
-			post("%s - real dst vector (%s) is invalid",op,bre->Name());
+			post("%s - real arg vector (%s) is invalid",op,bre->Name());
 			ok = false;
 		}
 		if(!bim->Data()) {
-			post("%s - imag dst vector (%s) is invalid",op,bim->Name());
+			post("%s - imag arg vector (%s) is invalid",op,bim->Name());
 			ok = false;
 		}
 		else {
 			if(frms != bim->Length()) {
-				post("%s - real/imag dst vector length is not equal - using minimum",op);
+				post("%s - real/imag arg vector length is not equal - using minimum",op);
 				frms = min(frms,bim->Length());
 			}
 		}
 
-		ret->Src(ci,bre,bim,frms);
+		if(tfrms < 0) tfrms = frms;
+		else if(frms < tfrms) frlim = true,tfrms = frms;
+
+		ret->Src(ci,bre,bim);
 	}
+
+	if(frlim) post("%s - vector length has been limited to maximum common length",op);
+
+	ret->Frames(tfrms < 0?0:tfrms);
 
 	if(ok) return ret;
 	else { delete ret; return NULL;	}
 }
 
-RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
+RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp * /*dst*/,I multi)
 {
 	if(!arg.Ok()) {
 		post("%s - invalid argument vasp detected and ignored",op);
@@ -83,23 +103,28 @@ RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
 	I nvecs = src.Vectors();
 	RVecBlock *ret;
 
+	if(multi < 0) { // auto mode
+		multi = arg.Vectors() > 1;
+	}
+
 	if(multi) {
 		if(arg.Vectors() < nvecs) {
 			nvecs = arg.Vectors();
-			post("%s - too few argument vectors, operating on only first %i vectors",op,nvecs);
+			post("%s - too few arg vectors, operating on only first %i vectors",op,nvecs);
 		}
 		ret = new RVecBlock(nvecs,nvecs);
 		for(I i = 0; i < nvecs; ++i) ret->Arg(i,arg.Buffer(i));
 	}
 	else {
 		if(arg.Vectors() > 1) {
-			post("%s - using only first argument vector for all operations",op);
+			post("%s - using only first arg vector for all operations",op);
 		}
 		ret = new RVecBlock(nvecs,1);
 		ret->Arg(0,arg.Buffer(0));
 	}
 
-	BL ok = true;
+	BL ok = true,frlim = false;
+	I tfrms = -1;
 
 	for(I ci = 0; ok && ci < nvecs; ++ci) {
 		VBuffer *bref = src.Buffer(ci);	
@@ -111,32 +136,44 @@ RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
 			ok = false; // really return?
 		}
 		else if(!bref->Data()) {
-			post("%s - dst vector (%s) is invalid",op,bref->Name());
+			post("%s - arg vector (%s) is invalid",op,bref->Name());
 			ok = false; // really break?
 		}
 		else {
 			if(frms != bref->Length()) {
-				post("%s - src/dst vector length not equal - using minimum",op);
+				post("%s - src/arg vector length not equal - using minimum",op);
 				frms = min(frms,bref->Length());
 			}
 		}
-		ret->Src(ci,bref,frms);
+
+		if(tfrms < 0) tfrms = frms;
+		else if(frms < tfrms) frlim = true,tfrms = frms;
+
+		ret->Src(ci,bref);
 	}
+
+	if(frlim) post("%s - vector length has been limited to maximum common length",op);
+
+	ret->Frames(tfrms < 0?0:tfrms);
 
 	if(ok) return ret;
 	else { delete ret; return NULL;	}
 }
 
-CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
+
+CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp * /*dst*/,I multi)
 {
 	if(!arg.Ok()) {
 		post("%s - invalid argument vasp detected and ignored",op);
 		return NULL;
 	}
 
-	BL ok = true;
 	I pairs = src.Vectors()/2;
 	CVecBlock *ret;
+
+	if(multi < 0) { // auto mode
+		multi = arg.Vectors() > 2; // more than one argument pair -> multi
+	}
 
 	if(multi) {
 		I apairs = arg.Vectors()/2;
@@ -147,19 +184,21 @@ CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
 
 		if(apairs < pairs) {
 			pairs = apairs;
-			post("%s - too few argument vectors, operating on only first %i vector pairs",op,pairs);
+			post("%s - too few arg vectors, operating on only first %i vector pairs",op,pairs);
 		}
 		ret = new CVecBlock(pairs,pairs);
 		for(I i = 0; i < pairs; ++i) ret->Arg(i,arg.Buffer(i*2),arg.Buffer(i*2+1));
 	}
 	else {
 		if(arg.Vectors() > 2) {
-			post("%s - using only first argument vector pair for all operations",op);
+			post("%s - using only first arg vector pair for all operations",op);
 		}
 		ret = new CVecBlock(pairs,1);
 		ret->Arg(0,arg.Buffer(0),arg.Buffer(1));
 	}
 
+	BL ok = true,frlim = false;
+	I tfrms = -1;
 /*
 	if(!biarg) {
 		post("%s - only one src vector - setting imaginary part to 0",op);					
@@ -188,7 +227,7 @@ CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
 		}
 */
 		if(src.Vectors() != pairs*2) {
-			post("%s - number of dst vectors is odd - omitting last vector",op);
+			post("%s - number of src vectors is odd - omitting last vector",op);
 			// clear superfluous vector?
 		}
 
@@ -199,17 +238,17 @@ CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
 
 			if(multi || ci == 0) {
 				if(!brarg->Data()) {
-					post("%s - real src vector (%s) is invalid",op,brarg->Name());
+					post("%s - real arg vector (%s) is invalid",op,brarg->Name());
 					ok = false;
 				}
 				else if(biarg && !biarg->Data()) {
-					post("%s - imag src vector (%s) is invalid",op,biarg->Name());
+					post("%s - imag arg vector (%s) is invalid",op,biarg->Name());
 					ok = false;
 				}
 			}
 
 			if(ok && biarg && frms != biarg->Length()) {
-				if(multi || ci == 0) post("%s - real/imag src vector length is not equal - using minimum",op);
+				if(multi || ci == 0) post("%s - real/imag arg vector length is not equal - using minimum",op);
 				frms = min(frms,biarg->Length());
 			}
 
@@ -217,26 +256,32 @@ CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
 
 			if(ok) {
 				if(!brref->Data()) {
-					post("%s - real dst vector (%s) is invalid",op,brref->Name());
+					post("%s - real src vector (%s) is invalid",op,brref->Name());
 					ok = false; // really break?
 				}
 				else if(biref && !biref->Data()) {
-					post("%s - imag dst vector (%s) is invalid",op,biref->Name());
+					post("%s - imag src vector (%s) is invalid",op,biref->Name());
 					ok = false; // really break?
 				}
 				else {
 					if(frms != brref->Length() || frms != biref->Length()) {
-						post("%s - source/target vector length not equal - using minimum",op);
-						frms = min(frms1,min(biref->Length(),brref->Length()));
+						post("%s - src/arg vector length not equal - using minimum",op);
+						frms = min(frms,min(biref->Length(),brref->Length()));
 
 						// clear rest?
 					}
 				}
 			}
+			if(tfrms < 0) tfrms = frms;
+			else if(frms < tfrms) frlim = true,tfrms = frms;
 
-			ret->Src(ci,brref,biref,frms);
+			ret->Src(ci,brref,biref);
 		}
 	}
+
+	if(frlim) post("%s - vector length has been limited to maximum common length",op);
+
+	ret->Frames(tfrms < 0?0:tfrms);
 
 	if(ok) return ret;
 	else { delete ret; return NULL;	}

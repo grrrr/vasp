@@ -164,10 +164,12 @@ static BL d_xmirr(I cnt,F *dt,I str,F)
 }
 
 
+/*
 Vasp *Vasp::m_shift(const Argument &arg) 
 { 
 	return arg.IsFloat()?fr_arg("shift",arg.GetFloat(),d_shift):NULL; 
 }
+
 
 Vasp *Vasp::m_xshift(const Argument &arg) 
 { 
@@ -186,5 +188,28 @@ Vasp *Vasp::m_xrot(const Argument &arg)
 
 Vasp *Vasp::m_mirr() { return fr_arg("mirr",0,d_mirr); }
 Vasp *Vasp::m_xmirr() { return fr_arg("xmirr",0,d_xmirr); } 
+*/
 
+
+Vasp *Vasp::m_shift(const Argument &arg,Vasp *dst,BL symm) 
+{ 
+	if(!arg.IsFloat()) return NULL;
+	
+	return fr_arg("shift",arg.GetFloat(),d_shift); 
+}
+
+
+
+Vasp *Vasp::m_rot(const Argument &arg,Vasp *dst,BL symm) 
+{ 
+	if(!arg.IsFloat()) return NULL;
+	
+	return fr_arg("rot",arg.GetFloat(),d_rot); 
+}
+
+
+Vasp *Vasp::m_mirr(Vasp *dst,BL symm) 
+{ 
+	return fr_arg("mirr",0,d_mirr); 
+}
 

@@ -230,15 +230,12 @@ Argument &Argument::Add(VX *vec) { Argument *a = new Argument; a->Set(vec); retu
 
 
 
-VecBlock::VecBlock(I msrc,I marg,I mdst,I mblk):
-	ablk(mblk),
+VecBlock::VecBlock(I msrc,I marg,I mdst):
 	asrc(msrc),aarg(marg),adst(mdst)
 {
 	I i,all = asrc+aarg+adst;
 	vecs = new VBuffer *[all];
 	for(i = 0; i < all; ++i) vecs[i] = NULL;
-	frms = new I[ablk];
-	for(i = 0; i < ablk; ++i) frms[i] = 0;
 }
 
 VecBlock::~VecBlock()
@@ -249,8 +246,13 @@ VecBlock::~VecBlock()
 			if(vecs[i]) delete vecs[i];
 		delete[] vecs;
 	}
-	if(frms) delete[] frms;
 }
 
-
+Vasp *VecBlock::_DstVasp(I n)
+{
+	Vasp *ret = new Vasp;
+	ret->Frames(Frames());
+	for(I i = 0; i < n; ++i) *ret += Vasp::Ref(*_Dst(i));
+	return ret;
+}
 

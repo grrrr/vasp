@@ -13,21 +13,21 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- highpass ---------------------------------------
 
-static BL d_fhp(I cnt,F *dt,I str,Argument &a) 
+static BL d_fhp(I cnt,S *dt,I str,Argument &a) 
 { 
 	F perln = a.GetFloat();
 	I tms = a.Next(1).GetFloat();
 
-	F coef = 1-(2*PI)/perln;
+	S coef = 1-(2*PI)/perln;
     if(coef < 0) coef = 0;
 
 	for(I ti = 0; ti < tms; ++ti) {
-		register F v1;
+		register S v1;
 		I i;
 
 		// t+ direction
 		for(i = 0,v1 = 0; i < cnt; ++i) {
-			register const F v0 = *dt + coef*v1;
+			register const S v0 = *dt + coef*v1;
 			*dt = v0-v1;
 			v1 = v0;
 			dt += str;
@@ -37,7 +37,7 @@ static BL d_fhp(I cnt,F *dt,I str,Argument &a)
 		// t- direction
 		for(i = cnt-1,v1 = 0; i >= 0; --i) {
 			dt -= str;
-			register const F v0 = *dt + coef*v1;
+			register const S v0 = *dt + coef*v1;
 			*dt = v0-v1;
 			v1 = v0;
 		}
@@ -60,17 +60,17 @@ Vasp *Vasp::m_fhp(const Argument &arg)
 
 // --- lowpass ---------------------------------------
 
-static BL d_flp(I cnt,F *dt,I str,Argument &a) 
+static BL d_flp(I cnt,S *dt,I str,Argument &a) 
 { 
 	F perln = a.GetFloat();
 	I tms = a.Next(1).GetFloat();
 
-	F coef = (2*PI)/perln;
+	S coef = (2*PI)/perln;
     if(coef > 1) coef = 1;
-	const F feed = 1-coef;
+	const S feed = 1-coef;
 
 	for(I ti = 0; ti < tms; ++ti) {
-		register F v1;
+		register S v1;
 		I i;
 
 		// t+ direction

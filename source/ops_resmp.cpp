@@ -13,18 +13,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- resample ---------------------
 
-static BL d_tilt(I cnt,F *dt,I str,Argument &a) 
+//! \todo check src/dst overlap!
+static BL d_tilt(I cnt,S *src,I sstr,S *dst,I dstr,D factor,D center) 
 { 
-	F factor = a.GetFloat();
-	F center = a.Next(1).GetAFloat();
-	I icenter = (I)center;
-
 	if(cnt <= 1 || factor == 1) return true;
 
 	if(factor == 0) {
 		post("tilt: invalid factor value");
 		return false;
 	}
+
+	I icenter = (I)center;
 
 	if(center != icenter)
 		post("tilt: center position truncated to integer sample");
@@ -44,67 +43,57 @@ static BL d_tilt(I cnt,F *dt,I str,Argument &a)
 //		I pl = (I)(icenter/factor),ql = (I)((cnt-icenter)/factor);
 		for(i = 1; i <= icenter; ++i) {
 			F sp = icenter-i*factor;
-			dt[(icenter-i)*str] = sp >= 0 && sp < cnt?dt[(I)sp*str]:0;
+			dst[(icenter-i)*dstr] = sp >= 0 && sp < cnt?src[(I)sp*sstr]:0;
 		}
 		for(i = 1; i < cnt-icenter; ++i) {
 			F sp = icenter+i*factor;
-			dt[(icenter+i)*str] = sp >= 0 && sp < cnt?dt[(I)sp*str]:0;
+			dst[(icenter+i)*dstr] = sp >= 0 && sp < cnt?src[(I)sp*sstr]:0;
 		}
 	}
 	else {
 		I i;
 		for(i = icenter; i > 0; --i) {
 			F sp = icenter-i*factor;
-			dt[(icenter-i)*str] = dt[(I)sp*str];
+			dst[(icenter-i)*dstr] = src[(I)sp*sstr];
 		}
 		for(i = cnt-1-icenter; i > 0; --i) {
 			F sp = icenter+i*factor;
-			dt[(icenter+i)*str] = dt[(I)sp*str];
+			dst[(icenter+i)*dstr] = src[(I)sp*sstr];
 		}
 	}
 
 	return true;
 }
 
-static BL d_xtilt(I cnt,F *dt,I str,Argument &a) 
-{ 
-	F factor = a.GetFloat();
-	F center = a.Next(1).GetAFloat();
-
-	BL ok = true;
-	{
-		Argument params;
-		params.Set(factor).Add(center);
-		ok = ok && d_tilt(cnt/2,dt,str,params);
-	}
-	if(ok) {
-		Argument params;
-		params.Set(factor).Add(cnt/2-1-center);
-		ok = ok && d_tilt(cnt/2,dt+(cnt-cnt/2)*str,str,params);
-	}
-	return ok;
-}
-
-
-
-Vasp *Vasp::m_tilt(const Argument &arg) 
+Vasp *Vasp::m_tilt(const Argument &arg,Vasp *dst,BL symm) 
 { 
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):1);
-		return fr_prm("tilt",d_tilt,params); 
-	}
-	else return NULL;
-}
+		D factor = flx::GetAFloat(arg.GetList()[0]);
+		D center = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 
-Vasp *Vasp::m_xtilt(const Argument &arg) 
-{ 
-	if(arg.IsList() && arg.GetList().Count() >= 1) {
-		Argument params;
-		params.Set(flx::GetAFloat(arg.GetList()[0]));
-		params.Add(arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):1);
-		return fr_prm("xtilt",d_xtilt,params); 
+		RVecBlock *vecs = GetRVecs("tilt",*this,dst);
+		if(vecs) {
+			BL ok = true;
+			for(I i = 0; ok && i < vecs->Vecs(); ++i) {
+				VBuffer *s = vecs->Src(i),*d = vecs->Dst(i);
+				if(!d) d = s; // if there's no dst, take src
+
+				if(symm) {
+					// symmetric mode
+					I cnt = vecs->Frames(),hcnt = cnt/2;
+					I sc = s->Channels(),dc = d->Channels();
+					ok = 
+						d_tilt(hcnt,s->Pointer(),sc,d->Pointer(),dc,factor,center) &&
+						d_tilt(hcnt,s->Pointer()+(cnt-hcnt),sc,d->Pointer()+(cnt-hcnt),dc,factor,hcnt-1-center);
+				}
+				else
+					// normal mode
+					ok = d_tilt(vecs->Frames(),s->Pointer(),s->Channels(),d->Pointer(),d->Channels(),factor,center);
+			}
+			return ok?vecs->DstVasp():NULL;
+		}
+		else
+			return NULL;
 	}
 	else return NULL;
 }

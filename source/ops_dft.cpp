@@ -26,9 +26,9 @@ static I radix2(I size)
 
 BL mixfft(I n,F *xRe,F *xIm,F *yRe,F *yIm);
 
-static BL fft_fwd_real_any(I cnt,F *dt) 
+static BL fft_fwd_real_any(I cnt,S *dt) 
 {
-	float *im,*tre,*tim;
+	F *im,*tre,*tim;
 	try {
 		im = new float[cnt];
 		tre = new float[cnt];
@@ -134,7 +134,7 @@ BL fft_inv_complex_radix2(I cnt,F *re,F *im);
 
 ///////////////////////////////////////////////////////////////
 
-static BL d_rfft(I cnt,F *dt,I str,F) 
+static BL d_rfft(I cnt,S *dt,I str,F) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -145,7 +145,7 @@ static BL d_rfft(I cnt,F *dt,I str,F)
 		return true;
 }
 
-static BL d_rifft(I cnt,F *dt,I str,F) 
+static BL d_rifft(I cnt,S *dt,I str,F) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -160,7 +160,7 @@ Vasp *Vasp::m_rfft() { return fr_arg("rfft",0,d_rfft); }
 Vasp *Vasp::m_rifft() { return fr_arg("rifft",0,d_rifft); }
 
 
-static BL d_cfft(I cnt,F *re,I rstr,F *im,I istr,F,F) 
+static BL d_cfft(I cnt,S *re,I rstr,S *im,I istr,F,F) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 
@@ -171,7 +171,7 @@ static BL d_cfft(I cnt,F *re,I rstr,F *im,I istr,F,F)
 		return true;
 }
 
-static BL d_cifft(I cnt,F *re,I rstr,F *im,I istr,F,F) 
+static BL d_cifft(I cnt,S *re,I rstr,S *im,I istr,F,F) 
 { 
 	if(cnt)
 		if(radix2(cnt) >= 1) 

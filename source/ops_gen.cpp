@@ -13,7 +13,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- osc ---------------------------------------
 
-static BL d_osc(I cnt,F *dt,I str,Argument &a) 
+static BL d_osc(I cnt,S *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
 	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
@@ -21,7 +21,7 @@ static BL d_osc(I cnt,F *dt,I str,Argument &a)
 	return true;
 }
 
-static BL d_cosc(I cnt,F *re,I rstr,F *im,I istr,Argument &a) 
+static BL d_cosc(I cnt,S *re,I rstr,S *im,I istr,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
 	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
@@ -29,7 +29,7 @@ static BL d_cosc(I cnt,F *re,I rstr,F *im,I istr,Argument &a)
 	return true;
 }
 
-static BL d_mosc(I cnt,F *dt,I str,Argument &a) 
+static BL d_mosc(I cnt,S *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
 	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
@@ -37,7 +37,7 @@ static BL d_mosc(I cnt,F *dt,I str,Argument &a)
 	return true;
 }
 
-static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,Argument &a) 
+static BL d_mcosc(I cnt,S *re,I rstr,S *im,I istr,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
 	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
@@ -96,7 +96,7 @@ Vasp *Vasp::m_mcosc(const Argument &arg)
 
 // ! look up Höldrich's pd phasor code
 
-static BL d_phasor(I cnt,F *dt,I str,Argument &a) 
+static BL d_phasor(I cnt,S *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
 	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
@@ -104,7 +104,7 @@ static BL d_phasor(I cnt,F *dt,I str,Argument &a)
 	return true;
 }
 
-static BL d_mphasor(I cnt,F *dt,I str,Argument &a) 
+static BL d_mphasor(I cnt,S *dt,I str,Argument &a) 
 { 
 	// frq and phase defined by complex frequency
 	D perln = a.GetFloat(),cph = a.Next(1).GetFloat(), phinc = 2*PI/perln; 
@@ -145,17 +145,17 @@ static F rnd()
 	return ret;
 }
 
-static BL d_noise(I cnt,F *dt,I str,F) 
+static BL d_noise(I cnt,S *dt,I str,F) 
 { 
 	for(I i = 0; i < cnt; ++i,dt += str) *dt = rnd();
 	return true;
 }
 
-static BL d_cnoise(I cnt,F *re,I rstr,F *im,I istr,F,F) 
+static BL d_cnoise(I cnt,S *re,I rstr,S *im,I istr,F,F) 
 { 
 	for(I i = 0; i < cnt; ++i,re += rstr,im += istr) {
-		F amp = rnd();
-		F arg = rnd()*(2.*PI);
+		S amp = rnd();
+		S arg = rnd()*(2.*PI);
 		*re = amp*cos(arg);
 		*im = amp*sin(arg);
 	}
@@ -169,25 +169,25 @@ Vasp *Vasp::m_cnoise() { return fc_arg("cnoise",0,d_cnoise); }
 
 // Should bevels start from 0 or .5/cnt ??  -> 0!
 
-static BL d_bevelup(I cnt,F *dt,I str,F) 
+static BL d_bevelup(I cnt,S *dt,I str,F) 
 { 
 	for(I i = 0; i < cnt; ++i,dt += str) *dt = (i+.5)/cnt;
 	return true;
 }
 
-static BL d_mbevelup(I cnt,F *dt,I str,F) 
+static BL d_mbevelup(I cnt,S *dt,I str,F) 
 { 
 	for(I i = 0; i < cnt; ++i,dt += str) *dt *= (i+.5)/cnt;
 	return true;
 }
 
-static BL d_beveldn(I cnt,F *dt,I str,F) 
+static BL d_beveldn(I cnt,S *dt,I str,F) 
 { 
 	for(I i = cnt-1; i >= 0; --i,dt += str) *dt = (i+.5)/cnt;
 	return true;
 }
 
-static BL d_mbeveldn(I cnt,F *dt,I str,F) 
+static BL d_mbeveldn(I cnt,S *dt,I str,F) 
 { 
 	for(I i = cnt-1; i >= 0; --i,dt += str) *dt *= (i+.5)/cnt;
 	return true;
@@ -201,7 +201,7 @@ Vasp *Vasp::m_mbeveldn() { return fr_arg("*bevel-",0,d_mbeveldn); }
 
 // --- window --------------------------
 
-static BL d_window(I cnt,F *dt,I str,F wndtp) 
+static BL d_window(I cnt,S *dt,I str,F wndtp) 
 { 
 	post("vasp.window: Sorry, not implemented yet");
 	return false;
@@ -210,7 +210,7 @@ static BL d_window(I cnt,F *dt,I str,F wndtp)
 //	return true;
 }
 
-static BL d_vwindow(I cnt,F *dst,I dstr,const F *src,I sstr) 
+static BL d_vwindow(I cnt,S *dst,I dstr,const F *src,I sstr) 
 { 
 	post("vasp.window: Sorry, not implemented yet");
 	return false;
@@ -219,7 +219,7 @@ static BL d_vwindow(I cnt,F *dst,I dstr,const F *src,I sstr)
 //	return true;
 }
 
-static BL d_mwindow(I cnt,F *dt,I str,F wndtp) 
+static BL d_mwindow(I cnt,S *dt,I str,F wndtp) 
 { 
 	post("vasp*window: Sorry, not implemented yet");
 	return false;
@@ -228,7 +228,7 @@ static BL d_mwindow(I cnt,F *dt,I str,F wndtp)
 //	return true;
 }
 
-static BL d_vmwindow(I cnt,F *dst,I dstr,const F *src,I sstr) 
+static BL d_vmwindow(I cnt,S *dst,I dstr,const F *src,I sstr) 
 { 
 	post("vasp*window: Sorry, not implemented yet");
 	return false;
