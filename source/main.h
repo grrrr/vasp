@@ -159,14 +159,14 @@ private:
 };
 
 
-class vasp_modify:
+class vasp_tx:
 	public vasp_msg
 {
-	FLEXT_HEADER(vasp_modify,vasp_msg)
+	FLEXT_HEADER(vasp_tx,vasp_msg)
 
 public:
-	vasp_modify(I argc,t_atom *argv);
-	~vasp_modify();
+	vasp_tx(I argc,t_atom *argv);
+	~vasp_tx();
 
 	virtual I m_set(I argc,t_atom *argv); // set destination (non-triggering)
 
@@ -212,7 +212,7 @@ public:
 	virtual V m_exp();  // exponential function
 //	virtual V m_cexp();  // complex exponential function
 	virtual V m_log(); // natural logarithm
-//	virtual V m_cln(); // complex logarithm (how about branches?)
+//	virtual V m_clog(); // complex logarithm (how about branches?)
 
 	virtual V m_inv();  // invert buffer values
 	virtual V m_cinv(); // complex invert buffer values (each two)
@@ -229,22 +229,21 @@ public:
 	virtual V m_cswap();  // swap real and imaginary parts
 	virtual V m_cconj();  // complex conjugate
 
-/*
-	// Rearrange buffer
+	// Rearrange buffer - separate object?
 	virtual V m_shift(F u);  // shift buffer
 	virtual V m_xshift(F u);  // shift buffer (symmetrically)
 	virtual V m_rot(F u);  // rotate buffer
 	virtual V m_xrot(F u);  // rotate buffer (symmetrically)
 	virtual V m_mirr();  // mirror buffer
 	virtual V m_xmirr();  // mirror buffer (symmetrically)
-
-	// Generator functions
+/*
+	// Generator functions - separate object!
 	virtual V m_osc(I argc,t_atom *argv);  // real osc
 	virtual V m_cosc(I argc,t_atom *argv);  // complex osc (phase rotates)
 	virtual V m_noise(I argc,t_atom *argv);  // real noise
 	virtual V m_cnoise(I argc,t_atom *argv); // complex noise (arg and abs random)
 
-	// Fourier transforms
+	// Fourier transforms - separate object!
 	virtual V m_rfft();
 	virtual V m_rifft();
 	virtual V m_cfft();
@@ -257,6 +256,7 @@ private:
 	V fr_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I),V (*dofunR)(F *,F,I));
 	V fc_assign(const C *op,I argc,t_atom *argv,V (*dofunCV)(F *,F *,const F *,const F *,I),V (*dofunC)(F *,F *,F,F,I));
 	V fm_assign(const C *op,I argc,t_atom *argv,V (*dofunV)(F *,const F *,I));
+
 
 	FLEXT_CALLBACK_G(m_set)
 
@@ -311,14 +311,14 @@ private:
 	FLEXT_CALLBACK(m_cswap)
 	FLEXT_CALLBACK(m_cconj)
 
-/*
+
 	FLEXT_CALLBACK_1(m_shift,F)
 	FLEXT_CALLBACK_1(m_xshift,F)
 	FLEXT_CALLBACK_1(m_rot,F)
 	FLEXT_CALLBACK_1(m_xrot,F)
 	FLEXT_CALLBACK(m_mirr)
 	FLEXT_CALLBACK(m_xmirr)
-
+/*
 	FLEXT_CALLBACK_G(m_osc)
 	FLEXT_CALLBACK_G(m_cosc)
 	FLEXT_CALLBACK_G(m_noise)

@@ -41,8 +41,32 @@ Goals/features of the package:
 Version history:
 
 0.0.1:
+- defined the vasp
+- quick and dirty setup of most functions (non-interruptible)
 
 ---------------------------------------------------------------------------
 
 
 TODO list:
+
+features:
+- introduce several log levels (for warning posts)
+- flags how to handle special situations (div/0, log(<0) etc.)
+- how handle symmetric data operations (x*): leave 0 and n-1 bin, odd remainder bin?
+- thru command messages which are passed through the vasp chain
+- asynchrone operations (multithreading, re-triggering) and interruptibility 
+- grab (and recompose) signals for granular vasp usage
+- vasp~s for realtime-capable vasp objects
+
+
+
+bugs:
+
+
+
+
+tests:
+
+
+premature thoughts:
+- interface to scripting language (python)

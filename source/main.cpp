@@ -17,7 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 extern "C" {
 // base classes
 FLEXT_EXT V vasp_v_setup();
-FLEXT_EXT V vasp_modify_setup();
+FLEXT_EXT V vasp_tx_setup();
 
 // utils
 FLEXT_EXT V vasp_prepend_setup();
@@ -25,13 +25,13 @@ FLEXT_EXT V vasp_prepend_setup();
 
 FLEXT_EXT V vasp_setup()
 {
-	post("VASP %s - vector assembling signal processor, (C)2002 Thomas Grill",VASP_VERSION);
+	post("VASP modular %s - vector assembling signal processor, (C)2002 Thomas Grill",VASP_VERSION);
 	post("");
 
 	// call the objects' setup routines
 
 	vasp_v_setup();
-	vasp_modify_setup();
+	vasp_tx_setup();
 
 	vasp_prepend_setup();
 }

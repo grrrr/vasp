@@ -24,7 +24,9 @@ in the file gpl.txt
 
 ---------------------------------------------------------
 
-The package is based on ideas conceived and programmed by Günther Rabl. 
+The package is based on ideas originally conceived and 
+programmed in FORTRAN by Günther Rabl. 
+
 VASP modular uses the flext C++ layer - see its license text below.
 
 

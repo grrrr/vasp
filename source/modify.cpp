@@ -1,8 +1,8 @@
 #include "main.h"
 
-FLEXT_GIMME("vasp.modify",vasp_modify)
+FLEXT_GIMME("vasp.tx",vasp_tx)
 
-V vasp_modify::cb_setup(t_class *c)
+V vasp_tx::cb_setup(t_class *c)
 {
 	FLEXT_ADDMETHOD_G(c,"set",m_set);
 
@@ -57,7 +57,6 @@ V vasp_modify::cb_setup(t_class *c)
 	FLEXT_ADDMETHOD(c,"cswap",m_cswap);
 	FLEXT_ADDMETHOD(c,"cconj",m_cconj);
 
-/*
 	// Buffer rearrange functions
 	FLEXT_ADDMETHOD_1(c,"shift",m_shift,F);
 	FLEXT_ADDMETHOD_1(c,"xshift",m_xshift,F);
@@ -65,7 +64,7 @@ V vasp_modify::cb_setup(t_class *c)
 	FLEXT_ADDMETHOD_1(c,"xrot",m_xrot,F);
 	FLEXT_ADDMETHOD(c,"mirr",m_mirr);
 	FLEXT_ADDMETHOD(c,"xmirr",m_xmirr);
-
+/*
 	// Generator functions
 	FLEXT_ADDMETHOD_G(c,"osc",m_osc);
 	FLEXT_ADDMETHOD_G(c,"cosc",m_cosc);
@@ -85,7 +84,7 @@ V vasp_modify::cb_setup(t_class *c)
 }
 
 
-vasp_modify::vasp_modify(I argc,t_atom *argv)
+vasp_tx::vasp_tx(I argc,t_atom *argv)
 {
 	m_set(argc,argv);
 
@@ -94,12 +93,12 @@ vasp_modify::vasp_modify(I argc,t_atom *argv)
 	setup_inout();
 }
 
-vasp_modify::~vasp_modify()
+vasp_tx::~vasp_tx()
 {
 }
 
 
-I vasp_modify::m_set(I argc,t_atom *argv)
+I vasp_tx::m_set(I argc,t_atom *argv)
 {
 	vasp arg(argc,argv);
 
