@@ -1,5 +1,5 @@
 #N canvas 200 200 300 120 10;
-#N canvas 154 41 663 339 inside 0;
+#N canvas 154 41 667 343 inside 0;
 #N canvas 149 25 652 578 positions 0;
 #N canvas 74 268 410 336 setpositions 0;
 #X obj 60 102 inlet;
@@ -276,7 +276,7 @@
 #X connect 26 1 25 0;
 #X restore 91 234 pd drawdisplay;
 #X text 189 233 draws the large display;
-#N canvas 111 311 415 307 sliderhandling 0;
+#N canvas 111 311 417 309 sliderhandling 0;
 #X floatatom 112 145 5 0 0;
 #X floatatom 220 143 5 0 0;
 #N canvas 75 -2 570 373 keyinput_s 0;
@@ -529,13 +529,18 @@ and graphic-positions;
 #X connect 30 0 7 1;
 #X restore 91 166 pd drawselection;
 #X text 200 163 draws the light blue selection;
-#N canvas 149 160 286 126 init 0;
+#N canvas 149 160 490 235 init 0;
 #X obj 33 19 loadbang;
 #X obj 33 86 s \$0-;
 #X msg 33 44 xticks 0 30 5 \, ylabel 315 -1 -0.5 0 0.5 \, yticks 0
 0.25 2;
+#X msg 33 150 44100;
+#X obj 33 128 loadbang;
+#X obj 33 173 s \$2-sample-length;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
 #X restore 92 261 pd init;
 #N canvas 0 0 445 185 synchronize_several_displays 0;
 #X obj 232 68 r \$0-sliders;
@@ -548,7 +553,7 @@ and graphic-positions;
 #X restore 332 83 pd inside;
 #X obj 398 96 outlet;
 #X obj 3 0 hsl 300 120 0 299 0 0 \$0-sliders \$0-sliderr empty -2 -6
-1728 8 -262144 -1 -1 27400 0;
+1728 8 -262144 -1 -1 5100 0;
 #X obj 0 0 cnv 15 305 120 empty empty empty 20 12 0 14 -262144 -66577
 0;
 #X obj 2 0 cnv 15 300 120 empty empty empty 20 12 0 14 -225271 -66577
