@@ -10,7 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 
-static V d_shift(F *dt,F sh,I cnt) 
+static BL d_shift(F *dt,F sh,I cnt) 
 { 
 	I ish = (I)sh;
 	if(sh == ish) { // integer shift
@@ -20,15 +20,16 @@ static V d_shift(F *dt,F sh,I cnt)
 			for(I i = cnt-1; i >= ish; ++i,++dt) *dt = dt[-ish];
 		else
 			for(I i = ish; i < cnt; ++i,++dt) dt[-ish] = *dt;
+		return true;
 	}
 	else {
 		// requires interpolation
 		post("non-integer shift not implemented - truncating to integer");
-		d_shift(dt,ish,cnt);
+		return d_shift(dt,ish,cnt);
 	}
 }
 
-static V d_xshift(F *dt,F sh,I cnt) 
+static BL d_xshift(F *dt,F sh,I cnt) 
 { 
 	I ish = (I)sh;
 	if(sh == ish) { // integer shift
@@ -45,15 +46,16 @@ static V d_xshift(F *dt,F sh,I cnt)
 			for(i = ish; i < hcnt; ++i) dt[i-ish] = dt[i];
 			for(i = cnt-1; i >= (cnt-hcnt)+ish; ++i) dt[i] = dt[i-ish];
 		}
+		return true;
 	}
 	else {
 		// requires interpolation
 		post("non-integer xshift not implemented - truncating to integer");
-		d_xshift(dt,ish,cnt);
+		return d_xshift(dt,ish,cnt);
 	}
 }
 
-static V d_rot(F *dt,F sh,I cnt) 
+static BL d_rot(F *dt,F sh,I cnt) 
 { 
 	I ish = (I)sh;
 	if(sh == ish) { // integer shift
@@ -94,42 +96,44 @@ static V d_rot(F *dt,F sh,I cnt)
 				for(I i = ish; i < cnt-ish; ++i,++dt) dt[-ish] = *dt;
 			}
 //		}
+		return false; 
 	}
 	else {
 		// requires interpolation
 		post("non-integer rot not implemented - truncating to integer");
-		d_rot(dt,ish,cnt);
+		return d_rot(dt,ish,cnt);
 	}
 }
 
-static V d_xrot(F *dt,F sh,I cnt) 
+static BL d_xrot(F *dt,F sh,I cnt) 
 { 
 	I ish = (I)sh;
 	if(sh == ish) { // integer shift
-		d_rot(dt,sh,cnt/2);
+		return d_rot(dt,sh,cnt/2) &&
 		// eventual middle sample is left out
-		d_rot(dt+(cnt-cnt/2),-sh,cnt/2);
+			d_rot(dt+(cnt-cnt/2),-sh,cnt/2);
 	}
 	else {
 		// requires interpolation
 		post("non-integer xrot not implemented - truncating to integer");
-		d_xrot(dt,ish,cnt);
+		return d_xrot(dt,ish,cnt);
 	}
 }
 
-static V d_mirr(F *dt,F,I cnt) 
+static BL d_mirr(F *dt,F,I cnt) 
 { 
 	for(F *dl = dt,*du = dt+cnt-1; dl < du; ++dl,--du) {
 		F t;
 		t = *dl; *dl = *du; *du = t;
 	}
+	return true; 
 }
 
-static V d_xmirr(F *dt,F,I cnt) 
+static BL d_xmirr(F *dt,F,I cnt) 
 { 
-	d_mirr(dt,0,cnt/2);
+	return d_mirr(dt,0,cnt/2) &&
 	// eventual middle sample is left out
-	d_mirr(dt+(cnt-cnt/2),0,cnt/2);
+		d_mirr(dt+(cnt-cnt/2),0,cnt/2);
 }
 
 

@@ -104,6 +104,14 @@ SOURCE=..\readme.txt
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\mixfft.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\rdx2fft.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\vasp.cpp
 # End Source File
 # Begin Source File

@@ -306,15 +306,15 @@ public:
 
 
 	struct nop_funcs {
-		V (*funR)(F *,F,I);
-		V (*funC)(F *,F *,F,F,I);
+		BL (*funR)(F *,F,I);
+		BL (*funC)(F *,F *,F,F,I);
 	};
 
 	struct arg_funcs {
-		V (*funR)(F *,F,I);
-		V (*funC)(F *,F *,F,F,I);
-		V (*funV)(F *,const F *,I);
-		V (*funCV)(F *,F *,const F *,const F *,I);
+		BL (*funR)(F *,F,I);
+		BL (*funC)(F *,F *,F,F,I);
+		BL (*funV)(F *,const F *,I);
+		BL (*funCV)(F *,F *,const F *,const F *,I);
 	};
 
 protected:
@@ -329,23 +329,23 @@ protected:
 private:
 	typedef flext_base flx;
 
-	Vasp *fr_nop(const C *op,F v,V (*f)(F *,F,I));
+	Vasp *fr_nop(const C *op,F v,BL (*f)(F *,F,I));
 	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_nop(op,v,f.funR); }
-	Vasp *fc_nop(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I));
+	Vasp *fc_nop(const C *op,const CX &cx,BL (*f)(F *,F *,F,F,I));
 	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_nop(op,cx,f.funC); }
 	Vasp *fc_nop(const C *op,const Argument &arg,const nop_funcs &f);
 
-	Vasp *fr_arg(const C *op,F v,V (*f)(F *,F,I));
+	Vasp *fr_arg(const C *op,F v,BL (*f)(F *,F,I));
 	Vasp *fr_arg(const C *op,F v,const arg_funcs &f) { return fr_arg(op,v,f.funR); }
-	Vasp *fr_arg(const C *op,const Vasp &v,V (*f)(F *,const F *,I));
+	Vasp *fr_arg(const C *op,const Vasp &v,BL (*f)(F *,const F *,I));
 	Vasp *fr_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fr_arg(op,v,f.funV); }
 	Vasp *fr_arg(const C *op,const Argument &arg,const arg_funcs &f);
-	Vasp *fc_arg(const C *op,const CX &cx,V (*f)(F *,F *,F,F,I));
+	Vasp *fc_arg(const C *op,const CX &cx,BL (*f)(F *,F *,F,F,I));
 	Vasp *fc_arg(const C *op,const CX &cx,const arg_funcs &f) { return fc_arg(op,cx,f.funC); }
-	Vasp *fc_arg(const C *op,const Vasp &v,V (*f)(F *,F *,const F *,const F *,I));
+	Vasp *fc_arg(const C *op,const Vasp &v,BL (*f)(F *,F *,const F *,const F *,I));
 	Vasp *fc_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fc_arg(op,v,f.funCV); }
 	Vasp *fc_arg(const C *op,const Argument &arg,const arg_funcs &f);
-	Vasp *fm_arg(const C *op,const Vasp &v,V (*f)(F *,const F *,I));
+	Vasp *fm_arg(const C *op,const Vasp &v,BL (*f)(F *,const F *,I));
 	Vasp *fm_arg(const C *op,const Vasp &v,const arg_funcs &f) { return fm_arg(op,v,f.funV); }
 	Vasp *fm_arg(const C *op,const Argument &arg,const arg_funcs &f);
 };

@@ -14,16 +14,18 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define PI 3.1415926535897932385
 
 
-static V d_osc(F *dt,F frq,I cnt) 
+static BL d_osc(F *dt,F frq,I cnt) 
 { 
 	// how to specify starting phase?
 	post("osc: sorry, not yet implemented");
+	return false;
 }
 
-static V d_cosc(F *re,F *im,F frq,F,I cnt) 
+static BL d_cosc(F *re,F *im,F frq,F,I cnt) 
 { 
 	// how to specify starting phase?
 	post("cosc: sorry, not yet implemented");
+	return false;
 }
 
 Vasp *Vasp::m_osc(const Argument &arg,F ph) 
@@ -44,12 +46,13 @@ static F rnd() {
 	return ret;
 }
 
-static V d_noise(F *dt,F,I cnt) 
+static BL d_noise(F *dt,F,I cnt) 
 { 
 	for(I i = 0; i < cnt; ++i) dt[i] = rnd();
+	return true;
 }
 
-static V d_cnoise(F *re,F *im,F,F,I cnt) 
+static BL d_cnoise(F *re,F *im,F,F,I cnt) 
 { 
 	for(I i = 0; i < cnt; ++i) {
 		F amp = rnd();
@@ -57,6 +60,7 @@ static V d_cnoise(F *re,F *im,F,F,I cnt)
 		re[i] = amp*cos(arg);
 		im[i] = amp*sin(arg);
 	}
+	return true;
 }
 
 Vasp *Vasp::m_noise() { return fr_nop("noise",0,d_noise); }
