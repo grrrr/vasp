@@ -57,7 +57,12 @@ public:
 
 	}
 
-	virtual BL Init() { BL ret = vasp_op::Init(); m_reset(); return ret; }
+	virtual BL Init() 
+	{ 
+		BL ret = vasp_op::Init(); 
+		m_reset(); 
+		return ret; 
+	}
 
 	~vasp_sync()	
 	{ 
