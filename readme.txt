@@ -1,5 +1,5 @@
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
-version 0.0.2
+version 0.0.3
 
 Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -39,6 +39,8 @@ Goals/features of the package:
 ----------------------------------------------------------------------------
 
 Version history:
+
+0.0.3:
 
 0.0.2:
 - vasp.cmin,vasp.cmax - renamed to vasp.rmin,vasp.rmax

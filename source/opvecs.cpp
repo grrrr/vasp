@@ -444,7 +444,7 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 			else p.rddt = p.rsdt,p.rds = p.rss;
 
 			for(I bi = 0; bi < vecs->ArgBlks(); ++bi) {
-				p.radt = a->Pointer(),p.ras = a->Channels();
+//				p.radt = a->Pointer(),p.ras = a->Channels();
 			}
 		
 			if(!symm) 
@@ -458,7 +458,9 @@ Vasp *VaspOp::DoOp(RVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					const I r = p.frames-hcnt;
 					p.frames = hcnt;
 					p.rsdt += r*p.rss,p.rddt += r*p.rds;
-					if(p.radt) p.radt += r*p.ras;
+
+					// What to do with arguments in symmetric mode?
+//					if(p.radt) p.radt += r*p.ras;
 				}
 			}
 
@@ -562,8 +564,10 @@ Vasp *VaspOp::DoOp(CVecBlock *vecs,VecOp::opfun *fun,OpParam &p,BL symm)
 					p.rsdt += r*p.rss,p.isdt += r*p.iss;
 					p.rddt += r*p.rds;
 					if(p.iddt) p.iddt += r*p.ids; // Can that be NULL??
-					if(p.radt) p.radt += r*p.ras;
-					if(p.iadt) p.iadt += r*p.ias;
+
+					// What to do with arguments?
+//					if(p.radt) p.radt += r*p.ras;
+//					if(p.iadt) p.iadt += r*p.ias;
 				}
 			}
 

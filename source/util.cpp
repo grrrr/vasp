@@ -268,6 +268,39 @@ Vasp *VecBlock::_ResVasp(I n)
 	return _Dst(0)?_DstVasp(n):_SrcVasp(n);
 }
 
+
+// Duplication of breakpoint lists should be avoided
+OpArg &OpArg::operator =(const OpArg &op)
+{
+	Clear();
+
+	switch(argtp = op.argtp) {
+	case arg_x:	x = op.x; break;
+	case arg_v:	v = op.v; break;
+	case arg_l:	{
+		// Copy breakpoint list (find a different way...)
+		l.pts = op.l.pts;
+		l.r = new R[l.pts];
+		l.i = new R[l.pts];
+		for(I i = 0; i < l.pts; ++i) 
+			l.r[i] = op.l.r[i],l.i[i] = op.l.i[i];
+		break;
+	}
+	}
+
+	return *this;
+}
+
+V OpArg::Clear()
+{
+	if(argtp == arg_l) {
+		if(l.r) delete[] l.r;	
+		if(l.i) delete[] l.i;	
+	}
+	argtp = arg_;
+}
+
+
 /*
 V OpParam::SDR_Rev() { SR_Rev(); DR_Rev(); }
 V OpParam::SDI_Rev() { SI_Rev(); DI_Rev(); }
@@ -293,26 +326,12 @@ V OpParam::InitArgs(I n)
 {
 	if(arg) Clear();
 	args = n;
-	if(args) {
-		arg = new arg_t[args];
-		for(I i = 0; i < args; ++i) arg[i].argtp = arg_t::arg_;
-	}
+	if(args) arg = new OpArg[args];
 }
 
 V OpParam::Clear()
 {
-	if(arg) {
-		for(I i = 0; i < args; ++i) {
-			switch(arg[i].argtp) {
-			case arg_t::arg_l: {
-				if(arg[i].l.r) delete[] arg[i].l.r;	
-				if(arg[i].l.i) delete[] arg[i].l.i;	
-				break;
-			}
-			}
-		}
-		delete[] arg; arg = NULL;
-	}
+	if(arg) { delete[] arg; arg = NULL;	}
 	args = 0;
 }
 
@@ -339,6 +358,30 @@ V OpParam::C_Rev()
 	AR_Rev(); AI_Rev(); 
 	revdir = true;
 }
+
+
+V OpParam::AR_Rev(I bl) 
+{ 
+	if(arg[bl].argtp == OpArg::arg_v && arg[bl].v.rdt) 
+		arg[bl].v.rdt -= (frames-1)*(arg[bl].v.rs = -arg[bl].v.rs); 
+}
+
+V OpParam::AI_Rev(I bl) 
+{ 
+	if(arg[bl].argtp == OpArg::arg_v && arg[bl].v.idt) 
+		arg[bl].v.idt -= (frames-1)*(arg[bl].v.is = -arg[bl].v.is); 
+}
+
+BL OpParam::AR_In(I bl) const { return arg[bl].argtp == OpArg::arg_v && arg[bl].v.rdt && rddt > arg[bl].v.rdt && rddt < arg[bl].v.rdt+frames*arg[bl].v.rs; } 
+BL OpParam::AI_In(I bl) const { return arg[bl].argtp == OpArg::arg_v && arg[bl].v.idt && iddt > arg[bl].v.idt && iddt < arg[bl].v.idt+frames*arg[bl].v.is; } 
+
+BL OpParam::AR_Can(I bl) const { return arg[bl].argtp != OpArg::arg_v || !arg[bl].v.rdt || arg[bl].v.rdt <= rddt || arg[bl].v.rdt >= rddt+frames*rds; } 
+BL OpParam::AI_Can(I bl) const { return arg[bl].argtp != OpArg::arg_v || !arg[bl].v.idt || arg[bl].v.idt <= iddt || arg[bl].v.idt >= iddt+frames*ids; } 
+
+BL OpParam::AR_Ovr(I bl) const { return arg[bl].argtp == OpArg::arg_v && arg[bl].v.rdt && rddt != arg[bl].v.rdt && rddt < arg[bl].v.rdt+frames*arg[bl].v.rs && arg[bl].v.rdt < rddt+frames*rds; } 
+BL OpParam::AI_Ovr(I bl) const { return arg[bl].argtp == OpArg::arg_v && arg[bl].v.idt && iddt != arg[bl].v.idt && iddt < arg[bl].v.idt+frames*arg[bl].v.is && arg[bl].v.idt < iddt+frames*ids; } 
+
+
 
 BL OpParam::AR_In() const
 {
@@ -381,6 +424,7 @@ BL OpParam::AI_Ovr() const
 		if(!AI_Ovr(i)) return false;
 	return true;
 }
+
 
 V OpParam::AR_Rev()
 {

@@ -227,7 +227,7 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 	register S *dr = p.rddt;									\
 	if(p.HasArg()) {											\
 		switch(p.arg[0].argtp) {									\
-		case OpParam::arg_t::arg_v: {								\
+		case OpArg::arg_v: {								\
 			register const S *ar = p.arg[0].v.rdt;					\
 			if(p.rsdt == p.rddt)									\
 				if(p.rds == 1 && p.arg[0].v.rs == 1)				\
@@ -245,11 +245,11 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 						fun(*dr,*sr,*ar);							\
 			break;												\
 		}														\
-		case OpParam::arg_t::arg_l: {							\
+		case OpArg::arg_l: {							\
 			post("%s - Sorry, not implemented yet",p.opname);	\
 			break;												\
 		}														\
-		case OpParam::arg_t::arg_x: {							\
+		case OpArg::arg_x: {							\
 			const R v =  p.arg[0].x.r;							\
 			if(p.rsdt == p.rddt)									\
 				if(p.rds == 1)										\
@@ -261,10 +261,10 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 			else													\
 				if(p.rss == 1 && p.rds == 1)						\
 					for(I i = 0; i < p.frames; ++i,sr++,dr++)		\
-						fun(*sr,*dr,v);								\
+						fun(*dr,*sr,v);								\
 				else												\
 					for(I i = 0; i < p.frames; ++i,sr += p.rss,dr += p.rds) 	\
-						fun(*sr,*dr,v);							\
+						fun(*dr,*sr,v);							\
 			break;												\
 		}														\
 		}														\
@@ -297,7 +297,7 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 	register S *dr = p.rddt,*di = p.iddt;						\
 	if(p.HasArg()) {											\
 		switch(p.arg[0].argtp) {									\
-		case OpParam::arg_t::arg_v: {									\
+		case OpArg::arg_v: {									\
 			register const S *ar = p.arg[0].v.rdt,*ai = p.arg[0].v.idt;				\
 			if(ai)													\
 				if(sr == dr && si == di)							\
@@ -319,11 +319,11 @@ template<class T> inline V f_minmax(T &rv,T &iv,T ra,T ia)
 						fun(*dr,*di,*sr,*si,*ar,0);					\
 			break;												\
 		}														\
-		case OpParam::arg_t::arg_l: {									\
+		case OpArg::arg_l: {									\
 			post("%s - Sorry, not implemented yet",p.opname);	\
 			break;												\
 		}														\
-		case OpParam::arg_t::arg_x: {									\
+		case OpArg::arg_x: {									\
 			register const R ar = p.arg[0].x.r,ai = p.arg[0].x.i;				\
 			if(sr == dr && si == di)							\
 				if(p.rds == 1 && p.ids == 1) \
