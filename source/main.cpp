@@ -83,7 +83,7 @@ vbuffer &vbuffer::Set(t_symbol *s,I c,I l,I o)
 // vasp class
 ///////////////////////////////////////////////////////////////////////////
 
-t_symbol *const vasp::vaspsym = gensym("vasp");
+t_symbol *const vasp::sym_vasp = gensym("vasp");
 
 
 vasp::vasp(): 
@@ -152,7 +152,7 @@ vasp &vasp::operator ()(I argc,t_atom *argv)
 	}
 
 	t_symbol *v = atom_getsymbolarg(ix,argc,argv);
-	if(v && v == vaspsym) ix++; // if it is "vasp" ignore it
+	if(v && v == sym_vasp) ix++; // if it is "vasp" ignore it
 
 	if(argc > ix && (ISFLINT(argv[ix]) || ISFLOAT(argv[ix]))) {
 		frames = atom_getflintarg(ix,argc,argv);
@@ -215,7 +215,7 @@ vasp &vasp::MakeList(BL withvasp)
 	}
 
 	if(withvasp)
-		SETSYMBOL(&atomlist[0],vaspsym);  // VASP
+		SETSYMBOL(&atomlist[0],sym_vasp);  // VASP
 
 	SETFLINT(&atomlist[voffs],frames);  // frames
 
@@ -241,28 +241,33 @@ vbuffer *vasp::Buffer(I ix) const
 
 
 ///////////////////////////////////////////////////////////////////////////
-// vasp_msg class
+// vasp_base class
 ///////////////////////////////////////////////////////////////////////////
 
-V vasp_msg::cb_setup(t_class *c)
+t_symbol *const vasp_base::sym_radio = gensym("radio");
+
+V vasp_base::cb_setup(t_class *c)
 {
 	FLEXT_ADDBANG(c,m_bang);
 //	FLEXT_ADDMETHOD_G(c,"vasp",m_vasp);
 	FLEXT_ADDMETHOD_G(c,"set",m_set);
 
+	FLEXT_ADDMETHOD_G(c,"radio",m_radio);
+
+	FLEXT_ADDMETHOD_E(c,"update",m_update);
 	FLEXT_ADDMETHOD_E(c,"unit",m_unit);
 }
 
-vasp_msg::vasp_msg()
+vasp_base::vasp_base()
 {
 }
 
-vasp_msg::~vasp_msg()
+vasp_base::~vasp_base()
 {
 }
 
 /*
-I vasp_msg::m_set(I argc,t_atom *argv)
+I vasp_base::m_set(I argc,t_atom *argv)
 {
 
 	I ret = buf->Set(atom_getsymbolarg(0,argc,argv));
@@ -274,22 +279,52 @@ I vasp_msg::m_set(I argc,t_atom *argv)
 }
 */
 
-V vasp_msg::m_bang()
+V vasp_base::m_bang()
 {
 	if(ref.Ok()) {
 		ref.MakeList(false);
-		to_out_anything(0,vasp::vaspsym,ref.Atoms(),ref.AtomList());
+		to_out_anything(0,vasp::sym_vasp,ref.Atoms(),ref.AtomList());
 	}
 }
 
-V vasp_msg::m_vasp(I argc,t_atom *argv)
+V vasp_base::m_vasp(I argc,t_atom *argv)
 {
 	m_set(argc,argv);
 	m_bang();
 }
 
 
-V vasp_msg::m_unit(xs_unit u) {	unit = u; }
+V vasp_base::m_radio(I argc,t_atom *argv)
+{
+	if(argc > 0) {
+		// send command to self!
+
+		// send command to the next objects in line
+		to_out_anything(0,sym_radio,argc,argv);
+	}
+}
+
+
+V vasp_base::m_unit(xs_unit u) {	unit = u; }
+
+V vasp_base::m_update(I argc,t_atom *argv) 
+{
+	if(argc == 0) {
+		for(I i = 0; i < ref.Vectors(); ++i) {
+			vbuffer *vb = ref.Buffer(i);
+			if(vb) {
+				vb->Dirty(true);
+				delete vb;
+			}
+		}
+	}
+	else {
+		if(ISFLINT(argv[0]))
+			refresh = atom_getflintarg(0,argc,argv) != 0;
+		else 
+			post("%s(update) - argument should be omitted or integer",thisName());
+	}
+}
 
 
 

@@ -628,16 +628,16 @@ static V d_xshift(F *dt,F sh,I cnt)
 	if(sh == ish) { // integer shift
 		// no zero filling!
 
-		I hcnt = cnt/2;
+		I i,hcnt = cnt/2;
 		// what to do if one sample remains? -> leave it in the middle
 
 		if(ish > 0) {
-			for(I i = hcnt-1; i >= ish; ++i) dt[i] = dt[i-ish];
-			for(I i = (cnt-hcnt)+ish; i < cnt; ++i) dt[i-ish] = dt[i];
+			for(i = hcnt-1; i >= ish; ++i) dt[i] = dt[i-ish];
+			for(i = (cnt-hcnt)+ish; i < cnt; ++i) dt[i-ish] = dt[i];
 		}
 		else {
-			for(I i = ish; i < hcnt; ++i) dt[i-ish] = dt[i];
-			for(I i = cnt-1; i >= (cnt-hcnt)+ish; ++i) dt[i] = dt[i-ish];
+			for(i = ish; i < hcnt; ++i) dt[i-ish] = dt[i];
+			for(i = cnt-1; i >= (cnt-hcnt)+ish; ++i) dt[i] = dt[i-ish];
 		}
 	}
 	else {
@@ -659,7 +659,7 @@ static V d_rot(F *dt,F sh,I cnt)
 */
 			if(ish > 0) {
 				for(I i = cnt-1; i >= 0; ++i) {
-
+				}
 /*
 	template<class _RI, class _Pd, class _Ty> inline
 		void _Rotate(_RI _F, _RI _M, _RI _L, _Pd *, _Ty *)
@@ -687,7 +687,7 @@ static V d_rot(F *dt,F sh,I cnt)
 			else {
 				for(I i = ish; i < cnt-ish; ++i,++dt) dt[-ish] = *dt;
 			}
-		}
+//		}
 	}
 	else {
 		// requires interpolation

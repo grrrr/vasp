@@ -104,7 +104,7 @@ public:
 	t_atom *AtomList() { return atomlist; }
 
 	// gensym("vasp")
-	static t_symbol *const vaspsym;
+	static t_symbol *const sym_vasp;
 
 protected:
 	I frames; // length counted in frames
@@ -119,10 +119,10 @@ protected:
 
 
 
-class vasp_msg:
+class vasp_base:
 	public flext_base
 {
-	FLEXT_HEADER(vasp_msg,flext_base)
+	FLEXT_HEADER(vasp_base,flext_base)
 
 	enum xs_unit {
 		xsu__ = -1,  // don't change
@@ -130,24 +130,32 @@ class vasp_msg:
 	};	
 
 protected:
-	vasp_msg();
-	virtual ~vasp_msg();
+	vasp_base();
+	virtual ~vasp_base();
 
 	virtual V m_bang();						// output current vasp
 
 	virtual V m_vasp(I argc,t_atom *argv); // trigger
 	virtual I m_set(I argc,t_atom *argv) = 0;  // non trigger
 
-	virtual V m_unit(xs_unit u);  
+	virtual V m_radio(I argc,t_atom *argv);  // commands for all
 
+	virtual V m_update(I argc = 0,t_atom *argv = NULL);  // graphics update
+	virtual V m_unit(xs_unit u);  // unit command
+
+	// destination vasp
 	vasp ref;
 
+	// immediate graphics refresh?
+	BL refresh;
 
 	static I min(I a,I b) { return a < b?a:b; }
 	static I max(I a,I b) { return a > b?a:b; }
 
 private:
 	
+	static t_symbol *const sym_radio;
+
 	xs_unit unit;
 	BL log;
 
@@ -155,14 +163,17 @@ private:
 	FLEXT_CALLBACK_G(m_vasp)
 	FLEXT_CALLBACK_G(m_set)
 
+	FLEXT_CALLBACK_G(m_radio)
+
+	FLEXT_CALLBACK_G(m_update)
 	FLEXT_CALLBACK_E(m_unit,xs_unit)
 };
 
 
 class vasp_tx:
-	public vasp_msg
+	public vasp_base
 {
-	FLEXT_HEADER(vasp_tx,vasp_msg)
+	FLEXT_HEADER(vasp_tx,vasp_base)
 
 public:
 	vasp_tx(I argc,t_atom *argv);

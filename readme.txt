@@ -50,13 +50,25 @@ Version history:
 TODO list:
 
 features:
+- use flext proxy inlets and make separate objects for all
 - introduce several log levels (for warning posts)
 - flags how to handle special situations (div/0, log(<0) etc.)
+- flag for immediate or delayed explicit graphics refresh
 - how handle symmetric data operations (x*): leave 0 and n-1 bin, odd remainder bin?
-- thru command messages which are passed through the vasp chain
+- progress % - outlet?
+- thru ("radio") command messages which are passed through the vasp chain 
+- filter object for radio commands
 - asynchrone operations (multithreading, re-triggering) and interruptibility 
+	- this implies a message queue at the inlet!
 - grab (and recompose) signals for granular vasp usage
 - vasp~s for realtime-capable vasp objects
+- double precision variables?
+
+objects:
+- buffer reference modification (offset, length)
+- prepend for abstractions
+- sync several parallel threads
+- split und combine vasps into their separate vectors
 
 
 

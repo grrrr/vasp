@@ -1,9 +1,9 @@
 #include "main.h"
 
 class vasp_v:
-	public vasp_msg
+	public vasp_base
 {
-	FLEXT_HEADER(vasp_v,vasp_msg)
+	FLEXT_HEADER(vasp_v,vasp_base)
 
 public:
 
