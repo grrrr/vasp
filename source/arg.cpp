@@ -149,11 +149,19 @@ CX Argument::GetAComplex() const
 	else return 0;
 }
 
-/*
-VX Argument::GetAVector() const
+Vasp Argument::GetAVasp() const 
 {
+	if(IsVasp()) return GetVasp();
+	else if(IsList()) return Vasp(dt.atoms->Count(),dt.atoms->Atoms());
+	else return Vasp();
 }
-*/
+
+Env Argument::GetAEnv() const 
+{
+	if(IsEnv()) return GetEnv();
+	else if(IsList()) return Env(dt.atoms->Count(),dt.atoms->Atoms());
+	else return Env();
+}
 
 
 Argument &Argument::Add(Argument *n) 

@@ -78,7 +78,7 @@ protected:
 
 	virtual V m_vasp(I argc,t_atom *argv); // trigger
 	virtual I m_set(I argc,t_atom *argv);  // non trigger
-	virtual V m_to(I argc,t_atom *argv); // set destinatioc
+	virtual V m_to(I argc,t_atom *argv); // set destination
 
 	virtual V m_update(I argc = 0,t_atom *argv = NULL);  // graphics update
 

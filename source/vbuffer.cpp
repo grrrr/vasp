@@ -26,7 +26,7 @@ VBuffer &VBuffer::operator =(const VBuffer &v)
 }
 */
 
-SysBuf &SysBuf::Set(t_symbol *s,I c,I l,I o)
+SysBuf &SysBuf::Set(VSym &s,I c,I l,I o)
 {
 	buf.Set(s);
 

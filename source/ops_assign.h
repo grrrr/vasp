@@ -24,11 +24,11 @@ namespace VecOp {
 }
 
 namespace VaspOp {
-	inline Vasp *m_copy(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_run(p,src,dst,VecOp::d_copy); } // copy to (one vec or real)
 	inline Vasp *m_set(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_rbin(p,src,arg,dst,VecOp::d_set); } // copy to (one vec or real)
-
-	inline Vasp *m_ccopy(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_ccopy); }  // complex copy (pairs of vecs or complex)
 	inline Vasp *m_cset(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cset); }  // complex copy (pairs of vecs or complex)
+
+	Vasp *m_copy(OpParam &p,Vasp &src,Vasp &dst);
+	Vasp *m_ccopy(OpParam &p,Vasp &src,Vasp &dst);
 }
 
 #endif

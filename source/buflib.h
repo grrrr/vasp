@@ -24,28 +24,30 @@ class BufEntry
 public:
 	BufEntry(t_symbol *s,I fr);
 	~BufEntry();
-
+/*
 	V IncRef();
 	V DecRef();
-
-	t_symbol *sym;
+*/
+	VSym sym;
 	I refcnt,tick;
 	BufEntry *nxt;
 
 	UL magic;
-	I len;
+	I alloc,len;
 	S *data;
 };
 
 
 namespace BufLib
 {
-	VBuffer *Get(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
+	VBuffer *Get(VSym &s,I chn = 0,I len = -1,I offs = 0);
 
-	ImmBuf *NewImm(I fr);
-
+	BufEntry *NewImm(I fr);
+/*
 	V IncRef(t_symbol *s);
 	V DecRef(t_symbol *s);
+*/
+	BufEntry *Resize(BufEntry *e,I fr,BL keep = false); 
 }
 
 

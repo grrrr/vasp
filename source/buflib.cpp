@@ -11,12 +11,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "buflib.h"
 #include <stdio.h>
 
-#define LIBTICK 100
-#define LIBTOL 5
+#define LIBTICK 100 // tick time in ms
+#define LIBTOL 2  // how many ticks till release
 
-#define LIBMAGIC 12349876L
+#define REUSE_MAXLOSEREL 0.1  // max. fraction of lost buffer size 
+#define REUSE_MAXLOSEABS 10000 // max. lost buffer size
+
+#define LIBMAGIC 12349876L // magic number for s_thing data check
+
 
 static BufEntry *libhead = NULL,*libtail = NULL;
+static t_symbol *freehead = NULL,*freetail = NULL;
 static I libcnt = 0,libtick = 0;
 static t_clock *libclk = NULL;
 
@@ -26,7 +31,7 @@ static flext_base::ThrMutex libmtx;
 
 BufEntry::BufEntry(t_symbol *s,I fr): 
 	sym(s),magic(LIBMAGIC),
-	len(fr),data(new S[fr]),
+	alloc(fr),len(fr),data(new S[fr]),
 	refcnt(0),nxt(NULL) 
 {
 	ASSERT(!sym->s_thing);
@@ -35,7 +40,12 @@ BufEntry::BufEntry(t_symbol *s,I fr):
 
 BufEntry::~BufEntry()
 {
-	if(sym) flext_base::SetThing(sym,NULL);
+	if(sym) {
+		flext_base::SetThing(sym,NULL);
+		if(!freehead) freehead = sym;
+		flext_base::SetThing(freetail,sym);
+		
+	}
 	if(data) delete[] data;
 }
 
@@ -75,13 +85,28 @@ V BufLib::DecRef(t_symbol *s)
 }
 
 
-
 static t_symbol *GetLibSym()
 {
-	char tmp[20];
-	sprintf(tmp,"vasp!%04i",libcnt); // what if libcnt has > 4 digits?
-	libcnt++;
-	return gensym(tmp);
+	if(freehead) {
+		// reuse from free-list
+		t_symbol *r = freehead;
+		freehead = (t_symbol *)flext_base::GetThing(r);
+		if(!freehead) freetail = NULL;
+		flext_base::SetThing(r,NULL);
+		return r;
+	}
+	else {
+		// allocate new symbol
+		char tmp[20];
+	#ifdef __MWERKS__
+		std::
+	#endif
+		sprintf(tmp,"vasp!%04i",libcnt); // what if libcnt has > 4 digits?
+		libcnt++;
+		return gensym(tmp);
+	}
+	
+	clock_delay(libclk,LIBTICK);
 }
 
 static V LibTick(V *)
@@ -91,9 +116,8 @@ static V LibTick(V *)
 #endif
 
 	// collect garbage
-	BufEntry *p = NULL;
-	for(BufEntry *e = libhead; e; ) {
-//		post("heap: sym:%s ref:%i",flext_base::GetString(e->sym),e->refcnt);
+	BufEntry *e,*p;
+	for(p = NULL,e = libhead; e; ) {
 		if(e->refcnt <= 0 && e->tick+LIBTOL < libtick) {
 			ASSERT(e->refcnt == 0);
 
@@ -113,8 +137,6 @@ static V LibTick(V *)
 			p = e,e = e->nxt;
 	}
 
-//	post("");
-
 	++libtick;
 	clock_delay(libclk,LIBTICK);
 
@@ -123,7 +145,7 @@ static V LibTick(V *)
 #endif
 }
 
-ImmBuf *BufLib::NewImm(I fr)
+BufEntry *BufLib::NewImm(I fr)
 {
 	if(!libclk) {
 		libclk = (t_clock *)clock_new(NULL,(t_method)LibTick);
@@ -138,8 +160,6 @@ ImmBuf *BufLib::NewImm(I fr)
 
 	BufEntry *entry = new BufEntry(s,fr);
 
-	ImmBuf *buf = new ImmBuf(entry);
-
 #ifdef FLEXT_THREADS
 	libmtx.Lock();
 #endif
@@ -152,14 +172,44 @@ ImmBuf *BufLib::NewImm(I fr)
 	libmtx.Unlock();
 #endif
 
-	return buf;
+	return entry;
+}
+
+static I reuse_maxloserel = REUSE_MAXLOSEREL;
+static I reuse_maxloseabs = REUSE_MAXLOSEABS;
+
+BufEntry *BufLib::Resize(BufEntry *e,I fr,BL keep)
+{ 
+	if(fr >= e->alloc*(1-reuse_maxloserel) && fr >= (e->alloc-reuse_maxloseabs)) {
+		// reuse buffer
+		e->len = fr;
+		return e;
+	}
+	else {
+		BufEntry *ret = NewImm(fr);
+		ret->IncRef();
+		if(keep) {
+			I l = ret->len;
+			if(e->len < l) l = e->len;
+			flext_base::CopyMem(e->data,ret->data,l);
+		}
+		e->DecRef();
+		return  ret;
+	}
 }
 
 
 
+ImmBuf::ImmBuf(I len):
+	VBuffer(0,len),
+	entry(BufLib::NewImm(len))
+{
+	if(entry) entry->IncRef(); 
+}
 
 ImmBuf::ImmBuf(BufEntry *e,I len,I offs): 
-	VBuffer(0,len,offs),entry(e) 
+	VBuffer(0,len,offs),
+	entry(e) 
 { 
 	if(entry) entry->IncRef(); 
 }
@@ -174,11 +224,11 @@ V ImmBuf::IncRef() {}
 V ImmBuf::DecRef() {}
 */
 
-t_symbol *ImmBuf::Symbol() const { return entry->sym; }
+VSym ImmBuf::Symbol() const { return entry->sym; }
 
 I ImmBuf::Frames() const { return entry->len; }
 
-V ImmBuf::Frames(I fr,BL keep) { post("vasp immbuf - sorry not implemented!"); }
+V ImmBuf::Frames(I fr,BL keep) { entry = BufLib::Resize(entry,fr,keep); }
 
 S *ImmBuf::Data() { return entry->data; }
 

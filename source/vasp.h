@@ -29,8 +29,8 @@ public:
 		V Clear() { sym = NULL; }
 		BL Ok() const { return sym != NULL; }
 
-		t_symbol *Symbol() const { return sym; }
-		V Symbol(t_symbol *s);
+		VSym &Symbol() const { return sym; }
+		V Symbol(VSym &s);
 		I Channel() const { return chn; }
 		V Channel(I c) { chn = c; }
 		I Offset() const { return offs; }
@@ -38,23 +38,23 @@ public:
 		V OffsetD(I o) { offs += o; }
 
 	protected:
-		t_symbol *sym;
+		VSym sym;
 		I chn;
 		I offs; // counted in frames
 	};
 
 	Vasp();
-	Vasp(I argc,t_atom *argv);
+	Vasp(I argc,const t_atom *argv);
 	Vasp(const Vasp &v);
 	Vasp(I frames,const Ref &r);
 	~Vasp();
 
-	static BL ChkArgs(I argc,t_atom *argv);
+	static BL ChkArgs(I argc,const t_atom *argv);
 
 	const C *thisName() const { return typeid(*this).name(); }
 
 	Vasp &operator =(const Vasp &v);
-	Vasp &operator ()(I argc,t_atom *argv /*,BL withvasp = false*/);
+	Vasp &operator ()(I argc,const t_atom *argv /*,BL withvasp = false*/);
 
 	// add another vector
 	Vasp &operator +=(const Ref &r);

@@ -26,6 +26,7 @@ Version history:
 - ADD: detached operation: operations run as threads, according to detach flag/message
 - CHANGE: vasp.sync has as many outputs as inputs and outputs all input vasps
 - ADD: vasp.! : like vasp but stores the content temporarily
+- ADD: vasp.copy (vasp.->) and vasp.ccopy (vasp.c->) for vasp copying
 
 0.0.5:
 - FIX: lacking sqrt in [vasp.rmin?],[vasp.rmax?]

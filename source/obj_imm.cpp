@@ -51,15 +51,14 @@ public:
 			VBuffer *buf = ref.Buffer(0);
 			I len = buf->Length(),chns = buf->Channels();
 
-			ImmBuf *imm = BufLib::NewImm(len);
+			ImmBuf imm(len);
 
-			S *dst = imm->Pointer();
+			S *dst = imm.Pointer();
 			const S *src = buf->Pointer();
 			for(I i = 0; i < len; ++i,src += chns,dst++) *dst = *src; 
 
-			Vasp ret(len,Vasp::Ref(*imm));
+			Vasp ret(len,Vasp::Ref(imm));
 			ToOutVasp(0,ret);
-			delete imm;
 		}
 	}
 

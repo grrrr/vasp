@@ -38,6 +38,28 @@ protected:
 };
 */
 
+class VSym
+{
+public:
+	VSym(t_symbol *s = NULL): sym(s) { Inc(); }
+	VSym(VSym &s): sym(s.sym) { Inc(); }
+	~VSym() { Dec(); }
+	
+	V Clear() { Dec(); sym = NULL; }
+	
+	VSym &operator =(VSym &s) { Clear(); sym = s.sym; Inc(); return *this; }
+	
+	t_symbol *Symbol() { return sym; }
+	const t_symbol *Symbol() const { return sym; }
+	const C *Name() const { return flext_base::GetString(Symbol()); }
+	
+protected:
+	V Inc(); // { if(sym) BufLib::IncRef(s); }
+	V Dec(); // { if(sym) BufLib::DecRef(s); }
+
+	t_symbol *sym;
+};
+
 class VBuffer
 {
 public:
@@ -59,8 +81,8 @@ public:
 
 	S *Pointer() { return Data()+Offset()*Channels()+Channel(); }
 
-	virtual t_symbol *Symbol() const = 0;
-	const C *Name() const { return flext_base::GetString(Symbol()); }
+	virtual VSym Symbol() const = 0;
+	const C *Name() const { return Symbol().Name(); }
 
 	I Channel() const { return chn; }
 	V Channel(I c) { chn = c; }
@@ -82,7 +104,7 @@ class SysBuf:
 	public VBuffer
 {
 public:
-	SysBuf(t_symbol *s,I chn = 0,I len = -1,I offs = 0) { Set(s,chn,len,offs); }
+	SysBuf(VSym &s,I chn = 0,I len = -1,I offs = 0) { Set(s,chn,len,offs); }
 	virtual ~SysBuf() {}
 
 	virtual BL Ok() const { return buf.Ok(); }
@@ -93,9 +115,9 @@ public:
 	virtual V DecRef() {};
 */
 
-	virtual t_symbol *Symbol() const { return buf.Symbol(); }
+	virtual VSym Symbol() const { return buf.Symbol(); }
 
-	SysBuf &Set(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
+	SysBuf &Set(VSym &s,I chn = 0,I len = -1,I offs = 0);
 
 	virtual I Frames() const { return buf.Frames(); }
 	virtual V Frames(I fr,BL keep) { buf.Frames(fr,keep); }
@@ -114,7 +136,8 @@ class ImmBuf:
 	public VBuffer
 {
 public:
-	ImmBuf(BufEntry *e = NULL,I len = -1,I offs = 0);
+	ImmBuf(I len);
+	ImmBuf(BufEntry *e,I len = -1,I offs = 0);
 	virtual ~ImmBuf();
 
 	virtual BL Ok() const { return entry != NULL; }
@@ -125,7 +148,7 @@ public:
 	virtual V DecRef();
 */
 
-	virtual t_symbol *Symbol() const;
+	virtual VSym Symbol() const;
 
 //	ImmBuf &Set(t_symbol *s,I chn = 0,I len = -1,I offs = 0);
 

@@ -16,11 +16,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class Env
 {
 public:
-	Env(I argc,t_atom *argv);
+	Env(): cnt(0),pos(NULL),val(NULL) {}
+	Env(I argc,const t_atom *argv);
 //	Env(const Env &p);
 	~Env();
 
-	static BL ChkArgs(I argc,t_atom *argv);
+	static BL ChkArgs(I argc,const t_atom *argv);
 
 	V Clear();
 

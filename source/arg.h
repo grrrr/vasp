@@ -56,7 +56,9 @@ public:
 	BL IsNone() const { return tp == tp_none; }
 	BL IsList() const { return tp == tp_list; }
 	BL IsVasp() const { return tp == tp_vasp; }
+	BL CanbeVasp() const { return tp == tp_vasp || (tp == tp_list && Vasp::ChkArgs(dt.atoms->Count(),dt.atoms->Atoms())); }
 	BL IsEnv() const { return tp == tp_env; }
+	BL CanbeEnv() const { return tp == tp_env || (tp == tp_env && Env::ChkArgs(dt.atoms->Count(),dt.atoms->Atoms())); }
 	BL IsInt() const { return tp == tp_int; }
 	BL CanbeInt() const { return tp == tp_int || tp == tp_float || tp_double; }
 	BL IsFloat() const { return tp == tp_float; }
@@ -70,7 +72,9 @@ public:
 
 	const flext_base::AtomList &GetList() const { return *dt.atoms; }
 	const Vasp &GetVasp() const { return *dt.v; }
+	Vasp GetAVasp() const;
 	const Env &GetEnv() const { return *dt.env; }
+	Env GetAEnv() const;
 	I GetInt() const { return dt.i; }
 	I GetAInt() const;
 	F GetFloat() const { return dt.f; }

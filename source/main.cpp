@@ -56,13 +56,13 @@ V lib_setup()
 
 	VASP_SETUP(list);
 	VASP_SETUP(nonzero);
+ 
+	VASP_SETUP(imm); // vasp.imm 
 
-	VASP_SETUP(imm); // vasp.imm - NOT FUNCTIONAL
-
-//	VASP__SETUP(copy);
-//	VASP__SETUP(ccopy);
 	VASP__SETUP(set);
 	VASP__SETUP(cset);
+	VASP_SETUP(copy);
+	VASP_SETUP(ccopy);
 
 	VASP__SETUP(add);
 	VASP__SETUP(cadd);

@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 #include "util.h"
 
-Env::Env(I argc,t_atom *argv)
+Env::Env(I argc,const t_atom *argv)
 {
 	I ix = 0;
 	t_symbol *v = ix < argc?flext_base::GetASymbol(argv[ix]):NULL;
@@ -49,7 +49,7 @@ Env::Env(const Env &s):
 Env::~Env() { Clear(); }
 
 
-BL Env::ChkArgs(I argc,t_atom *argv)
+BL Env::ChkArgs(I argc,const t_atom *argv)
 {
 	I ix = 0;
 
