@@ -148,10 +148,10 @@ BL VecOp::d_int(OpParam &p)
 
 	register S d = p.intdif.carry;
 	register I i;
-	_D_LOOP(i,p.frames) { 
+	_D_LOOP(i,p.frames)
 		*p.rddt = (d += *p.rsdt); 
 		p.rsdt += p.rss,p.rddt += p.rds;
-	}
+	_E_LOOP
 	p.intdif.carry = d;
 	return true; 
 }
@@ -169,11 +169,11 @@ BL VecOp::d_dif(OpParam &p)
 
 	register S d = p.intdif.carry;
 	register I i;
-	_D_LOOP(i,p.frames) { 
+	_D_LOOP(i,p.frames)
 		register S d1 = *p.rsdt; 
 		*p.rddt = d1-d,d = d1; 
 		p.rsdt += p.rss,p.rddt += p.rds;
-	}
+	_E_LOOP
 	p.intdif.carry = d;
 	return true; 
 }

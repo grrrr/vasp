@@ -37,20 +37,20 @@ void permutation1(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 		const T *sdt = p.rsdt;
 		const I ss = p.rss;
 		I i;
-		_D_LOOP(i,sz) ddt[origination(i,sz,p)*ds] = sdt[i*ss];
+		_D_LOOP(i,sz) ddt[origination(i,sz,p)*ds] = sdt[i*ss]; _E_LOOP
 	}
 	else {
 		// in place 
 		// \todo try to come from both sides!
 		I i;
-		_D_LOOP(i,sz-1) {
+		_D_LOOP(i,sz-1) 
 			int cur = i;
 			do { cur = origination(cur,sz,p); } while(cur < i);
 			if(cur > i) {
 				// swap
 				permswap(ddt[cur*ds],ddt[i*ds]);
 			}
-		}
+		_E_LOOP
 	}
 }
 
@@ -70,7 +70,7 @@ void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 	if(rinpl == iinpl) {
 		// re and im both in place
 		I i;
-		_D_LOOP(i,sz-1) {
+		_D_LOOP(i,sz-1)
 			int cur = i;
 			do { cur = origination(cur,sz,p); } while(cur < i);
 			if(cur > i) {
@@ -78,7 +78,7 @@ void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 				permswap(rddt[cur*rds],rddt[i*rds]);
 				permswap(iddt[cur*ids],iddt[i*ids]);
 			}
-		}
+		_E_LOOP
 	}
 	else {
 		if(!rinpl) {
@@ -86,9 +86,9 @@ void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 			const I ss = p.rss;
 			I i;
 			if(ss == 1 && rds == 1)
-				_D_LOOP(i,sz) *(rddt++) = *(sdt++);
+				_D_LOOP(i,sz) *(rddt++) = *(sdt++); _E_LOOP
 			else
-				_D_LOOP(i,sz) *rddt = *sdt,rddt += rds,sdt += ss;
+				_D_LOOP(i,sz) *rddt = *sdt,rddt += rds,sdt += ss; _E_LOOP
 			rddt = p.rddt;
 		}
 		else permutation1<T>(p,origination);
@@ -98,9 +98,9 @@ void permutation2(OpParam &p,int (*origination)(int pos, int sz,OpParam &p))
 			const I ss = p.iss;
 			I i;
 			if(ss == 1 && ids == 1)
-				_D_LOOP(i,sz) *(iddt++) = *(sdt++);
+				_D_LOOP(i,sz) *(iddt++) = *(sdt++); _E_LOOP
 			else
-				_D_LOOP(i,sz) *iddt = *sdt,iddt += ids,sdt += ss;
+				_D_LOOP(i,sz) *iddt = *sdt,iddt += ids,sdt += ss; _E_LOOP
 			iddt = p.iddt;
 		}
 		else {

@@ -47,16 +47,16 @@ static BL d_vlpk(OpParam &p,BL cmpf(S a,S b))
 		S d1 = -1,d0 = -1,dn = -1;
 
 		// search first non-null sample
-		_D_LOOP(i,p.frames) 
+		_D_LOOP(i,p.frames)
 			if((dn = sqabs(rsrc[i*p.rss],isrc[i*p.iss])) != 0)
 				break; // non-null -> break!
 			else 
 				rdst[i*p.rds] = idst[i*p.ids] = 0; // copy null samples to dst
+		_E_LOOP
 
 		// i points to first non-null sample
 
-		_D_WHILE(i < p.frames) {
-
+		_D_WHILE(i < p.frames)
 			// current samples -> previous samples
 			d1 = d0,d0 = dn;
 
@@ -80,7 +80,7 @@ static BL d_vlpk(OpParam &p,BL cmpf(S a,S b))
 			}
 			else
 				rdst[ci*p.rds] = idst[ci*p.ids] = 0;
-		}				
+		_E_WHILE
 	} while(cnt > dpeaks);
 
 	p.peaks.density = p.frames?(R)cnt/p.frames:(cnt?1:0);

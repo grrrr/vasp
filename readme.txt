@@ -14,6 +14,7 @@ Version history:
 0.1.0:
 - NEW: vasp.a<, vasp.a>, vasp.a<=, vasp.a>= for absolute comparisons
 - CHANGE: clear stored vasp of an object if a "set" message with an invalid vasp is received
+- CHANGE: cleaned up the process loops (with thread yield) and fixed a corresponding bug in vasp.peaks/valleys
 
 0.0.8:
 - CHANGE: vasp.radio got right outlet for non-radio messages

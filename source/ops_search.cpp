@@ -22,33 +22,33 @@ BL VecOp::d_search(OpParam &p)
 	I i,ofl = -1,ofr = -1;
 	
 	if(p.srch.dir <= 0) {
-		BL y = cur >= val,end = false;
+		BL y = cur >= val;
 		i = off-1;
-		_D_WHILE(i >= 0 && !end) {
+		_D_WHILE(i >= 0)
 			BL y2 = p.rsdt[i] >= val;
 			if(y != y2) {
-				if(p.srch.slope <= 0 && y2) { end = true; break; }
-				if(p.srch.slope >= 0 && !y2) { end = true; break; }
+				if(p.srch.slope <= 0 && y2) break; 
+				if(p.srch.slope >= 0 && !y2) break;
 			}
 			y = y2;
 			--i;
-		}
+		_E_WHILE
 
 		if(i >= 0) ofl = i;
 	}
 
 	if(p.srch.dir >= 0) {
-		BL y = cur >= val,end = false;
+		BL y = cur >= val;
 		i = off+1; 
-		_D_WHILE(i < p.frames && !end) {
+		_D_WHILE(i < p.frames)
 			BL y2 = p.rsdt[i] >= val;
 			if(y != y2) {
-				if(p.srch.slope <= 0 && !y2) { end = true; break; }
-				if(p.srch.slope >= 0 && y2) { end = true; break; }
+				if(p.srch.slope <= 0 && !y2) break;
+				if(p.srch.slope >= 0 && y2) break;
 			}
 			y = y2;
 			++i;
-		}
+		_E_WHILE
 
 		if(i < p.frames) ofr = i;
 	}

@@ -37,12 +37,12 @@ static V WndOp(wfunc wf,OpParam &p) {
 
 	if(!p.wnd.mul) {
 		register S *dd = p.rddt;
-		_D_LOOP(i,p.frames) *dd = wf(i,p),dd += p.rds;
+		_D_LOOP(i,p.frames) *dd = wf(i,p),dd += p.rds; _E_LOOP 
 	}
 	else {
 		register const S *sd = p.rsdt;
 		register S *dd = p.rddt;
-		_D_LOOP(i,p.frames) *dd = *sd*wf(i,p),sd += p.rss,dd += p.rds;
+		_D_LOOP(i,p.frames) *dd = *sd*wf(i,p),sd += p.rss,dd += p.rds; _E_LOOP
 	}
 }
 
@@ -68,9 +68,9 @@ BL VecOp::d_window(OpParam &p)
 			register S *dd = p.rddt;
 			register I i;
 			if(p.rds == 1)
-				_D_LOOP(i,p.frames) *(dd++) = cur,cur += inc;
+				_D_LOOP(i,p.frames) *(dd++) = cur,cur += inc; _E_LOOP
 			else
-				_D_LOOP(i,p.frames) *dd = cur,dd += p.rds,cur += inc;
+				_D_LOOP(i,p.frames) *dd = cur,dd += p.rds,cur += inc; _E_LOOP
 		}
 		else {
 			register const S *sd = p.rsdt;
@@ -78,14 +78,14 @@ BL VecOp::d_window(OpParam &p)
 			register I i;
 			if(sd == dd)
 				if(p.rss == 1 && p.rds == 1)
-					_D_LOOP(i,p.frames) *(dd++) *= cur,cur += inc;
+					_D_LOOP(i,p.frames) *(dd++) *= cur,cur += inc; _E_LOOP
 				else
-					_D_LOOP(i,p.frames) *dd *= cur,dd += p.rds,cur += inc;
+					_D_LOOP(i,p.frames) *dd *= cur,dd += p.rds,cur += inc; _E_LOOP
 			else
 				if(p.rss == 1 && p.rds == 1)
-					_D_LOOP(i,p.frames) *(dd++) = *(sd++) * cur,cur += inc;
+					_D_LOOP(i,p.frames) *(dd++) = *(sd++) * cur,cur += inc; _E_LOOP
 				else
-					_D_LOOP(i,p.frames) *dd = *sd * cur,sd += p.rss,dd += p.rds,cur += inc;
+					_D_LOOP(i,p.frames) *dd = *sd * cur,sd += p.rss,dd += p.rds,cur += inc; _E_LOOP
 		}
 		break;
 	}

@@ -27,19 +27,23 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	register S *dr = p.rddt;									\
 	register I i;												\
 	if(sr == dr)												\
-		if(_D_ALWAYS1 || p.rds == 1)											\
+		if(_D_ALWAYS1 || p.rds == 1)							\
 			_D_LOOP(i,p.frames)									\
 			{ fun(*dr,*dr); dr++; }								\
+			_E_LOOP												\
 		else													\
-			_D_LOOP(i,p.frames)										\
+			_D_LOOP(i,p.frames)									\
 			{ fun(*dr,*dr); dr += p.rds; }						\
+			_E_LOOP												\
 	else														\
-		if(_D_ALWAYS1 || (p.rss == 1 && p.rds == 1))							\
-			_D_LOOP(i,p.frames)										\
+		if(_D_ALWAYS1 || (p.rss == 1 && p.rds == 1))			\
+			_D_LOOP(i,p.frames)									\
 			{ fun(*dr,*sr); sr++,dr++; }						\
+			_E_LOOP												\
 		else													\
-			_D_LOOP(i,p.frames)										\
+			_D_LOOP(i,p.frames)									\
 			{ fun(*dr,*sr); sr += p.rss,dr += p.rds; }			\
+			_E_LOOP												\
 	return true;												\
 }
 
@@ -53,19 +57,23 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	register S *dr = p.rddt,*di = p.iddt;						\
 	register I i;												\
 	if(sr == dr && si == di)									\
-		if(_D_ALWAYS1 || (p.rds == 1 && p.ids == 1))							\
-			_D_LOOP(i,p.frames)										\
+		if(_D_ALWAYS1 || (p.rds == 1 && p.ids == 1))			\
+			_D_LOOP(i,p.frames)									\
 			{ fun(*dr,*di,*dr,*di); dr++,di++; }				\
+			_E_LOOP												\
 		else													\
-			_D_LOOP(i,p.frames)										\
+			_D_LOOP(i,p.frames)									\
 			{ fun(*dr,*di,*dr,*di); dr += p.rds,di += p.ids; }	\
+			_E_LOOP												\
 	else														\
 		if(_D_ALWAYS1 || (p.rss == 1 && p.iss == 1 && p.rds == 1 && p.ids == 1)) \
-			_D_LOOP(i,p.frames)										\
+			_D_LOOP(i,p.frames)									\
 			{ fun(*dr,*di,*sr,*si); sr++,si++,dr++,di++; }		\
+			_E_LOOP												\
 		else													\
-			_D_LOOP(i,p.frames)										\
+			_D_LOOP(i,p.frames)									\
 			{ fun(*dr,*di,*sr,*si);	sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; } \
+			_E_LOOP												\
 	return true;												\
 }
 
@@ -87,16 +95,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 				if(_D_ALWAYS1 || (p.rds == 1 && p.arg[0].v.rs == 1))				\
 					_D_LOOP(i,p.frames)									\
 					{ fun(*dr,*dr,*ar); dr++,ar++; }				\
+					_E_LOOP												\
 				else												\
 					_D_LOOP(i,p.frames)									\
 					{ fun(*dr,*dr,*ar);	dr += p.rds,ar += p.arg[0].v.rs; } \
+					_E_LOOP												\
 			else													\
 				if(_D_ALWAYS1 || (p.rss == 1 && p.rds == 1 && p.arg[0].v.rs == 1))	\
 					_D_LOOP(i,p.frames)									\
 					{ fun(*dr,*sr,*ar); sr++,dr++,ar++; }			\
+					_E_LOOP												\
 				else												\
 					_D_LOOP(i,p.frames)									\
 					{ fun(*dr,*sr,*ar);	sr += p.rss,dr += p.rds,ar += p.arg[0].v.rs; } \
+					_E_LOOP												\
 			break;												\
 		}														\
 		case OpParam::Arg::arg_env: {							\
@@ -105,16 +117,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 				if(_D_ALWAYS1 || p.rds == 1)										\
 					_D_LOOP(i,p.frames)									\
 					{ fun(*dr,*dr,it.ValFwd(i)); dr++; }			\
+					_E_LOOP												\
 				else												\
 					_D_LOOP(i,p.frames)									\
 					{ fun(*dr,*dr,it.ValFwd(i)); dr += p.rds; }		\
+					_E_LOOP												\
 			else													\
 				if(_D_ALWAYS1 || (p.rss == 1 && p.rds == 1))						\
 					_D_LOOP(i,p.frames)									\
 					{ fun(*dr,*sr,it.ValFwd(i)); sr++,dr++; }		\
+					_E_LOOP												\
 				else												\
 					_D_LOOP(i,p.frames)								 	\
 					{ fun(*dr,*sr,it.ValFwd(i)); sr += p.rss,dr += p.rds; }	\
+					_E_LOOP												\
 			break;												\
 		}														\
 		case OpParam::Arg::arg_x: {							\
@@ -123,16 +139,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 				if(_D_ALWAYS1 || p.rds == 1)										\
 					_D_LOOP(i,p.frames)									\
 					{ fun(*dr,*dr,v); dr++; }						\
+					_E_LOOP												\
 				else												\
 					_D_LOOP(i,p.frames)								 	\
 					{ fun(*dr,*dr,v); dr += p.rds; }				\
+					_E_LOOP												\
 			else													\
 				if(_D_ALWAYS1 || (p.rss == 1 && p.rds == 1))						\
 					_D_LOOP(i,p.frames)									\
 					{ fun(*dr,*sr,v); sr++,dr++; }					\
+					_E_LOOP												\
 				else												\
 					_D_LOOP(i,p.frames)								 	\
 					{ fun(*dr,*sr,v); sr += p.rss,dr += p.rds; }	\
+					_E_LOOP												\
 			break;												\
 		}														\
 		}														\
@@ -143,16 +163,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 			if(_D_ALWAYS1 || p.rds == 1)										\
 				_D_LOOP(i,p.frames)									\
 				{ fun(*dr,*dr,v); dr++; }						\
+				_E_LOOP												\
 			else												\
 				_D_LOOP(i,p.frames)									\
 				{ fun(*dr,*dr,v); dr += p.rds; }				\
+				_E_LOOP												\
 		else													\
 			if(_D_ALWAYS1 || (p.rss == 1 && p.rds == 1))						\
 				_D_LOOP(i,p.frames)									\
 				{ fun(*dr,*sr,v); sr++,dr++; }					\
+				_E_LOOP												\
 			else												\
 				_D_LOOP(i,p.frames)									\
 				{ fun(*dr,*sr,v); sr += p.rss,dr += p.rds; }	\
+				_E_LOOP												\
 	}															\
 	return true;												\
 }
@@ -176,19 +200,24 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 					if(_D_ALWAYS1 || (p.rds == 1 && p.ids == 1 && p.arg[0].v.rs == 1 && p.arg[0].v.is == 1)) \
 						_D_LOOP(i,p.frames)				 \
 						{ fun(*dr,*di,*dr,*di,*ar,*ai);	dr++,di++,ar++,ai++; }		\
+						_E_LOOP												\
 					else											\
 						_D_LOOP(i,p.frames)				 \
 						{ fun(*dr,*di,*dr,*di,*ar,*ai);	dr += p.rds,di += p.ids,ar += p.arg[0].v.rs,ai += p.arg[0].v.is; }		\
+						_E_LOOP												\
 				else												\
 					_D_LOOP(i,p.frames)				 \
 					{ fun(*dr,*di,*sr,*si,*ar,*ai);	sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.arg[0].v.rs,ai += p.arg[0].v.is; }			\
+					_E_LOOP												\
 			else													\
 				if(sr == dr && si == di)							\
 					_D_LOOP(i,p.frames)				 \
 					{ fun(*dr,*di,*dr,*di,*ar,0); dr += p.rds,di += p.ids,ar += p.arg[0].v.rs; }	\
+					_E_LOOP												\
 				else												\
 					_D_LOOP(i,p.frames)				 \
 					{ fun(*dr,*di,*sr,*si,*ar,0); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids,ar += p.arg[0].v.rs; } \
+					_E_LOOP												\
 			break;												\
 		}														\
 		case OpParam::Arg::arg_env: {									\
@@ -197,12 +226,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 				if(_D_ALWAYS1 || (p.rds == 1 && p.ids == 1)) \
 					_D_LOOP(i,p.frames)				 \
 					{ fun(*dr,*di,*dr,*di,it.ValFwd(i),0); dr++,di++; }			\
+					_E_LOOP												\
 				else											\
 					_D_LOOP(i,p.frames)				 \
 					{ fun(*dr,*di,*dr,*di,it.ValFwd(i),0); dr += p.rds,di += p.ids; }			\
+					_E_LOOP												\
 			else												\
 				_D_LOOP(i,p.frames)				 \
 					{ fun(*dr,*di,*sr,*si,it.ValFwd(i),0); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; }	\
+				_E_LOOP												\
 			break;												\
 		}														\
 		case OpParam::Arg::arg_x: {									\
@@ -211,12 +243,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 				if(_D_ALWAYS1 || (p.rds == 1 && p.ids == 1)) \
 					_D_LOOP(i,p.frames)				 \
 					{ fun(*dr,*di,*dr,*di,ar,ai); dr++,di++; }			\
+					_E_LOOP												\
 				else											\
 					_D_LOOP(i,p.frames)				 \
 					{ fun(*dr,*di,*dr,*di,ar,ai); dr += p.rds,di += p.ids; }			\
+					_E_LOOP												\
 			else												\
 				_D_LOOP(i,p.frames)				 \
 				{ fun(*dr,*di,*sr,*si,ar,ai); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; }	\
+				_E_LOOP												\
 			break;												\
 		}														\
 		}														\
@@ -227,16 +262,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 			if(_D_ALWAYS1 || (p.rds == 1 && p.ids == 1))						\
 				_D_LOOP(i,p.frames)						\
 				{ fun(*dr,*di,*dr,*di,rv,iv); dr++,di++; }					\
+				_E_LOOP												\
 			else												\
 				_D_LOOP(i,p.frames)				 \
 				{ fun(*dr,*di,*dr,*di,rv,iv); dr += p.rds,di += p.ids; }					\
+				_E_LOOP												\
 		else													\
 			if(_D_ALWAYS1 || (p.rds == 1 && p.ids == 1 && p.rss == 1 && p.iss == 1)) \
 				_D_LOOP(i,p.frames)				 \
 				{ fun(*dr,*di,*sr,*si,rv,iv); sr++,si++,dr++,di++; }					\
+				_E_LOOP												\
 			else												\
 				_D_LOOP(i,p.frames)				 \
 				{ fun(*dr,*di,*sr,*si,rv,iv); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; }					\
+				_E_LOOP												\
 	}															\
 	return true;												\
 }
@@ -255,16 +294,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		if(_D_ALWAYS1 || p.rds == 1)											\
 			_D_LOOP(i,p.frames)										\
 			{ fun(*dr,*dr,p); dr++; }							\
+			_E_LOOP												\
 		else													\
 			_D_LOOP(i,p.frames)										\
 			{ fun(*dr,*dr,p); dr += p.rds; }					\
+			_E_LOOP												\
 	else														\
 		if(_D_ALWAYS1 || (p.rss == 1 && p.rds == 1))							\
 			_D_LOOP(i,p.frames)										\
 			{ fun(*dr,*sr,p); sr++,dr++; }						\
+			_E_LOOP												\
 		else													\
 			_D_LOOP(i,p.frames)										\
 			{ fun(*dr,*sr,p); sr += p.rss,dr += p.rds; }		\
+			_E_LOOP												\
 	return true;												\
 }
 
@@ -282,16 +325,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		if(_D_ALWAYS1 || (p.rds == 1 && p.ids == 1))							\
 			_D_LOOP(i,p.frames)										\
 			{ fun(*dr,*di,*dr,*di,p); dr++,di++; }				\
+			_E_LOOP												\
 		else													\
 			_D_LOOP(i,p.frames)										\
 			{ fun(*dr,*di,*dr,*di,p); dr += p.rds,di += p.ids; } \
+			_E_LOOP												\
 	else														\
 		if(_D_ALWAYS1 || (p.rss == 1 && p.iss == 1 && p.rds == 1 && p.ids == 1)) \
 			_D_LOOP(i,p.frames)				 \
 			{ fun(*dr,*di,*sr,*si,p); sr++,si++,dr++,di++; }	\
+			_E_LOOP												\
 		else													\
 			_D_LOOP(i,p.frames)				 \
 			{ fun(*dr,*di,*sr,*si,p); sr += p.rss,si += p.iss,dr += p.rds,di += p.ids; }	\
+			_E_LOOP												\
 	return true;												\
 }
 
