@@ -25,6 +25,7 @@ _ ADD: minimum length parameter for immediate vasps
 - FIX: on set message check for invalid vasps
 - FIX: reintroduce test for invalid buffer names (why was it commented out?)
 - FIX: 2 independent bugs in vasp.offset= and vasp.frames=
+- CHANGE: allow size 0 for immediate vasps
 
 0.0.7:
 - CHANGE: vasp.m is now called vasp.multi by default
