@@ -11,8 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_ATOMS_H
 #define __VASP_ATOMS_H
 
-
 #include "main.h"
+
 
 class AtomList
 {

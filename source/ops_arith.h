@@ -29,7 +29,12 @@ namespace VecOp {
 	BL d_csubr(OpParam &p); 
 	BL d_cmul(OpParam &p); 
 	BL d_cdiv(OpParam &p); 
-	BL d_cdivr(OpParam &p); 
+	BL d_cdivr(OpParam &p);
+	
+	BL d_sqr(OpParam &p); 
+	BL d_ssqr(OpParam &p); 
+	BL d_csqr(OpParam &p); 
+	BL d_cpowi(OpParam &p); 
 
 	BL d_sign(OpParam &p); 
 	BL d_abs(OpParam &p); 
@@ -51,6 +56,13 @@ namespace VaspOp {
 	inline Vasp *m_cmul(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cmul); }  // complex mul (pairs of vecs or complex)
 	inline Vasp *m_cdiv(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cdiv); }  // complex div (pairs of vecs or complex)
 	inline Vasp *m_cdivr(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL) { return m_cbin(p,src,arg,dst,VecOp::d_cdivr); }  // complex reverse div (pairs of vecs or complex)
+
+	inline Vasp *m_sqr(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_run(p,src,dst,VecOp::d_sqr); }    // unsigned square 
+	inline Vasp *m_ssqr(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_run(p,src,dst,VecOp::d_ssqr); }   // signed square 
+	inline Vasp *m_csqr(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_csqr); }  // complex square (with each two channels)
+//	inline Vasp *m_csqrt(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_cun(p,src,dst,VecOp::d_csqrt); }  // complex square root (how about branches?)
+
+	Vasp *m_cpowi(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst = NULL); // complex integer power (with each two channels)
 
 	inline Vasp *m_sign(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_run(p,src,dst,VecOp::d_sign); }  // sign function 
 	inline Vasp *m_abs(OpParam &p,Vasp &src,Vasp *dst = NULL) { return m_run(p,src,dst,VecOp::d_abs); }  // absolute values

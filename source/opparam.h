@@ -12,6 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __VASP_OPPARAM_H
 
 #include "vecblk.h"
+#include "arg.h"
 
 class OpParam {
 public:

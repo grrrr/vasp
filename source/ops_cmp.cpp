@@ -10,6 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "ops_cmp.h"
 #include "opdefs.h"
+#include "util.h"
+#include <math.h>
 
 // --------------------------------------------------------------
 
@@ -176,9 +178,9 @@ Vasp *VaspOp::m_rgate(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst)
 }
 
 VASP_ANYOP("vasp.gate",gate,1,true,"") 
-VASP_ANYOP("vasp.!gate",igate,1,true,"") 
+//VASP_ANYOP("vasp.!gate",igate,1,true,"") 
 VASP_ANYOP("vasp.rgate",rgate,1,true,"") 
-VASP_ANYOP("vasp.r!gate",rigate,1,true,"") 
+//VASP_ANYOP("vasp.r!gate",rigate,1,true,"") 
 
 // --------------------------------------------------------------
 

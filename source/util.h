@@ -11,6 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_UTIL_H
 #define __VASP_UTIL_H
 
+#include "main.h"
+
 #ifndef PI
 #define PI 3.1415926535897932385
 #endif

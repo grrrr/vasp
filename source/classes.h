@@ -11,7 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_CLASSES_H
 #define __VASP_CLASSES_H
 
-#include "main.h"
+#include "vasp.h"
+#include "arg.h"
 
 class vasp_base:
 	public flext_base

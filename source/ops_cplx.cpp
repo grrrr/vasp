@@ -10,7 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "ops_cplx.h"
 #include "opdefs.h"
-
+#include "util.h"
+#include <math.h>
 
 // -----------------------------------------------------
 

@@ -11,9 +11,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_ARG_H
 #define __VASP_ARG_H
 
-#include "main.h"
+#include "vasp.h"
+#include "atoms.h"
 
-class Vasp;
 
 class Argument
 {

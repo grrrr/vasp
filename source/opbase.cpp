@@ -9,6 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "opbase.h"
+#include "opdefs.h"
 
 Vasp *VaspOp::m_run(OpParam &p,Vasp &src,Vasp *dst,VecOp::opfun *fun) 
 { 
