@@ -1,4 +1,4 @@
-#N canvas 99 112 851 469 10;
+#N canvas 99 112 853 471 10;
 #X msg 521 263 vasp bufabs;
 #X text 71 63 get absolute values of a vasp;
 #X text 71 79 see also vasp.*.help for an example using vasp.abs to
@@ -38,8 +38,7 @@ generate an envelope from a vasp;
 #X text 58 209 *;
 #X text 71 414 * prepend-object from iemlib2 (http://pd.iem.at/iemlib)
 ;
-#X obj 77 383 VASP;
-#X text 116 383 - vasp overview;
+#X obj 77 383 VASP-HELP;
 #X connect 0 0 6 0;
 #X connect 8 0 13 0;
 #X connect 11 0 12 0;

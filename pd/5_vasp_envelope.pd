@@ -1,4 +1,4 @@
-#N canvas 66 17 876 607 10;
+#N canvas 66 17 878 609 10;
 #N canvas 40 55 255 173 clear_buffer 0;
 #X obj 59 79 vasp.update;
 #X obj 59 56 vasp.= 0;
@@ -35,14 +35,14 @@
 #X msg 48 397 vasp bufenv1;
 #X obj 48 421 vasp.!window lin;
 #X obj 48 447 vasp.* env 0 0 1 22050;
-#X text 49 92;
 #X obj 46 131 vasp.= env 1 0 -0.6 70000;
-#X text 206 129 an envelope as a creation argument;
+#X text 231 129 an envelope as a creation argument;
 #X text 45 199 or sent as message;
 #X text 159 394 used as an argument alternatively to a value or vasp
 ;
+#X text 46 85 CLICK HERE!;
 #X connect 6 0 0 0;
-#X connect 7 0 18 0;
+#X connect 7 0 17 0;
 #X connect 9 0 12 0;
 #X connect 10 0 11 0;
 #X connect 10 1 9 1;
@@ -51,4 +51,4 @@
 #X connect 14 0 15 0;
 #X connect 15 0 16 0;
 #X connect 16 0 3 0;
-#X connect 18 0 8 0;
+#X connect 17 0 8 0;

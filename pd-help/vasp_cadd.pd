@@ -1,4 +1,4 @@
-#N canvas 266 193 595 450 10;
+#N canvas 266 193 597 452 10;
 #X text 49 142 c \, d ... right operand;
 #X text 49 127 a \, b ... left operand;
 #X text 49 112 e \, f ... target buffers;
@@ -18,5 +18,4 @@ as pairs;
 #X obj 265 309 vasp.c/;
 #X obj 265 288 vasp.c*;
 #X obj 182 309 vasp.c-;
-#X obj 52 377 VASP;
-#X text 94 377 - vasp overview;
+#X obj 50 384 VASP-HELP;

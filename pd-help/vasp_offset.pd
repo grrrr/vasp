@@ -1,4 +1,4 @@
-#N canvas 192 165 705 398 10;
+#N canvas 192 165 707 400 10;
 #X text 55 83 argument/right inlet: value;
 #X text 55 69 set the offset of a vasp (into a buffer);
 #X text 55 98 ---! vasp.offs sets all vectors to the same offset !---
@@ -15,7 +15,7 @@
 #X msg 245 148 vasp bufoffs1 220 bufoffs2 100;
 #X obj 245 196 vasp.offset 300;
 #X obj 157 322 vasp.o;
-#X obj 48 370 VASP-HELP;
+#X obj 55 370 VASP-HELP;
 #X obj 521 273 table bufoffs1;
 #X obj 522 300 table bufoffs2;
 #X msg 58 254;
