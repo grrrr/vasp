@@ -76,17 +76,17 @@ public:
 
 		Arg &SetX(S r,S i = 0);
 		Arg &SetV(S *r,I rs,S *i = NULL,I is = 0);
-		Arg &SetB(const Bpts &bp);
+		Arg &SetE(const Env *bp);
 
-		typedef struct bp_t { I pts; const R *pos,*val; };
+		typedef struct env_t { const Env *env; };
 		typedef	struct v_t { S *rdt,*idt; I rs,is; };
 		typedef struct x_t { R r,i; };
 
-		enum { arg_ = 0,arg_x,arg_v,arg_bp } argtp;
+		enum { arg_ = 0,arg_x,arg_v,arg_env } argtp;
 		union {
 			x_t x;
 			v_t v;
-			bp_t bp;
+			env_t e;
 		};
 	};
 

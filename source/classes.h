@@ -45,7 +45,7 @@ protected:
 	friend class Vasp;
 
 	static const t_symbol *sym_vasp;
-	static const t_symbol *sym_bpts;
+	static const t_symbol *sym_env;
 	static const t_symbol *sym_complex;
 	static const t_symbol *sym_vector;
 	static const t_symbol *sym_radio;
@@ -142,7 +142,7 @@ protected:
 	// assignment functions
 	virtual V a_list(I argc,t_atom *argv); 
 	virtual V a_vasp(I argc,t_atom *argv);
-	virtual V a_bpts(I argc,t_atom *argv);
+	virtual V a_env(I argc,t_atom *argv);
 	virtual V a_float(F f); 
 	virtual V a_int(I f); 
 	virtual V a_complex(I argc,t_atom *argv); 
@@ -156,7 +156,7 @@ protected:
 private:
 	FLEXT_CALLBACK_V(a_list)
 	FLEXT_CALLBACK_V(a_vasp)
-	FLEXT_CALLBACK_V(a_bpts)
+	FLEXT_CALLBACK_V(a_env)
 	FLEXT_CALLBACK_1(a_float,F)
 	FLEXT_CALLBACK_1(a_int,I)
 	FLEXT_CALLBACK_V(a_complex)

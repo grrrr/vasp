@@ -58,13 +58,11 @@ OpParam::Arg &OpParam::Arg::SetB(I pts,const R *pt)
 }
 */
 
-OpParam::Arg &OpParam::Arg::SetB(const Bpts &b)
+OpParam::Arg &OpParam::Arg::SetE(const Env *env)
 {
 	Clear();
-	argtp = arg_bp;
-	bp.pts = b.Count();
-	bp.pos = b.Pos();
-	bp.val = b.Val();
+	argtp = arg_env;
+	e.env = env;
 	return *this;
 }
 

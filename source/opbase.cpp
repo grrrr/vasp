@@ -43,11 +43,11 @@ Vasp *VaspOp::m_rbin(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,VecOp::o
 	RVecBlock *vecs = argvasp?GetRVecs(p.opname,src,arg.GetVasp(),dst):GetRVecs(p.opname,src,dst);
 	if(vecs) {
 		if(arg.CanbeDouble()) p.rbin.arg = arg.GetADouble(); 
-		else if(arg.IsBpts()) {
+		else if(arg.IsEnv()) {
 			if(p.args != 1)
 				ERRINTERNAL();
 			else 
-				p.arg[0].SetB(arg.GetBpts());
+				p.arg[0].SetE(&arg.GetEnv());
 		}
 	
 		ret = DoOp(vecs,fun,p);
@@ -69,11 +69,11 @@ Vasp *VaspOp::m_cbin(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,VecOp::o
 			p.cbin.rarg = z.real; 
 			p.cbin.iarg = z.imag; 
 		}
-		else if(arg.IsBpts()) {
+		else if(arg.IsEnv()) {
 			if(p.args != 1)
 				ERRINTERNAL();
 			else 
-				p.arg[0].SetB(arg.GetBpts());
+				p.arg[0].SetE(&arg.GetEnv());
 		}
 
 		ret = DoOp(vecs,fun,p);

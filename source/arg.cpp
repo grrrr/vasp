@@ -46,8 +46,8 @@ Argument &Argument::Clear()
 	case tp_vasp:
 		if(dt.v) { delete dt.v; dt.v = NULL; }
 		break;
-	case tp_bpts:
-		if(dt.bp) { delete dt.bp; dt.bp = NULL; }
+	case tp_env:
+		if(dt.env) { delete dt.env; dt.env = NULL; }
 		break;
 	case tp_vx:
 		if(dt.vx) { delete dt.vx; dt.vx = NULL; }
@@ -79,10 +79,10 @@ Argument &Argument::Set(Vasp *v)
 	return *this;
 }
 
-Argument &Argument::Set(Bpts *bp)
+Argument &Argument::Set(Env *e)
 {
 	if(tp != tp_none) Clear();
-	dt.bp = bp; tp = tp_bpts;
+	dt.env = e; tp = tp_env;
 	return *this;
 }
 
@@ -171,7 +171,7 @@ Argument &Argument::Next(I i)
 
 Argument &Argument::Add(Vasp *v) { Argument *a = new Argument; a->Set(v); return Add(a); }
 
-Argument &Argument::Add(Bpts *bp) { Argument *a = new Argument; a->Set(bp); return Add(a); }
+Argument &Argument::Add(Env *e) { Argument *a = new Argument; a->Set(e); return Add(a); }
 
 Argument &Argument::Add(I argc,t_atom *argv) { Argument *a = new Argument; a->Set(argc,argv); return Add(a); }
 

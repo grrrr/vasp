@@ -8,25 +8,58 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#ifndef __VASP_BPTS_H
-#define __VASP_BPTS_H
+#ifndef __VASP_ENV_H
+#define __VASP_ENV_H
 
 #include "vasp.h"
 
-class Bpts
+class Env
 {
 public:
-	Bpts(I argc,t_atom *argv);
-//	Bpts(const Bpts &p);
-	~Bpts();
+	Env(I argc,t_atom *argv);
+//	Env(const Env &p);
+	~Env();
 
 	V Clear();
 
-	BL Ok() const { return pos != NULL && val != NULL; }
+	BL Ok() const { return cnt && pos != NULL && val != NULL; }
+
+//	friend class Iter;
+
+	class Iter 
+	{
+	public:
+		Iter(const Env &e);
+		V Init(R p);
+
+		R ValFwd(R p) 
+		{
+			if(p > npt) UpdateFwd(p);
+			return pvl+k*(p-ppt);
+		}
+
+		R ValBwd(R p) 
+		{
+			if(p < ppt) UpdateBwd(p);
+			return pvl+k*(p-ppt);
+		}
+
+	protected:
+		V UpdateFwd(R p);
+		V UpdateBwd(R p);
+
+		const Env &bp;
+		I ix;
+		R ppt,npt;
+		R pvl,nvl;
+		R k;
+	};
 
 	I Count() const { return cnt; }
 	const R *Pos() const { return pos; }
 	const R *Val() const { return val; }
+	R Pos(I ix) const { return pos[ix]; }
+	R Val(I ix) const { return val[ix]; }
 
 protected:
 	I cnt;

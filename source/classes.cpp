@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 const t_symbol *vasp_base::sym_radio;
 const t_symbol *vasp_base::sym_vasp;
-const t_symbol *vasp_base::sym_bpts;
+const t_symbol *vasp_base::sym_env;
 const t_symbol *vasp_base::sym_complex;
 const t_symbol *vasp_base::sym_vector;
 
@@ -26,7 +26,7 @@ V vasp_base::setup(t_class *c)
 {
 	sym_radio = gensym("radio");
 	sym_vasp = gensym("vasp");
-	sym_bpts = gensym("bpts");
+	sym_env = gensym("env");
 	sym_complex = gensym("complex");
 	sym_vector = gensym("vector");
 }
@@ -207,7 +207,7 @@ vasp_binop::vasp_binop(I argc,t_atom *argv,BL op,UL outcode):
 
 	FLEXT_ADDMETHOD(1,a_list);
 	FLEXT_ADDMETHOD_(1,"vasp",a_vasp);
-	FLEXT_ADDMETHOD_(1,"bpts",a_bpts);
+	FLEXT_ADDMETHOD_(1,"env",a_env);
 	FLEXT_ADDMETHOD_(1,"float",a_float);
 	FLEXT_ADDMETHOD_(1,"int",a_int);
 	FLEXT_ADDMETHOD_(1,"complex",a_complex);
@@ -239,14 +239,14 @@ V vasp_binop::a_vasp(I argc,t_atom *argv)
 		}
 	}
 	else {
-		post("%s - invalid argument vasp (ignored)",thisName());
+		post("%s - invalid vasp argument (ignored)",thisName());
 		delete v;
 	}
 }
 
-V vasp_binop::a_bpts(I argc,t_atom *argv) 
+V vasp_binop::a_env(I argc,t_atom *argv) 
 { 
-	Bpts *bp = new Bpts(argc,argv);
+	Env *bp = new Env(argc,argv);
 	if(bp->Ok()) {
 		arg.Set(bp);
 		if(argchk) {
@@ -254,7 +254,7 @@ V vasp_binop::a_bpts(I argc,t_atom *argv)
 		}
 	}
 	else {
-		post("%s - invalid argument vasp (ignored)",thisName());
+		post("%s - invalid env argument (ignored)",thisName());
 		delete bp;
 	}
 }
