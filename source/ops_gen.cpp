@@ -53,16 +53,16 @@ static BL d_mcosc(I cnt,F *re,I rstr,F *im,I istr,F rfrq,F ifrq)
 }
 
 Vasp *Vasp::m_osc(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_nop("osc",arg.GetAComplex(),d_osc):NULL; }
+{ return arg.CanbeComplex()?fc_arg("osc",arg.GetAComplex(),d_osc):NULL; }
 
 Vasp *Vasp::m_cosc(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_nop("cosc",arg.GetAComplex(),d_cosc):NULL; }
+{ return arg.CanbeComplex()?fc_arg("cosc",arg.GetAComplex(),d_cosc):NULL; }
 
 Vasp *Vasp::m_mosc(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_nop("*osc",arg.GetAComplex(),d_mosc):NULL; }
+{ return arg.CanbeComplex()?fc_arg("*osc",arg.GetAComplex(),d_mosc):NULL; }
 
 Vasp *Vasp::m_mcosc(const Argument &arg) 
-{ return arg.CanbeComplex()?fc_nop("*cosc",arg.GetAComplex(),d_mcosc):NULL; }
+{ return arg.CanbeComplex()?fc_arg("*cosc",arg.GetAComplex(),d_mcosc):NULL; }
 
 // --- noise --------------------------------
 
@@ -91,8 +91,8 @@ static BL d_cnoise(I cnt,F *re,I rstr,F *im,I istr,F,F)
 	return true;
 }
 
-Vasp *Vasp::m_noise() { return fr_nop("noise",0,d_noise); }
-Vasp *Vasp::m_cnoise() { return fc_nop("cnoise",0,d_cnoise); }
+Vasp *Vasp::m_noise() { return fr_arg("noise",0,d_noise); }
+Vasp *Vasp::m_cnoise() { return fc_arg("cnoise",0,d_cnoise); }
 
 // --- bevel --------------------------
 
@@ -122,31 +122,68 @@ static BL d_mbeveldn(I cnt,F *dt,I str,F)
 	return true;
 }
 
-Vasp *Vasp::m_bevelup() { return fr_nop("bevel",0,d_bevelup); }
-Vasp *Vasp::m_beveldn() { return fr_nop("bevel-",0,d_beveldn); }
-Vasp *Vasp::m_mbevelup() { return fr_nop("*bevel",0,d_mbevelup); }
-Vasp *Vasp::m_mbeveldn() { return fr_nop("*bevel-",0,d_mbeveldn); }
+Vasp *Vasp::m_bevelup() { return fr_arg("bevel",0,d_bevelup); }
+Vasp *Vasp::m_beveldn() { return fr_arg("bevel-",0,d_beveldn); }
+Vasp *Vasp::m_mbevelup() { return fr_arg("*bevel",0,d_mbevelup); }
+Vasp *Vasp::m_mbeveldn() { return fr_arg("*bevel-",0,d_mbeveldn); }
 
 
 // --- window --------------------------
 
 static BL d_window(I cnt,F *dt,I str,F wndtp) 
 { 
-	for(I i = 0; i < cnt; ++i,dt += str) *dt = 0;
-	return true;
+	post("vasp.window: Sorry, not implemented yet");
+	return false;
+	
+//	for(I i = 0; i < cnt; ++i,dt += str) *dt = 0;
+//	return true;
+}
+
+static BL d_vwindow(I cnt,F *dst,I dstr,const F *src,I sstr) 
+{ 
+	post("vasp.window: Sorry, not implemented yet");
+	return false;
+	
+//	for(I i = 0; i < cnt; ++i,dt += str) *dt = 0;
+//	return true;
 }
 
 static BL d_mwindow(I cnt,F *dt,I str,F wndtp) 
 { 
-	for(I i = 0; i < cnt; ++i,dt += str) *dt *= 1;
-	return true;
+	post("vasp*window: Sorry, not implemented yet");
+	return false;
+	
+//	for(I i = 0; i < cnt; ++i,dt += str) *dt *= 1;
+//	return true;
 }
 
+static BL d_vmwindow(I cnt,F *dst,I dstr,const F *src,I sstr) 
+{ 
+	post("vasp*window: Sorry, not implemented yet");
+	return false;
+	
+//	for(I i = 0; i < cnt; ++i,dt += str) *dt *= 1;
+//	return true;
+}
+
+
 Vasp *Vasp::m_window(const Argument &arg) 
-{ return arg.CanbeInt()?fr_nop("window",arg.GetAInt(),d_window):NULL; }
+{ 
+	if(arg.CanbeInt())
+		return fr_arg("window",arg.GetAInt(),d_window);
+	else if(arg.IsVasp())
+		return fv_arg("window",arg.GetVasp(),d_vwindow);
+	else return NULL; 
+}
 
 Vasp *Vasp::m_mwindow(const Argument &arg) 
-{ return arg.CanbeInt()?fr_nop("*window",arg.GetAInt(),d_mwindow):NULL; }
+{ 
+	if(arg.CanbeInt())
+		return fr_arg("*window",arg.GetAInt(),d_mwindow);
+	else if(arg.IsVasp())
+		return fv_arg("*window",arg.GetVasp(),d_vmwindow);
+	else return NULL; 
+}
 
 
 

@@ -57,20 +57,20 @@ static BL d_ssqrt(I cnt,F *dst,I str,F)
 
 Vasp *Vasp::m_pow(const Argument &arg) 
 { 
-	return arg.IsFloat()?fr_nop("pow",arg.GetFloat(),d_pow):NULL; 
+	return arg.IsFloat()?fr_arg("pow",arg.GetFloat(),d_pow):NULL; 
 }
 
 Vasp *Vasp::m_root(const Argument &arg) 
 { 
-	return arg.IsFloat()?fr_nop("root",arg.GetFloat(),d_root):NULL; 
+	return arg.IsFloat()?fr_arg("root",arg.GetFloat(),d_root):NULL; 
 }
 
 //Vasp *Vasp::m_cpow(I argc,t_atom *argv) { return fm_arg("cpow",argc,argv,d_max); }
-Vasp *Vasp::m_sqr() { return fr_nop("sqr",0,d_sqr); }
-Vasp *Vasp::m_ssqr() { return fr_nop("ssqr",0,d_ssqr); }
-Vasp *Vasp::m_csqr() { return fc_nop("csqr",CX(),d_csqr); }
-Vasp *Vasp::m_sqrt() { return fr_nop("sqrt",0,d_sqrt); }
-Vasp *Vasp::m_ssqrt() { return fr_nop("ssqrt",0,d_ssqrt); }
+Vasp *Vasp::m_sqr() { return fr_arg("sqr",0,d_sqr); }
+Vasp *Vasp::m_ssqr() { return fr_arg("ssqr",0,d_ssqr); }
+Vasp *Vasp::m_csqr() { return fc_arg("csqr",CX(),d_csqr); }
+Vasp *Vasp::m_sqrt() { return fr_arg("sqrt",0,d_sqrt); }
+Vasp *Vasp::m_ssqrt() { return fr_arg("ssqrt",0,d_ssqrt); }
 
 
 static BL d_exp(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)exp(*dst); return true; }
@@ -78,8 +78,8 @@ static BL d_exp(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *d
 // how about numbers <= 0?
 static BL d_log(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *dst = (F)log(*dst); return true; }
 
-Vasp *Vasp::m_exp() { return fr_nop("exp",0,d_exp); }
-Vasp *Vasp::m_log() { return fr_nop("log",0,d_log); }
+Vasp *Vasp::m_exp() { return fr_arg("exp",0,d_exp); }
+Vasp *Vasp::m_log() { return fr_arg("log",0,d_log); }
 
 
 static BL d_inv(I cnt,F *dst,I str,F) { for(I i = 0; i < cnt; ++i,dst += str) *dst = 1./ *dst; return true; }
@@ -93,8 +93,8 @@ static BL d_cinv(I cnt,F *re,I rstr,F *im,I istr,F,F)
 	return true; 
 }
 
-Vasp *Vasp::m_inv() { return fr_nop("inv",0,d_inv); }
-Vasp *Vasp::m_cinv() { return fc_nop("cinv",CX(),d_cinv); }
+Vasp *Vasp::m_inv() { return fr_arg("inv",0,d_inv); }
+Vasp *Vasp::m_cinv() { return fc_arg("cinv",CX(),d_cinv); }
 
 
 
@@ -130,10 +130,10 @@ static BL d_cart(I cnt,F *re,I rstr,F *im,I istr,F,F)
 	return true; 
 }
 
-Vasp *Vasp::m_abs() { return fr_nop("inv",0,d_inv); }
-Vasp *Vasp::m_sign() { return fr_nop("sign",0,d_sign); }
-Vasp *Vasp::m_polar() { return fc_nop("polar",CX(),d_polar); }
-Vasp *Vasp::m_cart() { return fc_nop("cart",CX(),d_cart); }
+Vasp *Vasp::m_abs() { return fr_arg("inv",0,d_inv); }
+Vasp *Vasp::m_sign() { return fr_arg("sign",0,d_sign); }
+Vasp *Vasp::m_polar() { return fc_arg("polar",CX(),d_polar); }
+Vasp *Vasp::m_cart() { return fc_arg("cart",CX(),d_cart); }
 
 
 
@@ -162,8 +162,8 @@ static BL d_cnorm(I cnt,F *re,I rstr,F *im,I istr,F,F)
 	return true; 
 }
 
-Vasp *Vasp::m_norm() { return fr_nop("norm",0,d_norm); }
-Vasp *Vasp::m_cnorm() { return fc_nop("cnorm",CX(),d_cnorm); }
+Vasp *Vasp::m_norm() { return fr_arg("norm",0,d_norm); }
+Vasp *Vasp::m_cnorm() { return fc_arg("cnorm",CX(),d_cnorm); }
 
 
 
@@ -175,8 +175,8 @@ static BL d_cswap(I cnt,F *re,I rstr,F *im,I istr,F,F)
 
 static BL d_cconj(I cnt,F *,I,F *im,I istr,F,F) { for(I i = 0; i < cnt; ++i,im += istr) *im *= -1.; return true; }
 
-Vasp *Vasp::m_cswap() { return fc_nop("cswap",CX(),d_cswap); }
-Vasp *Vasp::m_cconj() { return fc_nop("cconj",CX(),d_cconj); }
+Vasp *Vasp::m_cswap() { return fc_arg("cswap",CX(),d_cswap); }
+Vasp *Vasp::m_cconj() { return fc_arg("cconj",CX(),d_cconj); }
 
 
 

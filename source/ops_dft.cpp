@@ -156,8 +156,8 @@ static BL d_rifft(I cnt,F *dt,I str,F)
 		return true;
 }
 
-Vasp *Vasp::m_rfft() { return fr_nop("rfft",0,d_rfft); }
-Vasp *Vasp::m_rifft() { return fr_nop("rifft",0,d_rifft); }
+Vasp *Vasp::m_rfft() { return fr_arg("rfft",0,d_rfft); }
+Vasp *Vasp::m_rifft() { return fr_arg("rifft",0,d_rifft); }
 
 
 static BL d_cfft(I cnt,F *re,I rstr,F *im,I istr,F,F) 
@@ -182,7 +182,7 @@ static BL d_cifft(I cnt,F *re,I rstr,F *im,I istr,F,F)
 		return true;
 }
 
-Vasp *Vasp::m_cfft() { return fc_nop("cfft",0,d_cfft); }
-Vasp *Vasp::m_cifft() { return fc_nop("cifft",0,d_cifft); } 
+Vasp *Vasp::m_cfft() { return fc_arg("cfft",0,d_cfft); }
+Vasp *Vasp::m_cifft() { return fc_arg("cifft",0,d_cifft); } 
 
 

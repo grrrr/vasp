@@ -324,17 +324,14 @@ public:
 	Vasp *m_cfft();
 	Vasp *m_cifft();
 
-	typedef BL (*nopfunR)(I,F *,I,F);
-	typedef BL (*nopfunC)(I,F *,I,F *,I,F,F);
-
 	typedef BL (*argfunR)(I,F *,I,F);
 	typedef BL (*argfunC)(I,F *,I,F *,I,F,F);
 	typedef BL (*argfunV)(I,F *,I,const F *,I);
 	typedef BL (*argfunCV)(I,F *,I,F *,I,const F *,I,const F *,I);
 
 	struct nop_funcs {
-		nopfunR funR;
-		nopfunC funC;
+		argfunR funR;
+		argfunC funC;
 	};
 
 	struct arg_funcs {
@@ -356,10 +353,10 @@ protected:
 private:
 	typedef flext_base flx;
 
-	Vasp *fr_nop(const C *op,F v,nopfunR f);
-	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_nop(op,v,f.funR); }
-	Vasp *fc_nop(const C *op,const CX &cx,nopfunC f);
-	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_nop(op,cx,f.funC); }
+//	Vasp *fr_nop(const C *op,F v,argfunR f);
+	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_arg(op,v,f.funR); }
+//	Vasp *fc_nop(const C *op,const CX &cx,argfunC f);
+	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_arg(op,cx,f.funC); }
 	Vasp *fc_nop(const C *op,const Argument &arg,const nop_funcs &f);
 
 	Vasp *fr_arg(const C *op,F v,argfunR f);
