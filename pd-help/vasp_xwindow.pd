@@ -1,0 +1,38 @@
+#N canvas 44 117 885 446 10;
+#X obj 62 41 cnv 15 15 15 empty empty vasp.window 0 10 1 14 -262144
+-1 0;
+#N canvas 0 0 450 300 graph1 0;
+#X array bufxwindow 88200 float 0;
+#X coords 0 1 88199 -1 300 100 1;
+#X restore 512 119 graph;
+#N canvas 0 0 406 282 init 0;
+#X obj 33 19 loadbang;
+#X msg 33 73 \; \$1 xticks 0 4410 10 \; \$1 xlabel 1.1 0 22050 44100
+66150 88200 \; \$1 yticks 0 0.25 2 \; \$1 ylabel 94000 -1 -0.5 0 0.5
+1;
+#X msg 33 45 symbol bufxwindow;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 771 320 pd init;
+#X text 60 104 argument/right inlet: value;
+#N canvas 0 0 194 221 clear_buffers 0;
+#X obj 49 73 vasp.= 0;
+#X obj 49 49 inlet;
+#X obj 49 97 vasp.u;
+#X obj 49 118 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X restore 569 325 pd clear_buffers;
+#X text 173 149 generate a function;
+#X obj 63 337 VASP;
+#X text 105 337 - vasp overview;
+#X text 60 80 generate envelopes;
+#X obj 61 238 vasp.u;
+#X msg 61 149 vasp bufxwindow;
+#X obj 61 199 vasp.xwindow;
+#X msg 569 301 vasp bufxwindow;
+#X connect 10 0 11 0;
+#X connect 11 0 9 0;
+#X connect 12 0 4 0;
