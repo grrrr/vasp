@@ -1,8 +1,7 @@
-#N canvas 128 36 359 452 10;
+#N canvas 128 36 361 454 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.radio 0 10 1 14 -262144
 -1 0;
 #X obj 66 406 VASP-HELP;
-#X text 105 406 - vasp overview;
 #X text 71 63 filters radio messages;
 #X floatatom 208 126 5 0 0;
 #X msg 208 146 vasp buf;
@@ -17,13 +16,13 @@
 #X text 177 351 other;
 #X msg 74 323;
 #X msg 177 327;
-#X connect 4 0 9 0;
-#X connect 5 0 9 0;
-#X connect 6 0 9 0;
-#X connect 7 0 9 0;
-#X connect 8 0 9 0;
-#X connect 9 0 11 0;
-#X connect 9 1 12 0;
-#X connect 10 0 9 0;
+#X connect 3 0 8 0;
+#X connect 4 0 8 0;
+#X connect 5 0 8 0;
+#X connect 6 0 8 0;
+#X connect 7 0 8 0;
+#X connect 8 0 10 0;
+#X connect 8 1 11 0;
+#X connect 9 0 8 0;
+#X connect 10 0 14 0;
 #X connect 11 0 15 0;
-#X connect 12 0 16 0;

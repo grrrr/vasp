@@ -1,4 +1,4 @@
-#N canvas 40 76 959 602 10;
+#N canvas 40 76 961 604 10;
 #N canvas 40 55 247 122 clear_buffer 0;
 #X obj 45 79 vasp.update;
 #X obj 45 56 vasp.= 0;
@@ -37,9 +37,8 @@
 #X obj 142 393 vasp.u;
 #X obj 142 332 vasp.exp;
 #X text 152 362 no fix;
-#X obj 57 231 vasp.u;
+#X obj 57 179 vasp.u;
 #X text 212 253 values < 0 become NANs;
-#X text 57 259 array1;
 #X text 803 324 fixed;
 #X text 802 18 source;
 #X text 814 179 NANs;
@@ -53,13 +52,13 @@
 #X obj 57 157 vasp.osc 21;
 #X text 316 365 NANs become 0;
 #X connect 8 0 0 0;
-#X connect 9 0 23 0;
+#X connect 9 0 22 0;
 #X connect 11 0 10 0;
 #X connect 13 0 12 0;
-#X connect 21 0 28 0;
-#X connect 22 0 15 0;
-#X connect 22 1 9 0;
-#X connect 23 0 13 0;
-#X connect 23 1 24 0;
-#X connect 24 0 11 0;
-#X connect 28 0 22 0;
+#X connect 15 0 21 0;
+#X connect 20 0 27 0;
+#X connect 21 1 9 0;
+#X connect 22 0 13 0;
+#X connect 22 1 23 0;
+#X connect 23 0 11 0;
+#X connect 27 0 15 0;

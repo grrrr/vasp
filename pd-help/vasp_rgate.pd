@@ -1,4 +1,4 @@
-#N canvas 36 36 806 622 10;
+#N canvas 36 36 808 624 10;
 #X obj 72 26 cnv 15 15 15 empty empty vasp.rgate 0 10 1 14 -262144
 -1 0;
 #X obj 76 157 filelist \$0;
@@ -70,7 +70,6 @@ the radius;
 #X floatatom 142 367 5 0 0;
 #X text 192 366 value;
 #X obj 56 582 VASP-HELP;
-#X text 98 582 - vasp overview;
 #X connect 3 0 4 0;
 #X connect 7 0 8 0;
 #X connect 8 0 3 0;
