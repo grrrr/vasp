@@ -38,6 +38,8 @@ Vasp *Vasp::m_dif() { return fr_arg("dif",0,d_dif); }
 
 // --- find peaks
 
+// complex peaks (radius)
+
 // how to treat <=,>= ?
 
 static BL d_peaks(I cnt,F *_dst,I str,F tms) 

@@ -167,7 +167,7 @@ Vasp *Vasp::m_cnoise() { return fc_arg("cnoise",0,d_cnoise); }
 
 // --- bevel --------------------------
 
-// Should bevels start from 0 or .5/cnt ??
+// Should bevels start from 0 or .5/cnt ??  -> 0!
 
 static BL d_bevelup(I cnt,F *dt,I str,F) 
 { 

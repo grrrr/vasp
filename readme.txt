@@ -62,11 +62,19 @@ features:
 - vasp~s for realtime-capable vasp objects
 - double precision variables?
 
+- complex power operations - delta phase
+
 - check and optimize fft routines
 - optimize (c)osc with table lookup, phasor with Höldrichs code (in pd)
 - check for dst/src-overlaps in binary functions
 
 - clear samples outside transform domain (e.g. tilt)?
+
+- normalize -> optimize
+- value outlet for optimize object
+
+- how to handle beyond buffer-domain:
+warning, treat as 0, calculate unit operation, loop, mirror on buffer end, stay on last frame
 
 objects:
 - buffer reference modification (offset, length)
@@ -75,6 +83,19 @@ objects:
 - wave object for table-lookup oscs.
 - various random distributions for noise
 
+- spin: polar -> phase difference -> power -> cartesian   ( convention: abs(phase difference) <= pi ) 
+- <,>
+- div reverse
+
+- search functions for values -> offset
+- valleys
+
+- envelopes
+- gliss,slope -> stretch factor
+
+- slope: frequence distortion with given exponent
+- idist: complex integer power
+- rgate: sample oriented noise gate
 
 bugs:
 
