@@ -236,7 +236,7 @@ V Vasp::Size(I s)
 	for(I i = 0; i < Vectors(); ++i) {
 		VBuffer *buf = Buffer(i);
 		if(buf) { 
-			buf->Frames(s);
+			buf->Frames(s,true);
 			delete buf;
 		}
 	}
@@ -248,7 +248,7 @@ V Vasp::SizeD(I sd)
 		VBuffer *buf = Buffer(i);
 		if(buf) { 
 			I s = buf->Frames()+sd;
-			buf->Frames(s >= 0?s:0);
+			buf->Frames(s >= 0?s:0,true);
 			delete buf;
 		}
 	}

@@ -91,6 +91,7 @@ bugs:
 
 
 tests:
+- vasp.size always keeps the data... do we want that? -> flag if yes/no
 
 
 premature thoughts:
