@@ -1,4 +1,4 @@
-#N canvas 33 36 969 548 10;
+#N canvas 27 56 969 548 10;
 #X obj 519 287 wavedisplay-simple bufsetb \$0;
 #X obj 519 265 r bufsetb-length;
 #X obj 71 125 filelist \$0;
@@ -28,9 +28,7 @@
 #X text 465 286 B;
 #X text 67 46 use vasp.= to copy from buffer a to buffer b;
 #X text 92 218 choose a selection from buffer a;
-#X obj 94 452 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
-#X obj 94 452 vasp.= 0;
+#X obj 94 450 vasp.= 0;
 #X obj 94 297 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X obj 94 473 vasp.update;
@@ -75,7 +73,7 @@
 #X connect 12 0 14 0;
 #X connect 14 0 15 0;
 #X connect 14 1 16 0;
-#X restore 329 287 pd to_length_offset;
+#X restore 324 287 pd to_length_offset;
 #X msg 94 423 vasp \$1 bufsetb;
 #X msg 211 423 vasp \$1 bufseta \$2;
 #X obj 94 322 0;
@@ -93,15 +91,15 @@
 #X restore 532 483 pd clear_buffers;
 #X msg 532 457 vasp bufseta \, vasp bufsetb;
 #X connect 1 0 0 0;
-#X connect 4 0 14 0;
-#X connect 10 0 12 0;
-#X connect 11 0 17 0;
-#X connect 12 0 13 0;
-#X connect 14 0 17 1;
-#X connect 14 1 16 0;
-#X connect 15 0 10 0;
-#X connect 16 0 10 1;
-#X connect 17 0 18 0;
-#X connect 18 0 15 0;
-#X connect 18 1 19 0;
-#X connect 21 0 20 0;
+#X connect 4 0 13 0;
+#X connect 9 0 11 0;
+#X connect 10 0 16 0;
+#X connect 11 0 12 0;
+#X connect 13 0 16 1;
+#X connect 13 1 15 0;
+#X connect 14 0 9 0;
+#X connect 15 0 9 1;
+#X connect 16 0 17 0;
+#X connect 17 0 14 0;
+#X connect 17 1 18 0;
+#X connect 20 0 19 0;

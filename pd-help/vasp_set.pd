@@ -1,8 +1,6 @@
-#N canvas 17 40 875 570 10;
+#N canvas 21 60 875 570 10;
 #X obj 61 33 cnv 15 15 15 empty empty vasp.= 0 10 1 14 -262144 -1 0
 ;
-#X obj 56 385 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X text 56 66 set a vasp to a value;
 #X text 55 81 optional argument/right inlet: value/vasp;
 #X msg 56 166 vasp bufset;
@@ -67,15 +65,17 @@ mouse+spacebar (select) or mouse+"s" (shift).;
 #X text 177 472 <-- click to open more examples;
 #X text 57 138 use vasp.= to clear a buffer;
 #X obj 53 473 vaspset_examples;
+#X obj 51 533 VASP;
+#X text 93 533 - vasp overview;
+#X connect 3 0 4 0;
 #X connect 4 0 5 0;
-#X connect 5 0 6 0;
-#X connect 6 0 8 0;
-#X connect 8 0 9 0;
-#X connect 10 0 12 0;
-#X connect 11 0 10 0;
-#X connect 12 0 13 0;
-#X connect 15 0 16 0;
-#X connect 16 0 10 0;
-#X connect 17 0 15 0;
-#X connect 18 0 10 0;
-#X connect 22 0 21 0;
+#X connect 5 0 7 0;
+#X connect 7 0 8 0;
+#X connect 9 0 11 0;
+#X connect 10 0 9 0;
+#X connect 11 0 12 0;
+#X connect 14 0 15 0;
+#X connect 15 0 9 0;
+#X connect 16 0 14 0;
+#X connect 17 0 9 0;
+#X connect 21 0 20 0;

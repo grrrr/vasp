@@ -1,7 +1,5 @@
-#N canvas 43 34 881 484 10;
+#N canvas 47 54 881 484 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.*osc 0 10 1 14 -262144 -1
-0;
-#X obj 78 268 cnv 15 92 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
 #X obj 77 195 vasp.update;
 #X obj 77 172 vasp.* 0.5;
@@ -26,14 +24,9 @@
 #X msg 77 127 vasp bufmosc;
 #X text 181 126 generate white noise;
 #X obj 77 149 vasp.noise;
-#X msg 78 245 vasp bufmosc;
-#X obj 78 268 vasp.*osc 22050;
 #X obj 77 218 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
 #X obj 427 174 wavedisplay-simple bufmosc \$0;
-#X obj 78 292 vasp.update;
-#X obj 78 315 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
 #X obj 402 374 tabplay~ bufmosc;
 #N canvas 92 108 339 264 init 0;
 #X obj 110 180 s \$0-sample-length;
@@ -46,16 +39,16 @@
 #X connect 3 0 1 0;
 #X connect 3 0 0 0;
 #X restore 673 395 pd init;
-#N canvas 0 0 454 304 Hz_to_period_length 0;
-#X floatatom 125 242 0 0 0;
-#X obj 125 142 t b f;
-#X text 158 223 period length in samples (float);
-#X floatatom 125 80 0 0 0;
-#X obj 125 206 / 1;
-#X text 170 79 frequency in Hz;
+#N canvas 4 20 454 304 Hz_to_period_length 0;
+#X floatatom 136 242 0 0 0;
+#X obj 136 142 t b f;
+#X text 169 223 period length in samples (float);
+#X floatatom 136 80 0 0 0;
+#X obj 136 206 / 1;
+#X text 181 79 frequency in Hz;
 #X obj 53 142 samplerate~;
 #X obj 53 119 loadbang;
-#X floatatom 125 175 5 0 0;
+#X floatatom 136 175 5 0 0;
 #X connect 1 0 8 0;
 #X connect 1 1 4 1;
 #X connect 3 0 1 0;
@@ -66,16 +59,23 @@
 #X restore 79 405 pd Hz_to_period_length;
 #X text 188 379 ringmod-example;
 #X obj 79 380 ringmod_example;
-#X text 183 263 with 2Hz;
-#X text 181 245 generate an amplitude modulation;
-#X connect 2 0 16 0;
-#X connect 3 0 2 0;
-#X connect 5 0 20 0;
-#X connect 10 0 9 0;
-#X connect 11 0 13 0;
-#X connect 13 0 3 0;
-#X connect 14 0 15 0;
-#X connect 15 0 18 0;
-#X connect 18 0 19 0;
-#X connect 20 0 4 0;
-#X connect 20 0 4 1;
+#X text 188 263 with 2Hz;
+#X text 186 245 generate an amplitude modulation;
+#X msg 78 245 vasp bufmosc;
+#X obj 78 268 vasp.*osc 22050;
+#X obj 78 292 vasp.update;
+#X obj 78 315 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 60 460 VASP;
+#X text 102 460 - vasp overview;
+#X connect 1 0 13 0;
+#X connect 2 0 1 0;
+#X connect 4 0 15 0;
+#X connect 9 0 8 0;
+#X connect 10 0 12 0;
+#X connect 12 0 2 0;
+#X connect 15 0 3 0;
+#X connect 15 0 3 1;
+#X connect 22 0 23 0;
+#X connect 23 0 24 0;
+#X connect 24 0 25 0;

@@ -1,4 +1,4 @@
-#N canvas 11 20 882 566 10;
+#N canvas 15 40 882 566 10;
 #N canvas 92 108 409 411 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 84 238 s \$0-sample-length;
@@ -29,19 +29,14 @@
 #X restore 781 472 pd inside;
 #X obj 75 32 cnv 15 15 15 empty empty vasp.polar 0 10 1 14 -262144
 -1 0;
-#X obj 59 337 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 72 91 filelist \$0;
-#X obj 59 360 vasp.update;
-#X obj 59 383 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
 #X obj 59 223 vasp.cfft;
 #X obj 59 244 vasp.update;
 #X obj 59 267 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
 #X text 524 385 0 Hz;
 #X text 660 384 sr/2;
-#X text 190 473 <-- click to open;
+#X text 206 474 <-- click to open;
 #X text 789 386 44.1 kHz;
 #N canvas 0 0 413 295 clear_buffers 0;
 #X obj 49 73 vasp.= 0;
@@ -60,16 +55,21 @@
 #X text 738 94 amplitude/real;
 #X text 729 240 phase/imaginary;
 #X msg 486 451 vasp bufpol1 bufpol2;
-#X msg 59 314 vasp bufpol1 bufpol2;
-#X obj 59 337 vasp.polar;
 #X text 71 53 cartesian to polar coordinate conversion;
 #X text 202 201 transform into real and imaginary part;
 #X text 229 313 real/imaginary -> amplitude/phase;
 #X obj 59 473 phase-random_example;
+#X obj 59 360 vasp.update;
+#X obj 59 383 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 59 314 vasp bufpol1 bufpol2;
+#X obj 59 337 vasp.polar;
+#X obj 59 522 VASP;
+#X text 101 522 - vasp overview;
+#X connect 3 0 4 0;
 #X connect 4 0 5 0;
-#X connect 6 0 7 0;
-#X connect 7 0 8 0;
-#X connect 15 0 6 0;
-#X connect 20 0 13 0;
-#X connect 21 0 22 0;
-#X connect 22 0 4 0;
+#X connect 12 0 3 0;
+#X connect 17 0 10 0;
+#X connect 22 0 23 0;
+#X connect 24 0 25 0;
+#X connect 25 0 22 0;

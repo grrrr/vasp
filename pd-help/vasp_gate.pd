@@ -1,4 +1,4 @@
-#N canvas 32 16 806 582 10;
+#N canvas 36 36 806 582 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.gate 0 10 1 14 -262144 -1
 0;
 #X obj 71 131 filelist \$0;
@@ -35,13 +35,7 @@
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X restore 479 495 pd clear_buffers;
-#X obj 60 371 cnv 15 80 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 60 272 vasp.update;
-#X obj 60 391 vasp.update;
-#X floatatom 133 349 5 0 0;
-#X obj 60 411 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
 #X obj 60 292 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
 #X text 69 52 gate buffer content with a value;
@@ -50,11 +44,7 @@
 #X msg 60 232 vasp bufgate2;
 #X obj 60 252 vasp.= bufgate1;
 #X msg 479 475 vasp bufgate1 bufgate2;
-#X msg 60 324 vasp bufgate2;
-#X obj 60 371 vasp.gate 0.2;
-#X text 177 348 value;
 #X text 161 229 copy from bufgate1 to bufgate2;
-#X text 151 322 gate the buffer content;
 #X obj 337 495 dac~;
 #X obj 337 457 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
@@ -62,14 +52,24 @@
 #X obj 337 475 tabplay~ bufgate2;
 #X text 71 66 optional argument/right inlet: value (usually from 0-1
 to gate the soundfile sample for sample (not like a compressor!);
-#X connect 5 0 9 0;
-#X connect 6 0 8 0;
-#X connect 7 0 17 1;
-#X connect 13 0 14 0;
-#X connect 14 0 5 0;
-#X connect 15 0 3 0;
-#X connect 16 0 17 0;
-#X connect 17 0 6 0;
-#X connect 22 0 24 0;
-#X connect 24 0 21 0;
-#X connect 24 0 21 1;
+#X obj 58 497 VASP;
+#X text 100 497 - vasp overview;
+#X obj 60 391 vasp.update;
+#X floatatom 133 349 5 0 0;
+#X obj 60 411 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 60 324 vasp bufgate2;
+#X obj 60 371 vasp.gate 0.2;
+#X text 177 348 value;
+#X text 159 321 gate the buffer content;
+#X connect 4 0 5 0;
+#X connect 9 0 10 0;
+#X connect 10 0 4 0;
+#X connect 11 0 3 0;
+#X connect 14 0 16 0;
+#X connect 16 0 13 0;
+#X connect 16 0 13 1;
+#X connect 20 0 22 0;
+#X connect 21 0 24 1;
+#X connect 23 0 24 0;
+#X connect 24 0 20 0;

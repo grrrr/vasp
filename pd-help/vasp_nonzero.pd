@@ -1,4 +1,4 @@
-#N canvas 92 106 846 533 10;
+#N canvas 96 126 846 575 10;
 #X obj 62 32 cnv 15 15 15 empty empty vasp.?? 0 10 1 14 -262144 -1
 0;
 #X text 64 66 outputs all samples of a vasp that are unequal zero;
@@ -113,14 +113,8 @@
 #X connect 13 0 0 0;
 #X connect 14 0 0 0;
 #X restore 708 457 pd inside;
-#X obj 62 258 vasp.= bufnonzero;
-#X msg 62 229 vasp bufnonzero1;
-#X obj 62 309 vasp.update;
 #X obj 462 101 wavedisplay-simple bufnonzero \$0;
 #X obj 463 243 wavedisplay-simple bufnonzero1 \$0;
-#X obj 115 330 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
-#X obj 62 285 vasp.peaks 0.0004;
 #X obj 81 151 hdl 15 1 0 6 \$0-beat empty empty 0 -6 1152 8 -262144
 -1 -1 0;
 #X obj 81 151 cnv 15 90 15 empty \$0-beat-color beat.aif 5 8 576 8
@@ -137,25 +131,31 @@
 -1 -1 0;
 #X obj 81 187 cnv 15 90 15 empty \$0-plastic-color plastic.aif 5 8
 576 8 -166441 -233017 0;
-#X text 140 388 sample index;
-#X text 177 455 sample values;
-#X obj 62 346 cnv 15 44 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
-#X obj 62 346 vasp.??;
 #X text 723 83 source;
 #X text 728 224 peaks;
+#X obj 62 258 vasp.= bufnonzero;
+#X msg 62 229 vasp bufnonzero1;
+#X obj 62 309 vasp.update;
+#X obj 115 330 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 62 285 vasp.peaks 0.0004;
+#X text 140 388 sample index;
+#X text 177 455 sample values;
+#X obj 62 346 vasp.??;
 #X text 183 228 copy to new buffer \, find peaks;
 #X obj 62 389 prepend set;
 #X obj 99 455 prepend set;
 #X msg 62 415;
 #X msg 99 481;
+#X obj 34 521 VASP;
+#X text 76 521 - vasp overview;
 #X connect 5 0 4 0;
-#X connect 7 0 13 0;
-#X connect 8 0 7 0;
-#X connect 9 0 12 0;
-#X connect 9 0 25 0;
-#X connect 13 0 9 0;
-#X connect 25 0 29 0;
-#X connect 25 1 30 0;
+#X connect 19 0 23 0;
+#X connect 20 0 19 0;
+#X connect 21 0 22 0;
+#X connect 21 0 26 0;
+#X connect 23 0 21 0;
+#X connect 26 0 28 0;
+#X connect 26 1 29 0;
+#X connect 28 0 30 0;
 #X connect 29 0 31 0;
-#X connect 30 0 32 0;

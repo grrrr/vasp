@@ -1,7 +1,5 @@
-#N canvas 53 20 753 363 10;
+#N canvas 57 40 815 434 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.min? 0 10 1 14 -262144 -1
-0;
-#X obj 75 251 cnv 15 56 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
 #N canvas 40 55 281 170 clear_buffer 0;
 #X obj 54 79 vasp.update;
@@ -13,7 +11,6 @@
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X restore 468 280 pd clear_buffer;
-#X floatatom 124 285 5 0 0;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufqmin 88200 float 0;
 #X coords 0 1 88199 -1 300 100 1;
@@ -28,18 +25,21 @@
 #X connect 2 0 1 0;
 #X restore 615 284 pd init;
 #X text 68 58 get minimum sample value of a vasp;
-#X obj 75 251 vasp.min?;
 #X text 70 75 right outlet: max value;
 #X msg 468 257 vasp bufqmin;
 #X msg 73 123 vasp bufqmin;
 #X obj 73 144 vasp.osc 44100;
 #X obj 73 165 vasp.* 0.5;
 #X obj 73 186 vasp.update;
+#X floatatom 124 285 5 0 0;
+#X obj 75 251 vasp.min?;
 #X msg 75 230 vasp bufqmin;
 #X text 167 282 >>>> minimum value;
-#X connect 7 1 3 0;
-#X connect 9 0 2 0;
-#X connect 10 0 11 0;
-#X connect 11 0 12 0;
-#X connect 12 0 13 0;
-#X connect 14 0 7 0;
+#X obj 56 344 VASP;
+#X text 98 344 - vasp overview;
+#X connect 6 0 1 0;
+#X connect 7 0 8 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
+#X connect 12 1 11 0;
+#X connect 13 0 12 0;

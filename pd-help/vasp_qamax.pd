@@ -1,8 +1,6 @@
-#N canvas 53 20 899 553 10;
+#N canvas 57 40 899 553 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.amax? 0 10 1 14 -262144
 -1 0;
-#X obj 73 238 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 492 462 dac~;
 #X obj 492 418 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
@@ -40,13 +38,19 @@
 #X connect 8 0 0 0;
 #X restore 755 462 pd inside;
 #X text 70 75 right outlet: calculated value;
-#X floatatom 128 272 5 0 0;
 #X text 72 58 max-value of the absolute values of a vasp;
-#X msg 73 215 vasp bufamax;
-#X obj 73 238 vasp.amax?;
 #X obj 492 439 tabplay~ bufamax;
 #X msg 624 439 vasp bufamax;
 #X obj 484 219 wavedisplay-simple bufamax \$0;
+#X msg 72 405 vasp bufamax;
+#X obj 72 451 vasp.update;
+#X obj 72 476 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 72 428 vasp.opt;
+#X text 173 402 or use vasp.opt which does the same;
+#X floatatom 128 272 5 0 0;
+#X msg 73 215 vasp bufamax;
+#X obj 73 238 vasp.amax?;
 #X text 166 216 find the absolute maximum of this soundfile;
 #X msg 73 305 vasp bufamax;
 #X obj 73 328 vasp./;
@@ -54,23 +58,19 @@
 #X obj 73 351 vasp.update;
 #X obj 73 376 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
-#X msg 72 405 vasp bufamax;
-#X obj 72 451 vasp.update;
-#X obj 72 476 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
-#X obj 72 428 vasp.opt;
-#X text 173 402 or use vasp.opt which does the same;
 #X text 171 271 -> current absolute maximum;
-#X connect 3 0 13 0;
-#X connect 9 0 18 1;
-#X connect 11 0 12 0;
-#X connect 12 1 9 0;
-#X connect 13 0 2 0;
-#X connect 13 0 2 1;
-#X connect 14 0 5 0;
-#X connect 17 0 18 0;
-#X connect 18 0 20 0;
-#X connect 20 0 21 0;
-#X connect 22 0 25 0;
-#X connect 23 0 24 0;
-#X connect 25 0 23 0;
+#X obj 63 520 VASP;
+#X text 105 520 - vasp overview;
+#X connect 2 0 9 0;
+#X connect 9 0 1 0;
+#X connect 9 0 1 1;
+#X connect 10 0 4 0;
+#X connect 12 0 15 0;
+#X connect 13 0 14 0;
+#X connect 15 0 13 0;
+#X connect 17 0 22 1;
+#X connect 18 0 19 0;
+#X connect 19 1 17 0;
+#X connect 21 0 22 0;
+#X connect 22 0 24 0;
+#X connect 24 0 25 0;

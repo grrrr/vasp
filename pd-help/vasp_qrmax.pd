@@ -1,4 +1,4 @@
-#N canvas 32 16 879 623 10;
+#N canvas 36 36 879 651 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.rmax? 0 10 1 14 -262144
 -1 0;
 #X obj 289 135 filelist \$0;
@@ -50,13 +50,6 @@
 #X obj 465 130 wavedisplay-simple bufqrmax1 \$0;
 #X obj 465 267 wavedisplay-simple bufqrmax2 \$0;
 #X msg 520 522 vasp bufqrmax1 bufqrmax2;
-#X obj 53 254 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
-#X floatatom 108 309 5 0 0;
-#X obj 53 327 vasp./;
-#X obj 53 347 vasp.update;
-#X obj 53 367 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
 #X obj 51 538 vasp.update;
 #X obj 51 558 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
@@ -65,10 +58,6 @@
 #X obj 53 202 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
 #X msg 53 142 vasp bufqrmax1 bufqrmax2;
-#X obj 53 254 vasp.rmax?;
-#X text 150 308 -> current maximum;
-#X text 136 346 use it to optimise radius;
-#X msg 53 234 vasp bufqrmax1 bufqrmax2;
 #X obj 53 432 vasp.update;
 #X obj 53 452 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
@@ -78,23 +67,34 @@
 #X msg 51 498 vasp bufqrmax1 bufqrmax2;
 #X obj 51 518 vasp.ropt;
 #X obj 373 521 tabplay~ bufqrmax1;
+#X floatatom 108 309 5 0 0;
+#X obj 53 327 vasp./;
+#X obj 53 347 vasp.update;
+#X obj 53 367 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 53 254 vasp.rmax?;
+#X text 150 308 -> current maximum;
+#X text 136 346 use it to optimise radius;
+#X msg 53 234 vasp bufqrmax1 bufqrmax2;
 #X msg 53 282 vasp bufqrmax1 bufqrmax2;
-#X connect 7 0 35 0;
+#X obj 50 618 VASP;
+#X text 92 618 - vasp overview;
+#X connect 7 0 26 0;
 #X connect 12 0 5 0;
-#X connect 14 0 15 1;
+#X connect 13 0 14 0;
 #X connect 15 0 16 0;
 #X connect 16 0 17 0;
-#X connect 18 0 19 0;
-#X connect 20 0 21 0;
+#X connect 18 0 15 0;
+#X connect 19 0 20 0;
 #X connect 21 0 22 0;
-#X connect 23 0 20 0;
-#X connect 24 1 14 0;
-#X connect 27 0 24 0;
+#X connect 22 0 19 0;
+#X connect 24 0 25 0;
+#X connect 25 0 13 0;
+#X connect 26 0 6 0;
+#X connect 26 0 6 1;
+#X connect 27 0 28 1;
 #X connect 28 0 29 0;
-#X connect 30 0 31 0;
-#X connect 31 0 28 0;
-#X connect 33 0 34 0;
-#X connect 34 0 18 0;
-#X connect 35 0 6 0;
-#X connect 35 0 6 1;
-#X connect 36 0 15 0;
+#X connect 29 0 30 0;
+#X connect 31 1 27 0;
+#X connect 34 0 31 0;
+#X connect 35 0 28 0;

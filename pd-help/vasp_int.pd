@@ -1,7 +1,5 @@
-#N canvas 91 138 858 400 10;
+#N canvas 95 158 858 400 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.int 0 10 1 14 -262144 -1
-0;
-#X obj 77 242 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufint 88200 float 0;
@@ -23,19 +21,21 @@
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X restore 521 284 pd clear_buffer;
-#X obj 77 289 vasp.update;
 #X text 70 61 vasp integral function;
 #X msg 521 263 vasp bufint;
 #X msg 77 131 vasp bufint;
 #X obj 77 156 vasp.bevel;
 #X obj 77 178 vasp.update;
+#X text 70 77 argument: repetition count;
+#X obj 76 336 VASP;
+#X text 118 336 - vasp overview;
+#X obj 77 289 vasp.update;
 #X msg 77 211 vasp bufint;
 #X obj 77 242 vasp.int;
 #X obj 77 266 vasp.opt;
-#X text 70 77 argument: repetition count;
-#X connect 7 0 4 0;
-#X connect 8 0 9 0;
-#X connect 9 0 10 0;
-#X connect 11 0 12 0;
-#X connect 12 0 13 0;
-#X connect 13 0 5 0;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 13 0 14 0;
+#X connect 14 0 15 0;
+#X connect 15 0 12 0;

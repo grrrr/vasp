@@ -1,4 +1,4 @@
-#N canvas 189 164 762 382 10;
+#N canvas 193 184 762 382 10;
 #N canvas 40 55 247 122 clear_buffer 0;
 #X obj 45 79 vasp.update;
 #X obj 45 56 vasp.= 0;
@@ -21,20 +21,20 @@
 #X restore 668 245 pd init;
 #X obj 51 19 cnv 15 15 15 empty empty vasp.!/ 0 10 1 14 -262144 -1
 0;
-#X obj 49 194 cnv 15 56 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
-#X obj 49 219 vasp.update;
 #X msg 403 205 vasp bufrdiv;
-#X msg 49 124 vasp bufrdiv;
 #X text 44 67 vasp reverse division (value/sample);
 #X text 44 82 optional argument/right inlet: denominator;
+#X obj 49 219 vasp.update;
+#X msg 49 124 vasp bufrdiv;
 #X obj 49 149 vasp.bevel;
 #X text 137 124 generate a ramp from 1 to 2;
 #X obj 49 194 vasp.!/ 1;
 #X text 136 191 1/x;
 #X obj 49 171 vasp.+ 1;
-#X connect 6 0 0 0;
-#X connect 7 0 10 0;
-#X connect 10 0 14 0;
-#X connect 12 0 5 0;
-#X connect 14 0 12 0;
+#X obj 43 321 VASP;
+#X text 85 321 - vasp overview;
+#X connect 4 0 0 0;
+#X connect 8 0 9 0;
+#X connect 9 0 13 0;
+#X connect 11 0 7 0;
+#X connect 13 0 11 0;

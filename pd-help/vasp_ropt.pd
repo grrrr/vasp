@@ -1,4 +1,4 @@
-#N canvas 32 16 806 582 10;
+#N canvas 36 36 806 598 10;
 #X obj 72 26 cnv 15 15 15 empty empty vasp.ropt 0 10 1 14 -262144 -1
 0;
 #X obj 76 131 filelist \$0;
@@ -15,16 +15,10 @@
 #X obj 63 291 vasp.update;
 #X obj 63 311 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
-#X obj 63 373 cnv 15 80 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 442 164 wavedisplay-simple bufropt1 \$0;
 #X obj 443 321 wavedisplay-simple bufropt2 \$0;
 #X msg 63 251 vasp bufropt1 bufropt2;
 #X obj 63 271 vasp.cfft;
-#X obj 63 393 vasp.update;
-#X obj 63 413 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
-#X msg 63 346 vasp bufropt1 bufropt2;
 #X obj 63 504 vasp.update;
 #X obj 63 524 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
 8 -262144 -1 -1;
@@ -64,23 +58,29 @@
 #X connect 11 0 0 0;
 #X connect 12 0 6 0;
 #X restore 696 536 pd inside;
-#X obj 63 373 vasp.ropt 0.2;
 #X text 71 49 optimise the radius of a complex buffer content;
 #X text 71 66 right outlet: the previous maximum;
 #X text 72 84 needs two vectors;
-#X text 218 343 optimise;
-#X text 215 249 transform to frequency domain;
-#X text 215 460 transform to time domain;
+#X text 227 345 optimise;
+#X text 224 251 transform to frequency domain;
+#X text 224 462 transform to time domain;
+#X obj 63 393 vasp.update;
+#X obj 63 413 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 63 346 vasp bufropt1 bufropt2;
+#X obj 63 373 vasp.ropt 0.2;
+#X obj 51 569 VASP;
+#X text 93 569 - vasp overview;
 #X connect 3 0 4 0;
-#X connect 8 0 9 0;
-#X connect 9 0 3 0;
-#X connect 10 0 11 0;
-#X connect 12 0 23 0;
-#X connect 13 0 14 0;
-#X connect 15 0 16 0;
+#X connect 7 0 8 0;
+#X connect 8 0 3 0;
+#X connect 9 0 10 0;
+#X connect 11 0 12 0;
+#X connect 12 0 9 0;
+#X connect 14 0 16 0;
 #X connect 16 0 13 0;
-#X connect 18 0 20 0;
-#X connect 20 0 17 0;
-#X connect 20 0 17 1;
-#X connect 21 0 2 0;
-#X connect 23 0 10 0;
+#X connect 16 0 13 1;
+#X connect 17 0 2 0;
+#X connect 25 0 26 0;
+#X connect 27 0 28 0;
+#X connect 28 0 25 0;

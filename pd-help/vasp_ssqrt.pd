@@ -1,8 +1,6 @@
-#N canvas 43 34 816 469 10;
+#N canvas 47 54 816 469 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.ssqrt 0 10 1 14 -262144
 -1 0;
-#X obj 77 271 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #N canvas 0 0 418 294 init 0;
 #X obj 33 19 loadbang;
 #X msg 33 73 \; \$1 xticks 0 4410 10 \; \$1 xlabel 1.1 0 22050 44100
@@ -20,24 +18,18 @@
 #X connect 2 0 1 0;
 #X restore 362 325 pd clear_buffer;
 #X obj 77 173 vasp.update;
-#X obj 77 297 vasp.update;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufssqrt 88200 float 0;
 #X coords 0 1 88199 -1 300 100 1;
 #X restore 363 170 graph;
 #X obj 77 150 vasp.osc 44100;
 #X text 184 124 generate a 1 Hz sinewave;
-#X text 196 350 <-- click to open;
+#X text 208 352 <-- click to open;
 #X text 71 63 signed square root;
-#X msg 77 246 vasp bufssqrt;
 #X msg 77 127 vasp bufssqrt;
-#X obj 77 271 vasp.ssqrt;
-#N canvas 0 0 838 467 listen_to_ssqrt 0;
+#N canvas 4 20 838 467 listen_to_ssqrt 0;
 #X obj 71 32 cnv 15 15 15 empty empty listen_to_ssqrt 0 10 1 14 -262144
 -1 0;
-#X obj 73 238 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
-#X obj 73 283 vasp.update;
 #X obj 391 309 dac~;
 #X obj 391 265 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
@@ -52,10 +44,8 @@
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X restore 523 309 pd clear_buffer;
-#X obj 73 306 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
 #X obj 79 99 filelist \$0;
-#N canvas 92 108 398 363 inside 0;
+#N canvas 96 128 398 363 inside 0;
 #X obj 66 154 soundfiler;
 #X obj 84 238 s \$0-sample-length;
 #X obj 66 208 s \$0-draw_display;
@@ -76,24 +66,32 @@
 #X connect 7 0 6 0;
 #X connect 8 0 0 0;
 #X restore 682 310 pd inside;
-#X obj 73 259 vasp.opt;
-#X msg 73 215 vasp bufssqrt1;
 #X obj 391 286 tabplay~ bufssqrt1;
 #X msg 523 286 vasp bufssqrt1;
 #X obj 361 111 wavedisplay-simple bufssqrt1 \$0;
+#X obj 73 283 vasp.update;
+#X obj 73 306 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X obj 73 259 vasp.opt;
+#X msg 73 215 vasp bufssqrt1;
 #X obj 73 238 vasp.ssqrt;
 #X connect 2 0 7 0;
-#X connect 4 0 12 0;
-#X connect 10 0 2 0;
-#X connect 11 0 15 0;
-#X connect 12 0 3 0;
-#X connect 12 0 3 1;
-#X connect 13 0 6 0;
-#X connect 15 0 10 0;
+#X connect 7 0 1 0;
+#X connect 7 0 1 1;
+#X connect 8 0 4 0;
+#X connect 10 0 11 0;
+#X connect 12 0 10 0;
+#X connect 13 0 14 0;
+#X connect 14 0 12 0;
 #X restore 75 352 pd listen_to_ssqrt;
 #X msg 362 303 vasp bufssqrt;
-#X connect 7 0 4 0;
-#X connect 11 0 13 0;
-#X connect 12 0 7 0;
-#X connect 13 0 5 0;
-#X connect 15 0 3 0;
+#X obj 77 297 vasp.update;
+#X msg 77 246 vasp bufssqrt;
+#X obj 77 271 vasp.ssqrt;
+#X obj 73 413 VASP;
+#X text 115 413 - vasp overview;
+#X connect 5 0 3 0;
+#X connect 9 0 5 0;
+#X connect 11 0 2 0;
+#X connect 13 0 14 0;
+#X connect 14 0 12 0;

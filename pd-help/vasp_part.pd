@@ -1,4 +1,4 @@
-#N canvas 214 79 713 541 10;
+#N canvas 218 99 713 541 10;
 #X text 67 101 left inlet: a vasp to define the buffername and the
 maximum lenght;
 #X text 69 160 right outlet: a vasp with remaining length (if there
@@ -8,10 +8,6 @@ is one) of the input vasp;
 #X text 67 131 argument/ right inlet: vasps lenghts (list);
 #X obj 71 47 cnv 15 15 15 empty empty vasp.part 0 10 1 14 -262144 -1
 0;
-#X obj 76 392 cnv 15 56 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
-#X obj 78 242 cnv 15 128 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 199 275 print rest;
 #X obj 78 274 print;
 #X obj 78 242 vasp.part 100 100 100;
@@ -19,17 +15,19 @@ is one) of the input vasp;
 #X msg 78 207 vasp bufpart1;
 #X obj 125 430 print rest;
 #X obj 76 430 print;
-#X msg 267 359 100 200 300 500 100 200;
+#X msg 284 360 100 200 300 500 100 200;
 #X obj 76 392 vasp.part;
-#X text 255 322 the input vasp defines the maximum lengths of the vasps
+#X text 272 323 the input vasp defines the maximum lengths of the vasps
 at the output;
 #X msg 76 328 vasp 1100 bufpart1 bufpart2;
-#X text 193 433 so there are just 4 vasps and no rest.... watch pd
+#X text 202 430 so there are just 4 vasps and no rest.... watch pd
 window;
-#X connect 10 0 9 0;
-#X connect 10 1 8 0;
-#X connect 12 0 10 0;
-#X connect 15 0 16 1;
+#X obj 66 498 VASP;
+#X text 108 498 - vasp overview;
+#X connect 8 0 7 0;
+#X connect 8 1 6 0;
+#X connect 10 0 8 0;
+#X connect 13 0 14 1;
+#X connect 14 0 12 0;
+#X connect 14 1 11 0;
 #X connect 16 0 14 0;
-#X connect 16 1 13 0;
-#X connect 18 0 16 0;

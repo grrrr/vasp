@@ -1,4 +1,4 @@
-#N canvas 73 130 893 542 10;
+#N canvas 77 150 893 542 10;
 #X obj 75 32 cnv 15 15 15 empty empty phase-random_example 0 10 1 14
 -262144 -1 0;
 #N canvas 92 108 411 413 inside 0;
@@ -68,7 +68,7 @@
 #X text 205 307 scale from 0 to 2*Pi;
 #X text 156 335 polar to cartesian coordinate conversion;
 #X obj 69 472 vasp.freeze;
-#X text 147 472 is an abstraction that does the same;
+#X text 152 472 is an abstraction that does the same;
 #X connect 4 0 9 0;
 #X connect 9 0 2 0;
 #X connect 9 0 2 1;

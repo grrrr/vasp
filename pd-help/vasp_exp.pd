@@ -1,7 +1,5 @@
-#N canvas 43 34 892 462 10;
+#N canvas 51 74 825 462 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.exp 0 10 1 14 -262144 -1
-0;
-#X obj 77 269 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
 #N canvas 0 0 408 284 init 0;
 #X obj 33 19 loadbang;
@@ -25,19 +23,21 @@
 #X obj 77 150 vasp.osc 22050;
 #X obj 77 172 vasp.* 0.5;
 #X msg 77 127 vasp bufexp;
-#X obj 77 316 vasp.update;
-#X msg 77 246 vasp bufexp;
-#X obj 77 291 vasp.opt;
 #X msg 463 307 vasp bufexp;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufexp 88200 float 0;
 #X coords 0 1 88199 -1 300 100 1;
 #X restore 341 144 graph;
+#X obj 78 372 VASP;
+#X text 120 372 - vasp overview;
+#X obj 77 316 vasp.update;
+#X msg 77 246 vasp bufexp;
+#X obj 77 291 vasp.opt;
 #X obj 77 269 vasp.exp;
-#X connect 7 0 8 0;
-#X connect 8 0 4 0;
-#X connect 9 0 7 0;
-#X connect 11 0 15 0;
-#X connect 12 0 10 0;
-#X connect 13 0 3 0;
-#X connect 15 0 12 0;
+#X connect 6 0 7 0;
+#X connect 7 0 3 0;
+#X connect 8 0 6 0;
+#X connect 9 0 2 0;
+#X connect 14 0 16 0;
+#X connect 15 0 13 0;
+#X connect 16 0 15 0;

@@ -1,7 +1,5 @@
-#N canvas 43 34 798 407 10;
+#N canvas 47 54 798 407 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.sqrt 0 10 1 14 -262144 -1
-0;
-#X obj 77 271 cnv 15 56 17 empty empty empty 20 12 0 14 -258699 -66577
 0;
 #N canvas 0 0 414 290 init 0;
 #X obj 33 19 loadbang;
@@ -20,7 +18,6 @@
 #X connect 2 0 1 0;
 #X restore 362 325 pd clear_buffer;
 #X obj 77 173 vasp.update;
-#X obj 77 297 vasp.update;
 #N canvas 0 0 450 300 graph1 0;
 #X array bufsqrt 88200 float 0;
 #X coords 0 1 88199 -1 300 100 1;
@@ -29,11 +26,12 @@
 #X text 184 124 generate a 1 Hz sinewave;
 #X text 71 63 vasp square root;
 #X msg 77 127 vasp bufsqrt;
+#X msg 362 303 vasp bufsqrt;
+#X obj 77 297 vasp.update;
 #X msg 77 246 vasp bufsqrt;
 #X obj 77 271 vasp.sqrt;
-#X msg 362 303 vasp bufsqrt;
-#X connect 7 0 4 0;
-#X connect 10 0 7 0;
+#X connect 5 0 3 0;
+#X connect 8 0 5 0;
+#X connect 9 0 2 0;
 #X connect 11 0 12 0;
-#X connect 12 0 5 0;
-#X connect 13 0 3 0;
+#X connect 12 0 10 0;

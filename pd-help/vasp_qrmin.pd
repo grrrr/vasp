@@ -1,8 +1,6 @@
-#N canvas 53 20 877 560 10;
+#N canvas 57 40 877 560 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.rmin? 0 10 1 14 -262144
 -1 0;
-#X obj 55 383 cnv 15 62 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #X obj 70 140 filelist \$0;
 #N canvas 92 108 402 367 inside 0;
 #X obj 66 154 soundfiler;
@@ -28,9 +26,6 @@
 #X connect 10 0 6 0;
 #X restore 678 426 pd inside;
 #X text 70 75 right outlet: calculated value;
-#X floatatom 110 417 12 0 0;
-#X text 112 435 -> current absolute minimum;
-#X obj 55 383 vasp.rmin?;
 #X text 72 58 min-value of the radius values of a complex vasp;
 #X text 70 95 needs two vectors;
 #X obj 434 93 wavedisplay-simple bufqrmin1 \$0;
@@ -51,10 +46,15 @@
 #X connect 2 0 1 0;
 #X restore 436 422 pd clear_buffers;
 #X msg 436 399 vasp bufqrmin1 bufqrmin2;
+#X floatatom 110 417 12 0 0;
+#X text 112 435 -> current absolute minimum;
+#X obj 55 383 vasp.rmin?;
 #X msg 55 360 vasp bufqrmin1 bufqrmin2;
-#X connect 7 1 5 0;
-#X connect 12 0 13 0;
-#X connect 13 0 14 0;
-#X connect 15 0 12 0;
+#X obj 41 508 VASP;
+#X text 83 508 - vasp overview;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
+#X connect 11 0 8 0;
+#X connect 13 0 12 0;
+#X connect 16 1 14 0;
 #X connect 17 0 16 0;
-#X connect 18 0 7 0;

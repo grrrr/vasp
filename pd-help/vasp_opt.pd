@@ -1,16 +1,11 @@
-#N canvas 32 16 786 526 10;
+#N canvas 36 36 786 555 10;
 #X obj 71 32 cnv 15 15 15 empty empty vasp.opt 0 10 1 14 -262144 -1
 0;
 #X obj 72 113 filelist \$0;
-#X obj 59 269 vasp.update;
-#X obj 59 289 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
-8 -262144 -1 -1;
 #X obj 340 453 dac~;
 #X obj 340 415 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X text 361 413 play;
-#X obj 59 227 cnv 15 50 17 empty empty empty 20 12 0 14 -258699 -66577
-0;
 #N canvas 92 108 338 379 inside 0;
 #X obj 66 169 soundfiler;
 #X obj 91 253 s \$0-sample-length;
@@ -34,9 +29,6 @@
 #X text 69 59 optimise a vasp (normalize);
 #X text 70 73 right outlet: the previous maximum set to 1;
 #X obj 342 136 wavedisplay-simple bufopt \$0;
-#X msg 59 204 vasp bufopt;
-#X obj 59 227 vasp.opt;
-#X floatatom 102 250 8 0 0;
 #X obj 340 433 tabplay~ bufopt;
 #X msg 482 433 vasp bufopt;
 #N canvas 40 55 281 170 clear_buffer 0;
@@ -55,17 +47,25 @@
 #X floatatom 114 399 12 0 0;
 #X obj 59 419 vasp./;
 #X text 123 381 current absolute maximum;
-#X connect 2 0 3 0;
-#X connect 5 0 17 0;
-#X connect 9 0 10 0;
+#X obj 59 269 vasp.update;
+#X obj 59 289 bng 15 250 50 0 \$0-draw_display empty empty 0 -6 1152
+8 -262144 -1 -1;
+#X msg 59 204 vasp bufopt;
+#X obj 59 227 vasp.opt;
+#X floatatom 102 250 8 0 0;
+#X obj 60 514 VASP;
+#X text 102 514 - vasp overview;
+#X connect 3 0 11 0;
+#X connect 6 0 7 0;
+#X connect 11 0 2 0;
+#X connect 11 0 2 1;
+#X connect 12 0 13 0;
 #X connect 14 0 15 0;
-#X connect 15 0 2 0;
-#X connect 15 1 16 0;
-#X connect 17 0 4 0;
-#X connect 17 0 4 1;
-#X connect 18 0 19 0;
+#X connect 15 0 18 0;
+#X connect 15 1 17 0;
+#X connect 17 0 18 1;
+#X connect 18 0 6 0;
 #X connect 20 0 21 0;
-#X connect 21 0 24 0;
-#X connect 21 1 23 0;
-#X connect 23 0 24 1;
-#X connect 24 0 9 0;
+#X connect 22 0 23 0;
+#X connect 23 0 20 0;
+#X connect 23 1 24 0;
