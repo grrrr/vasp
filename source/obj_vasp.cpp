@@ -145,3 +145,42 @@ FLEXT_LIB("vasp.chk",vasp_chk)
 
 
 
+/*! \class vasp_m 
+	\remark \b vasp.m
+	\brief Outputs multiple (identical) vasps.
+	\since 0.0.1
+	\param cmdln.1 int - number of vasp outlets
+	\param inlet vasp - is stored and output
+	\param inlet bang - triggers stored Vasp output
+	\param inlet set - vasp to be stored (and not immediately output)
+	\retval outlet.* vasp
+
+	\note Outputs in right to left order.
+*/
+class vasp_m:
+	public vasp_op
+{
+	FLEXT_HEADER(vasp_m,vasp_op)
+
+public:
+
+	vasp_m(I n)
+	{
+		AddInAnything();
+		AddOutAnything(n);
+		SetupInOut();
+	}
+
+	virtual V m_bang() 
+	{ 
+		Vasp r(ref); 
+		for(I i = CntOut()-1; i >= 0; --i) ToOutVasp(i,r);
+	}
+
+	virtual V m_help() { post("%s - Output a vasp multiply",thisName()); }
+};
+
+FLEXT_LIB_1("vasp.m",vasp_m,I)
+
+
+

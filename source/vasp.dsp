@@ -105,7 +105,23 @@ SOURCE=..\readme.txt
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\base.h
+SOURCE=.\arg.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\arg.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\atoms.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\atoms.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\classes.cpp
 # End Source File
 # Begin Source File
 
@@ -117,6 +133,10 @@ SOURCE=.\main.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\util.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\util.h
 # End Source File
 # Begin Source File
@@ -125,11 +145,19 @@ SOURCE=.\vasp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp__ctrl.cpp
+SOURCE=.\vasp.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp_op.cpp
+SOURCE=.\vbuffer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\vbuffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\vecblk.cpp
 # End Source File
 # Begin Source File
 
@@ -139,18 +167,9 @@ SOURCE=.\vecblk.h
 # Begin Group "ops"
 
 # PROP Default_Filter ""
-# Begin Source File
+# Begin Group "funcs"
 
-SOURCE=.\opbase.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\opdefs.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ops.h
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\ops_arith.cpp
@@ -166,6 +185,14 @@ SOURCE=.\ops_assign.cpp
 # Begin Source File
 
 SOURCE=.\ops_assign.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_carith.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_carith.h
 # End Source File
 # Begin Source File
 
@@ -185,7 +212,15 @@ SOURCE=.\ops_cplx.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ops_dft.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ops_dft.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_feature.cpp
 # End Source File
 # Begin Source File
 
@@ -193,7 +228,15 @@ SOURCE=.\ops_feature.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ops_flt.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ops_flt.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_gen.cpp
 # End Source File
 # Begin Source File
 
@@ -201,7 +244,15 @@ SOURCE=.\ops_gen.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ops_rearr.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ops_rearr.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ops_resmp.cpp
 # End Source File
 # Begin Source File
 
@@ -223,33 +274,34 @@ SOURCE=.\ops_wnd.cpp
 
 SOURCE=.\ops_wnd.h
 # End Source File
+# End Group
 # Begin Source File
 
-SOURCE=.\vasp__ext.cpp
+SOURCE=.\opbase.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp__fft.cpp
+SOURCE=.\opbase.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp__flt.cpp
+SOURCE=.\opdefs.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp__gen.cpp
+SOURCE=.\opparam.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp__resmp.cpp
+SOURCE=.\opparam.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp__rng.cpp
+SOURCE=.\ops.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\vasp_unbin.cpp
+SOURCE=.\opvecs.cpp
 # End Source File
 # End Group
 # Begin Group "dft"
@@ -264,25 +316,49 @@ SOURCE=.\mixfft.cpp
 SOURCE=.\rdx2fft.cpp
 # End Source File
 # End Group
+# Begin Group "objs"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\imp.cpp
+SOURCE=.\obj_frames.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\obj_imm.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\obj_offs.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\obj_part.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\obj_q.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\obj_split.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\obj_sync.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\obj_vasp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\obj_vecs.cpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\main.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\util.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\vasp_base.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\vasp_v.cpp
 # End Source File
 # End Target
 # End Project
