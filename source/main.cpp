@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 
 
-V vasp_setup()
+V lib_setup()
 {
 	post("VASP modular %s - vector assembling signal processor, (C)2002 Thomas Grill",VASP_VERSION);
 	post("");
@@ -90,7 +90,7 @@ V vasp_setup()
 	VASP_UNARY_SETUP(cifft)
 }
 
-FLEXT_LIB_SETUP("vasp",vasp_setup)
+FLEXT_LIB_SETUP(vasp,lib_setup)
 
 ///////////////////////////////////////////////////////////////////////////
 
