@@ -133,7 +133,7 @@ vasp &vasp::operator ()(I argc,t_atom *argv)
 
 	chns = 0;
 	while(argc > ix) {
-		t_symbol *bsym = flext_base::GetSymbol(argv[ix]);
+		t_symbol *bsym = flext_base::GetASymbol(argv[ix]);
 		if(!bsym || !flext_base::GetString(bsym) || !flext_base::GetString(bsym)[0]) {  // expect a symbol
 			Clear();
 			return *this;

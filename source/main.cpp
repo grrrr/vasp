@@ -18,6 +18,8 @@ extern "C" {
 // base classes
 FLEXT_EXT V vasp_v_setup();
 FLEXT_EXT V vasp_copy_setup();
+FLEXT_EXT V vasp_ccopy_setup();
+FLEXT_EXT V vasp_mcopy_setup();
 
 
 FLEXT_EXT V vasp_setup()
@@ -28,7 +30,10 @@ FLEXT_EXT V vasp_setup()
 	// call the objects' setup routines
 
 	vasp_v_setup();
+
 	vasp_copy_setup();
+	vasp_ccopy_setup();
+	vasp_mcopy_setup();
 }
 }
 #endif

@@ -1,5 +1,40 @@
 #include "main.h"
 
+AtomList::AtomList(I argc,t_atom *argv):
+	cnt(argc)
+{
+	if(argv) {
+		lst = new t_atom[cnt];
+
+		for(I i = 0; i < argc; ++i) {
+			switch(lst[i].a_type = argv[i].a_type) {
+			case A_FLOAT:
+				lst[i].a_w.w_float = argv[i].a_w.w_float;
+				break;
+			case A_SYMBOL:
+				lst[i].a_w.w_symbol = argv[i].a_w.w_symbol;
+				break;
+			case A_POINTER:
+				lst[i].a_w.w_gpointer = argv[i].a_w.w_gpointer;
+				break;
+			default:
+				post("AtomList - atom type (%i) not supported",lst[i].a_type);
+				lst[i].a_type = A_NULL;
+				break;
+			}
+		}
+	}
+	else
+		lst = NULL;
+}
+
+AtomList::~AtomList()
+{
+	if(lst) delete[] lst;
+}
+
+#if 0
+
 class vasp_prepend:
 	public flext_base
 {
@@ -34,3 +69,4 @@ V vasp_prepend::m_method_(I inlet,t_symbol *s,I argc,t_atom *argv)
 }
 
 
+#endif

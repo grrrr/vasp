@@ -12,7 +12,7 @@ public:
 
 	virtual I m_set(I argc,t_atom *argv); // non-triggering set
 
-	virtual V x_work() {}
+	virtual vasp *x_work() { return new vasp(ref); }
 
 /*
 	virtual V m_length(F len);  // length in units

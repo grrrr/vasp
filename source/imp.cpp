@@ -10,51 +10,66 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 
+///////////////////////////////////////////////////////////////////////////
+// vasp_copy class
+///////////////////////////////////////////////////////////////////////////
+
 class vasp_copy:
 	public vasp_tx
 {
 	FLEXT_HEADER(vasp_copy,vasp_tx)
 
 public:
-	vasp_copy(I argc,t_atom *argv);
+	vasp_copy(I argc,t_atom *argv): vasp_tx(argc,argv) {}
 
 protected:
-	virtual V tx_list(I argc,t_atom *argv);
-/*
-	virtual V tx_vasp(const vasp &v);
-	virtual V tx_float(F v);
-	virtual V tx_complex(const CX &v);
-	virtual V tx_vector(const VX &v);
-*/
-};
+	virtual vasp *tx_list(I argc,t_atom *argv) { return ref.m_copy(argc,argv); }
+	virtual vasp *tx_vasp(const vasp &v) { return ref.m_copy(v); }
+	virtual vasp *tx_float(F f) { return ref.m_copy(f); }
+	virtual vasp *tx_complex(F re,F im) { return ref.m_copy(re,im); }
+	virtual vasp *tx_vector(const VX &v) { return ref.m_copy(v); }
 
+};
 
 FLEXT_NEW_G("vasp.=",vasp_copy)
 
-vasp_copy::vasp_copy(I argc,t_atom *argv):
-	vasp_tx(argc,argv)
+
+///////////////////////////////////////////////////////////////////////////
+// vasp_ccopy class
+///////////////////////////////////////////////////////////////////////////
+
+class vasp_ccopy:
+	public vasp_tx
 {
-//	post("%s - copy setup called",thisName());
-}
+	FLEXT_HEADER(vasp_ccopy,vasp_tx)
 
-V vasp_copy::tx_list(I argc,t_atom *argv)
+public:
+	vasp_ccopy(I argc,t_atom *argv): vasp_tx(argc,argv) {}
+
+protected:
+	virtual vasp *tx_list(I argc,t_atom *argv) { return ref.m_ccopy(argc,argv); }
+};
+
+FLEXT_NEW_G("vasp.c=",vasp_ccopy)
+
+
+///////////////////////////////////////////////////////////////////////////
+// vasp_mcopy class
+///////////////////////////////////////////////////////////////////////////
+
+class vasp_mcopy:
+	public vasp_tx
 {
-	post("%s - work with list",thisName());
+	FLEXT_HEADER(vasp_mcopy,vasp_tx)
 
-}
+public:
+	vasp_mcopy(I argc,t_atom *argv): vasp_tx(argc,argv) {}
 
-/*
-V vasp_copy::tx_vasp(const vasp &v)
-{
-	post("%s - work with vasp",thisName());
+protected:
+	virtual vasp *tx_list(I argc,t_atom *argv) { return ref.m_mcopy(argc,argv); }
+};
 
-}
+FLEXT_NEW_G("vasp.m=",vasp_mcopy)
 
-V vasp_copy::tx_float(F v)
-{
-	post("%s - work with float",thisName());
-}
 
-V vasp_copy::tx_complex(const CX &v) {}
-V vasp_copy::tx_vector(const VX &v) {}
-*/
+

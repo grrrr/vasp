@@ -58,10 +58,19 @@ I vasp_base::m_set(I argc,t_atom *argv)
 
 V vasp_base::m_bang()
 {
-	x_work();
 	if(ref.Ok()) {
-		ref.MakeList(false);
-		ToOutAnything(0,sym_vasp,ref.Atoms(),ref.AtomList());
+		vasp *ret = x_work();
+		if(ret) {
+			ret->MakeList(false);
+			ToOutAnything(0,sym_vasp,ret->Atoms(),ret->AtomList());
+			delete ret;
+		}
+		else {
+			post("%s - no valid return",thisName());
+		}
+	}
+	else {
+		post("%s - no valid vasp to work with",thisName());
 	}
 }
 
@@ -108,97 +117,4 @@ V vasp_base::m_update(I argc,t_atom *argv)
 }
 
 
-
-///////////////////////////////////////////////////////////////////////////
-// vasp_tx class
-///////////////////////////////////////////////////////////////////////////
-
-
-vasp_tx::vasp_tx(I argc,t_atom *argv):
-	at_hdr(NULL),at_cnt(0),at_lst(NULL)
-{
-	m_set(argc,argv);
-
-	AddInAnything(2);
-	AddOutAnything();
-	SetupInOut();
-
-	FLEXT_ADDMETHOD(1,a_list);
-	FLEXT_ADDMETHOD_(1,"vasp",a_vasp);
-	FLEXT_ADDMETHOD_(1,"float",a_float);
-	FLEXT_ADDMETHOD_(1,"complex",a_complex);
-	FLEXT_ADDMETHOD_(1,"vector",a_vector);
-}
-
-vasp_tx::~vasp_tx()
-{
-	if(at_lst) delete[] at_lst;
-}
-
-static t_atom *Dup(I argc,t_atom *argv)
-{
-	t_atom *ret = new t_atom[argc];
-
-	// duplicate each atom in list
-	// #############################
-	return ret;
-}
-
-V vasp_tx::a_list(I argc,t_atom *argv) 
-{ 
-//	post("%s - vasp method called",thisName());
-
-	if(at_lst) delete[] at_lst;
-	at_hdr = sym_list;
-	at_lst = Dup(at_cnt = argc,argv);
-}
-
-V vasp_tx::a_vasp(I argc,t_atom *argv) 
-{ 
-//	post("%s - vasp method called",thisName());
-
-	if(at_lst) delete[] at_lst;
-	at_hdr = sym_vasp;
-	at_lst = Dup(at_cnt = argc,argv);
-}
-
-V vasp_tx::a_float(F v) 
-{ 
-//	post("%s - float method called",thisName());
-
-	if(at_lst) delete[] at_lst;
-	at_hdr = sym_float;
-	at_lst = new t_atom[at_cnt = 1];
-	SetFloat(at_lst[0],v);
-}
-
-V vasp_tx::a_complex(I argc,t_atom *argv) 
-{ 
-//	post("%s - complex method called",thisName());
-
-	if(
-		(argc == 1 && IsFloat(argv[0])) || 
-		(argc == 2 && IsFloat(argv[0]) && IsFloat(argv[1]))
-	) {
-		if(at_lst) delete[] at_lst;
-		at_hdr = sym_complex;
-		at_lst = new t_atom[at_cnt = 1];
-		SetFloat(at_lst[0],GetAFloat(argv[0]));
-		SetFloat(at_lst[1],GetAFloat(argv[1]));
-	}
-	else 
-		post("%s - complex argument is invalid (-> ignored)",thisName());
-}
-
-V vasp_tx::a_vector(I argc,t_atom *argv)
-{
-	post("%s - vector type not implemented",thisName());
-}
-
-
-V vasp_tx::x_work() 
-{
-	post("%s: supposed to do work",thisName());
-
-}
 
