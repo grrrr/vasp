@@ -21,6 +21,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef __MWERKS__
 #define STD	std
+#else
+#define STD
 #endif
 
 
