@@ -101,7 +101,6 @@ features:
 ---------------------
 - introduce several log levels (for warning posts)
 - how handle symmetric data operations (x*): leave 0 and n-1 bin, odd remainder bin?
-- progress % - outlet?
 - grab (and recompose) signals for granular vasp usage
 - vasp~s for realtime-capable vasp objects
 
@@ -125,9 +124,10 @@ objects:
 
 - slope: frequency distortion with given exponent
 
-- vasp.trigger object
+- vasp.trigger object... in PD [t a] is ok, what about Max?
 - vasp.expr
 
+- vasp.state.... current vasp, operation, progress meter
 
 bugs:
 ---------------------

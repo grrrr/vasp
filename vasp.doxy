@@ -4,8 +4,8 @@
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "vasp modular"
-PROJECT_NUMBER         = 
-OUTPUT_DIRECTORY       = u:/prog/max/vasp/doc/
+PROJECT_NUMBER         = 0.0.8pre8
+OUTPUT_DIRECTORY       = f:/prog/max/vasp/doc/
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = NO
@@ -19,7 +19,7 @@ ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = NO
 STRIP_FROM_PATH        = 
-INTERNAL_DOCS          = NO
+INTERNAL_DOCS          = YES
 STRIP_CODE_COMMENTS    = YES
 CASE_SENSE_NAMES       = YES
 SHORT_NAMES            = NO
@@ -27,6 +27,8 @@ HIDE_SCOPE_NAMES       = NO
 VERBATIM_HEADERS       = YES
 SHOW_INCLUDE_FILES     = YES
 JAVADOC_AUTOBRIEF      = NO
+MULTILINE_CPP_IS_BRIEF = NO
+DETAILS_AT_TOP         = NO
 INHERIT_DOCS           = YES
 INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = YES
@@ -39,6 +41,7 @@ ALIASES                =
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30
 OPTIMIZE_OUTPUT_FOR_C  = NO
+OPTIMIZE_OUTPUT_JAVA   = NO
 SHOW_USED_FILES        = YES
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -51,7 +54,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = U:/prog/max/vasp/source/
+INPUT                  = f:/prog/max/vasp/source/
 FILE_PATTERNS          = 
 RECURSIVE              = NO
 EXCLUDE                = 
@@ -87,6 +90,8 @@ HTML_FOOTER            =
 HTML_STYLESHEET        = 
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
+CHM_FILE               = 
+HHC_LOCATION           = 
 GENERATE_CHI           = NO
 BINARY_TOC             = NO
 TOC_EXPAND             = NO
@@ -156,11 +161,11 @@ PERL_PATH              = /usr/bin/perl
 # Configuration options related to the dot tool   
 #---------------------------------------------------------------------------
 CLASS_DIAGRAMS         = YES
+HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = NO
 CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = YES
 TEMPLATE_RELATIONS     = YES
-HIDE_UNDOC_RELATIONS   = YES
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
 GRAPHICAL_HIERARCHY    = YES
