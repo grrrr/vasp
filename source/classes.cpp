@@ -23,14 +23,14 @@ const t_symbol *vasp_base::sym_double;
 const t_symbol *vasp_base::sym_complex;
 const t_symbol *vasp_base::sym_vector;
 
-V vasp_base::setup(t_class *c)
+V vasp_base::setup(t_class *)
 {
-	sym_radio = gensym("radio");
-	sym_vasp = gensym("vasp");
-	sym_env = gensym("env");
-	sym_double = gensym("double");
-	sym_complex = gensym("complex");
-	sym_vector = gensym("vector");
+	sym_radio = MakeSymbol("radio");
+	sym_vasp = MakeSymbol("vasp");
+	sym_env = MakeSymbol("env");
+	sym_double = MakeSymbol("double");
+	sym_complex = MakeSymbol("complex");
+	sym_vector = MakeSymbol("vector");
 }
 
 vasp_base::vasp_base():
