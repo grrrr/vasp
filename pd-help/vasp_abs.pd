@@ -1,4 +1,4 @@
-#N canvas 91 138 839 359 10;
+#N canvas 91 138 841 361 10;
 #X msg 521 263 vasp bufabs;
 #X text 71 63 get absolute values of a vasp;
 #X text 71 79 see also vasp.*.help for an example using vasp.abs to
@@ -36,7 +36,7 @@ generate an envelope from a vasp;
 #X obj 77 246 vasp.abs;
 #X obj 170 210 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 77 173 vasp.u;
+#X obj 77 173 vasp.update;
 #X connect 0 0 7 0;
 #X connect 9 0 14 0;
 #X connect 12 0 13 0;

@@ -1,4 +1,4 @@
-#N canvas 24 219 936 381 10;
+#N canvas 24 219 938 383 10;
 #N canvas 40 55 255 173 clear_buffer 0;
 #X obj 54 79 vasp.update;
 #X obj 54 56 vasp.= 0;
@@ -35,12 +35,12 @@
 #X msg 65 112 vasp bufadd;
 #X msg 363 112 vasp bufadd;
 #X msg 707 263 vasp bufadd;
-#N canvas 0 0 394 270 init 0;
+#N canvas 0 0 396 272 init 0;
 #X obj 33 19 loadbang;
 #X msg 33 73 \; \$1 xticks 0 4410 10 \; \$1 xlabel 1.1 0 22050 44100
 66150 88200 \; \$1 yticks 0 0.25 2 \; \$1 ylabel 94000 -1 -0.5 0 0.5
 1;
-#X msg 33 45 symbol bufmul;
+#X msg 33 45 symbol bufadd;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X restore 820 284 pd init;
