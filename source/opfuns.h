@@ -18,25 +18,25 @@ namespace VecOp {
 
     // multi-layer templates
 
-    template<class T,V run(T &v,T a),I N>
+    template<class T,V FUN(T &v,T a),I N>
     static V vec_un(T *v,const T *a,I n = 0) { 
         const I _n = N?N:n;
         for(I i = 0; i < _n; ++i) FUN(v[i],a[i]); 
     }
 
-    template<class T,V run(T &v,T a),I N>
+    template<class T,V FUN(T &v,T a),I N>
     static V vec_un(T *v,T a,I n = 0) { 
         const I _n = N?N:n;
         for(I i = 0; i < _n; ++i) FUN(v[i],a); 
     }
 
-    template<class T,V rbin(T &v,T a,T b),I N>
+    template<class T,V FUN(T &v,T a,T b),I N>
     static V vec_bin(T *v,const T *a,const T *b,I n = 0) { 
         const I _n = N?N:n;
         for(I i = 0; i < _n; ++i) FUN(v[i],a[i],b[i]); 
     }
 
-    template<class T,V rbin(T &v,T a,T b),I N>
+    template<class T,V FUN(T &v,T a,T b),I N>
     static V vec_bin(T *v,const T *a,T b,I n = 0) { 
         const I _n = N?N:n;
         for(I i = 0; i < _n; ++i) FUN(v[i],a[i],b); 
