@@ -306,17 +306,23 @@ namespace VecOp {
         } 
     };
 
-    template<class T> V f_aminq(T &,T ra,OpParam &p) 
-    { 
-	    register T s = fabs(ra); 
-	    if(s < p.norm.minmax) p.norm.minmax = s; 
-    } 
+    template<class T> class f_aminq {
+    public: 
+        static V rop(T &,T ra,OpParam &p) 
+        { 
+	        register T s = fabs(ra); 
+	        if(s < p.norm.minmax) p.norm.minmax = s; 
+        } 
+    };
 
-    template<class T> V f_amaxq(T &,T ra,OpParam &p) 
-    { 
-	    register T s = fabs(ra); 
-	    if(s > p.norm.minmax) p.norm.minmax = s; 
-    } 
+    template<class T> class f_amaxq {
+    public: 
+        static V rop(T &,T ra,OpParam &p) 
+        { 
+	        register T s = fabs(ra); 
+	        if(s > p.norm.minmax) p.norm.minmax = s; 
+        } 
+    };
 
 
     // gating
