@@ -77,6 +77,8 @@ public:
 	I Offset() const { return offs; }
 	I Length() const { return len; }
 
+	F *Pointer() { return Data()+Offset()*Channels()+Channel(); }
+
 protected:
 	I chn,offs,len;
 };
@@ -192,6 +194,75 @@ inline F abs(F re,F im) { return re*re+im*im; }
 inline F abs(const CX &c) { return abs(c.real,c.imag); }
 inline F sgn(F x) { return x < 0.?-1.F:1.F; }
 inline V swap(F &a,F &b) { F c = a; a = b; b = c; }
+
+
+class VecBlock 
+{
+public:
+
+	I Frames(I ix) const { return frms[ix]; }
+
+protected:
+	VecBlock(I msrc,I marg,I mdst,I blks);
+	~VecBlock();
+
+	VBuffer *_Src(I ix) { return vecs[ix]; }
+	VBuffer *_Arg(I ix) { return vecs[asrc+ix]; }
+	VBuffer *_Dst(I ix) { return vecs[asrc+aarg+ix]; }
+	V _Src(I ix,VBuffer *v) { vecs[ix] = v; }
+	V _Arg(I ix,VBuffer *v) { vecs[asrc+ix] = v; }
+	V _Dst(I ix,VBuffer *v) { vecs[asrc+aarg+ix] = v; }
+
+	V Frames(I ix,I fr) { frms[ix] = fr; }
+
+private:
+	I frames,ablk,asrc,aarg,adst;
+	VBuffer **vecs;
+	I *frms;
+};
+
+
+class RVecBlock:
+	public VecBlock
+{
+public:
+	RVecBlock(I _n,I _a = 0): VecBlock(_n,_a,_n,_n),n(_n),a(_a) {}
+
+	VBuffer *Src(I ix) { return _Src(ix); }
+	VBuffer *Arg(I ix) { return _Arg(ix); }
+	VBuffer *Dst(I ix) { return _Dst(ix); }
+	V Src(I ix,VBuffer *v,I fr) { _Src(ix,v); Frames(fr); }
+	V Arg(I ix,VBuffer *v) { _Arg(ix,v); }
+	V Dst(I ix,VBuffer *v) { _Dst(ix,v); }
+
+	I Vecs() const { return n; }
+	I Args() const { return a; }
+protected:
+	I n,a;
+};
+
+class CVecBlock:
+	public VecBlock
+{
+public:
+	CVecBlock(I _np,I _ap = 0): VecBlock(_np*2,_ap*2,_np*2,_np),np(_np),ap(_ap) {}
+
+	VBuffer *ReSrc(I ix) { return _Src(ix*2); }
+	VBuffer *ImSrc(I ix) { return _Src(ix*2+1); }
+	VBuffer *ReArg(I ix) { return _Arg(ix*2); }
+	VBuffer *ImArg(I ix) { return _Arg(ix*2+1); }
+	VBuffer *ReDst(I ix) { return _Dst(ix*2); }
+	VBuffer *ImDst(I ix) { return _Dst(ix*2+1); }
+	V Src(I ix,VBuffer *vre,VBuffer *vim,I fr) { _Src(ix*2,vre); _Src(ix*2+1,vim); Frames(fr); }
+	V Arg(I ix,VBuffer *vre,VBuffer *vim) { _Arg(ix*2,vre); _Arg(ix*2+1,vim); }
+	V Dst(I ix,VBuffer *vre,VBuffer *vim) { _Dst(ix*2,vre); _Dst(ix*2+1,vim); }
+
+	I Pairs() const { return np; }
+	I Args() const { return ap; }
+protected:
+	I np,ap;
+};
+
 
 
 class Vasp 
@@ -424,6 +495,18 @@ protected:
 
 private:
 	typedef flext_base flx;
+
+	static RVecBlock *GetRVecs(const C *op,Vasp &src);
+	static CVecBlock *GetCVecs(const C *op,Vasp &src);
+	static RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp &arg,BL multi = false);
+	static CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp &arg,BL multi = false);
+
+/*
+	static RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp &dst);
+	static CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp &dst);
+	static RVecBlock *GetRVecs(const C *op,Vasp &src,Vasp &arg,Vasp &dst,BL multi = false);
+	static CVecBlock *GetCVecs(const C *op,Vasp &src,Vasp &arg,Vasp &dst,BL multi = false);
+*/
 
 	Vasp *fr_nop(const C *op,F v,const nop_funcs &f) { return fr_arg(op,v,f.funR); }
 	Vasp *fc_nop(const C *op,const CX &cx,const nop_funcs &f) { return fc_arg(op,cx,f.funC); }

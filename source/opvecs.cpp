@@ -8,7 +8,244 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
+/*! \file vasp__ctrl.cpp
+	\brief Methods for handling of vector data for real, complex and multi-vector cases.
+
+*/
+
 #include "main.h"
+
+
+//! return vector block for real data
+RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src)
+{
+	BL ok = true;
+	RVecBlock *ret = new RVecBlock(src.Vectors());
+
+	for(I ci = 0; ok && ci < src.Vectors(); ++ci) {
+		VBuffer *bref = src.Buffer(ci);		
+		if(!bref->Data()) {
+			post("%s - dst vector (%s) is invalid",op,bref->Name());
+			ok = false; // really return?
+		}
+		else 
+			ret->Src(ci,bref,bref->Length());
+	}
+
+	if(ok) return ret;
+	else { delete ret; return NULL;	}
+}
+
+CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src)
+{
+	if(src.Vectors()%2 != 0) {
+		post("%s - number of src vectors is odd - omitting last vector",op);
+		// clear superfluous vector?
+	}
+
+	BL ok = true;
+	I pairs = src.Vectors()/2;
+	CVecBlock *ret = new CVecBlock(pairs);
+
+	for(I ci = 0; ci < pairs; ++ci) {
+		VBuffer *bre = src.Buffer(ci*2),*bim = src.Buffer(ci*2+1); // complex channels
+
+		I frms = bre->Length();
+		if(!bre->Data()) {
+			post("%s - real dst vector (%s) is invalid",op,bre->Name());
+			ok = false;
+		}
+		if(!bim->Data()) {
+			post("%s - imag dst vector (%s) is invalid",op,bim->Name());
+			ok = false;
+		}
+		else {
+			if(frms != bim->Length()) {
+				post("%s - real/imag dst vector length is not equal - using minimum",op);
+				frms = min(frms,bim->Length());
+			}
+		}
+
+		ret->Src(ci,bre,bim,frms);
+	}
+
+	if(ok) return ret;
+	else { delete ret; return NULL;	}
+}
+
+RVecBlock *Vasp::GetRVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
+{
+	if(!arg.Ok()) {
+		post("%s - invalid argument vasp detected and ignored",op);
+		return NULL;
+	}
+
+	I nvecs = src.Vectors();
+	RVecBlock *ret;
+
+	if(multi) {
+		if(arg.Vectors() < nvecs) {
+			nvecs = arg.Vectors();
+			post("%s - too few argument vectors, operating on only first %i vectors",op,nvecs);
+		}
+		ret = new RVecBlock(nvecs,nvecs);
+		for(I i = 0; i < nvecs; ++i) ret->Arg(i,arg.Buffer(i));
+	}
+	else {
+		if(arg.Vectors() > 1) {
+			post("%s - using only first argument vector for all operations",op);
+		}
+		ret = new RVecBlock(nvecs,1);
+		ret->Arg(0,arg.Buffer(0));
+	}
+
+	BL ok = true;
+
+	for(I ci = 0; ok && ci < nvecs; ++ci) {
+		VBuffer *bref = src.Buffer(ci);	
+		VBuffer *barg = ret->Arg(multi?ci:0);
+		I frms = barg->Frames();
+
+		if((multi || ci == 0) && !barg->Data()) {
+			post("%s - src vector (%s) is invalid",op,barg->Name());
+			ok = false; // really return?
+		}
+		else if(!bref->Data()) {
+			post("%s - dst vector (%s) is invalid",op,bref->Name());
+			ok = false; // really break?
+		}
+		else {
+			if(frms != bref->Length()) {
+				post("%s - src/dst vector length not equal - using minimum",op);
+				frms = min(frms,bref->Length());
+			}
+		}
+		ret->Src(ci,bref,frms);
+	}
+
+	if(ok) return ret;
+	else { delete ret; return NULL;	}
+}
+
+CVecBlock *Vasp::GetCVecs(const C *op,Vasp &src,Vasp &arg,BL multi)
+{
+	if(!arg.Ok()) {
+		post("%s - invalid argument vasp detected and ignored",op);
+		return NULL;
+	}
+
+	BL ok = true;
+	I pairs = src.Vectors()/2;
+	CVecBlock *ret;
+
+	if(multi) {
+		I apairs = arg.Vectors()/2;
+		if(arg.Vectors() != apairs*2) {
+			post("%s - number of arg vectors is odd - assuming complex part as 0",op);
+			++apairs;
+		}
+
+		if(apairs < pairs) {
+			pairs = apairs;
+			post("%s - too few argument vectors, operating on only first %i vector pairs",op,pairs);
+		}
+		ret = new CVecBlock(pairs,pairs);
+		for(I i = 0; i < pairs; ++i) ret->Arg(i,arg.Buffer(i*2),arg.Buffer(i*2+1));
+	}
+	else {
+		if(arg.Vectors() > 2) {
+			post("%s - using only first argument vector pair for all operations",op);
+		}
+		ret = new CVecBlock(pairs,1);
+		ret->Arg(0,arg.Buffer(0),arg.Buffer(1));
+	}
+
+/*
+	if(!biarg) {
+		post("%s - only one src vector - setting imaginary part to 0",op);					
+	}
+	else if(arg.Vectors() > 2) {
+		post("%s - using only first two src vectors",op);
+	}
+*/
+/*
+	if(!brarg->Data()) {
+		post("%s - real src vector (%s) is invalid",op,brarg->Name());
+		ok = false;
+	}
+	else if(biarg && !biarg->Data()) {
+		post("%s - imag src vector (%s) is invalid",op,biarg->Name());
+		ok = false;
+	}
+	else 
+*/
+	{
+//		I frms = brarg->Length();
+/*
+		if(biarg && frms != biarg->Length()) {
+			post("%s - real/imag src vector length is not equal - using minimum",op);
+			frms = min(frms,biarg->Length());
+		}
+*/
+		if(src.Vectors() != pairs*2) {
+			post("%s - number of dst vectors is odd - omitting last vector",op);
+			// clear superfluous vector?
+		}
+
+		for(I ci = 0; ok && ci < pairs; ++ci) {
+			VBuffer *brarg = ret->ReArg(ci),*biarg = ret->ImArg(ci);
+
+			I frms = brarg?brarg->Length():0;
+
+			if(multi || ci == 0) {
+				if(!brarg->Data()) {
+					post("%s - real src vector (%s) is invalid",op,brarg->Name());
+					ok = false;
+				}
+				else if(biarg && !biarg->Data()) {
+					post("%s - imag src vector (%s) is invalid",op,biarg->Name());
+					ok = false;
+				}
+			}
+
+			if(ok && biarg && frms != biarg->Length()) {
+				if(multi || ci == 0) post("%s - real/imag src vector length is not equal - using minimum",op);
+				frms = min(frms,biarg->Length());
+			}
+
+			VBuffer *brref = src.Buffer(ci*2),*biref = src.Buffer(ci*2+1);		
+
+			if(ok) {
+				if(!brref->Data()) {
+					post("%s - real dst vector (%s) is invalid",op,brref->Name());
+					ok = false; // really break?
+				}
+				else if(biref && !biref->Data()) {
+					post("%s - imag dst vector (%s) is invalid",op,biref->Name());
+					ok = false; // really break?
+				}
+				else {
+					if(frms != brref->Length() || frms != biref->Length()) {
+						post("%s - source/target vector length not equal - using minimum",op);
+						frms = min(frms1,min(biref->Length(),brref->Length()));
+
+						// clear rest?
+					}
+				}
+			}
+
+			ret->Src(ci,brref,biref,frms);
+		}
+	}
+
+	if(ok) return ret;
+	else { delete ret; return NULL;	}
+}
+
+
+
+
+
 
 
 // just transform complex vector pairs
@@ -162,8 +399,7 @@ Vasp *Vasp::fc_arg(const C *op,const CX &cx,argfunC f)
 				// clear the rest?
 			}
 
-			I rchns = bre->Channels(),ichns = bim->Channels();
-			ok &= f(frms,bre->Data()+bre->Offset()*rchns+bre->Channel(),rchns,bim->Data()+bim->Offset()*ichns+bim->Channel(),ichns,cx.real,cx.imag);
+			ok &= f(frms,bre->Pointer(),bre->Channels(),bim->Pointer(),bim->Channels(),cx.real,cx.imag);
 			bre->Dirty(); bim->Dirty();
 		}
 

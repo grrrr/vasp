@@ -1,5 +1,30 @@
+/* 
+
+VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+
+Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+For information on usage and redistribution, and for a DISCLAIMER OF ALL
+WARRANTIES, see the file, "license.txt," in this distribution.  
+
+*/
+
+/*! \file vasp_v.cpp
+	\brief Definitions of basic vasp objects.
+*/
+
+
 #include "main.h"
 
+/*! \class vasp_v 
+	\remark \b vasp
+	\brief Stores vasp messages.
+	\since 0.0.1
+	\param cmdln.* vasp - to be stored
+	\param inlet vasp - is stored and output, Bang will trigger stored Vasp output
+	\param inlet bang - triggers stored Vasp output
+	\param inlet set - Vasp is stored (and not immediately output)
+	\retval outlet vasp
+*/
 class vasp_v:
 	public vasp_tx
 {
@@ -25,6 +50,18 @@ FLEXT_LIB_G("vasp",vasp_v)
 
 
 
+/*! \class vasp_m 
+	\remark \b vasp.m
+	\brief Outputs multiple (identical) vasps.
+	\since 0.0.1
+	\param cmdln.1 int - number of vasp outlets
+	\param inlet vasp - is stored and output
+	\param inlet bang - triggers stored Vasp output
+	\param inlet set - vasp to be stored (and not immediately output)
+	\retval outlet.* vasp
+
+	\note Outputs in right to left order.
+*/
 class vasp_m:
 	public vasp_op
 {
@@ -52,6 +89,17 @@ FLEXT_LIB_1("vasp.m",vasp_m,I)
 
 
 
+/*! \class vasp_update
+	\remark \b vasp.update
+	\brief Refreshes buffer graphics for a vasp.
+	\since 0.0.1
+	\param inlet vasp - is stored and output
+	\param inlet bang - triggers stored vasp output
+	\param inlet set - vasp to be stored (and not immediately output)
+	\retval outlet vasp
+
+	\note Not necessary in MaxMSP.
+*/
 class vasp_update:
 	public vasp_tx
 {
@@ -74,6 +122,20 @@ FLEXT_LIB("vasp.update",vasp_update)
 
 
 
+/*! \class vasp_n
+	\remark \b vasp.n
+	\brief Gets indexed vector of a vasp.
+	\since 0.0.1
+	\param cmdln.1 int - index of vasp vector
+	\param inlet vasp - is stored and indexed vasp vector output
+	\param inlet bang - triggers indexed vasp vector output
+	\param inlet set - vasp to be stored (and not immediately output)
+	\retval outlet.1 vasp - single indexed vector of vasp
+	\retval outlet.2 vasp - remainder of vasp
+
+	\note Outputs only on valid index
+	\todo Output remainder as vasp.
+*/
 class vasp_n:
 	public vasp_tx
 {
@@ -89,7 +151,7 @@ public:
 			post("%s - Index argument invalid -> set to 0",thisName());
 
 		AddInAnything();
-		AddOutAnything();
+		AddOutAnything(2);
 		SetupInOut();
 
 		FLEXT_ADDMETHOD(1,m_ix);
@@ -112,6 +174,19 @@ FLEXT_LIB_G("vasp.n",vasp_n)
 
 
 
+/*! \class vasp_qn 
+	\remark \b vasp.n?
+	\brief Gets number of vector of a vasp.
+	\since 0.0.1
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet int - number of vectors in stored vasp
+
+	\note Outputs 0 if vasp is undefined or invalid.
+
+	\todo Should we disable output with invalid vasp?
+*/
 class vasp_qn:
 	public vasp_op
 {
@@ -125,7 +200,7 @@ public:
 		SetupInOut();
 	}
 
-	virtual V m_bang() { ToOutInt(0,ref.Vectors()); }
+	virtual V m_bang() { ToOutInt(0,ref.Ok?ref.Vectors():0); }
 
 	virtual V m_help() { post("%s - Get number of vectors of a vasp",thisName()); }
 };
@@ -135,6 +210,21 @@ FLEXT_LIB("vasp.n?",vasp_qn)
 
 
 
+/*! \class vasp_sync
+	\remark \b vasp.sync
+	\brief Waits for all inlets to be hit (by vasps/anything) to trigger output.
+	\since 0.0.1
+	\param cmdln.1 int - number of sync inlets
+	\param inlet.1 vasp - is stored 
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+	\param inlet.1 reset - clear all hit flags
+	\param inlet.+n vasp/anything - sets hit flag
+	\retval outlet vasp - stored vasp 
+
+	\todo Message for selection if only vasp input triggers (or any one).
+	\todo Message for selection of manual or auto reset upon trigger
+*/
 class vasp_sync:
 	public vasp_op
 {
@@ -143,20 +233,21 @@ class vasp_sync:
 public:
 	vasp_sync(I n):
 		flags(new BL[n]),
-		autoreset(true)
+		autoreset(true),vasponly(false)
 	{
 		AddInAnything(n);
 		AddOutAnything();
 		SetupInOut();
 
-		FLEXT_ADDMETHOD_(0,"clear",m_clear);
+		FLEXT_ADDMETHOD_(0,"reset",m_reset);
 
-		m_clear();
+		m_reset();
 	}
 
 	~vasp_sync()	{ if(flags) delete[] flags; }
 
-	V chkbang(I n) {
+	V chkbang(I n) 
+	{
 		BL f = flags[n]; 
 		flags[n] = true; 
 		if(!f) { // flags have changed
@@ -168,37 +259,50 @@ public:
 				if(ref.Ok()) ToOutVasp(0,ref);
 				else ToOutBang(0);
 
-				if(autoreset) m_clear();
+				if(autoreset) m_reset();
 			}
 		}
 	}
 
 	virtual V m_bang() { chkbang(0); }
 
-	virtual V m_clear() 
+	virtual V m_reset() 
 	{ 
 		for(I i = 0; i < CntIn(); ++i) flags[i] = false;
 	}
 
 	virtual V m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	{
-		if(inlet > 0 && s == sym_vasp) chkbang(inlet);
+		if(inlet > 0 && (!vasponly || s == sym_vasp)) chkbang(inlet);
 		else
 			m_method_(inlet,s,argc,argv);
 	}
 
 	virtual V m_help() { post("%s - Synchronize a number of vasps",thisName()); }
 private:
-	BL autoreset;
+	BL autoreset,vasponly;
 	BL *flags;
 
-	FLEXT_CALLBACK(m_clear)
+	FLEXT_CALLBACK(m_reset)
 };
 
 FLEXT_LIB_1("vasp.sync",vasp_sync,I)
 
 
 
+/*! \class vasp_split
+	\remark \b vasp.split
+	\brief Splits a vasp into a number of vectors and the remainder.
+	\since 0.0.1
+	\param cmdln.1 int - number of vectors to split vasp into (excl. one for the remainder vectors)
+	\param inlet.1 vasp - is stored and triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+	\retval outlet.n vasp - vector of stored vasp
+	\retval outlet.+ vasp - remainder of stored vasp
+
+	\todo Output remainder to additional outlet.
+*/
 class vasp_split:
 	public vasp_op
 {
@@ -208,7 +312,7 @@ public:
 	vasp_split(I n)
 	{
 		AddInAnything();
-		AddOutAnything(n);
+		AddOutAnything(n+1);
 		SetupInOut();
 	}
 
@@ -226,6 +330,22 @@ public:
 FLEXT_LIB_1("vasp.split",vasp_split,I)
 
 
+/*! \class vasp_join
+	\remark \b vasp.join
+	\brief Joins several vasps into one.
+	\since 0.0.1
+	\param cmdln.1 int - number of vasp slots
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+	\param inlet.1 reset - clears slots
+	\param inlet.+n vasp - is stored in this slot 
+	\retval outlet vasp - joined vasp
+
+	The several vectors of the several vasps are all joined into one vasp.
+
+	\note On different vasp frame count the frame count of the leftmost vasp is taken.
+*/
 class vasp_join:
 	public vasp_tx
 {
@@ -241,7 +361,7 @@ public:
 		AddOutAnything();
 		SetupInOut();
 
-		FLEXT_ADDMETHOD_(0,"clear",m_clear);
+		FLEXT_ADDMETHOD_(0,"reset",m_reset);
 	}
 
 	~vasp_join()	{ if(vi) delete[] vi; }
@@ -252,7 +372,7 @@ public:
 		return ret;
 	}
 
-	V m_clear() 
+	V m_reset() 
 	{ 
 		ref.Clear();
 		for(I i = 0; i < cnt-1; ++i) if(vi[i]) { delete vi[i]; vi[i] = NULL; }
@@ -273,7 +393,7 @@ private:
 	I cnt;
 	Vasp **vi;
 
-	FLEXT_CALLBACK(m_clear)
+	FLEXT_CALLBACK(m_reset)
 };
 
 FLEXT_LIB_1("vasp.join",vasp_join,I)
@@ -281,6 +401,20 @@ FLEXT_LIB_1("vasp.join",vasp_join,I)
 
 
 
+/*! \class vasp_offs
+	\remark \b vasp.offs
+	\brief Sets offset of vasp vectors.
+	\since 0.0.1
+	\param cmdln.1 [_time=0] - offset into buffer(s)
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+    \param inlet.2 _time - offset into buffer(s)
+	\retval outlet vasp - modified vasp
+
+	\attention Normally vasp vectors have individual offsets - this operations sets all the offsets to equal values.
+	\todo Implement unit processing.
+*/
 class vasp_offs:
 	public vasp_tx
 {
@@ -296,20 +430,24 @@ public:
 			post("%s - Offset argument invalid -> ignored",thisName());
 
 		AddInAnything();
-		AddInInt();
+		AddInFloat();
 		AddOutAnything();
 		SetupInOut();
 
 		FLEXT_ADDMETHOD(1,m_offs);
 	}
 
-	V m_offs(I o) { offs = o,seto = true; }
+	V m_offs(F o) 
+	{ 
+		offs = o; //! \todo unit processing 
+		seto = true; 
+	}
 
 	virtual Vasp *x_work() 
 	{ 
 		Vasp *ret = new Vasp(ref); 
 		if(seto) {
-			for(I i = 0; i < ret->Vectors(); ++i)
+			for(I i = 0; i < ret->Vectors(); ++i) 
 				ret->Vector(i).Offset(offs);
 		}
 		return ret;
@@ -321,7 +459,7 @@ protected:
 	BL seto;
 
 private:
-	FLEXT_CALLBACK_I(m_offs);
+	FLEXT_CALLBACK_F(m_offs);
 };
 
 FLEXT_LIB_G("vasp.offs",vasp_offs)
@@ -329,6 +467,19 @@ FLEXT_LIB_G("vasp.offs",vasp_offs)
 
 
 
+/*! \class vasp_doffs
+	\remark \b vasp.offs+
+	\brief Sets offset of vasp vectors differentially.
+	\since 0.0.1
+	\param cmdln.1 [_time=0] - increase offset of into buffer(s)
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+    \param inlet.2 _time - increase of offset into buffer(s)
+	\retval outlet vasp - modified vasp
+
+	\todo Implement unit processing
+*/
 class vasp_doffs:
 	public vasp_offs
 {
@@ -354,6 +505,22 @@ FLEXT_LIB_G("vasp.offs+",vasp_doffs)
 
 
 
+/*! \class vasp_qoffs
+	\remark \b vasp.offs?
+	\brief Get offset of singled vector vasp.
+	\since 0.0.1
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet _time - offset into vector buffer
+
+	\note Outputs 0 if vasp is undefined or invalid
+	\note Only works for a vasp with one vector. No output otherwise.
+
+	\todo Implement unit processing
+	\todo Should we provide a cmdln default vasp?
+	\todo Should we inhibit output for invalid vasps?
+*/
 class vasp_qoffs:
 	public vasp_op
 {
@@ -364,7 +531,7 @@ public:
 	vasp_qoffs()
 	{
 		AddInAnything();
-		AddOutInt();
+		AddOutFloat();
 		SetupInOut();
 	}
 
@@ -386,7 +553,8 @@ public:
 					}
 				}
 			}
-			ToOutInt(0,o);
+			//! \todo unit processing
+			ToOutFloat(0,o);
 		}
 	}
 
@@ -397,6 +565,19 @@ FLEXT_LIB("vasp.offs?",vasp_qoffs)
 
 
 
+/*! \class vasp_frames
+	\remark \b vasp.frames
+	\brief Sets frame count of vasp.
+	\since 0.0.1
+	\param cmdln.1 [_time=0] - frame count in time units
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+    \param inlet.2 _time - frame count in time units
+	\retval outlet vasp - modified vasp
+
+	\todo Implement unit processing.
+*/
 class vasp_frames:
 	public vasp_tx
 {
@@ -412,14 +593,18 @@ public:
 			post("%s - Frame count argument invalid -> ignored",thisName());
 
 		AddInAnything();
-		AddInInt();
+		AddInFloat();
 		AddOutAnything();
 		SetupInOut();
 
 		FLEXT_ADDMETHOD(1,m_frms);
 	}
 
-	V m_frms(I f) { frms = f,setf = true; }
+	V m_frms(F f) 
+	{ 
+		frms = f; //! \todo unit processing
+		setf = true; 
+	}
 
 	virtual Vasp *x_work() 
 	{ 
@@ -434,7 +619,7 @@ protected:
 	BL setf;
 
 private:
-	FLEXT_CALLBACK_I(m_frms);
+	FLEXT_CALLBACK_F(m_frms);
 };
 
 FLEXT_LIB_G("vasp.frames",vasp_frames)
@@ -442,6 +627,19 @@ FLEXT_LIB_G("vasp.frames",vasp_frames)
 
 
 
+/*! \class vasp_dframes
+	\remark \b vasp.frames+
+	\brief Sets frame count of vasp differentially.
+	\since 0.0.1
+	\param cmdln.1 [_time=0] - increase of frame count in time units
+	\param inlet.1 vasp - is stored and output triggered
+	\param inlet.1 bang - triggers output
+	\param inlet.1 set - vasp to be stored 
+    \param inlet.2 _time - increase of frame count in time units
+	\retval outlet vasp - modified vasp
+
+	\todo Implement unit processing.
+*/
 class vasp_dframes:
 	public vasp_frames
 {
@@ -464,6 +662,21 @@ FLEXT_LIB_G("vasp.frames+",vasp_dframes)
 
 
 
+/*! \class vasp_qframes
+	\remark \b vasp.frames?
+	\brief Get frame count in time units
+	\since 0.0.1
+	\param inlet vasp - is stored and output triggered
+	\param inlet bang - triggers output
+	\param inlet set - vasp to be stored 
+	\retval outlet _time - frame count of vasp in time units
+
+	\note Outputs 0 if vasp is undefined or invalid
+
+	\todo Implement unit processing
+	\todo Should we provide a cmdln default vasp?
+	\todo Should we inhibit output for invalid vasps?
+*/
 class vasp_qframes:
 	public vasp_op
 {
@@ -491,6 +704,7 @@ public:
 					delete buf;
 				}
 			}
+			//! \todo unit processing
 			ToOutInt(0,frms < 0?0:frms);
 		}
 	}
