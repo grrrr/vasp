@@ -43,9 +43,18 @@ FLEXT_EXT V vasp_setup()
 // vbuffer class
 ///////////////////////////////////////////////////////////////////////////
 
-vbuffer::vbuffer(t_symbol *s,I c,I l,I o) {	Set(s,c,l,o); }
+vbuffer::vbuffer(t_symbol *s,I c,I l,I o): 
+	chn(0),len(0),offs(0) 
+{	
+	Set(s,c,l,o); 
+}
 
-vbuffer::vbuffer(const vbuffer &v) { operator =(v); }
+vbuffer::vbuffer(const vbuffer &v):
+	chn(0),len(0),offs(0) 
+{ 
+	operator =(v); 
+}
+
 
 vbuffer::~vbuffer() {}
 
@@ -220,6 +229,11 @@ vasp &vasp::MakeList(BL withvasp)
 	return *this;
 }
 
+vbuffer *vasp::Buffer(I ix) const
+{
+	const Ref &r = Channel(ix);
+	return new vbuffer(r.Symbol(),r.Channel(),Frames(),r.Offset());
+}
 
 
 ///////////////////////////////////////////////////////////////////////////

@@ -21,7 +21,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 
-
 class vbuffer:
 	public flext_base::buffer
 {
@@ -45,11 +44,16 @@ protected:
 
 
 
+
 class vasp 
 {
 public:
 
 	struct Ref {
+		t_symbol *Symbol() const { return sym; }
+		I Channel() const { return chn; }
+		I Offset() const { return offs; }
+
 		t_symbol *sym;
 		I chn;
 		I offs; // counted in frames
@@ -138,9 +142,14 @@ protected:
 
 	vasp ref;
 
+
+	static I min(I a,I b) { return a < b?a:b; }
+	static I max(I a,I b) { return a > b?a:b; }
+
 private:
 	
 	xs_unit unit;
+	BL log;
 
 	FLEXT_CALLBACK(m_bang)
 	FLEXT_CALLBACK_G(m_vasp)
@@ -185,20 +194,33 @@ public:
 	// "unary" functions
 	virtual V m_pow(F v); // power
 	virtual V m_cpow(I argc,t_atom *argv); // complex power (with each two channels)
-	virtual V m_sqr();   // square
+	virtual V m_sqr();   // unsigned square 
+	virtual V m_ssqr();   // signed square 
 	virtual V m_csqr();  // complex square (with each two channels)
-	virtual V m_root(F v); // real root
-	virtual V m_sqrt();  // square root
+	virtual V m_root(F v); // real root (from abs value)
+	virtual V m_sqrt();  // square root (from abs value)
+	virtual V m_ssqrt();  // square root (from abs value)
+//	virtual V m_csqrt();  // complex square root (how about branches?)
+
+	virtual V m_exp();  // exponential function
+	virtual V m_cexp();  // complex exponential function
+	virtual V m_log(); // natural logarithm
+//	virtual V m_cln(); // complex logarithm (how about branches?)
 
 	virtual V m_inv();  // invert buffer values
 	virtual V m_cinv(); // complex invert buffer values (each two)
 
 	virtual V m_abs();  // absolute values
+	virtual V m_sign();  // sign function 
 	virtual V m_polar(); // cartesian -> polar (each two)
 	virtual V m_cart(); // polar -> cartesian (each two)
 
 	virtual V m_norm();  // normalize
 	virtual V m_cnorm(); // complex normalize
+
+
+	virtual V m_cswap();  // swap real and imaginary parts
+	virtual V m_cconj();  // complex conjugate
 
 	// Rearrange buffer
 	virtual V m_shift(F u);  // shift buffer
@@ -221,6 +243,12 @@ public:
 	virtual V m_cifft();
 
 private:
+	V fr_assign(I argc,t_atom *argv,V (*dofun)(F *,F,I));
+	V fc_assign(I argc,t_atom *argv,V (*dofun)(F *,F *,F,F,I));
+	V fs_assign(I argc,t_atom *argv,V (*dofun)(F *,const F *,I));
+	V fm_assign(I argc,t_atom *argv,V (*dofun)(F *,const F *,I));
+
+
 	FLEXT_CALLBACK_G(m_set)
 
 	FLEXT_CALLBACK_G(m_copy)
@@ -249,10 +277,15 @@ private:
 	FLEXT_CALLBACK_1(m_root,F)
 	FLEXT_CALLBACK(m_sqrt)
 
+	FLEXT_CALLBACK(m_exp)
+	FLEXT_CALLBACK(m_cexp)
+	FLEXT_CALLBACK(m_log)
+
 	FLEXT_CALLBACK(m_inv)
 	FLEXT_CALLBACK(m_cinv)
 
 	FLEXT_CALLBACK(m_abs)
+	FLEXT_CALLBACK(m_sign)
 	FLEXT_CALLBACK(m_polar)
 	FLEXT_CALLBACK(m_cart)
 
