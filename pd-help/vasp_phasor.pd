@@ -1,4 +1,4 @@
-#N canvas 43 34 865 429 10;
+#N canvas 43 34 867 431 10;
 #N canvas 0 0 452 302 Hz_to_period_length 0;
 #X floatatom 125 238 0 0 0;
 #X obj 125 142 t b f;
@@ -55,6 +55,7 @@ in samples;
 #X text 175 125 generate saw tooth at 20 Hz;
 #X obj 415 288 tabplay~ bufphasor;
 #X msg 547 287 vasp bufphasor;
+#X floatatom 166 151 5 0 0;
 #X connect 8 0 16 0;
 #X connect 11 0 10 0;
 #X connect 13 0 14 0;
@@ -62,3 +63,4 @@ in samples;
 #X connect 16 0 7 0;
 #X connect 16 0 7 1;
 #X connect 17 0 5 0;
+#X connect 18 0 14 1;

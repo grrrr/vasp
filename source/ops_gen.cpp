@@ -178,7 +178,7 @@ Vasp *VaspOp::m_phasor(OpParam &p,Vasp &src,const Argument &arg,Vasp *dst,BL mul
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
 			// period length
-			p.gen.phinc = 2*PI/flx::GetAFloat(arg.GetList()[0]); 
+			p.gen.phinc = 1./flx::GetAFloat(arg.GetList()[0]); 
 			// starting phase
 			p.gen.ph = arg.GetList().Count() >= 2?flx::GetAFloat(arg.GetList()[1]):0;
 		
