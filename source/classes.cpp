@@ -191,7 +191,7 @@ V vasp_tx::m_bang()
 	Lock(); 
 
 #ifdef FLEXT_THREADS
-	if(!IsSystemThread()) RelPriority(prior);
+	if(prior && IsThreadRegistered()) RelPriority(prior);
 #endif
 
 	if(ref.Check()) 
