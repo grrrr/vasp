@@ -1,10 +1,10 @@
-/* 
+/*
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
 Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
-WARRANTIES, see the file, "license.txt," in this distribution.  
+WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
@@ -30,29 +30,29 @@ Vasp::Ref &Vasp::Ref::operator =(const Ref &r)
 V Vasp::Ref::Symbol(const VSymbol &s) { sym = s; }
 
 
-Vasp::Vasp(): 
+Vasp::Vasp():
 	refs(0),chns(0),ref(NULL),
-	frames(0) 
-{ 
+	frames(0)
+{
 }
 
 Vasp::Vasp(I argc,const t_atom *argv):
 	refs(0),chns(0),ref(NULL),
-	frames(0) 
-{ 
-	operator ()(argc,argv); 
+	frames(0)
+{
+	operator ()(argc,argv);
 }
 
-Vasp::Vasp(const Vasp &v): 
+Vasp::Vasp(const Vasp &v):
 	refs(0),chns(0),ref(NULL),
-	frames(0) 
-{ 
-	operator =(v); 
+	frames(0)
+{
+	operator =(v);
 }
 
 Vasp::Vasp(I fr,const Ref &r):
 	refs(0),chns(0),ref(NULL),
-	frames(fr) 
+	frames(fr)
 {
 	AddVector(r);
 }
@@ -63,11 +63,11 @@ Vasp::~Vasp()
 	Clear();
 }
 
-Vasp &Vasp::Clear() 
-{ 
-	refs = frames = chns = 0; 
+Vasp &Vasp::Clear()
+{
+	refs = frames = chns = 0;
 	if(ref) { delete[] ref; ref = NULL; }
-	return *this; 
+	return *this;
 }
 
 
@@ -76,7 +76,7 @@ BL Vasp::ChkArgs(I argc,const t_atom *argv)
 	I ix = 0;
 
 	// vasp keyword
-	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
+	const t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
 	if(v && v == vasp_base::sym_vasp) ix++; // if it is "vasp" ignore it
 
 	// length argument
@@ -84,7 +84,7 @@ BL Vasp::ChkArgs(I argc,const t_atom *argv)
 
 	while(argc > ix) {
 		// check for symbol
-		t_symbol *bsym = flext::GetASymbol(argv[ix]);
+		const t_symbol *bsym = flext::GetASymbol(argv[ix]);
 		if(!bsym || !flext::GetString(bsym) || !flext::GetString(bsym)[0]) {  // expect a symbol
 			// not symbol -> bail out
 			return false;
@@ -111,7 +111,7 @@ V Vasp::Resize(I rcnt) {
 		Ref *rnew = new Ref[refs = rcnt];
 		for(I ix = 0; ix < chns; ++ix) rnew[ix] = ref[ix];
 		delete[] ref;
-		ref = rnew; 
+		ref = rnew;
 	}
 }
 
@@ -119,7 +119,7 @@ V Vasp::Resize(I rcnt) {
 
 Vasp &Vasp::operator =(const Vasp &v)
 {
-	if(!v.Ok()) 
+	if(!v.Ok())
 		Clear();
 	else {
 		frames = v.frames;
@@ -153,13 +153,13 @@ Vasp &Vasp::operator ()(I argc,const t_atom *argv)
 	I ix = 0;
 
 	I maxneeded = argc; // maximum number of ref'd buffers
-	// rather use a temp storage 
+	// rather use a temp storage
 	if(!ref || refs < maxneeded) {
 		if(ref) delete[] ref;
 		ref = new Ref[refs = maxneeded];
 	}
 
-	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
+	const t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
 	if(v && v == vasp_base::sym_vasp) ix++; // if it is "vasp" ignore it
 
 	if(argc > ix && flext::CanbeInt(argv[ix])) {
@@ -172,7 +172,7 @@ Vasp &Vasp::operator ()(I argc,const t_atom *argv)
 
 	chns = 0;
 	while(argc > ix) {
-		t_symbol *bsym = flext::GetASymbol(argv[ix]);
+		const t_symbol *bsym = flext::GetASymbol(argv[ix]);
 		if(!bsym || !flext::GetString(bsym) || !flext::GetString(bsym)[0]) {  // expect a symbol
 			Clear();
 			return *this;
@@ -214,7 +214,7 @@ Vasp &Vasp::operator ()(I argc,const t_atom *argv)
 
 VBuffer *Vasp::Buffer(I ix) const
 {
-	if(ix >= Vectors()) 
+	if(ix >= Vectors())
 		return NULL;
 	else {
 		const Ref &r = Vector(ix);
@@ -230,7 +230,7 @@ V Vasp::MakeList(flext::AtomList &ret,BL withvasp) const
 	I needed = voffs+1+Vectors()*3;
 	ret(needed);
 
-	if(withvasp) 
+	if(withvasp)
 		flext::SetSymbol(ret[0],vasp_base::sym_vasp);  // VASP
 
 	flext::SetInt(ret[voffs],frames);  // frames
@@ -285,7 +285,7 @@ V Vasp::Size(I s,BL keep,BL zero)
 {
 	for(I i = 0; i < Vectors(); ++i) {
 		VBuffer *buf = Buffer(i);
-		if(buf) { 
+		if(buf) {
 			buf->Frames(s,keep,zero);
 			delete buf;
 		}
@@ -296,7 +296,7 @@ V Vasp::SizeD(I sd,BL keep,BL zero)
 {
 	for(I i = 0; i < Vectors(); ++i) {
 		VBuffer *buf = Buffer(i);
-		if(buf) { 
+		if(buf) {
 			I s = buf->Frames()+sd;
 			buf->Frames(s >= 0?s:0,keep,zero);
 			delete buf;
@@ -309,7 +309,7 @@ V Vasp::SizeM(R f,BL keep,BL zero)
 {
 	for(I i = 0; i < Vectors(); ++i) {
 		VBuffer *buf = Buffer(i);
-		if(buf) { 
+		if(buf) {
 			I s = (I)(buf->Frames()*f);
 			buf->Frames(s >= 0?s:0,keep,zero);
 			delete buf;
@@ -317,12 +317,12 @@ V Vasp::SizeM(R f,BL keep,BL zero)
 	}
 }
 
-BL Vasp::Check() const 
+BL Vasp::Check() const
 {
 	BL ok = true;
 	for(I i = 0; ok && i < Vectors(); ++i) {
 		VBuffer *buf = Buffer(i);
-		if(!buf) 
+		if(!buf)
 			ok = false;
 		else {
 			ok = buf->Data() != NULL;
@@ -330,7 +330,7 @@ BL Vasp::Check() const
 		}
 	}
 	return ok;
-}	
+}
 
 I Vasp::ChkFrames() const
 {
@@ -357,7 +357,7 @@ CVasp::CVasp() {}
 CVasp::CVasp(const Vasp &v):
 	Vasp(v)
 {
-	if(!Check()) 
+	if(!Check())
 		Clear();
 	else
 		Frames(ChkFrames());

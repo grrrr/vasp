@@ -16,7 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 Env::Env(I argc,const t_atom *argv)
 {
 	I ix = 0;
-	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
+	const t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
 	if(v && v == vasp_base::sym_env) ix++; // if it is "env" ignore it
 
 	cnt = (argc-ix)/2;
@@ -55,7 +55,7 @@ BL Env::ChkArgs(I argc,const t_atom *argv)
 	I ix = 0;
 
 	// vasp keyword
-	t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
+	const t_symbol *v = ix < argc?flext::GetASymbol(argv[ix]):NULL;
 	if(v && v == vasp_base::sym_env) ix++; // if it is "env" ignore it
 
 	while(argc > ix) {
