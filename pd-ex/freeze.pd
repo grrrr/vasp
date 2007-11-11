@@ -1,5 +1,5 @@
-#N canvas 268 127 978 522 12;
-#N canvas 293 22 643 732 freeze 0;
+#N canvas 226 136 945 488 12;
+#N canvas 293 22 543 666 freeze 0;
 #X obj 27 137 vasp.split 2;
 #X obj 30 463 vasp.join 2;
 #X obj 27 74 vasp.cfft @detach 1;
@@ -123,7 +123,7 @@
 #X connect 41 0 40 0;
 #X restore 18 331 pd freeze;
 #X obj 73 210 nbx 6 18 -100 0 0 1 empty empty spectral_gate(dB) 0 -8
-0 12 -225271 -1 -1 -95 256;
+0 12 -225271 -1 -1 -19 256;
 #X obj 73 253 nbx 7 18 -10000 10000 0 1 empty empty transpose(cents)
 0 -8 0 12 -225271 -1 -1 0 256;
 #X obj 448 278 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
@@ -150,7 +150,7 @@
 #X connect 7 0 1 0;
 #X connect 8 0 0 0;
 #X restore 729 250 pd save;
-#N canvas 205 58 359 496 open 0;
+#N canvas 205 58 367 504 open 0;
 #X obj 19 96 openpanel;
 #X obj 21 6 inlet;
 #X obj 15 390 outlet;
@@ -182,8 +182,8 @@
 #X restore 448 250 pd open;
 #X msg 381 222 stop;
 #N canvas 0 22 450 300 graph10 0;
-#X array src 2.2491e+07 float 0;
-#X coords 0 1 2.2491e+07 -1 600 150 1;
+#X array src 893025 float 0;
+#X coords 0 1 893024 -1 600 150 1;
 #X restore 322 20 graph;
 #X msg 447 222 new;
 #X msg 482 222 again;
@@ -198,7 +198,7 @@
 #X obj 107 115 nbx 12 18 0 1e+08 0 1 empty empty length(frames) 0 -8
 0 12 -225271 -1 -1 1e+06 256;
 #X obj 19 375 nbx 9 14 -1e+37 1e+37 0 0 empty empty spectral_density(dB)
-0 -6 0 10 -262131 -1 -1 -33.6745 256;
+0 -6 0 10 -262131 -1 -1 -56.9257 256;
 #X obj 332 197 cnv 15 100 20 empty empty play_src 5 8 0 10 -261681
 -66577 0;
 #X obj 447 197 cnv 15 100 20 empty empty read_src 5 8 0 10 -261681
@@ -213,7 +213,7 @@
 #X msg 614 223 play;
 #X obj 614 198 cnv 15 100 20 empty empty play_dst 5 8 0 10 -261681
 -66577 0;
-#N canvas 0 22 519 371 playsrc 0;
+#N canvas 0 22 523 375 playsrc 0;
 #X obj 17 274 dac~;
 #X obj 19 21 inlet;
 #X obj 17 49 route play;
@@ -278,7 +278,7 @@
 #X connect 7 0 8 0;
 #X connect 8 0 5 1;
 #X restore 614 251 pd playdst;
-#N canvas 249 202 571 514 copy 0;
+#N canvas 249 202 579 522 copy 0;
 #X obj 27 26 inlet;
 #X obj 27 51 t b b;
 #X obj 316 19 inlet;
@@ -302,7 +302,7 @@
 #X text 341 221 set to zero;
 #X obj 185 222 vasp.= 0 @detach 1;
 #X obj 26 287 vasp.-> @detach 1;
-#X obj 187 174 vasp.s @ref dst @detach 1;
+#X obj 187 174 vasp.s @ref dst;
 #X connect 0 0 1 0;
 #X connect 1 0 4 0;
 #X connect 1 1 23 0;
@@ -329,9 +329,9 @@
 #X restore 18 159 pd copy;
 #X text 85 160 copy and resize;
 #X obj 323 170 hsl 600 15 0 1 0 1 \$0-r2 empty empty -2 -6 0 8 -262131
--1 -1 12800 0;
+-1 -1 45400 0;
 #X obj 323 5 hsl 600 15 0 1 0 1 \$0-r1 empty empty -2 -6 0 8 -262131
--1 -1 0 0;
+-1 -1 42400 0;
 #N canvas 148 330 313 273 sel 0;
 #X obj 30 25 r \$0-r1;
 #X obj 110 25 r \$0-r2;
@@ -368,7 +368,7 @@
 #X text 162 296 1... no power;
 #X obj 18 426 bng 25 250 50 0 empty empty normalize 0 -6 0 12 -24198
 -1 -1;
-#N canvas 0 22 458 308 normalize 0;
+#N canvas 0 22 466 316 normalize 0;
 #X obj 127 29 loadbang;
 #X msg 127 54 detach 1;
 #X text 120 75 no attributes yet;
