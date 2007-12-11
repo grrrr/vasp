@@ -2,7 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="vasp">
+	Name="vasp"
+	ProjectGUID="{3A6993BD-E2FE-4598-86D0-40F265067E24}">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
