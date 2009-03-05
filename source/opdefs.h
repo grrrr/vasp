@@ -237,7 +237,8 @@ template<class T,class OP> BL _F__rbin(OpParam &p)
 		case OpParam::Arg::arg_x: {							
             Vx__rbin<T,R,T,OP,_A__scalar<R> >(p.rsdt,p.rss,p.rddt,p.rds,p.arg[0].x.r,p.frames);
 			break;												
-		}														
+		}
+        case OpParam::Arg::arg_: assert(false);
 		}														
 	}															
 	else {														
@@ -268,7 +269,8 @@ template<class T,class OP> BL _F__cbin(OpParam &p)
 		case OpParam::Arg::arg_x: {								
             Vx__cbin<T,R,R,R,OP,_A__scalar<R>,_A__scalar<R> >(p.rsdt,p.isdt,p.rss,p.iss,p.rddt,p.iddt,p.rds,p.ids,p.arg[0].x.r,p.arg[0].x.i,1,1,p.frames);
 			break;												
-		}														
+		}
+        case OpParam::Arg::arg_: assert(false);
 		}														
 	}															
 	else {														
@@ -354,8 +356,9 @@ template<class T> BL _d__rbin(V fun(T &v,T a,T b),OpParam &p)
 			const T av = p.arg[0].x.r;
 			_DF_LOOP(i,p.frames, ( fun(p.rddt[p.rds*i],p.rsdt[p.rss*i],av) ) ) 
 			break;												
-		}														
-		}														
+		}
+        case OpParam::Arg::arg_: assert(false);
+        }														
 	}															
 	else {														
 		_DF_LOOP(i,p.frames, ( fun(p.rddt[p.rds*i],p.rsdt[p.rss*i],p.rbin.arg) ) ) 
@@ -386,7 +389,8 @@ template<class T> BL _d__cbin(V fun(T &rv,T &iv,T ra,T ia,T rb,T ib),OpParam &p)
 			const T avr = p.arg[0].x.r,avi = p.arg[0].x.i;
 			_DF_LOOP(i,p.frames, ( fun(p.rddt[p.rds*i],p.iddt[p.ids*i],p.rsdt[p.rss*i],p.isdt[p.iss*i],avr,avi) ) ) 
 			break;
-		}														
+		}
+        case OpParam::Arg::arg_: assert(false);
 		}														
 	}															
 	else {														

@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -67,8 +67,8 @@ Vasp *VaspOp::m_cbin(OpParam &p,CVasp &src,const Argument &arg,CVasp *dst,opfun 
 	if(vecs) {
 		if(arg.CanbeComplex()) {
 			CX z = arg.GetAComplex();
-			p.cbin.rarg = z.real; 
-			p.cbin.iarg = z.imag; 
+			p.cbin.rarg = z.real();
+			p.cbin.iarg = z.imag();
 		}
 		else if(arg.IsEnv()) {
 			if(p.args != 1)

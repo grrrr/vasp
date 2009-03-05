@@ -10,7 +10,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 #include "vecblk.h"
-//#include <math.h>
 
 
 ///////////////////////////////////////////////////////////////////////////

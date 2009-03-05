@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -24,7 +24,7 @@ BL VecOp::d_fhp(OpParam &p)
 		post("%s - reversing operation direction due to overlap: opposite sample delay",p.opname);
 
 /*
-	R coef = (2*PI)/perln;
+	R coef = (2*M_PI)/perln;
     if(coef > 1) coef = 1;
 */  
     const R coef = 1-p.flt.coef;
@@ -71,7 +71,7 @@ BL VecOp::d_flp(OpParam &p)
 		post("%s - reversing operation direction due to overlap: opposite sample delay",p.opname);
 
 /*
-	R coef = (2*PI)/perln;
+	R coef = (2*M_PI)/perln;
     if(coef > 1) coef = 1;
 */    
     
@@ -111,7 +111,7 @@ Vasp *VaspOp::m_fhp(OpParam &p,CVasp &src,const Argument &arg,CVasp *dst,BL hp)
 	if(arg.IsList() && arg.GetList().Count() >= 1) {
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
-			p.flt.coef = 2*PI/flext::GetAFloat(arg.GetList()[0]);
+			p.flt.coef = 2*M_PI/flext::GetAFloat(arg.GetList()[0]);
 		    if(p.flt.coef > 1) p.flt.coef = 1;
 			p.flt.rep = arg.GetList().Count() >= 2?flext::GetAInt(arg.GetList()[1]):1;
 			p.flt.rep = -p.flt.rep;  // fwd/bwd operation

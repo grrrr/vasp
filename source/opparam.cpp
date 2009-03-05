@@ -10,7 +10,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 #include "opparam.h"
-//#include <math.h>
 
 /*
 // Duplication of breakpoint lists should be avoided

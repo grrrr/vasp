@@ -23,7 +23,7 @@ Env::Env(I argc,const t_atom *argv)
 	pos = new R[cnt];
 	val = new R[cnt];
 
-	R prev = -BIG;
+	R prev = -std::numeric_limits<R>::max();
 	BL ok = true;
 	for(I i = 0; i < cnt; ++i) {
 		val[i] = flext::GetAFloat(argv[ix++]);
@@ -92,7 +92,7 @@ V Env::Clear()
 }
 
 
-Env::Iter::Iter(const Env &bpl): bp(bpl),ppt(-BIG),npt(BIG),pvl(0),k(0) {}
+Env::Iter::Iter(const Env &bpl): bp(bpl),ppt(-std::numeric_limits<R>::max()),npt(std::numeric_limits<R>::max()),pvl(0),k(0) {}
 
 V Env::Iter::Init(R p) 
 {
@@ -102,7 +102,7 @@ V Env::Iter::Init(R p)
 	if(p < bp.Pos(0)) {
 		// position is before the head
 		ix = -1;
-		ppt = -BIG; pvl = bp.Val(0);
+		ppt = -std::numeric_limits<R>::max(); pvl = bp.Val(0);
 	}
 	else if(p > bp.Pos(cnt-1)) { 
 		// position is after the tail
@@ -119,7 +119,7 @@ V Env::Iter::Init(R p)
 	}
 
 	if(ix >= cnt) {
-		npt = BIG; nvl = pvl;
+		npt = std::numeric_limits<R>::max(); nvl = pvl;
 		k = 0;
 	}
 	else {
@@ -133,7 +133,7 @@ V Env::Iter::UpdateFwd(R p)
 {
 	do {
 		ppt = npt,pvl = nvl;
-		if(++ix >= bp.Count()-1) npt = BIG,k = 0;
+		if(++ix >= bp.Count()-1) npt = std::numeric_limits<R>::max(),k = 0;
 		else {
 			k = ((nvl = bp.Val(ix+1))-pvl)/((npt = bp.Pos(ix+1))-ppt); 
 		}
@@ -145,7 +145,7 @@ V Env::Iter::UpdateBwd(R p)
 {
 	do {
 		npt = ppt,nvl = pvl;
-		if(--ix < 0) ppt = -BIG,k = 0;
+		if(--ix < 0) ppt = -std::numeric_limits<R>::max(),k = 0;
 		else {
 			k = (nvl-(pvl = bp.Val(ix)))/(npt-(ppt = bp.Pos(ix))); 
 		}

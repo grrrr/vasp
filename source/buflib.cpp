@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -10,7 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 #include "buflib.h"
-#include <stdio.h>
+#include <cstdio>
 
 #define LIBTICK 0.1 // tick time in s
 #define LIBTOL 3  // how many ticks till release

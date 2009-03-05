@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -13,6 +13,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // enable attributes
 #define FLEXT_ATTRIBUTES 1
+
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
 
 #include <flext.h>
 
@@ -27,68 +31,33 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 #include <typeinfo>
-#include <stdlib.h>
+#include <cstdlib>
+#include <cmath>
+#include <complex>
+#include <climits>
+#include <valarray>
 
-class complex;
-class vector;
+typedef std::complex<float> complex;
+typedef std::valarray<float> vector;
 
-#if 0
-	#define I int
-	#define L long
-	#define UL unsigned long
-	#define F float
-	#define D double
-	#define C char
-	#define BL bool
-	#define V void
-	#define S t_sample // type for samples
-	#define R double // type for internal calculations
-	#define CX complex
-	#define VX vector
-#else
-	typedef int I;
-	typedef long L;
-	typedef unsigned long UL;
-	typedef float F;
-	typedef double D;
-	typedef char C;
-	typedef bool BL;
-	typedef void V;
-	typedef t_sample S; // type for samples
-	typedef double R; // type for internal calculations
-	typedef complex CX;
-	typedef vector VX;
-#endif
+#define I int
+#define L long
+#define UL unsigned long
+#define F float
+#define D double
+#define C char
+#define BL bool
+#define V void
+#define S t_sample // type for samples
+#define R double // type for internal calculations
+#define CX complex
+#define VX vector
+
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 // buffers are never interleaved - special optimizations may occur
 // attention: possibly obsolete when immediate file access is implemented
 #define VASP_CHN1  
 #endif
-
-class complex 
-{ 
-public:
-	complex() {}
-	complex(F re,F im = 0): real(re),imag(im) {}
-
-	F real,imag; 
-};
-
-class vector 
-{ 
-public:
-	vector(): dim(0),data(NULL) {}
-	~vector() { if(data) delete[] data; }
-
-	I Dim() const { return dim; }
-	F *Data() { return data; }
-	const F *Data() const { return data; }
-
-	F operator [](I ix) const { return data[ix]; }
-	F &operator [](I ix) { return data[ix]; }
-protected:
-	I dim; F *data; 
-};
 
 #endif

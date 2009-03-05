@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -22,7 +22,7 @@ static V vasp_main()
 	post("-----------------------------------------");
 	post("           VASP modular %s            ",VASP_VERSION);
 	post("   vector assembling signal processor    ");
-	post("       (C)2002-2007 Thomas Grill         ");
+	post("       (C)2002-2009 Thomas Grill         ");
 #ifdef FLEXT_DEBUG
 	post("   DEBUG BUILD - " __DATE__ " " __TIME__);
 #endif

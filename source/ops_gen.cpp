@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -11,7 +11,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 #include "ops_gen.h"
 #include "util.h"
-#include <math.h>
 
 // --- osc ---------------------------------------
 
@@ -55,7 +54,7 @@ Vasp *VaspOp::m_osc(OpParam &p,CVasp &src,const Argument &arg,CVasp *dst,BL mul)
 		RVecBlock *vecs = GetRVecs(p.opname,src,dst);
 		if(vecs) {
 			// period length
-			p.gen.phinc = 2*PI/flext::GetAFloat(arg.GetList()[0]); 
+			p.gen.phinc = 2*M_PI/flext::GetAFloat(arg.GetList()[0]); 
 			// starting phase
 			p.gen.ph = arg.GetList().Count() >= 2?flext::GetAFloat(arg.GetList()[1]):0;
 
@@ -116,7 +115,7 @@ Vasp *VaspOp::m_cosc(OpParam &p,CVasp &src,const Argument &arg,CVasp *dst,BL mul
 		CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 		if(vecs) {
 			// period length
-			p.gen.phinc = 2*PI/flext::GetAFloat(arg.GetList()[0]); 
+			p.gen.phinc = 2*M_PI/flext::GetAFloat(arg.GetList()[0]); 
 			// starting phase
 			p.gen.ph = arg.GetList().Count() >= 2?flext::GetAFloat(arg.GetList()[1]):0;
 
@@ -138,7 +137,7 @@ VASP_ANYOP("vasp.*cosc",mcosc,1,true,VASP_ARG(),"Multiplies with a complex oscil
 
 // --- phasor ---------------------------------------
 
-// ! look up Höldrich's pd phasor code
+// ! look up HË†ldrich's pd phasor code
 
 /*!	\brief Generator for saw wave oscillations.
 */
@@ -237,7 +236,7 @@ BL VecOp::d_cnoise(OpParam &p)
 { 
 	for(; p.frames--; p.rddt += p.rds,p.iddt += p.ids) {
 		R amp = rnd();
-		R arg = rnd()*(2.*PI);
+		R arg = rnd()*(2.*M_PI);
 		*p.rddt = amp*cos(arg);
 		*p.iddt = amp*sin(arg);
 	}

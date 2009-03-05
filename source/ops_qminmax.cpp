@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -12,7 +12,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "ops_cmp.h"
 #include "opdefs.h"
 #include "util.h"
-#include <math.h>
 
 // --------------------------------------------------------------
 
@@ -43,10 +42,10 @@ public:
 
 	virtual F do_opt(OpParam &p,CVasp &v) 
 	{ 
-		p.norm.minmax = BIG;
+		p.norm.minmax = std::numeric_limits<R>::max();
 		Vasp *ret = VaspOp::m_qmin(p,v); 
 		delete ret;
-		return p.norm.minmax == BIG?0:p.norm.minmax;
+		return p.norm.minmax == std::numeric_limits<R>::max()?0:p.norm.minmax;
 	}
 		
 	virtual V m_bang() 
@@ -91,10 +90,10 @@ class vasp_qamin:
 public:
 	virtual F do_opt(OpParam &p,CVasp &v) 
 	{ 
-		p.norm.minmax = BIG;
+		p.norm.minmax = std::numeric_limits<R>::max();
 		Vasp *ret = VaspOp::m_qmin(p,v); 
 		delete ret;
-		return p.norm.minmax == BIG?0:p.norm.minmax;
+		return p.norm.minmax == std::numeric_limits<R>::max()?0:p.norm.minmax;
 	}
 		
 	virtual V m_help() { post("%s - Get a vasp's minimum absolute sample value",thisName()); }
@@ -124,10 +123,10 @@ class vasp_qmax:
 public:
 	virtual F do_opt(OpParam &p,CVasp &v) 
 	{ 
-		p.norm.minmax = -BIG;
+		p.norm.minmax = -std::numeric_limits<R>::max();
 		Vasp *ret = VaspOp::m_qmax(p,v); 
 		delete ret;
-		return p.norm.minmax == -BIG?0:p.norm.minmax;
+		return p.norm.minmax == -std::numeric_limits<R>::max()?0:p.norm.minmax;
 	}
 
 	virtual V m_help() { post("%s - Get a vasp's maximum sample value",thisName()); }
@@ -196,10 +195,10 @@ public:
 
 	virtual F do_opt(OpParam &p,CVasp &v) 
 	{ 
-		p.norm.minmax = BIG;
+		p.norm.minmax = std::numeric_limits<R>::max();
 		Vasp *ret = VaspOp::m_qrmin(p,v);
 		delete ret; 
-		return sqrt(p.norm.minmax == BIG?0:p.norm.minmax);
+		return sqrt(p.norm.minmax == std::numeric_limits<R>::max()?0:p.norm.minmax);
 	}
 		
 	virtual V m_bang() 

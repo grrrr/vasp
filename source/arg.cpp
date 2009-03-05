@@ -10,7 +10,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 #include "arg.h"
-//#include <math.h>
 #include "classes.h"
 
 Argument::Argument(): tp(tp_none),nxt(NULL) {}
@@ -74,7 +73,7 @@ V Argument::MakeList(flext::AtomList &ret)
 		dt.env->MakeList(ret);
 		break;
 	case tp_vx: {
-		I d = dt.vx->Dim();
+		I d = dt.vx->size();
 		ret(d+1);
 		flext::SetSymbol(ret[0],vasp_base::sym_vector);
 		for(I i = 0; i < d; ++i)
@@ -84,8 +83,8 @@ V Argument::MakeList(flext::AtomList &ret)
 	case tp_cx:
 		ret(3);
 		flext::SetSymbol(ret[0],vasp_base::sym_complex);
-		flext::SetFloat(ret[1],dt.cx->real);
-		flext::SetFloat(ret[2],dt.cx->imag);
+		flext::SetFloat(ret[1],dt.cx->real());
+		flext::SetFloat(ret[2],dt.cx->imag());
 		break;
 	case tp_int:
 		ret(1);

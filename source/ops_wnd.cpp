@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -11,12 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "main.h"
 #include "ops_wnd.h"
 #include "oploop.h"
-#include <math.h>
-#include <string.h>
-
-#ifndef PI
-#define PI 3.1415926535897932384
-#endif
+#include <cstring>
 
 // --- window --------------------------
 
@@ -91,26 +86,26 @@ BL VecOp::d_window(OpParam &p)
 		break;
 	}
 	case 1: { // sine
-		p.wnd.p1 = (PI/2)/p.frames;
-		p.wnd.p2 = p.wnd.p1/2+(rev?PI/2:0);
+		p.wnd.p1 = (M_PI/2)/p.frames;
+		p.wnd.p2 = p.wnd.p1/2+(rev?M_PI/2:0);
 		WNDOP(wf_sin,p);
 		break;
 	}
 	case 2: { // Hanning
-		p.wnd.p1 = PI/p.frames;
-		p.wnd.p2 = p.wnd.p1/2+(rev?0:PI);
+		p.wnd.p1 = M_PI/p.frames;
+		p.wnd.p2 = p.wnd.p1/2+(rev?0:M_PI);
 		WNDOP(wf_hanning,p);
 		break;
 	}	
 	case 3: { // Hamming
-		p.wnd.p1 = PI/p.frames;
-		p.wnd.p2 = p.wnd.p1/2+(rev?0:PI);
+		p.wnd.p1 = M_PI/p.frames;
+		p.wnd.p2 = p.wnd.p1/2+(rev?0:M_PI);
 		WNDOP(wf_hamming,p);
 		break;
 	}	
 	case 4: { // Blackman
-		p.wnd.p1 = PI/p.frames;
-		p.wnd.p2 = p.wnd.p1/2+(rev?0:PI);
+		p.wnd.p1 = M_PI/p.frames;
+		p.wnd.p2 = p.wnd.p1/2+(rev?0:M_PI);
 		WNDOP(wf_blackman,p);
 		break;
 	}	
@@ -127,8 +122,8 @@ BL VecOp::d_window(OpParam &p)
 		break;
 	}	
 	case 7: { // Lanczos (xxx)
-		p.wnd.p1 = PI/p.frames;
-		p.wnd.p2 = p.wnd.p1/2+(rev?0:PI);
+		p.wnd.p1 = M_PI/p.frames;
+		p.wnd.p2 = p.wnd.p1/2+(rev?0:M_PI);
 		WNDOP(wf_lanczos,p);
 		break;
 	}	
@@ -184,7 +179,7 @@ Vasp *VaspOp::m_window(OpParam &p,CVasp &src,const Argument &arg,CVasp *dst,BL i
 VASP_ANYOP("vasp.window vasp.wnd",window,0,false,VASP_ARG(),"Sets target vasp to window function")
 VASP_ANYOP("vasp.*window vasp.*wnd",mwindow,0,true,VASP_ARG(),"Multiplies a vasp by window function")
 VASP_ANYOP("vasp.!window vasp.!wnd",iwindow,0,false,VASP_ARG(),"Sets target vasp to reverse window function")
-VASP_ANYOP("vasp.*!window vasp.!wnd",miwindow,0,true,VASP_ARG(),"Multiplies a vasp by reverse window function")
+VASP_ANYOP("vasp.*!window vasp.*!wnd",miwindow,0,true,VASP_ARG(),"Multiplies a vasp by reverse window function")
 VASP_ANYOP("vasp.xwindow vasp.xwnd",xwindow,0,false,VASP_ARG(),"Sets target vasp to symmetrical window function")
 VASP_ANYOP("vasp.*xwindow vasp.*xwnd",mxwindow,0,true,VASP_ARG(),"Multiplies a vasp by symmetrical window function")
 
