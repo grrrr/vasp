@@ -32,10 +32,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <typeinfo>
 #include <cstdlib>
+#include <cassert>
 #include <cmath>
 #include <complex>
-#include <climits>
 #include <valarray>
+#include <limits>
 
 typedef std::complex<float> complex;
 typedef std::valarray<float> vector;
@@ -52,7 +53,6 @@ typedef std::valarray<float> vector;
 #define R double // type for internal calculations
 #define CX complex
 #define VX vector
-
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 // buffers are never interleaved - special optimizations may occur
