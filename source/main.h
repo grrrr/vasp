@@ -11,12 +11,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __VASP_H
 #define __VASP_H
 
-// enable attributes
-#define FLEXT_ATTRIBUTES 1
-
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES
 #endif
+
+#include <typeinfo>
+#include <cstdlib>
+#include <cassert>
+#include <cmath>
+#include <complex>
+#include <valarray>
+#include <limits>
+
+// enable attributes
+#define FLEXT_ATTRIBUTES 1
 
 #include <flext.h>
 
@@ -28,15 +36,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // switch off warnings for the release build
 #pragma warning(disable: 4244)
 #endif
-
-
-#include <typeinfo>
-#include <cstdlib>
-#include <cassert>
-#include <cmath>
-#include <complex>
-#include <valarray>
-#include <limits>
 
 typedef std::complex<float> complex;
 typedef std::valarray<float> vector;
