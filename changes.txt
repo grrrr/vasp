@@ -6,6 +6,7 @@ Version history:
 - FIX: help file names / object names have been broken by flext changes
 - CHANGE: fixed C++-type headers and changed to some C++ std types and algorithms
 - FIX: vasp.*!wnd was missing (was vasp.!wnd)
+- ADD: vasp-objectmappings file (many thanks to Oliver Stotz)
 
 0.1.3:
 - CHANGE: exchanged #defines for templates in vector calculation loops

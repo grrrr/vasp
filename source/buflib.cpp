@@ -51,7 +51,7 @@ public:
 	BufEntry *nxt;
 
 	I alloc,len;
-	S *data;
+	BS *data;
 };
 
 
@@ -73,7 +73,7 @@ BufEntry::BufEntry(const t_symbol *s,I fr,BL zero):
 	alloc(fr),len(fr),
 	refcnt(0),nxt(NULL) 
 {
-    data = (S *)NewAligned(len*sizeof(*data));
+    data = (BS *)NewAligned(len*sizeof(*data));
 	if(zero) flext::ZeroMem(data,len*sizeof(*data));
 }
 
@@ -300,7 +300,7 @@ BufEntry *BufLib::Resize(BufEntry *e,I fr,BL keep,BL zero)
 		e->len = fr;
 	}
 	else {
-		S *nd = new S[fr]; 
+		BS *nd = new BS[fr]; 
 		if(keep) {
 			I l = fr;
 			if(e->len < l) {
@@ -340,4 +340,4 @@ I ImmBuf::Frames() const { return entry->len; }
 
 V ImmBuf::Frames(I fr,BL keep,BL zero) { entry = BufLib::Resize(entry,fr,keep,zero); }
 
-S *ImmBuf::Data() { return entry->data; }
+BS *ImmBuf::Data() { return entry->data; }

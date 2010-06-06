@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2010 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -50,12 +50,12 @@ public:
 	virtual V Frames(I fr,BL keep,BL zero) = 0;
 
 	virtual I Channels() const = 0;
-	virtual S *Data() = 0;
+	virtual BS *Data() = 0;
 
 	virtual V Refresh() {}
 	virtual V Dirty() {}
 
-	S *Pointer() { return Data()+Offset()*Channels()+Channel(); }
+	BS *Pointer() { return Data()+Offset()*Channels()+Channel(); }
 
 	virtual VSymbol Symbol() const = 0;
 	const C *Name() const { return Symbol().Name(); }
@@ -94,7 +94,7 @@ public:
 	virtual V Frames(I fr,BL keep,BL zero) { buf.Frames(fr,keep,zero); }
 
 	virtual I Channels() const { return buf.Channels(); }
-	virtual S *Data() { return buf.Data(); }
+	virtual BS *Data() { return buf.Data(); }
 
 protected:
 	flext::buffer buf;
@@ -118,7 +118,7 @@ public:
 	virtual V Frames(I fr,BL keep,BL zero);
 
 	virtual I Channels() const { return 1; }
-	virtual S *Data();
+	virtual BS *Data();
 
 protected:
 	BufEntry *entry;

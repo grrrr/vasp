@@ -63,7 +63,7 @@ public:
 		else {
 			VBuffer *buf = ref.Buffer(0);
 			I i,cnt = buf->Length(),pkfnd = 0;
-			S *p = buf->Pointer();
+			BS *p = buf->Pointer();
 
 			I mxpk = min(cnt,peaks);
 			t_atom *pos = new t_atom[mxpk],*lst = new t_atom[mxpk];

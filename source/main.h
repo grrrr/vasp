@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2002-2010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -49,6 +49,7 @@ typedef std::valarray<float> vector;
 #define BL bool
 #define V void
 #define S t_sample // type for samples
+#define BS flext::buffer::Element // type for buffer sample elements
 #define R double // type for internal calculations
 #define CX complex
 #define VX vector
