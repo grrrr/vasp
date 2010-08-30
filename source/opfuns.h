@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2002-2010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -358,7 +358,7 @@ namespace VecOp {
     template<class T> class f_gate {
     public:
     	static I rbin_opt() { return 0; }
-        static V rbin(T &rv,T ra,T rb) { rv = fabs(ra) >= rb?ra:0; } 
+        static V rbin(T &rv,T ra,T rb) { if(fabs(ra) >= rb) rv = ra; else rv = 0; } 
 
     	static I cbin_opt() { return 0; }
         static V cbin(T &rv,T &iv,T ra,T ia,T rb,T) 
@@ -373,7 +373,7 @@ namespace VecOp {
     template<class T> class f_igate {
     public:
     	static I rbin_opt() { return 0; }
-        static V rbin(T &rv,T ra,T rb) { rv = fabs(ra) <= rb?ra:0; } 
+        static V rbin(T &rv,T ra,T rb) { if(fabs(ra) <= rb) rv = ra; else rv = 0; } 
 
     	static I cbin_opt() { return 0; }
         static V cbin(T &rv,T &iv,T ra,T ia,T rb,T) 

@@ -29,7 +29,7 @@ BL VecOp::d_fhp(OpParam &p)
 */  
     const R coef = 1-p.flt.coef;
 	const I arep = abs(p.flt.rep);
-	S *src = p.rsdt,*dst = p.rddt;
+	BS *src = p.rsdt,*dst = p.rddt;
 
 	for(I ti = 0; ti < arep; ++ti) {
 		register S v1;
@@ -81,7 +81,7 @@ BL VecOp::d_flp(OpParam &p)
 	for(I ti = 0; ti < arep; ++ti) {
 		register S v1;
 		I i;
-		S *src = p.rsdt,*dst = p.rddt;
+		BS *src = p.rsdt,*dst = p.rddt;
 
 		// t+ direction
 		for(i = 0,v1 = 0; i < p.frames; ++i) {

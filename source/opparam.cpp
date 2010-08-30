@@ -47,7 +47,7 @@ OpParam::Arg &OpParam::Arg::SetX(S r,S i)
 	return *this;
 }
 
-OpParam::Arg &OpParam::Arg::SetV(S *r,I rs,S *i,I is)
+OpParam::Arg &OpParam::Arg::SetV(BS *r,I rs,BS *i,I is)
 {
 	Clear();
 	argtp = arg_v;

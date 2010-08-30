@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2010 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,35 +15,35 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // Comparison functions
 
-DEFOP(S,d_lwr,lwr,rbin)
-DEFOP(S,d_gtr,gtr,rbin)
-DEFOP(S,d_alwr,alwr,rbin)
-DEFOP(S,d_agtr,agtr,rbin)
-DEFOP(S,d_leq,leq,rbin)
-DEFOP(S,d_geq,geq,rbin)
-DEFOP(S,d_aleq,aleq,rbin)
-DEFOP(S,d_ageq,ageq,rbin)
-DEFOP(S,d_equ,equ,rbin)
-DEFOP(S,d_neq,neq,rbin)
+DEFOP(BS,d_lwr,lwr,rbin)
+DEFOP(BS,d_gtr,gtr,rbin)
+DEFOP(BS,d_alwr,alwr,rbin)
+DEFOP(BS,d_agtr,agtr,rbin)
+DEFOP(BS,d_leq,leq,rbin)
+DEFOP(BS,d_geq,geq,rbin)
+DEFOP(BS,d_aleq,aleq,rbin)
+DEFOP(BS,d_ageq,ageq,rbin)
+DEFOP(BS,d_equ,equ,rbin)
+DEFOP(BS,d_neq,neq,rbin)
 
-DEFOP(S,d_min,min,rbin)
-DEFOP(S,d_max,max,rbin)
-DEFOP(S,d_rmin,min,cbin)
-DEFOP(S,d_rmax,max,cbin)
+DEFOP(BS,d_min,min,rbin)
+DEFOP(BS,d_max,max,rbin)
+DEFOP(BS,d_rmin,min,cbin)
+DEFOP(BS,d_rmax,max,cbin)
 
-DEFOP(S,d_minmax,minmax,cun)
+DEFOP(BS,d_minmax,minmax,cun)
 
-DEFOP(S,d_minq,minq,rop)
-DEFOP(S,d_maxq,maxq,rop)
-DEFOP(S,d_rminq,minq,cop)
-DEFOP(S,d_rmaxq,maxq,cop)
-DEFOP(S,d_aminq,aminq,rop)
-DEFOP(S,d_amaxq,amaxq,rop)
+DEFOP(BS,d_minq,minq,rop)
+DEFOP(BS,d_maxq,maxq,rop)
+DEFOP(BS,d_rminq,minq,cop)
+DEFOP(BS,d_rmaxq,maxq,cop)
+DEFOP(BS,d_aminq,aminq,rop)
+DEFOP(BS,d_amaxq,amaxq,rop)
 
-DEFOP(S,d_gate,gate,rbin)
-DEFOP(S,d_igate,igate,rbin)
-DEFOP(S,d_rgate,gate,cbin)
-DEFOP(S,d_rigate,igate,cbin)
+DEFOP(BS,d_gate,gate,rbin)
+DEFOP(BS,d_igate,igate,rbin)
+DEFOP(BS,d_rgate,gate,cbin)
+DEFOP(BS,d_rigate,igate,cbin)
 
 
 namespace VaspOp {

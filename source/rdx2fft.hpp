@@ -1,6 +1,10 @@
-#include <math.h>
+#include <cmath>
 
-#define PI 3.1415926535897932384f
+#ifdef _MSC_VER
+#   ifndef _USE_MATH_DEFINES
+#   define _USE_MATH_DEFINES
+#   endif
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -12,7 +16,8 @@
 /* Chapter 1 Section 1.1 Page 1.1-4,5                                */
 /* direct -1 forward +1 reverse                                      */
 
-bool fft_bidir_complex_radix2(int size,float *real,float *imag,int direct)
+template<typename T1,typename T2>
+bool fft_bidir_complex_radix2(int size,T1 *real,T2 *imag,int direct)
 {
   int i,j,m,mmax,istep;
   float c,s,treal,timag,theta; 
@@ -45,7 +50,7 @@ bool fft_bidir_complex_radix2(int size,float *real,float *imag,int direct)
     istep=2*mmax;
     for(m=1;m<=mmax;m++)
     {
-      theta=PI*(float)direct*(float)(m-1)/(float)mmax;
+      theta=M_PI*(float)direct*(float)(m-1)/(float)mmax;
       c=(float)cos(theta);
       s=(float)sin(theta);
       for(i=m;i<=size;i+=istep)
@@ -64,19 +69,3 @@ bool fft_bidir_complex_radix2(int size,float *real,float *imag,int direct)
 
   return true;
 }
-
-#if 0
-/* calculate forward fourier transform of complex data radix 2 */
-
-bool fft_fwd_complex_radix2(int size,float *real,float *imag)
-{
-  return fft_bidir_complex_radix2(size,real,imag,-1);
-}
-
-/* calculate inverse fourier transform of complex data radix 2 */
-
-bool fft_inv_complex_radix2(int size,float *real,float *imag)
-{
-  return fft_bidir_complex_radix2(size,real,imag,1);
-}
-#endif

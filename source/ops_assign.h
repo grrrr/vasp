@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2010 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,11 +15,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // Assignment functions
 
-DEFOP(S,d_copy,copy,run)
-DEFOP(S,d_ccopy,copy,cun)
+DEFOP(BS,d_copy,copy,run)
+DEFOP(BS,d_ccopy,copy,cun)
 
-DEFOP(S,d_set,set,rbin)
-DEFOP(S,d_cset,set,cbin)
+DEFOP(BS,d_set,set,rbin)
+DEFOP(BS,d_cset,set,cbin)
 
 
 namespace VaspOp {

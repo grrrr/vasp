@@ -1,4 +1,4 @@
-#N canvas 25 65 949 513 12;
+#N canvas 318 225 949 513 12;
 #N canvas 44 36 508 728 freeze 0;
 #X obj 27 137 vasp.split 2;
 #X obj 32 548 vasp.join 2;
@@ -194,7 +194,7 @@
 #X obj 107 115 nbx 12 18 0 1e+08 0 1 empty empty length(frames) 0 -8
 0 12 -225271 -1 -1 3e+06 256;
 #X obj 19 375 nbx 9 14 -1e+37 1e+37 0 0 empty empty spectral_density(dB)
-0 -6 0 10 -262131 -1 -1 -40.4124 256;
+0 -6 0 10 -262131 -1 -1 -18.2316 256;
 #X obj 332 197 cnv 15 100 20 empty empty play_src 5 8 0 10 -261681
 -66577 0;
 #X obj 447 197 cnv 15 100 20 empty empty read_src 5 8 0 10 -261681
@@ -274,40 +274,42 @@
 #X connect 7 0 8 0;
 #X connect 8 0 5 1;
 #X restore 614 251 pd playdst;
-#N canvas 382 257 623 566 copy 0;
+#N canvas 754 506 490 454 copy 0;
 #X obj 27 26 inlet;
-#X obj 27 51 t b b;
+#X obj 27 48 t b b;
 #X obj 316 19 inlet;
-#X obj 25 361 outlet;
-#X obj 26 229 vasp.f;
-#X obj 26 201 vasp.o;
+#X obj 25 401 outlet;
+#X obj 26 269 vasp.f;
+#X obj 26 241 vasp.o;
 #X obj 128 31 r \$0-offs;
 #X obj 211 31 r \$0-len;
-#X obj 316 87 f 1e+06;
+#X obj 316 127 f 1e+06;
 #X obj 366 21 loadbang;
-#X obj 84 169 *;
-#X obj 117 169 *;
-#X obj 82 139 vasp.f?;
-#X obj 27 109 t a a;
-#X obj 27 259 vasp.sync;
-#X obj 26 328 vasp.f -1;
-#X text 167 288 copy src to dst;
-#X text 108 328 take all dst;
-#X text 311 193 resize dst buffer;
-#X text 341 221 set to zero;
-#X obj 185 222 vasp.= 0 @detach 1;
-#X obj 26 287 vasp.-> @detach 1;
-#X obj 26 81 vasp src;
-#X obj 187 174 vasp.s @ref dst;
+#X obj 84 214 *;
+#X obj 117 214 *;
+#X obj 84 172 vasp.f?;
+#X obj 27 146 t a a;
+#X obj 27 299 vasp.sync;
+#X obj 26 368 vasp.f -1;
+#X text 167 328 copy src to dst;
+#X text 108 368 take all dst;
+#X text 311 233 resize dst buffer;
+#X text 341 261 set to zero;
+#X obj 185 262 vasp.= 0 @detach 1;
+#X obj 26 327 vasp.-> @detach 1;
+#X msg 27 83 vasp src;
+#X obj 27 106 vasp;
+#X msg 186 186 ref dst \, bang;
+#X obj 187 214 vasp.s;
 #X connect 0 0 1 0;
 #X connect 1 0 22 0;
-#X connect 1 1 23 0;
+#X connect 1 1 24 0;
 #X connect 2 0 8 0;
 #X connect 4 0 14 0;
 #X connect 5 0 4 0;
 #X connect 6 0 10 1;
 #X connect 7 0 11 1;
-#X connect 8 0 23 1;
+#X connect 8 0 25 1;
 #X connect 9 0 8 0;
 #X connect 10 0 5 1;
 #X connect 11 0 4 1;
@@ -320,14 +322,16 @@
 #X connect 15 0 3 0;
 #X connect 20 0 14 1;
 #X connect 21 1 15 0;
-#X connect 22 0 13 0;
-#X connect 23 0 20 0;
+#X connect 22 0 23 0;
+#X connect 23 0 13 0;
+#X connect 24 0 25 0;
+#X connect 25 0 20 0;
 #X restore 18 157 pd copy;
 #X text 85 160 copy and resize;
 #X obj 323 170 hsl 600 15 0 1 0 1 \$0-r2 empty empty -2 -6 0 8 -262131
--1 -1 13900 0;
+-1 -1 59900 0;
 #X obj 323 5 hsl 600 15 0 1 0 1 \$0-r1 empty empty -2 -6 0 8 -262131
--1 -1 7900 0;
+-1 -1 0 0;
 #N canvas 148 330 454 280 sel 0;
 #X obj 30 25 r \$0-r1;
 #X obj 110 25 r \$0-r2;
@@ -397,18 +401,18 @@
 #X obj 593 220 vsl 15 70 0.01 10 1 1 empty empty empty 0 -8 0 8 -262144
 -1 -1 2500 1;
 #X obj 309 222 vsl 15 70 0.01 10 1 1 empty empty empty 0 -8 0 8 -262144
--1 -1 2900 1;
-#X text 11 37 (C)2002-2008 Thomas Grill;
-#X obj 401 20 cnv 10 60 150 empty \$0-markregion empty 20 12 0 14 -225271
--33289 0;
+-1 -1 2800 1;
+#X obj 322 20 cnv 10 600 150 empty \$0-markregion empty 20 12 0 14
+-225271 -33289 0;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array src 2.91636e+06 float 0;
-#X coords 0 1 2.91636e+06 -1 600 150 1;
+#X array src 593409 float 0;
+#X coords 0 1 593408 -1 600 150 1;
 #X restore 322 20 graph;
 #X obj 18 476 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X obj 2 374 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
+#X text 11 37 (C)2002-2010 Thomas Grill;
 #X connect 0 0 17 0;
 #X connect 1 0 0 1;
 #X connect 2 0 0 2;
@@ -422,7 +426,7 @@
 #X connect 12 0 25 0;
 #X connect 15 0 27 0;
 #X connect 16 0 27 1;
-#X connect 17 0 45 0;
+#X connect 17 0 44 0;
 #X connect 22 0 26 0;
 #X connect 23 0 26 0;
 #X connect 25 0 33 0;
@@ -432,6 +436,6 @@
 #X connect 33 0 12 0;
 #X connect 34 0 23 0;
 #X connect 37 0 38 0;
-#X connect 38 0 44 0;
+#X connect 38 0 43 0;
 #X connect 39 0 26 1;
 #X connect 40 0 25 1;

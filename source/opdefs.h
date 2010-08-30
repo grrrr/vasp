@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2010 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -281,7 +281,7 @@ template<class T,class OP> BL _F__cbin(OpParam &p)
 
 /*! \brief skeleton for real operations with parameter block
 */
-template<class T,class ARG,class OP> BL V__rop(ARG p,register const S *sr,I rss,register S *dr,I rds,I frames)
+template<class T,class ARG,class OP> BL V__rop(ARG p,register const BS *sr,I rss,register BS *dr,I rds,I frames)
 {																
 	register I i;												
 	if(sr == dr && OP::rop_opt() >= 3)												
@@ -299,7 +299,7 @@ template<class T,class ARG,class OP> BL V__rop(ARG p,register const S *sr,I rss,
 
 /*! \brief skeleton for complex operations with parameter block
 */
-template<class T,class ARG,class OP> BL V__cop(ARG p,register const S *sr,register const S *si,I rss,I iss,register S *dr,register S *di,I rds,I ids,I frames)
+template<class T,class ARG,class OP> BL V__cop(ARG p,register const BS *sr,register const BS *si,I rss,I iss,register BS *dr,register BS *di,I rds,I ids,I frames)
 {																
 	register I i;												
 	if(sr == dr && si == di && OP::cop_opt() >= 3)									

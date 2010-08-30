@@ -63,8 +63,8 @@ public:
 	const C *opname;
 	I frames,symm,args;
 	BL ovrlap,revdir,oddrem;
-	S *rsdt,*isdt; I rss,iss;
-	S *rddt,*iddt; I rds,ids;
+	BS *rsdt,*isdt; I rss,iss;
+	BS *rddt,*iddt; I rds,ids;
 	
 	class Arg
 	{
@@ -80,11 +80,11 @@ public:
 //		Arg &operator =(const Argument &arg);
 
 		Arg &SetX(S r,S i = 0);
-		Arg &SetV(S *r,I rs,S *i = NULL,I is = 0);
+		Arg &SetV(BS *r,I rs,BS *i = NULL,I is = 0);
 		Arg &SetE(const Env *bp);
 
 		struct env_t { const Env *env; };
-		struct v_t { S *rdt,*idt; I rs,is; };
+		struct v_t { BS *rdt,*idt; I rs,is; };
 		struct x_t { R r,i; };
 
 		enum { arg_ = 0,arg_x,arg_v,arg_env } argtp;

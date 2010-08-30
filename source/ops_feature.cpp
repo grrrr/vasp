@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2002-2010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -37,8 +37,8 @@ static BL d_vlpk(OpParam &p,BL cmpf(S a,S b))
 		cnt = 0;
 
 		I i;
-		S *rdst = p.rddt,*rsrc = p.rsdt;
-		S *idst = p.iddt,*isrc = p.isdt;
+		BS *rdst = p.rddt,*rsrc = p.rsdt;
+		BS *idst = p.iddt,*isrc = p.isdt;
 		
 		if(!p.peaks.cx || !idst) idst = rdst,p.ids = p.rds;
 		if(!p.peaks.cx || !isrc) isrc = rsrc,p.iss = p.rss;

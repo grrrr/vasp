@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2010 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,21 +15,21 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // Arithmetic math functions
 
-DEFOP(S,d_add,add,rbin)
-DEFOP(S,d_sub,sub,rbin)
-DEFOP(S,d_subr,subr,rbin)
-DEFOP(S,d_mul,mul,rbin)
-DEFOP(S,d_div,div,rbin)
-DEFOP(S,d_divr,divr,rbin)
-DEFOP(S,d_mod,mod,rbin)
+DEFOP(BS,d_add,add,rbin)
+DEFOP(BS,d_sub,sub,rbin)
+DEFOP(BS,d_subr,subr,rbin)
+DEFOP(BS,d_mul,mul,rbin)
+DEFOP(BS,d_div,div,rbin)
+DEFOP(BS,d_divr,divr,rbin)
+DEFOP(BS,d_mod,mod,rbin)
 
-DEFOP(S,d_sqr,sqr,run)
-DEFOP(S,d_ssqr,ssqr,run)
+DEFOP(BS,d_sqr,sqr,run)
+DEFOP(BS,d_ssqr,ssqr,run)
 
-DEFOP(S,d_sign,sign,run)
-DEFOP(S,d_abs,abs,run)
+DEFOP(BS,d_sign,sign,run)
+DEFOP(BS,d_abs,abs,run)
 
-DEFOP(S,d_sumq,sumq,rop)
+DEFOP(BS,d_sumq,sumq,rop)
 
 
 namespace VaspOp {

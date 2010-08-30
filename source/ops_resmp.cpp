@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2010 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -43,17 +43,17 @@ static V do_tilt(OpParam &p)
 
 	const R center = p.tilt.center;
 	const I icenter = (I)center;
-	S fll,flr;
+	BS fll,flr;
 	if(p.tilt.fill) 
 		fll = p.rsdt[0],flr = p.rsdt[p.frames-1];
 	else
 		fll = flr = 0;
 
 	if(mode >= 1 && mode <= 3) {
-		S *tmp;
+		BS *tmp;
 		I rss;
 		if(p.rsdt == p.rddt) {
-			tmp = new S[p.frames],rss = 1;
+			tmp = new BS[p.frames],rss = 1;
 			for(int i = 0; i < p.frames; ++i) tmp[i] = p.rsdt[i*p.rss];
 		}
 		else tmp = p.rsdt,rss = p.rss;
@@ -91,7 +91,7 @@ static V do_tilt(OpParam &p)
 			for(int i = 0; i < p.frames; ++i) {
 				R pr = center+(i-center)*p.tilt.factor;
 				const I ip = (I)pr;
-				const S *t = tmp+ip*rss;
+				const BS *t = tmp+ip*rss;
 				const R r = pr-ip;
 				if(ip >= 1) 
 					if(ip < p.frames-2) {

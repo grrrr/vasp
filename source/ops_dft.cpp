@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2002-2010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -25,18 +25,45 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "main.h"
 #include "ops_dft.h"
+#include "mixfft.hpp"
+#include "rdx2fft.hpp"
+#include "rvfft.hpp"
 #include <cstring>
 
 ///////////////////////////////////////////////////////////////
-
-BL mixfft(I n,F *xRe,F *xIm,F *yRe,F *yIm);
 
 #ifdef FLEXT_THREADS
 static flext::ThrMutex mixmtx;
 #endif
 
+typedef flext::buffer::Element El;
+
+template<typename T1,typename T2,typename T3,typename T4>
+static BL call_mixfft(I cnt,T1 rstmp,T2 istmp,T3 rdtmp,T4 idtmp)
+{
+    BL ret;
+	// mixfft is not thread-safe
+#ifdef FLEXT_THREADS
+	mixmtx.Lock();
+#endif
+    try {
+        MixFFT<F> mix(cnt);
+        mix(rstmp,istmp,rdtmp,idtmp);
+        ret = true;
+	}
+	catch(std::exception const &e)
+	{
+        post(e.what());
+        ret = false;
+	}
+#ifdef FLEXT_THREADS
+	mixmtx.Unlock();
+#endif
+    return ret;
+}
+
 //! Real forward DFT radix-n (managing routine)
-static BL fft_fwd_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds) 
+static BL fft_fwd_real_any(I cnt,El *rsdt,I _rss,El *rddt,I _rds) 
 {
 	if(!rddt) rddt = rsdt,_rds = _rss;
 
@@ -49,34 +76,25 @@ static BL fft_fwd_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds)
 	const BL rst = rss != 1;
 	const BL rdt = rsdt == rddt || rds != 1;
 
-	F *rstmp,*istmp;
+	El *rstmp,*istmp;
 	register I i;
 	
 	if(rst) {
-		rstmp = new F[cnt];
+		rstmp = new El[cnt];
 		// happens only if rss != 1, no optimization necessary
 		for(i = 0; i < cnt; ++i) rstmp[i] = rsdt[i*rss];
 	}
 	else
 		rstmp = rsdt;
 
-	istmp = new F[cnt];
-    flext::ZeroMem(istmp,cnt*sizeof(*istmp));
+	istmp = new El[cnt];
+    flext::ZeroSamples(istmp,cnt);
 
-	F *rdtmp = rdt?new F[cnt]:rddt;
-	F *idtmp = new F[cnt];
+	El *rdtmp = rdt?new El[cnt]:rddt;
+	El *idtmp = new El[cnt];
 
-	BL ret;
-	{
-		// mixfft is not thread-safe
-#ifdef FLEXT_THREADS
-		mixmtx.Lock();
-#endif
-		ret = mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
-#ifdef FLEXT_THREADS
-		mixmtx.Unlock();
-#endif
-	}
+	BL ret = call_mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
+
 	if(ret) {
 		const F nrm = 1./sqrt((F)cnt);
 		const I n2 = cnt/2;
@@ -104,7 +122,7 @@ static BL fft_fwd_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds)
 
 
 //! Real inverse DFT radix-n (managing routine)
-static BL fft_inv_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds) 
+static BL fft_inv_real_any(I cnt,El *rsdt,I _rss,El *rddt,I _rds) 
 {
 	if(!rddt) rddt = rsdt,_rds = _rss;
 
@@ -118,12 +136,12 @@ static BL fft_inv_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds)
 	const BL rdt = rsdt == rddt || rds != 1;
 
 	const I n2 = cnt/2;
-	F *rstmp,*istmp;
-	istmp = new F[cnt];
+	El *rstmp,*istmp;
+	istmp = new El[cnt];
 	register I i;
 	
 	if(rst) {
-		rstmp = new F[cnt];
+		rstmp = new El[cnt];
 		// happens only if rss != 1, no optimization necessary
 		for(i = 0; i <= n2; ++i) rstmp[i] = rsdt[i*rss];
 		for(i = 1; i < cnt-n2; ++i) istmp[cnt-i] = rsdt[(n2+i)*rss];
@@ -142,31 +160,10 @@ static BL fft_inv_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds)
 	if(cnt%2 == 0) istmp[n2] = 0;
 
 
-	F *rdtmp = rdt?new F[cnt]:rddt;
-	F *idtmp = new F[cnt];
+	El *rdtmp = rdt?new El[cnt]:rddt;
+	El *idtmp = new El[cnt];
 
-	BL ret;
-	{
-#ifdef FLEXT_THREADS
-		mixmtx.Lock();
-#endif
-		// mixfft is not thread-safe
-		ret = mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
-#ifdef FLEXT_THREADS
-		mixmtx.Unlock();
-#endif
-	}
-	if(ret) {
-		const F nrm = 1./sqrt((F)cnt);
-#ifndef VASP_COMPACT
-		if(rds == 1)
-			for(i = 0; i < cnt; ++i) 
-				rddt[i] = rdtmp[i]*nrm;
-		else
-#endif
-			for(i = 0; i < cnt; ++i) 
-				rddt[i*rds] = rdtmp[i]*nrm;
-	}
+	BL ret = call_mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
 
 	if(rst) delete[] rstmp;
 	delete[] istmp;
@@ -179,7 +176,7 @@ static BL fft_inv_real_any(I cnt,F *rsdt,I _rss,F *rddt,I _rds)
 ///////////////////////////////////////////////////////////////
 
 //! Complex forward DFT radix-n (managing routine)
-static BL fft_fwd_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,F *iddt,I _ids) 
+static BL fft_fwd_complex_any(I cnt,El *rsdt,I _rss,El *isdt,I _iss,El *rddt,I _rds,El *iddt,I _ids) 
 {
 	if(!rddt) rddt = rsdt,_rds = _rss;
 	if(!iddt) iddt = isdt,_ids = _iss;
@@ -195,11 +192,11 @@ static BL fft_fwd_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 	const BL rdt = rsdt == rddt || rds != 1;
 	const BL idt = isdt == iddt || ids != 1;
 
-	F *rstmp,*istmp;
+	El *rstmp,*istmp;
 	register I i;
 	
 	if(rst) {
-		rstmp = new F[cnt];
+		rstmp = new El[cnt];
 		// happens only if rss != 1, no optimization necessary
 		for(i = 0; i < cnt; ++i) rstmp[i] = rsdt[i*rss];
 	}
@@ -207,27 +204,18 @@ static BL fft_fwd_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 		rstmp = rsdt;
 
 	if(ist) {
-		istmp = new F[cnt];
+		istmp = new El[cnt];
 		// happens only if iss != 1, no optimization necessary
 		for(i = 0; i < cnt; ++i) istmp[i] = isdt[i*iss];
 	}
 	else
 		istmp = isdt;
 
-	F *rdtmp = rdt?new F[cnt]:rddt;
-	F *idtmp = idt?new F[cnt]:iddt;
+	El *rdtmp = rdt?new El[cnt]:rddt;
+	El *idtmp = idt?new El[cnt]:iddt;
 
-	BL ret;
-	{
-#ifdef FLEXT_THREADS
-		mixmtx.Lock();
-#endif
-		// mixfft is not thread-safe
-		ret = mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
-#ifdef FLEXT_THREADS
-		mixmtx.Unlock();
-#endif
-	}
+	BL ret = call_mixfft(cnt,rstmp,istmp,rdtmp,idtmp);
+		
 	if(ret) {
 		const F nrm = 1./sqrt((F)cnt);
 
@@ -272,7 +260,7 @@ static BL fft_fwd_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 }
 
 //! Complex inverse DFT radix-n (managing routine)
-static BL fft_inv_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,F *iddt,I _ids)
+static BL fft_inv_complex_any(I cnt,El *rsdt,I _rss,El *isdt,I _iss,El *rddt,I _rds,El *iddt,I _ids)
 {
 	I i;
 
@@ -317,10 +305,8 @@ static BL fft_inv_complex_any(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds
 
 ///////////////////////////////////////////////////////////////
 
-bool fft_bidir_complex_radix2(int size,float *real,float *imag,int dir);
-
 //! Complex forward FFT radix-2 (managing routine)
-static BL fft_complex_radix2(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,F *iddt,I _ids,I dir)
+static BL fft_complex_radix2(I cnt,El *rsdt,I _rss,El *isdt,I _iss,El *rddt,I _rds,El *iddt,I _ids,I dir)
 {
 	if(!rddt) rddt = rsdt,_rds = _rss;
 	if(!iddt) iddt = isdt,_ids = _iss;
@@ -332,14 +318,14 @@ static BL fft_complex_radix2(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,
 #endif
 
 	BL rt = false,it = false;
-	F *rtmp,*itmp;
+	El *rtmp,*itmp;
 	register I i;
 
 	if(rss == 1)
 		rtmp = rsdt;
 	else {
 		if(rsdt == rddt || rds != 1) 
-			rtmp = new F[cnt],rt = true;
+			rtmp = new El[cnt],rt = true;
 		else
 			rtmp = rddt;
 		for(i = 0; i < cnt; ++i) rtmp[i] = rsdt[i*rss];
@@ -349,7 +335,7 @@ static BL fft_complex_radix2(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,
 		itmp = isdt;
 	else {
 		if(isdt == iddt || ids != 1) 
-			itmp = new F[cnt],it = true;
+			itmp = new El[cnt],it = true;
 		else
 			itmp = iddt;
 		for(i = 0; i < cnt; ++i) itmp[i] = isdt[i*iss];
@@ -385,23 +371,21 @@ static BL fft_complex_radix2(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,
 	return ret;
 }
 
-inline BL fft_fwd_complex_radix2(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,F *iddt,I _ids)
+inline BL fft_fwd_complex_radix2(I cnt,El *rsdt,I _rss,El *isdt,I _iss,El *rddt,I _rds,El *iddt,I _ids)
 {
 	return fft_complex_radix2(cnt,rsdt,_rss,isdt,_iss,rddt,_rds,iddt,_ids,1);
 }
 
-inline BL fft_inv_complex_radix2(I cnt,F *rsdt,I _rss,F *isdt,I _iss,F *rddt,I _rds,F *iddt,I _ids)
+inline BL fft_inv_complex_radix2(I cnt,El *rsdt,I _rss,El *isdt,I _iss,El *rddt,I _rds,El *iddt,I _ids)
 {
 	return fft_complex_radix2(cnt,rsdt,_rss,isdt,_iss,rddt,_rds,iddt,_ids,-1);
 }
 
 ///////////////////////////////////////////////////////////////
 
-void realfft_split(float *data,int n);
-void irealfft_split(float *data,int n);
-
 // normalize and reverse imaginary part in-place
-static void nrmirev(float *data,int n,float fn)
+template<typename T>
+static void nrmirev(T *data,int n,float fn)
 {
 	int i;
 	const I n2 = n/2,n4 = n2/2;
@@ -415,7 +399,7 @@ static void nrmirev(float *data,int n,float fn)
 }
 
 //! Real forward FFT radix-2 (managing routine)
-BL fft_fwd_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
+BL fft_fwd_real_radix2(I cnt,El *src,I _sstr,El *dst,I _dstr)
 {
 #ifdef VASP_CHN1
 	const I dstr = 1,sstr = 1;
@@ -426,14 +410,14 @@ BL fft_fwd_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 	register I i;
 	const I n2 = cnt/2;
 	const F fn = (F)(1./sqrt((F)cnt));
-	F *stmp;
+	El *stmp;
 	if(!dst || src == dst) {
 		// in-place
 
 		if(sstr == 1) 
 			stmp = src;
 		else {
-			stmp = new F[cnt];
+			stmp = new El[cnt];
 			for(i = 0; i < cnt; ++i) stmp[i] = src[i*sstr];
 		}
 		
@@ -455,7 +439,7 @@ BL fft_fwd_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 		if(sstr == 1) 
 			stmp = src;
 		else {
-			stmp = dstr == 1?dst:new F[cnt];
+			stmp = dstr == 1?dst:new El[cnt];
 			for(i = 0; i < cnt; ++i) stmp[i] = src[i*sstr];
 		}
 
@@ -491,7 +475,7 @@ BL fft_fwd_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 }
 
 //! Real inverse FFT radix-2 (managing routine)
-BL fft_inv_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
+BL fft_inv_real_radix2(I cnt,El *src,I _sstr,El *dst,I _dstr)
 {
 #ifdef VASP_CHN1
 	const I dstr = 1,sstr = 1;
@@ -502,7 +486,7 @@ BL fft_inv_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 	register I i;
 	const I n2 = cnt/2;
 	const F fn = (F)(1./sqrt((F)cnt));
-	F *stmp;
+	El *stmp;
 	if(!dst || src == dst) {
 		// in-place
 
@@ -511,7 +495,7 @@ BL fft_inv_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 			nrmirev(stmp,cnt,fn);
 		}
 		else {
-			stmp = new F[cnt];
+			stmp = new El[cnt];
 
 #ifdef VASP_COMPACT
 			if(sstr == 1) {
@@ -551,7 +535,7 @@ BL fft_inv_real_radix2(I cnt,F *src,I _sstr,F *dst,I _dstr)
 			}
 		}
 		else {
-			stmp = new F[cnt];
+			stmp = new El[cnt];
 			if(sstr == 1) {
 				// dst == stmp !!!
 				nrmirev(stmp,cnt,fn);

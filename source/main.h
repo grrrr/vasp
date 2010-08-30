@@ -28,8 +28,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 401)
-#error You need at least flext version 0.4.1
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 502)
+#error You need at least flext version 0.5.2
 #endif
 
 #if defined(_MSC_VER) && !defined(FLEXT_DEBUG)

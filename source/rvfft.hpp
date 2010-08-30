@@ -1,10 +1,12 @@
-#include <math.h>
+#include <cmath>
 
 #ifdef _MSC_VER
-#pragma warning(disable: 4244)
-#endif
+#   pragma warning(disable: 4244)
 
-#define PI 3.14159265358979
+#   ifndef _USE_MATH_DEFINES
+#   define _USE_MATH_DEFINES
+#   endif
+#endif
 
 /////////////////////////////////////////////////////////
 // Sorensen in-place split-radix FFT for real values
@@ -19,13 +21,13 @@
 // Sorensen et al: Real-Valued Fast Fourier Transform Algorithms,
 // IEEE Trans. ASSP, ASSP-35, No. 6, June 1987
 
-void realfft_split(float *data,int n)
+template<typename T>
+void realfft_split(T *data,int n)
 {
 
   int i,j,k,i5,i6,i7,i8,i0,id,i1,i2,i3,i4,n2,n4,n8;
-  float t1,t2,t3,t4,t5,t6,a3,ss1,ss3,cc1,cc3,a,e,sqrt2;
+  float t1,t2,t3,t4,t5,t6,a3,ss1,ss3,cc1,cc3,a,e;
   
-  sqrt2=sqrt(2.0);
   n4=n-1;
   
   //data shuffling
@@ -67,7 +69,7 @@ for(k=n;k>2;k>>=1){
 	n2<<=1;
 	n4=n2>>2;
 	n8=n2>>3;
-	e = 2*PI/(n2);
+	e = 2*M_PI/(n2);
 	i1=0;
 	id=n2<<1;
 	do{ 
@@ -84,8 +86,8 @@ for(k=n;k>2;k>>=1){
 				i2+=n8;
 				i3+=n8;
 				i4+=n8;
-				t1=(data[i3]+data[i4])/sqrt2;
-				t2=(data[i3]-data[i4])/sqrt2;
+				t1=(data[i3]+data[i4])/M_SQRT2;
+				t2=(data[i3]-data[i4])/M_SQRT2;
 				data[i4]=data[i2]-t1;
 				data[i3]=-data[i2]-t1;
 				data[i2]=data[i0]-t2;
@@ -159,12 +161,11 @@ for(k=n;k>2;k>>=1){
 // Sorensen et al: Real-Valued Fast Fourier Transform Algorithms,
 // IEEE Trans. ASSP, ASSP-35, No. 6, June 1987
 
-void irealfft_split(float *data,int n){
+template<typename T>
+void irealfft_split(T *data,int n){
 
   int i,j,k,i5,i6,i7,i8,i0,id,i1,i2,i3,i4,n2,n4,n8,n1;
-  float t1,t2,t3,t4,t5,a3,ss1,ss3,cc1,cc3,a,e,sqrt2;
-  
-  sqrt2=sqrt(2.0);
+  float t1,t2,t3,t4,t5,a3,ss1,ss3,cc1,cc3,a,e;
   
 n1=n-1;
 n2=n<<1;
@@ -173,7 +174,7 @@ for(k=n;k>2;k>>=1){
 	n2>>=1;
 	n4=n2>>2;
 	n8=n2>>3;
-	e = 2*PI/(n2);
+	e = 2*M_PI/(n2);
 	i1=0;
 	do{ 
 	    for (; i1<n; i1+=id){
@@ -190,8 +191,8 @@ for(k=n;k>2;k>>=1){
 				i2+=n8;
 				i3+=n8;
 				i4+=n8;
-				t1=(data[i2]-data[i0])/sqrt2;
-				t2=(data[i4]+data[i3])/sqrt2;
+				t1=(data[i2]-data[i0])/M_SQRT2;
+				t2=(data[i4]+data[i3])/M_SQRT2;
 				data[i0]+=data[i2];
 				data[i2]=data[i4]-data[i3];
 				data[i3]=2*(-t2-t1);

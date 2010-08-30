@@ -84,8 +84,8 @@ public:
 			
 			ImmBuf imm(rlen,false);
 
-			S *dst = imm.Pointer();
-			const S *src = buf->Pointer();
+			BS *dst = imm.Pointer();
+			const BS *src = buf->Pointer();
 
 //			post("!copy: src: %p,%i,%i -> dst: %p,%i",src,len,chns,dst,rlen);
 

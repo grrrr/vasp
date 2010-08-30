@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max/MSP and PD
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2010 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -47,9 +47,9 @@ public:
 		else {
 			VBuffer *buf = ref.Buffer(0);
 			I cnt = buf->Length();			
-			S *p = buf->Pointer();
+			BS const *p = buf->Pointer();
 			AtomList lst(cnt);
-			for(I i = 0; i < cnt; ++i,++p) SetFloat(lst[i],*p);
+			for(I i = 0; i < cnt; ++i) SetFloat(lst[i],p[i]);
 			ToOutList(0,lst);
 
             delete buf;
@@ -99,15 +99,14 @@ public:
 		else {
 			VBuffer *buf = ref.Buffer(0);
 			I i,cnt = buf->Length(),cp,ci;
-			S *p = buf->Pointer();
-			for(cp = i = 0; i < cnt; ++i,++p) if(*p) ++cp;
+			BS const *p = buf->Pointer();
+			for(cp = i = 0; i < cnt; ++i) if(p[i]) ++cp;
 			
 			AtomList pos(cp),lst(cp);
-			p = buf->Pointer();
-			for(ci = i = 0; ci < cp; ++i,++p)
-				if(*p) {
+			for(ci = i = 0; ci < cp; ++i)
+				if(p[i]) {
 					SetFloat(pos[ci],i);
-					SetFloat(lst[ci],*p);
+					SetFloat(lst[ci],p[i]);
 					++ci;			
 				}
 			ToOutList(0,pos);

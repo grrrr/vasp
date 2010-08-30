@@ -62,8 +62,8 @@ BL VecOp::d_shift(OpParam &p)
 	if(aish > p.frames) aish = ish = p.frames;
 
 	I i,cnt = p.frames-aish;
-	const S *sd = p.rsdt-ish*p.rss;
-	S *dd = p.rddt;
+	const BS *sd = p.rsdt-ish*p.rss;
+	BS *dd = p.rddt;
 
 	if(ish > 0) {
 		sd += (p.frames-1)*p.rss,dd += (p.frames-1)*p.rds;
@@ -82,7 +82,11 @@ BL VecOp::d_shift(OpParam &p)
 
 	// fill spaces
 	if(p.sh.fill) {
-		S vfill = p.sh.fill == 1?0:dd[-p.rds];
+        S vfill;
+        if(p.sh.fill == 1)
+            vfill = 0;
+        else
+            vfill = dd[-p.rds];
 		I aish = abs(ish);
 		if(p.rds == 1) 
 			_DE_LOOP(i,aish, ( *(dd++) = vfill ) )
@@ -196,7 +200,7 @@ BL VecOp::d_rot(OpParam &p)
 	}
 	else 
 */
-		PERMUTATION(S,1,p,rotation);
+		PERMUTATION(BS,1,p,rotation);
 	return true; 
 }
 
@@ -216,14 +220,14 @@ BL VecOp::d_mirr(OpParam &p)
 	p.SkipOddMiddle();
 	
 	if(p.rsdt == p.rddt) {
-		S *dl = p.rddt,*du = p.rddt+(p.frames-1)*p.rds;
+		BS *dl = p.rddt,*du = p.rddt+(p.frames-1)*p.rds;
 		register S t;
 		_DE_WHILE(dl < du, ( t = *dl, *dl = *du, *du = t, dl += p.rds,du -= p.rds ) )
 	}
 	else {
 		I i;
-		const S *ds = p.rsdt;
-		S *dd = p.rddt+(p.frames-1)*p.rds;
+		const BS *ds = p.rsdt;
+		BS *dd = p.rddt+(p.frames-1)*p.rds;
 		_DE_LOOP(i,p.frames, ( *dd = *ds,ds += p.rss,dd -= p.rds ) )
 	}
 	return true; 

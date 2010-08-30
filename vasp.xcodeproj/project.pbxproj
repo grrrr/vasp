@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E952A35A122BAEE100777578 /* mixfft.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E952A357122BAEE100777578 /* mixfft.hpp */; };
+		E952A35B122BAEE100777578 /* rdx2fft.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E952A358122BAEE100777578 /* rdx2fft.hpp */; };
+		E952A35C122BAEE100777578 /* rvfft.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E952A359122BAEE100777578 /* rvfft.hpp */; };
 		E9EACC230B7D6883002F61CC /* arg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACBD90B7D6883002F61CC /* arg.cpp */; };
 		E9EACC240B7D6883002F61CC /* arg.h in Headers */ = {isa = PBXBuildFile; fileRef = E9EACBDA0B7D6883002F61CC /* arg.h */; };
 		E9EACC250B7D6883002F61CC /* buflib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACBDB0B7D6883002F61CC /* buflib.cpp */; };
@@ -17,7 +20,6 @@
 		E9EACC2A0B7D6883002F61CC /* env.h in Headers */ = {isa = PBXBuildFile; fileRef = E9EACBE00B7D6883002F61CC /* env.h */; };
 		E9EACC2B0B7D6883002F61CC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACBE10B7D6883002F61CC /* main.cpp */; };
 		E9EACC2C0B7D6883002F61CC /* main.h in Headers */ = {isa = PBXBuildFile; fileRef = E9EACBE20B7D6883002F61CC /* main.h */; };
-		E9EACC2D0B7D6883002F61CC /* mixfft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACBE30B7D6883002F61CC /* mixfft.cpp */; };
 		E9EACC2E0B7D6883002F61CC /* obj_chns.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACBE40B7D6883002F61CC /* obj_chns.cpp */; };
 		E9EACC2F0B7D6883002F61CC /* obj_frames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACBE50B7D6883002F61CC /* obj_frames.cpp */; };
 		E9EACC300B7D6883002F61CC /* obj_imm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACBE60B7D6883002F61CC /* obj_imm.cpp */; };
@@ -85,6 +87,9 @@
 
 /* Begin PBXFileReference section */
 		D2AAC0630554660B00DB518D /* vasp.pd_darwin */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = vasp.pd_darwin; sourceTree = BUILT_PRODUCTS_DIR; };
+		E952A357122BAEE100777578 /* mixfft.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = mixfft.hpp; path = source/mixfft.hpp; sourceTree = "<group>"; };
+		E952A358122BAEE100777578 /* rdx2fft.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rdx2fft.hpp; path = source/rdx2fft.hpp; sourceTree = "<group>"; };
+		E952A359122BAEE100777578 /* rvfft.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rvfft.hpp; path = source/rvfft.hpp; sourceTree = "<group>"; };
 		E9EACBD90B7D6883002F61CC /* arg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = arg.cpp; path = source/arg.cpp; sourceTree = "<group>"; };
 		E9EACBDA0B7D6883002F61CC /* arg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = arg.h; path = source/arg.h; sourceTree = "<group>"; };
 		E9EACBDB0B7D6883002F61CC /* buflib.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = buflib.cpp; path = source/buflib.cpp; sourceTree = "<group>"; };
@@ -95,7 +100,6 @@
 		E9EACBE00B7D6883002F61CC /* env.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = env.h; path = source/env.h; sourceTree = "<group>"; };
 		E9EACBE10B7D6883002F61CC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = source/main.cpp; sourceTree = "<group>"; };
 		E9EACBE20B7D6883002F61CC /* main.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = main.h; path = source/main.h; sourceTree = "<group>"; };
-		E9EACBE30B7D6883002F61CC /* mixfft.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mixfft.cpp; path = source/mixfft.cpp; sourceTree = "<group>"; };
 		E9EACBE40B7D6883002F61CC /* obj_chns.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = obj_chns.cpp; path = source/obj_chns.cpp; sourceTree = "<group>"; };
 		E9EACBE50B7D6883002F61CC /* obj_frames.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = obj_frames.cpp; path = source/obj_frames.cpp; sourceTree = "<group>"; };
 		E9EACBE60B7D6883002F61CC /* obj_imm.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = obj_imm.cpp; path = source/obj_imm.cpp; sourceTree = "<group>"; };
@@ -184,6 +188,9 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				E952A357122BAEE100777578 /* mixfft.hpp */,
+				E952A358122BAEE100777578 /* rdx2fft.hpp */,
+				E952A359122BAEE100777578 /* rvfft.hpp */,
 				E9EACBD90B7D6883002F61CC /* arg.cpp */,
 				E9EACBDA0B7D6883002F61CC /* arg.h */,
 				E9EACBDB0B7D6883002F61CC /* buflib.cpp */,
@@ -194,7 +201,6 @@
 				E9EACBE00B7D6883002F61CC /* env.h */,
 				E9EACBE10B7D6883002F61CC /* main.cpp */,
 				E9EACBE20B7D6883002F61CC /* main.h */,
-				E9EACBE30B7D6883002F61CC /* mixfft.cpp */,
 				E9EACBE40B7D6883002F61CC /* obj_chns.cpp */,
 				E9EACBE50B7D6883002F61CC /* obj_frames.cpp */,
 				E9EACBE60B7D6883002F61CC /* obj_imm.cpp */,
@@ -307,6 +313,9 @@
 				E9EACC680B7D6883002F61CC /* vasp.h in Headers */,
 				E9EACC6A0B7D6883002F61CC /* vbuffer.h in Headers */,
 				E9EACC6C0B7D6883002F61CC /* vecblk.h in Headers */,
+				E952A35A122BAEE100777578 /* mixfft.hpp in Headers */,
+				E952A35B122BAEE100777578 /* rdx2fft.hpp in Headers */,
+				E952A35C122BAEE100777578 /* rvfft.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,7 +366,6 @@
 				E9EACC270B7D6883002F61CC /* classes.cpp in Sources */,
 				E9EACC290B7D6883002F61CC /* env.cpp in Sources */,
 				E9EACC2B0B7D6883002F61CC /* main.cpp in Sources */,
-				E9EACC2D0B7D6883002F61CC /* mixfft.cpp in Sources */,
 				E9EACC2E0B7D6883002F61CC /* obj_chns.cpp in Sources */,
 				E9EACC2F0B7D6883002F61CC /* obj_frames.cpp in Sources */,
 				E9EACC300B7D6883002F61CC /* obj_imm.cpp in Sources */,
@@ -413,7 +421,7 @@
 					FLEXT_THREADS,
 				);
 				HEADER_SEARCH_PATHS = (
-					"/Applications/Pd-0.40-2.app/Contents/Resources/src",
+					"/Applications/Pd-0.42-5.app/Contents/Resources/src",
 					/usr/local/include/flext,
 				);
 				INSTALL_PATH = /usr/local/lib;
@@ -438,7 +446,7 @@
 					FLEXT_THREADS,
 				);
 				HEADER_SEARCH_PATHS = (
-					"/Applications/Pd-0.40-2.app/Contents/Resources/src",
+					"/Applications/Pd-0.42-5.app/Contents/Resources/src",
 					/usr/local/include/flext,
 				);
 				INSTALL_PATH = /usr/local/lib;
@@ -458,6 +466,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = _DEBUG;
 				GCC_THREADSAFE_STATICS = YES;
+				GCC_VERSION = 4.0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -477,7 +486,7 @@
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_THREADSAFE_STATICS = YES;
-				GCC_VERSION = 4.2;
+				GCC_VERSION = 4.0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /Applications/pdext;
