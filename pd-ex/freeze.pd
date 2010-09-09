@@ -1,4 +1,4 @@
-#N canvas 318 225 949 513 12;
+#N canvas 161 133 949 513 12;
 #N canvas 44 36 508 728 freeze 0;
 #X obj 27 137 vasp.split 2;
 #X obj 32 548 vasp.join 2;
@@ -163,11 +163,11 @@
 #X msg 16 281 vasp src;
 #X obj 74 230 s \$0-srclen;
 #X obj 15 313 vasp.opt;
-#X msg 19 152 read -resize \$1 src;
 #X obj 18 192 soundfiler;
+#X msg 19 152 read -maxsize 1e+08 -resize \$1 src;
 #X connect 0 0 3 0;
 #X connect 1 0 6 0;
-#X connect 3 0 12 0;
+#X connect 3 0 13 0;
 #X connect 4 0 2 0;
 #X connect 5 0 9 0;
 #X connect 6 0 7 0;
@@ -176,9 +176,9 @@
 #X connect 8 0 3 0;
 #X connect 9 0 11 0;
 #X connect 11 0 4 0;
-#X connect 12 0 13 0;
-#X connect 13 0 5 0;
-#X connect 13 0 10 0;
+#X connect 12 0 5 0;
+#X connect 12 0 10 0;
+#X connect 13 0 12 0;
 #X restore 448 250 pd open;
 #X msg 381 222 stop;
 #X msg 447 222 new;
@@ -194,7 +194,7 @@
 #X obj 107 115 nbx 12 18 0 1e+08 0 1 empty empty length(frames) 0 -8
 0 12 -225271 -1 -1 3e+06 256;
 #X obj 19 375 nbx 9 14 -1e+37 1e+37 0 0 empty empty spectral_density(dB)
-0 -6 0 10 -262131 -1 -1 -18.2316 256;
+0 -6 0 10 -262131 -1 -1 -42.2065 256;
 #X obj 332 197 cnv 15 100 20 empty empty play_src 5 8 0 10 -261681
 -66577 0;
 #X obj 447 197 cnv 15 100 20 empty empty read_src 5 8 0 10 -261681
@@ -329,9 +329,9 @@
 #X restore 18 157 pd copy;
 #X text 85 160 copy and resize;
 #X obj 323 170 hsl 600 15 0 1 0 1 \$0-r2 empty empty -2 -6 0 8 -262131
--1 -1 59900 0;
+-1 -1 24800 0;
 #X obj 323 5 hsl 600 15 0 1 0 1 \$0-r1 empty empty -2 -6 0 8 -262131
--1 -1 0 0;
+-1 -1 20100 0;
 #N canvas 148 330 454 280 sel 0;
 #X obj 30 25 r \$0-r1;
 #X obj 110 25 r \$0-r2;
@@ -370,7 +370,7 @@
 #X connect 14 0 15 0;
 #X connect 15 0 13 0;
 #X restore 871 198 pd sel;
-#X obj 75 270 nbx 7 18 0.01 10 1 1 empty empty power 0 -8 0 12 -225271
+#X obj 76 271 nbx 7 18 0.01 10 1 1 empty empty power 0 -8 0 12 -225271
 -1 -1 1 256;
 #X obj 331 277 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
@@ -399,14 +399,14 @@
 #X connect 7 0 3 0;
 #X restore 18 454 pd normalize;
 #X obj 593 220 vsl 15 70 0.01 10 1 1 empty empty empty 0 -8 0 8 -262144
--1 -1 2500 1;
+-1 -1 2900 1;
 #X obj 309 222 vsl 15 70 0.01 10 1 1 empty empty empty 0 -8 0 8 -262144
--1 -1 2800 1;
-#X obj 322 20 cnv 10 600 150 empty \$0-markregion empty 20 12 0 14
--225271 -33289 0;
+-1 -1 4000 1;
+#X obj 523 20 cnv 10 47 150 empty \$0-markregion empty 20 12 0 14 -225271
+-33289 0;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array src 593409 float 0;
-#X coords 0 1 593408 -1 600 150 1;
+#X array src 2.08793e+07 float 0;
+#X coords 0 1 2.08793e+07 -1 600 150 1;
 #X restore 322 20 graph;
 #X obj 18 476 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
