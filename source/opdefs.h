@@ -171,7 +171,7 @@ template<class T,class TA,class TR,class OP,class EVARG> BL Vx__rbin(register co
 		else												
             _DQ_LOOP(EVARG::unroll(),i,frames, ( OP::rbin(*dr,*dr,EVARG::ev(ar,i,1)), dr += rds ) )
 	else													
-		if((_D_ALWAYS1 || rss == 1 && rds == 1) && OP::rbin_opt() >= 2)	
+		if((_D_ALWAYS1 || (rss == 1 && rds == 1)) && OP::rbin_opt() >= 2)	
             _DQ_LOOP(EVARG::unroll(),i,frames, ( OP::rbin(*dr,*sr,EVARG::ev(ar,i,1)), sr++,dr++ ) )
 		else												
             _DQ_LOOP(EVARG::unroll(),i,frames, ( OP::rbin(*dr,*sr,EVARG::ev(ar,i,1)), sr += rss,dr += rds ) )

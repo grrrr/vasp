@@ -125,7 +125,7 @@ CVecBlock *VaspOp::GetCVecs(const C *op,CVasp &src,CVasp *dst,BL full)
 	}
 
 	I pairs = nvecs/2;
-	if(nvecs != pairs*2) 
+	if(nvecs != pairs*2) {
 		if(full) {
 			post("%s - number of vectors is odd - not allowed",op);
 			return NULL;
@@ -133,6 +133,7 @@ CVecBlock *VaspOp::GetCVecs(const C *op,CVasp &src,CVasp *dst,BL full)
 		else {
 			post("%s - number of vectors is odd - omitting last vector",op);
 		}
+	}
 
 	CVecBlock *ret = new CVecBlock(pairs);
 	BL ok = true,dlens = false;
@@ -307,7 +308,7 @@ CVecBlock *VaspOp::GetCVecs(const C *op,CVasp &src,const CVasp &arg,CVasp *dst,I
 
 	if(multi) {
 		I apairs = arg.Vectors()/2;
-		if(arg.Vectors() != apairs*2) 
+		if(arg.Vectors() != apairs*2) {
 			if(full) {
 				post("%s - number of arg vectors is odd - not allowed",op);
 				return NULL;
@@ -316,6 +317,7 @@ CVecBlock *VaspOp::GetCVecs(const C *op,CVasp &src,const CVasp &arg,CVasp *dst,I
 				post("%s - number of arg vectors is odd - assuming complex part as 0",op);
 				++apairs;
 			}
+		}
 
 		if(apairs < pairs) {
 			pairs = apairs;

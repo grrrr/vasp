@@ -577,19 +577,22 @@ Vasp *VaspOp::m_rfft(OpParam &p,CVasp &src,CVasp *dst,BL inv)
 			VBuffer *d = vecs->Dst(i);
 			if(!d) d = s;
 
-			if(vecs->Frames() > 1)
-				if(radix2(vecs->Frames()) >= 1) 
+			if(vecs->Frames() > 1) {
+				if(radix2(vecs->Frames()) >= 1) {
 					// radix-2
 					if(inv)
 						ok = fft_inv_real_radix2(vecs->Frames(),s->Pointer(),s->Channels(),d->Pointer(),d->Channels());
 					else
 						ok = fft_fwd_real_radix2(vecs->Frames(),s->Pointer(),s->Channels(),d->Pointer(),d->Channels());
-				else
+                }
+				else {
 					// radix-n
 					if(inv)
 						ok = fft_inv_real_any(vecs->Frames(),s->Pointer(),s->Channels(),d->Pointer(),d->Channels());
 					else
 						ok = fft_fwd_real_any(vecs->Frames(),s->Pointer(),s->Channels(),d->Pointer(),d->Channels());
+                }
+            }
 		}
 		return ok?vecs->ResVasp():NULL;
 	}
@@ -608,19 +611,22 @@ Vasp *VaspOp::m_cfft(OpParam &p,CVasp &src,CVasp *dst,BL inv)
 			if(!dre) dre = sre;
 			if(!dim) dim = sim;
 
-			if(vecs->Frames() > 1)
-				if(radix2(vecs->Frames()) >= 1) 
+			if(vecs->Frames() > 1) {
+				if(radix2(vecs->Frames()) >= 1) {
 					// radix-2
 					if(inv)
 						ok = fft_inv_complex_radix2(vecs->Frames(),sre->Pointer(),sre->Channels(),sim?sim->Pointer():NULL,sim?sim->Channels():0,dre->Pointer(),dre->Channels(),dim->Pointer(),dim->Channels());
 					else
 						ok = fft_fwd_complex_radix2(vecs->Frames(),sre->Pointer(),sre->Channels(),sim?sim->Pointer():NULL,sim?sim->Channels():0,dre->Pointer(),dre->Channels(),dim->Pointer(),dim->Channels());
-				else
+                }
+				else {
 					// radix-n
 					if(inv)
 						ok = fft_inv_complex_any(vecs->Frames(),sre->Pointer(),sre->Channels(),sim?sim->Pointer():NULL,sim?sim->Channels():0,dre->Pointer(),dre->Channels(),dim->Pointer(),dim->Channels());
 					else
 						ok = fft_fwd_complex_any(vecs->Frames(),sre->Pointer(),sre->Channels(),sim?sim->Pointer():NULL,sim?sim->Channels():0,dre->Pointer(),dre->Channels(),dim->Pointer(),dim->Channels());
+                }
+            }
 		}
 		return ok?vecs->ResVasp():NULL;
 	}

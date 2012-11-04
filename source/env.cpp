@@ -60,15 +60,18 @@ BL Env::ChkArgs(I argc,const t_atom *argv)
 
 	while(argc > ix) {
 		// check for value 
-		if(flext::CanbeFloat(argv[ix])) ix++;
+		if(flext::CanbeFloat(argv[ix])) 
+		    ix++;
 		else 
 			return false;
 
 		// check for position
-		if(argc > ix)
-			if(flext::CanbeFloat(argv[ix])) ix++;
+		if(argc > ix) {
+			if(flext::CanbeFloat(argv[ix])) 
+			    ix++;
 			else 
 				return false;
+		}
 	}
 
 	return true;
