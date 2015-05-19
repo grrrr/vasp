@@ -159,6 +159,13 @@
 		E9EACC200B7D6883002F61CC /* vbuffer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vbuffer.h; path = source/vbuffer.h; sourceTree = "<group>"; };
 		E9EACC210B7D6883002F61CC /* vecblk.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = vecblk.cpp; path = source/vecblk.cpp; sourceTree = "<group>"; };
 		E9EACC220B7D6883002F61CC /* vecblk.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vecblk.h; path = source/vecblk.h; sourceTree = "<group>"; };
+		E9F1E9271B0BD6240026DC27 /* changes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = changes.txt; sourceTree = "<group>"; };
+		E9F1E9281B0BD6240026DC27 /* gpl.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = gpl.txt; sourceTree = "<group>"; };
+		E9F1E9291B0BD6240026DC27 /* license.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
+		E9F1E92A1B0BD6240026DC27 /* mixfft.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = mixfft.txt; sourceTree = "<group>"; };
+		E9F1E92B1B0BD6240026DC27 /* package.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = package.txt; sourceTree = "<group>"; };
+		E9F1E92C1B0BD6240026DC27 /* readme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
+		E9F1E92D1B0BD6240026DC27 /* todo.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = todo.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +182,13 @@
 		08FB7794FE84155DC02AAC07 /* vasp */ = {
 			isa = PBXGroup;
 			children = (
+				E9F1E9271B0BD6240026DC27 /* changes.txt */,
+				E9F1E9281B0BD6240026DC27 /* gpl.txt */,
+				E9F1E9291B0BD6240026DC27 /* license.txt */,
+				E9F1E92A1B0BD6240026DC27 /* mixfft.txt */,
+				E9F1E92B1B0BD6240026DC27 /* package.txt */,
+				E9F1E92C1B0BD6240026DC27 /* readme.txt */,
+				E9F1E92D1B0BD6240026DC27 /* todo.txt */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
