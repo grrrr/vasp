@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -27,7 +27,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\note if there is no remainder outputs a bang
 */
 class vasp_split:
-	public vasp_op
+	public vasp_op<>
 {
 	FLEXT_HEADER(vasp_split,vasp_op)
 
@@ -93,7 +93,7 @@ VASP_LIB_V("vasp.split",vasp_split)
 	\note The latest vector input to a slot is taken for the resulting vasp
 */
 class vasp_join:
-	public vasp_tx
+	public vasp_tx<>
 {
 	FLEXT_HEADER_S(vasp_join,vasp_tx,Setup)
 
@@ -170,7 +170,7 @@ VASP_LIB_V("vasp.join",vasp_join)
 	\retval outlet.+ bang - triggered after last spit 
 */
 class vasp_spit:
-	public vasp_op
+	public vasp_op<>
 {
 	FLEXT_HEADER(vasp_spit,vasp_op)
 
@@ -232,7 +232,7 @@ VASP_LIB_V("vasp.spit",vasp_spit)
 	\note On different vasp frame count the minimum frame count is taken.
 */
 class vasp_gather:
-	public vasp_tx
+	public vasp_tx<>
 {
 	FLEXT_HEADER_S(vasp_gather,vasp_tx,Setup)
 

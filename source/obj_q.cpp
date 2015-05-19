@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002-2010 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -26,7 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\note Only works for a vasp with one vector. No output otherwise.
 */
 class vasp_list:
-	public vasp_op
+	public vasp_op<>
 {
 	FLEXT_HEADER(vasp_list,vasp_op)
 
@@ -78,7 +78,7 @@ VASP_LIB("vasp.list vasp.?",vasp_list)
 	\todo units for position list
 */
 class vasp_nonzero:
-	public vasp_op
+	public vasp_op<>
 {
 	FLEXT_HEADER(vasp_nonzero,vasp_op)
 

@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -135,13 +135,13 @@ Vasp *VaspOp::m_search(OpParam &p,CVasp &src,const Argument &arg,CVasp *dst,BL s
 
 
 class vasp_search:
-	public vasp_anyop
+	public vasp_anyop<false>
 {																				
-	FLEXT_HEADER_S(vasp_search,vasp_anyop,Setup)
+	FLEXT_HEADER_S(vasp_search,vasp_anyop<false>,Setup)
 public:			
 	
 	vasp_search(I argc,t_atom *argv): 
-		vasp_anyop(argc,argv,VASP_ARG_R(0),false,XletCode(xlet_float,0)),
+		vasp_anyop<false>(argc,argv,VASP_ARG_R(0),XletCode(xlet_float,0)),
 		slope(0),dir(0),incl(false)
 	{}
 

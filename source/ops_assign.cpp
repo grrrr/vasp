@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -46,12 +46,12 @@ Vasp *VaspOp::m_ccopy(OpParam &p,CVasp &src,CVasp &arg)
 
 
 class vasp_copy:
-	public vasp_anyop
+	public vasp_anyop<true>
 {																				
-	FLEXT_HEADER(vasp_copy,vasp_anyop)
+	FLEXT_HEADER(vasp_copy,vasp_anyop<true>)
 public:			
 	
-	vasp_copy(I argc,const t_atom *argv): vasp_anyop(argc,argv,VASP_ARG(),true,XletCode(xlet_any,0)) {}
+	vasp_copy(I argc,const t_atom *argv): vasp_anyop<true>(argc,argv,VASP_ARG(),XletCode(xlet_any,0)) {}
 
 	virtual V m_to(I,const t_atom *) { post("s - destination vasp is ignored!",thisName()); }
 

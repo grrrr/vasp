@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -30,9 +30,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qmin:
-	public vasp_op
+	public vasp_op<>
 {
-	FLEXT_HEADER(vasp_qmin,vasp_op)
+	FLEXT_HEADER(vasp_qmin,vasp_op<>)
 
 public:
 	vasp_qmin() { 
@@ -184,9 +184,9 @@ VASP_LIB("vasp.amax?",vasp_qamax)
 	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qrmin:
-	public vasp_op
+	public vasp_op<>
 {
-	FLEXT_HEADER(vasp_qrmin,vasp_op)
+	FLEXT_HEADER(vasp_qrmin,vasp_op<>)
 public:
 	vasp_qrmin() { 
 		AddInAnything(); 

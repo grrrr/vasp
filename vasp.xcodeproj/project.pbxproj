@@ -73,8 +73,6 @@
 		E9EACC600B7D6883002F61CC /* ops_wnd.h in Headers */ = {isa = PBXBuildFile; fileRef = E9EACC160B7D6883002F61CC /* ops_wnd.h */; };
 		E9EACC610B7D6883002F61CC /* ops.h in Headers */ = {isa = PBXBuildFile; fileRef = E9EACC170B7D6883002F61CC /* ops.h */; };
 		E9EACC620B7D6883002F61CC /* opvecs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACC180B7D6883002F61CC /* opvecs.cpp */; };
-		E9EACC630B7D6883002F61CC /* rdx2fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACC190B7D6883002F61CC /* rdx2fft.cpp */; };
-		E9EACC640B7D6883002F61CC /* rvfft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACC1A0B7D6883002F61CC /* rvfft.cpp */; };
 		E9EACC650B7D6883002F61CC /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACC1B0B7D6883002F61CC /* util.cpp */; };
 		E9EACC660B7D6883002F61CC /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = E9EACC1C0B7D6883002F61CC /* util.h */; };
 		E9EACC670B7D6883002F61CC /* vasp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9EACC1D0B7D6883002F61CC /* vasp.cpp */; };
@@ -153,8 +151,6 @@
 		E9EACC160B7D6883002F61CC /* ops_wnd.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ops_wnd.h; path = source/ops_wnd.h; sourceTree = "<group>"; };
 		E9EACC170B7D6883002F61CC /* ops.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ops.h; path = source/ops.h; sourceTree = "<group>"; };
 		E9EACC180B7D6883002F61CC /* opvecs.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = opvecs.cpp; path = source/opvecs.cpp; sourceTree = "<group>"; };
-		E9EACC190B7D6883002F61CC /* rdx2fft.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = rdx2fft.cpp; path = source/rdx2fft.cpp; sourceTree = "<group>"; };
-		E9EACC1A0B7D6883002F61CC /* rvfft.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = rvfft.cpp; path = source/rvfft.cpp; sourceTree = "<group>"; };
 		E9EACC1B0B7D6883002F61CC /* util.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = util.cpp; path = source/util.cpp; sourceTree = "<group>"; };
 		E9EACC1C0B7D6883002F61CC /* util.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = util.h; path = source/util.h; sourceTree = "<group>"; };
 		E9EACC1D0B7D6883002F61CC /* vasp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = vasp.cpp; path = source/vasp.cpp; sourceTree = "<group>"; };
@@ -254,8 +250,6 @@
 				E9EACC160B7D6883002F61CC /* ops_wnd.h */,
 				E9EACC170B7D6883002F61CC /* ops.h */,
 				E9EACC180B7D6883002F61CC /* opvecs.cpp */,
-				E9EACC190B7D6883002F61CC /* rdx2fft.cpp */,
-				E9EACC1A0B7D6883002F61CC /* rvfft.cpp */,
 				E9EACC1B0B7D6883002F61CC /* util.cpp */,
 				E9EACC1C0B7D6883002F61CC /* util.h */,
 				E9EACC1D0B7D6883002F61CC /* vasp.cpp */,
@@ -344,9 +338,15 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "vasp" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 08FB7794FE84155DC02AAC07 /* vasp */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -398,8 +398,6 @@
 				E9EACC5D0B7D6883002F61CC /* ops_trnsc.cpp in Sources */,
 				E9EACC5F0B7D6883002F61CC /* ops_wnd.cpp in Sources */,
 				E9EACC620B7D6883002F61CC /* opvecs.cpp in Sources */,
-				E9EACC630B7D6883002F61CC /* rdx2fft.cpp in Sources */,
-				E9EACC640B7D6883002F61CC /* rvfft.cpp in Sources */,
 				E9EACC650B7D6883002F61CC /* util.cpp in Sources */,
 				E9EACC670B7D6883002F61CC /* vasp.cpp in Sources */,
 				E9EACC690B7D6883002F61CC /* vbuffer.cpp in Sources */,
@@ -413,7 +411,6 @@
 		1DEB914B08733D8E0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_EXTENSION = pd_darwin;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -421,18 +418,15 @@
 					FLEXT_THREADS,
 				);
 				HEADER_SEARCH_PATHS = (
-					"/Applications/Pd-0.42-5.app/Contents/Resources/src",
-					/usr/local/include/flext,
+					"$(PD)/src",
+					"$(inherited)",
 				);
-				INSTALL_PATH = /usr/local/lib;
-				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				OTHER_LDFLAGS = (
 					"-lflext-pd_td",
 					"-undefined",
 					dynamic_lookup,
 				);
-				PRODUCT_NAME = vasp;
-				ZERO_LINK = YES;
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 			};
 			name = Debug;
 		};
@@ -446,52 +440,49 @@
 					FLEXT_THREADS,
 				);
 				HEADER_SEARCH_PATHS = (
-					"/Applications/Pd-0.42-5.app/Contents/Resources/src",
-					/usr/local/include/flext,
+					"$(PD)/src",
+					"$(inherited)",
 				);
-				INSTALL_PATH = /usr/local/lib;
-				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				INSTALL_PATH = "$(HOME)/Library/Pure Data";
 				OTHER_LDFLAGS = (
 					"-lflext-pd_t",
 					"-undefined",
 					dynamic_lookup,
 				);
-				PRODUCT_NAME = vasp;
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 			};
 			name = Release;
 		};
 		1DEB914F08733D8E0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_FAST_MATH = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = _DEBUG;
-				GCC_THREADSAFE_STATICS = YES;
-				GCC_VERSION = 4.0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/include/flext,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Debug;
 		};
 		1DEB915008733D8E0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-				);
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_AUTO_VECTORIZATION = YES;
-				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_FAST_MATH = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_THREADSAFE_STATICS = YES;
-				GCC_VERSION = 4.0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INSTALL_PATH = /Applications/pdext;
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/include/flext,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Release;
 		};

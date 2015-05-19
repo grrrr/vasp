@@ -121,7 +121,6 @@ static const double  c5_4 = -1.5388417685876E+00;  /*  c5_4 = -(sin(u5)+sin(2*u5
 static const double  c5_5 =  3.6327126400268E-01;  /*  c5_5 = (sin(u5)-sin(2*u5));    */
 static const double  c8   =  7.0710678118655E-01;  /*  c8 = 1/sqrt(2);    */
 
-static const double   pi = M_PI;
 
 template<typename REAL>
 class MixFFT
@@ -295,7 +294,7 @@ protected:
         int i;
         double w,xre,xim,xre1,xim1;
 
-        w=2*pi/radix;
+        w=2*M_PI/radix;
         trigRe[0]=1; trigIm[0]=0;
         xre1=xre=cos(w); 
         xim1=xim=-sin(w);
@@ -508,7 +507,7 @@ protected:
         double cosw, sinw, gem;
 
         initTrig(radix);
-        omega = 2*pi/(double)(sofarRadix*radix);
+        omega = 2*M_PI/(double)(sofarRadix*radix);
         cosw =  cos(omega);
         sinw = -sin(omega);
         tw_re = 1.0;

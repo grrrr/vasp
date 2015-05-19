@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -27,13 +27,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\attention Normally vasp vectors have individual offsets - this operations sets all the buffer sizes to equal values.
 	\todo Implement unit processing.
 */
-class vasp_size:
-	public vasp_tx
+
+template <bool abs = true>
+class _vasp_size:
+	public vasp_tx<>
 {
-	FLEXT_HEADER_S(vasp_size,vasp_tx,Setup)
+	FLEXT_HEADER_S(_vasp_size,vasp_tx,Setup)
 
 public:
-	vasp_size(I argc,const t_atom *argv,BL abs = true):
+	_vasp_size(I argc,const t_atom *argv):
 		size(0),sets(false),keep(true),zero(true)
 	{
 		if(argc >= 1 && CanbeFloat(argv[0]))
@@ -45,23 +47,23 @@ public:
 		AddInFloat();
 		AddOutAnything();
 
-		if(abs) FLEXT_ADDATTR_VAR("frames",size,m_arg);
 	}
 
 	static V Setup(t_classid c)
 	{
+        if(abs) FLEXT_CADDATTR_VAR(c,"frames",size,m_arg);
 		FLEXT_CADDMETHOD(c,1,m_arg);
 		FLEXT_CADDATTR_VAR1(c,"keep",keep);
 		FLEXT_CADDATTR_VAR1(c,"zero",zero);
 	}
 
-	virtual V m_arg(F s) 
+	virtual V m_arg(F s)
 	{ 
 		size = (I)s;  // \todo unit processing 
 		sets = true;
 	}
-
-	virtual Vasp *x_work() 
+    
+	virtual Vasp *x_work()
 	{ 
 		Vasp *ret = new Vasp(ref); 
 		if(sets) ret->Size(size,keep,zero);
@@ -79,6 +81,15 @@ private:
 	FLEXT_ATTRGET_I(size);
 	FLEXT_ATTRVAR_B(keep);
 	FLEXT_ATTRVAR_B(zero);
+};
+
+class vasp_size:
+public _vasp_size<true>
+{
+    FLEXT_HEADER(vasp_size,_vasp_size<true>)
+    
+public:
+    vasp_size(I argc,const t_atom *argv): _vasp_size(argc,argv) {}
 };
 
 VASP_LIB_V("vasp.size vasp.s",vasp_size)
@@ -100,12 +111,12 @@ VASP_LIB_V("vasp.size vasp.s",vasp_size)
 	\todo Implement unit processing
 */
 class vasp_dsize:
-	public vasp_size
+	public _vasp_size<>
 {
-	FLEXT_HEADER(vasp_dsize,vasp_size)
+	FLEXT_HEADER(vasp_dsize,_vasp_size<>)
 
 public:
-	vasp_dsize(I argc,const t_atom *argv): vasp_size(argc,argv) {}
+	vasp_dsize(I argc,const t_atom *argv): _vasp_size(argc,argv) {}
 
 	virtual Vasp *x_work() 
 	{ 
@@ -133,13 +144,13 @@ VASP_LIB_V("vasp.size+ vasp.s+",vasp_dsize)
 	\retval outlet vasp - modified vasp
 */
 class vasp_msize:
-	public vasp_size
+	public _vasp_size<false>
 {
-	FLEXT_HEADER_S(vasp_msize,vasp_size,Setup)
+	FLEXT_HEADER_S(vasp_msize,_vasp_size<false>,Setup)
 
 public:
 	vasp_msize(I argc,const t_atom *argv): 
-		vasp_size(argc,argv,false) 
+		_vasp_size<false>(argc,argv)
 	{
 		if(argc && CanbeFloat(argv[0])) m_arg(GetAFloat(argv[0]));
 	}
@@ -224,7 +235,7 @@ VASP_LIB_V("vasp.size/ vasp.s/",vasp_rsize)
 	\todo Should we inhibit output for invalid vasps?
 */
 class vasp_qsize:
-	public vasp_op
+	public vasp_op<>
 {
 	FLEXT_HEADER(vasp_qsize,vasp_op)
 

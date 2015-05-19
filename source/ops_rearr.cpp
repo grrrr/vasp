@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -101,13 +101,13 @@ BL VecOp::d_shift(OpParam &p)
 
 
 class vasp_shift:
-	public vasp_anyop
+	public vasp_anyop<true>
 {																				
-	FLEXT_HEADER_S(vasp_shift,vasp_anyop,Setup)
+	FLEXT_HEADER_S(vasp_shift,vasp_anyop<true>,Setup)
 public:			
 	
 	vasp_shift(I argc,const t_atom *argv): 
-		vasp_anyop(argc,argv,VASP_ARG_I(0),true),
+		vasp_anyop<true>(argc,argv,VASP_ARG_I(0)),
 		fill(xsf_zero)
 	{}
 

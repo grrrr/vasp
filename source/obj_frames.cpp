@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -26,13 +26,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 	\todo Implement unit processing.
 */
-class vasp_frames:
-	public vasp_tx
+template<bool abs>
+class _vasp_frames:
+	public vasp_tx<>
 {
-	FLEXT_HEADER_S(vasp_frames,vasp_tx,Setup)
+	FLEXT_HEADER_S(_vasp_frames,vasp_tx<>,Setup)
 
 public:
-	vasp_frames(I argc,const t_atom *argv,BL abs = true):
+	_vasp_frames(I argc,const t_atom *argv):
 		frms(0),setf(false)
 	{
 		if(argc && CanbeFloat(argv[0]))
@@ -45,11 +46,11 @@ public:
 		AddInFloat();
 		AddOutAnything();
 
-		if(abs) FLEXT_ADDATTR_VAR("frames",frms,m_arg);
 	}
 
 	static V Setup(t_classid c)
 	{
+        if(abs) FLEXT_CADDATTR_VAR(c,"frames",frms,m_arg);
 		FLEXT_CADDMETHOD(c,1,m_arg);
 	}
 
@@ -77,6 +78,16 @@ private:
 	FLEXT_ATTRGET_I(frms);
 };
 
+
+class vasp_frames:
+public _vasp_frames<true>
+{
+    FLEXT_HEADER(vasp_frames,_vasp_frames<true>)
+    
+public:
+    vasp_frames(I argc,const t_atom *argv): _vasp_frames(argc,argv) {}
+};
+    
 VASP_LIB_V("vasp.frames vasp.f",vasp_frames)
 
 
@@ -96,12 +107,12 @@ VASP_LIB_V("vasp.frames vasp.f",vasp_frames)
 	\todo Implement unit processing.
 */
 class vasp_dframes:
-	public vasp_frames
+	public _vasp_frames<true>
 {
-	FLEXT_HEADER(vasp_dframes,vasp_frames)
+	FLEXT_HEADER(vasp_dframes,_vasp_frames<true>)
 
 public:
-	vasp_dframes(I argc,const t_atom *argv): vasp_frames(argc,argv) {}
+	vasp_dframes(I argc,const t_atom *argv): _vasp_frames(argc,argv) {}
 
 	virtual Vasp *x_work() 
 	{ 
@@ -129,13 +140,13 @@ VASP_LIB_V("vasp.frames+ vasp.f+",vasp_dframes)
 	\retval outlet vasp - modified vasp
 */
 class vasp_mframes:
-	public vasp_frames
+	public _vasp_frames<false>
 {
-	FLEXT_HEADER_S(vasp_mframes,vasp_frames,Setup)
+	FLEXT_HEADER_S(vasp_mframes,_vasp_frames<false>,Setup)
 
 public:
 	vasp_mframes(I argc,const t_atom *argv): 
-		vasp_frames(argc,argv,false) 
+		_vasp_frames(argc,argv)
 	{
 		if(argc && CanbeFloat(argv[0])) m_arg(GetAFloat(argv[0]));
 	}
@@ -219,7 +230,7 @@ VASP_LIB_V("vasp.frames/ vasp.f/",vasp_rframes)
 	\todo Should we inhibit output for invalid vasps?
 */
 class vasp_qframes:
-	public vasp_op
+	public vasp_op<>
 {
 	FLEXT_HEADER(vasp_qframes,vasp_op)
 

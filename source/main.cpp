@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -12,23 +12,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "classes.h"
 
 
-const C *VASP_VERSION = "0.1.4pre";
+const C *VASP_VERSION = "0.1.4";
 
 #include "opfuns.h"
 
 static V vasp_main()
 {
 	post("");
-	post("-----------------------------------------");
-	post("           VASP modular %s            ",VASP_VERSION);
-	post("   vector assembling signal processor    ");
-	post("       (C)2002-2009 Thomas Grill         ");
+	post("------------------------------");
+	post("VASP modular %s",VASP_VERSION);
+	post("vector assembling signal processor");
+	post("(C)2002-2015 Thomas Grill");
 #ifdef FLEXT_DEBUG
-	post("   DEBUG BUILD - " __DATE__ " " __TIME__);
+	post("DEBUG BUILD - " __DATE__ " " __TIME__);
 #endif
-	post("");
-	post("          http://grrrr.org/ext           ");
-	post("-----------------------------------------");
+	post("http://grrrr.org");
+	post("------------------------------");
 	post("");
 
 	// call the objects' setup routines

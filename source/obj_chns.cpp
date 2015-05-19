@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -25,7 +25,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\retval outlet modified vasp
 */
 class vasp_channel:
-	public vasp_tx
+	public vasp_tx<>
 {
 	FLEXT_HEADER_S(vasp_channel,vasp_tx,Setup)
 
@@ -85,7 +85,7 @@ VASP_LIB_V("vasp.channel vasp.c",vasp_channel)
 	\note No output for invalid vasp?
 */
 class vasp_qchannel:
-	public vasp_op
+	public vasp_op<>
 {
 	FLEXT_HEADER(vasp_qchannel,vasp_op)
 
@@ -126,7 +126,7 @@ VASP_LIB("vasp.channel? vasp.c?",vasp_qchannel)
 	\note No output for invalid vasp?
 */
 class vasp_qchannels:
-	public vasp_op
+	public vasp_op<>
 {
 	FLEXT_HEADER(vasp_qchannels,vasp_op)
 

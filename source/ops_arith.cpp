@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -48,12 +48,12 @@ VASP_UNARY("vasp.abs",abs,true,"Calculates the absolute value")
 	\remark Returns 0 for a vasp with 0 frames
 */
 class vasp_qsum:
-	public vasp_unop
+	public vasp_unop<true>
 {
-	FLEXT_HEADER(vasp_qsum,vasp_unop)
+	FLEXT_HEADER(vasp_qsum,vasp_unop<true>)
 
 public:
-	vasp_qsum(): vasp_unop(true,XletCode(xlet_float,0)) {}
+	vasp_qsum(): vasp_unop<true>(XletCode(xlet_float,0)) {}
 
 	virtual Vasp *do_opt(OpParam &p) 
 	{ 

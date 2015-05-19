@@ -1,8 +1,8 @@
-/* 
+/*
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c) 2002-2010 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -199,13 +199,13 @@ Vasp *VaspOp::m_tilt(OpParam &p,CVasp &src,const Argument &arg,CVasp *dst,BL sym
 
 
 class vasp_tilt:
-	public vasp_anyop
+	public vasp_anyop<true>
 {																				
-	FLEXT_HEADER_S(vasp_tilt,vasp_anyop,Setup)
+	FLEXT_HEADER_S(vasp_tilt,vasp_anyop<true>,Setup)
 public:			
 	
 	vasp_tilt(I argc,t_atom *argv): 
-		vasp_anyop(argc,argv,VASP_ARG_R(1),true),
+		vasp_anyop<true>(argc,argv,VASP_ARG_R(1)),
 		fill(xtf_zero),inter(xti_4p)
 	{}
 

@@ -1,8 +1,8 @@
-/* 
+/*
+ 
+VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-VASP modular - vector assembling signal processor / objects for Max/MSP and PD
-
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -32,7 +32,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 class vasp_imm:
-	public vasp_op
+	public vasp_op<>
 {
 	FLEXT_HEADER_S(vasp_imm,vasp_op,Setup)
 
