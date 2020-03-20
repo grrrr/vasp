@@ -311,7 +311,7 @@ namespace VecOp {
     	static I cop_opt() { return 0; }
         static V cop(T &,T &,T ra,T ia,OpParam &p) 
         { 
-	        onst T s = sqabs(ra,ia); 
+	        const T s = sqabs(ra,ia); 
 	        if(s < p.norm.minmax) p.norm.minmax = s; 
         } 
     };

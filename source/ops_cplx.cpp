@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -22,13 +22,13 @@ VASP_UNARY("vasp.rect",rect,true,"convert complex vector pair from polar to rect
 // -----------------------------------------------------
 
 
-Vasp *VaspOp::m_radd(OpParam &p,CVasp &src,const Argument &arg,CVasp *dst) 
+Vasp *VaspOp::m_radd(OpParam &p,CVasp &src,const Argument &_arg,CVasp *dst) 
 { 
 	Vasp *ret = NULL;
 	CVecBlock *vecs = GetCVecs(p.opname,src,dst);
 	if(vecs) {
-		if(arg.IsList() && arg.GetList().Count() >= 1 && flext::CanbeFloat(arg.GetList()[0]))
-			p.cbin.rarg = flext::GetAFloat(arg.GetList()[0]);
+		if(_arg.IsList() && _arg.GetList().Count() >= 1 && flext::CanbeFloat(_arg.GetList()[0]))
+			p.cbin.rarg = flext::GetAFloat(_arg.GetList()[0]);
 		else {
 			post("%s - argument is invalid -> set to 0",p.opname);
 			p.cbin.rarg = 0;
