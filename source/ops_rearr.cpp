@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -221,7 +221,7 @@ BL VecOp::d_mirr(OpParam &p)
 	
 	if(p.rsdt == p.rddt) {
 		BS *dl = p.rddt,*du = p.rddt+(p.frames-1)*p.rds;
-		register S t;
+		S t;
 		_DE_WHILE(dl < du, ( t = *dl, *dl = *du, *du = t, dl += p.rds,du -= p.rds ) )
 	}
 	else {

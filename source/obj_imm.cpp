@@ -2,7 +2,7 @@
  
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -89,7 +89,7 @@ public:
 
 //			post("!copy: src: %p,%i,%i -> dst: %p,%i",src,len,chns,dst,rlen);
 
-			register int i;
+			int i;
 			_DE_LOOP(i,len, ( dst[i] = *src,src += chns ) )
 			if(zero && rlen > len) ZeroSamples(dst+len,rlen-len);
 

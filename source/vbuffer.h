@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -80,7 +80,7 @@ class SysBuf:
 	public VBuffer
 {
 public:
-	SysBuf(const VSymbol &s,I chn = 0,I len = -1,I offs = 0) { Set(s,chn,len,offs); }
+	SysBuf(const VSymbol &s,I _chn = 0,I _len = -1,I _offs = 0) { Set(s,_chn,_len,_offs); }
 
 	virtual BL Ok() const { return buf.Ok(); }
 	virtual V Refresh() { buf.Dirty(true); }

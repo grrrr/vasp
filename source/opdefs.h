@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -55,9 +55,9 @@ inline BL vec_bin(T *v,const T *a,TR b,I n = 0) {
 
 /*! \brief skeleton for unary real operations
 */
-template<class T,class OP> BL V__run(register const T *sr,I rss,register T *dr,I rds,I frames)
+template<class T,class OP> BL V__run(const T *sr,I rss,T *dr,I rds,I frames)
 {																
-    register I i;
+    I i;
     if(sr == dr && OP::run_opt() >= 3)												
 		if((_D_ALWAYS1 || rds == 1) && OP::run_opt() >= 2)							
             _DE_LOOP(i,frames, ( OP::run(*dr,*dr), dr++ ) )
@@ -74,9 +74,9 @@ template<class T,class OP> BL V__run(register const T *sr,I rss,register T *dr,I
 
 /*! \brief skeleton for unary complex operations
 */
-template<class T,class OP> BL V__cun(register const T *sr,register const T *si,I rss,I iss,register T *dr,register T *di,I rds,I ids,I frames)
+template<class T,class OP> BL V__cun(const T *sr,const T *si,I rss,I iss,T *dr,T *di,I rds,I ids,I frames)
 {																
-    register I i;
+    I i;
 	if(sr == dr && si == di && OP::cun_opt() >= 3)									
 		if((_D_ALWAYS1 || (rds == 1 && ids == 1)) && OP::cun_opt() >= 2)			
             _DE_LOOP(i,frames, ( OP::cun(*dr,*di,*dr,*di), dr++,di++ ) )
@@ -90,9 +90,9 @@ template<class T,class OP> BL V__cun(register const T *sr,register const T *si,I
 	return true;												
 }
 
-template<class T,class OP> BL V__vun(I layers,register const T *sr,register T *dr,I frames)
+template<class T,class OP> BL V__vun(I layers,const T *sr,T *dr,I frames)
 {																
-    register I i;
+    I i;
     switch(layers) {
     case 1: 
             V__run<T,OP>(sr,1,dr,1,frames); 
@@ -114,9 +114,9 @@ template<class T,class OP> BL V__vun(I layers,register const T *sr,register T *d
 }
 
 
-template<class T,class OP> BL V__rbin(register const T *sr,I rss,register T *dr,I rds,register const T *ar,I ras,I frames)
+template<class T,class OP> BL V__rbin(const T *sr,I rss,T *dr,I rds,const T *ar,I ras,I frames)
 {																
-	register I i;												
+	I i;												
 	if(sr == dr && OP::rbin_opt() >= 3)								
 		if((_D_ALWAYS1 || (rds == 1 && ras == 1)) && OP::rbin_opt() >= 2)				
             _DE_LOOP(i,frames, ( OP::rbin(*dr,*dr,*ar), dr++,ar++ ) )
@@ -130,9 +130,9 @@ template<class T,class OP> BL V__rbin(register const T *sr,I rss,register T *dr,
     return true;
 }
 
-template<class T,class OP> BL V__cbin(register const T *sr,register const T *si,I rss,I iss,register T *dr,register T *di,I ids,I rds,const T *ar,const T *ai,I ras,I ias,I frames)
+template<class T,class OP> BL V__cbin(const T *sr,const T *si,I rss,I iss,T *dr,T *di,I ids,I rds,const T *ar,const T *ai,I ras,I ias,I frames)
 {																
-	register I i;												
+	I i;												
 	if(sr == dr && si == di && OP::cbin_opt() >= 3)							
 		if((_D_ALWAYS1 || (rds == 1 && ids == 1 && ras == 1 && ias == 1)) && OP::cbin_opt() >= 2) 
             _DE_LOOP(i,frames, ( OP::cbin(*dr,*di,*dr,*di,*ar,*ai), dr++,di++,ar++,ai++ ) )
@@ -162,9 +162,9 @@ public:
     static R ev(Env::Iter &a,I i,I m) { return a.ValFwd(i); }
 };
 
-template<class T,class TA,class TR,class OP,class EVARG> BL Vx__rbin(register const T *sr,I rss,register T *dr,I rds,TA ar,I frames)
+template<class T,class TA,class TR,class OP,class EVARG> BL Vx__rbin(const T *sr,I rss,T *dr,I rds,TA ar,I frames)
 {																
-	register I i;												
+	I i;												
 	if(sr == dr && OP::rbin_opt() >= 3)
 		if((_D_ALWAYS1 || rds == 1) && OP::rbin_opt() >= 2)				
             _DQ_LOOP(EVARG::unroll(),i,frames, ( OP::rbin(*dr,*dr,EVARG::ev(ar,i,1)), dr++ ) )
@@ -178,9 +178,9 @@ template<class T,class TA,class TR,class OP,class EVARG> BL Vx__rbin(register co
     return true;
 }
 
-template<class T,class TA1,class TA2,class TR,class OP,class EVARG1,class EVARG2> BL Vx__cbin(register const T *sr,register const T *si,I rss,I iss,register T *dr,register T *di,I ids,I rds,TA1 ar,TA2 ai,I ras,I ias,I frames)
+template<class T,class TA1,class TA2,class TR,class OP,class EVARG1,class EVARG2> BL Vx__cbin(const T *sr,const T *si,I rss,I iss,T *dr,T *di,I ids,I rds,TA1 ar,TA2 ai,I ras,I ias,I frames)
 {																
-	register I i;												
+	I i;												
 	if(sr == dr && si == di && OP::cbin_opt() >= 3)							
 		if((_D_ALWAYS1 || (rds == 1 && ids == 1 && ras == 1 && ias == 1)) && OP::cbin_opt() >= 2) 
             _DQ_LOOP(EVARG1::unroll() && EVARG2::unroll(),i,frames, ( OP::cbin(*dr,*di,*dr,*di,EVARG1::ev(ar,i,1),EVARG2::ev(ai,i,1)), dr++,di++ ) )
@@ -191,9 +191,9 @@ template<class T,class TA1,class TA2,class TR,class OP,class EVARG1,class EVARG2
     return true;
 }
 
-template<class T,class TA,class TR,class OP,class EVARG> BL Vx__vbin(I layers,register const T *sr,register T *dr,TA ar,I frames)
+template<class T,class TA,class TR,class OP,class EVARG> BL Vx__vbin(I layers,const T *sr,T *dr,TA ar,I frames)
 {																
-    register I i;
+    I i;
     switch(layers) {
     case 1: 
             Vx__rbin<T,TA,TR,OP,EVARG>(sr,1,dr,1,ar,frames); 
@@ -214,7 +214,7 @@ template<class T,class TA,class TR,class OP,class EVARG> BL Vx__vbin(I layers,re
     return true;
 }
 
-template<class T,class OP> inline BL V__vbin(I layers,register const T *sr,register T *dr,register const T *ar,I frames)
+template<class T,class OP> inline BL V__vbin(I layers,const T *sr,T *dr,const T *ar,I frames)
 {
     return Vx__vbin<T,const T *,T,OP,_A__vector<T> >(layers,sr,dr,ar,frames);
 }
@@ -281,9 +281,9 @@ template<class T,class OP> BL _F__cbin(OpParam &p)
 
 /*! \brief skeleton for real operations with parameter block
 */
-template<class T,class ARG,class OP> BL V__rop(ARG p,register const BS *sr,I rss,register BS *dr,I rds,I frames)
+template<class T,class ARG,class OP> BL V__rop(ARG p,const BS *sr,I rss,BS *dr,I rds,I frames)
 {																
-	register I i;												
+	I i;												
 	if(sr == dr && OP::rop_opt() >= 3)												
 		if((_D_ALWAYS1 || rds == 1) && OP::rop_opt() >= 2)											
             _DE_LOOP(i,frames, ( OP::rop(*dr,*dr,p), dr++ ) )
@@ -299,9 +299,9 @@ template<class T,class ARG,class OP> BL V__rop(ARG p,register const BS *sr,I rss
 
 /*! \brief skeleton for complex operations with parameter block
 */
-template<class T,class ARG,class OP> BL V__cop(ARG p,register const BS *sr,register const BS *si,I rss,I iss,register BS *dr,register BS *di,I rds,I ids,I frames)
+template<class T,class ARG,class OP> BL V__cop(ARG p,const BS *sr,const BS *si,I rss,I iss,BS *dr,BS *di,I rds,I ids,I frames)
 {																
-	register I i;												
+	I i;												
 	if(sr == dr && si == di && OP::cop_opt() >= 3)									
 		if((_D_ALWAYS1 || (rds == 1 && ids == 1)) && OP::cop_opt() >= 2)			
 			_DE_LOOP(i,frames, ( OP::cop(*dr,*di,*dr,*di,p), dr++,di++ ) )

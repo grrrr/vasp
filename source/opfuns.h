@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -77,7 +77,7 @@ namespace VecOp {
     	static I cbin_opt() { return 0; }
         static V cbin(T &rv,T &iv,T ra,T ia,T rb,T ib) 
         { 
-	        register const T den = sqabs(rb,ib);
+	        const T den = sqabs(rb,ib);
 	        rv = (ra*rb+ia*ib)/den;
 	        iv = (ia*rb-ra*ib)/den;
         }
@@ -91,7 +91,7 @@ namespace VecOp {
     	static I cbin_opt() { return 0; }
         static V cbin(T &rv,T &iv,T ra,T ia,T rb,T ib)
         { 
-	        register const T den = sqabs(ra,ia);
+	        const T den = sqabs(ra,ia);
 	        rv = (rb*ra+ib*ia)/den;
 	        iv = (ib*ra-rb*ia)/den;
         }
@@ -148,8 +148,8 @@ namespace VecOp {
     	static I cop_opt() { return 0; }
         static V cop(T &rv,T &iv,T ra,T ia,OpParam &p) 
         { 
-	        register const I powi = p.ibin.arg;
-            register T rt,it; VecOp::f_sqr<T>::cun(rt,it,ra,ia);
+	        const I powi = p.ibin.arg;
+            T rt,it; VecOp::f_sqr<T>::cun(rt,it,ra,ia);
             for(I i = 2; i < powi; ++i) VecOp::f_mul<T>::cbin(rt,it,rt,it,ra,ia);
 	        rv = rt,iv = it;
         } 
@@ -163,9 +163,9 @@ namespace VecOp {
     	static I cbin_opt() { return 0; }
         static V cbin(T &rv,T &iv,T ra,T ia,T rb,T) 
         { 
-	        register const T _abs = sqrt(sqabs(ra,ia));
+	        const T _abs = sqrt(sqabs(ra,ia));
 	        if(_abs) {
-		        register const T _p = pow(_abs,rb)/_abs;
+		        const T _p = pow(_abs,rb)/_abs;
 		        rv = _p*ra,iv = _p*ia;
 	        }
 	        else
@@ -311,7 +311,7 @@ namespace VecOp {
     	static I cop_opt() { return 0; }
         static V cop(T &,T &,T ra,T ia,OpParam &p) 
         { 
-	        register T s = sqabs(ra,ia); 
+	        onst T s = sqabs(ra,ia); 
 	        if(s < p.norm.minmax) p.norm.minmax = s; 
         } 
     };
@@ -327,7 +327,7 @@ namespace VecOp {
     	static I cop_opt() { return 0; }
         static V cop(T &,T &,T ra,T ia,OpParam &p) 
         { 
-	        register T s = sqabs(ra,ia); 
+	        const T s = sqabs(ra,ia); 
 	        if(s > p.norm.minmax) p.norm.minmax = s; 
         } 
     };
@@ -337,7 +337,7 @@ namespace VecOp {
     	static I rop_opt() { return 0; }
         static V rop(T &,T ra,OpParam &p) 
         { 
-	        register T s = fabs(ra); 
+	        const T s = fabs(ra); 
 	        if(s < p.norm.minmax) p.norm.minmax = s; 
         } 
     };
@@ -347,7 +347,7 @@ namespace VecOp {
     	static I rop_opt() { return 0; }
         static V rop(T &,T ra,OpParam &p) 
         { 
-	        register T s = fabs(ra); 
+	        const T s = fabs(ra); 
 	        if(s > p.norm.minmax) p.norm.minmax = s; 
         } 
     };
@@ -363,7 +363,7 @@ namespace VecOp {
     	static I cbin_opt() { return 0; }
         static V cbin(T &rv,T &iv,T ra,T ia,T rb,T) 
         { 
-	        register const T _abs = sqabs(ra,ia);
+	        const T _abs = sqabs(ra,ia);
 
 	        if(_abs >= rb*rb) rv = ra,iv = ia;
 	        else rv = iv = 0;
@@ -378,7 +378,7 @@ namespace VecOp {
     	static I cbin_opt() { return 0; }
         static V cbin(T &rv,T &iv,T ra,T ia,T rb,T) 
         { 
-	        register const T _abs = sqabs(ra,ia);
+	        const T _abs = sqabs(ra,ia);
 
 	        if(_abs <= rb*rb) rv = ra,iv = ia;
 	        else rv = iv = 0;
@@ -392,7 +392,7 @@ namespace VecOp {
     	static I cun_opt() { return 0; }
         static V cun(T &rv,T &iv,T ra,T ia) 
         { 
-	        register T f = sqabs(ra,ia);
+	        T f = sqabs(ra,ia);
 	        if(f) { f = 1./sqrt(f); rv = ra*f,iv = ia*f; }
 	        else rv = iv = 0;
         }
@@ -421,8 +421,8 @@ namespace VecOp {
     	static I cbin_opt() { return 0; }
         static V cbin(T &rv,T &iv,T ra,T ia,T rb,T) 
         { 
-	        register const T _abs = sqrt(sqabs(ra,ia))+rb;
-	        register const T _phi = arg(ra,ia);
+	        const T _abs = sqrt(sqabs(ra,ia))+rb;
+	        const T _phi = arg(ra,ia);
 
 	        rv = _abs*cos(_phi),iv = _abs*sin(_phi);
         } 

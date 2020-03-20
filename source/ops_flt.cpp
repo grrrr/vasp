@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -32,12 +32,12 @@ BL VecOp::d_fhp(OpParam &p)
 	BS *src = p.rsdt,*dst = p.rddt;
 
 	for(I ti = 0; ti < arep; ++ti) {
-		register S v1;
+		S v1;
 		I i;
 
 		// t+ direction
 		for(i = 0,v1 = 0; i < p.frames; ++i) {
-			register const S v0 = *src + coef*v1;
+			const S v0 = *src + coef*v1;
 			*dst = v0-v1;
 			v1 = v0;
 			src += p.rss,dst += p.rds;
@@ -49,7 +49,7 @@ BL VecOp::d_fhp(OpParam &p)
 			// t- direction
 			for(i = p.frames-1,v1 = 0; i >= 0; --i) {
 				src -= p.rss,dst -= p.rds;
-				register const S v0 = *src + coef*v1;
+				const S v0 = *src + coef*v1;
 				*dst = v0-v1;
 				v1 = v0;
 			}
@@ -79,7 +79,7 @@ BL VecOp::d_flp(OpParam &p)
 	const I arep = abs(p.flt.rep);
 
 	for(I ti = 0; ti < arep; ++ti) {
-		register S v1;
+		S v1;
 		I i;
 		BS *src = p.rsdt,*dst = p.rddt;
 
@@ -147,8 +147,8 @@ BL VecOp::d_int(OpParam &p)
 	if(p.revdir)
 		post("%s - reversed operation direction due to overlap: opposite sample delay",p.opname);
 
-	register S d = p.intdif.carry;
-	register I i;
+	S d = p.intdif.carry;
+	I i;
 	_DE_LOOP(i,p.frames, ( *p.rddt = (d += *p.rsdt), p.rsdt += p.rss,p.rddt += p.rds ) )
 	p.intdif.carry = d;
 	return true; 
@@ -165,8 +165,8 @@ BL VecOp::d_dif(OpParam &p)
 	if(p.revdir)
 		post("%s - reversed operation direction due to overlap: opposite sample delay",p.opname);
 
-	register S d = p.intdif.carry,d1;
-	register I i;
+	S d = p.intdif.carry,d1;
+	I i;
 	_DE_LOOP(i,p.frames, ( d1 = *p.rsdt, *p.rddt = d1-d,d = d1, p.rsdt += p.rss,p.rddt += p.rds ) )
 	p.intdif.carry = d;
 	return true; 

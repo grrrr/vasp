@@ -510,7 +510,7 @@ template<bool withto>
 Vasp *vasp_binop<withto>::x_work() { return tx_work(arg); }
 
 template<bool withto>
-Vasp *vasp_binop<withto>::tx_work(const Argument &arg)
+Vasp *vasp_binop<withto>::tx_work(const Argument &)
 {
     error("%s - no work method implemented",this->thisName());
     return NULL;
@@ -594,7 +594,7 @@ template<bool withto>
 Vasp *vasp_anyop<withto>::x_work() { return tx_work(arg); }
 
 template<bool withto>
-Vasp *vasp_anyop<withto>::tx_work(const Argument &arg)
+Vasp *vasp_anyop<withto>::tx_work(const Argument &)
 {
     error("%s - no work method implemented",this->thisName());
     return NULL;

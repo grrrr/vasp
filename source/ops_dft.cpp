@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -77,7 +77,7 @@ static BL fft_fwd_real_any(I cnt,El *rsdt,I _rss,El *rddt,I _rds)
 	const BL rdt = rsdt == rddt || rds != 1;
 
 	El *rstmp,*istmp;
-	register I i;
+	I i;
 	
 	if(rst) {
 		rstmp = new El[cnt];
@@ -138,7 +138,7 @@ static BL fft_inv_real_any(I cnt,El *rsdt,I _rss,El *rddt,I _rds)
 	const I n2 = cnt/2;
 	El *rstmp,*istmp;
 	istmp = new El[cnt];
-	register I i;
+	I i;
 	
 	if(rst) {
 		rstmp = new El[cnt];
@@ -193,7 +193,7 @@ static BL fft_fwd_complex_any(I cnt,El *rsdt,I _rss,El *isdt,I _iss,El *rddt,I _
 	const BL idt = isdt == iddt || ids != 1;
 
 	El *rstmp,*istmp;
-	register I i;
+	I i;
 	
 	if(rst) {
 		rstmp = new El[cnt];
@@ -319,7 +319,7 @@ static BL fft_complex_radix2(I cnt,El *rsdt,I _rss,El *isdt,I _iss,El *rddt,I _r
 
 	BL rt = false,it = false;
 	El *rtmp,*itmp;
-	register I i;
+	I i;
 
 	if(rss == 1)
 		rtmp = rsdt;
@@ -391,7 +391,7 @@ static void nrmirev(T *data,int n,float fn)
 	const I n2 = n/2,n4 = n2/2;
 	for(i = 0; i <= n2; ++i) data[i] *= fn;
 	for(i = 1; i < n4; ++i) { 
-		register F tmp = data[n2+i];
+		const F tmp = data[n2+i];
 		data[n2+i] = data[n-i]*fn;
 		data[n-i] = tmp*fn;
 	}
@@ -407,7 +407,7 @@ BL fft_fwd_real_radix2(I cnt,El *src,I _sstr,El *dst,I _dstr)
 	const I dstr = _dstr,sstr = _sstr;
 #endif
 
-	register I i;
+	I i;
 	const I n2 = cnt/2;
 	const F fn = (F)(1./sqrt((F)cnt));
 	El *stmp;
@@ -483,7 +483,7 @@ BL fft_inv_real_radix2(I cnt,El *src,I _sstr,El *dst,I _dstr)
 	const I dstr = _dstr,sstr = _sstr;
 #endif
 
-	register I i;
+	I i;
 	const I n2 = cnt/2;
 	const F fn = (F)(1./sqrt((F)cnt));
 	El *stmp;

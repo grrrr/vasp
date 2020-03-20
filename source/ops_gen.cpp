@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 BL VecOp::d_osc(OpParam &p) 
 { 
-	register R ph = p.gen.ph,phinc = p.gen.phinc; 
+	R ph = p.gen.ph,phinc = p.gen.phinc; 
 	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
 
 	for(I i = 0; i < p.frames; ++i,ph += phinc,p.rddt += p.rds) *p.rddt = cos(ph);
@@ -29,7 +29,7 @@ BL VecOp::d_osc(OpParam &p)
 */
 BL VecOp::d_mosc(OpParam &p) 
 { 
-	register R ph = p.gen.ph,phinc = p.gen.phinc; 
+	R ph = p.gen.ph,phinc = p.gen.phinc; 
 	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
 
 	for(I i = 0; i < p.frames; ++i,ph += phinc,p.rsdt += p.rss,p.rddt += p.rds) 
@@ -73,7 +73,7 @@ Vasp *VaspOp::m_osc(OpParam &p,CVasp &src,const Argument &arg,CVasp *dst,BL mul)
 */
 BL VecOp::d_cosc(OpParam &p) 
 { 
-	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	R ph = p.gen.ph,phinc = p.gen.phinc;
 	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
 
 	for(; p.frames--; ph += phinc,p.rddt += p.rds,p.iddt += p.ids) 
@@ -85,13 +85,13 @@ BL VecOp::d_cosc(OpParam &p)
 */
 BL VecOp::d_mcosc(OpParam &p) 
 { 
-	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	R ph = p.gen.ph,phinc = p.gen.phinc;
 	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
 
 	for(; p.frames--; ph += phinc,p.rsdt += p.rss,p.isdt += p.iss,p.rddt += p.rds,p.iddt += p.ids) {
 		R zre = cos(ph),zim = sin(ph);
 
-		register const R r = *p.rsdt * zre - *p.isdt * zim;
+		const R r = *p.rsdt * zre - *p.isdt * zim;
 		*p.iddt = *p.isdt * zre + *p.rsdt * zim;
 		*p.rddt = r;
 	}
@@ -143,7 +143,7 @@ VASP_ANYOP("vasp.*cosc",mcosc,1,true,VASP_ARG(),"Multiplies with a complex oscil
 */
 BL VecOp::d_phasor(OpParam &p) 
 { 
-	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	R ph = p.gen.ph,phinc = p.gen.phinc;
 	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
 
 	for(; p.frames--; ph += phinc,p.rddt += p.rds) *p.rddt = fmod((F)ph,1.F);
@@ -154,7 +154,7 @@ BL VecOp::d_phasor(OpParam &p)
 */
 BL VecOp::d_mphasor(OpParam &p) 
 { 
-	register R ph = p.gen.ph,phinc = p.gen.phinc;
+	R ph = p.gen.ph,phinc = p.gen.phinc;
 	if(p.revdir) ph -= (p.frames-1)*(phinc = -phinc);
 
 	for(; p.frames--; ph += phinc,p.rddt += p.rds,p.rsdt += p.rss) *p.rddt = *p.rsdt * fmod((F)ph,1.F);

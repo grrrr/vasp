@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -61,7 +61,7 @@ public:
 	BL IsEnv() const { return tp == tp_env; }
 	BL CanbeEnv() const { return tp == tp_env || (tp == tp_env && Env::ChkArgs(dt.atoms->Count(),dt.atoms->Atoms())); }
 	BL IsInt() const { return tp == tp_int; }
-	BL CanbeInt() const { return tp == tp_int || tp == tp_float || tp_double; }
+	BL CanbeInt() const { return tp == tp_int || tp == tp_float || tp == tp_double; }
 	BL IsFloat() const { return tp == tp_float; }
 	BL CanbeFloat() const { return tp == tp_float || tp == tp_double || tp == tp_int; }
 	BL IsDouble() const { return tp == tp_double; }

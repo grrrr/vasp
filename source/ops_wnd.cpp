@@ -2,7 +2,7 @@
 
 VASP modular - vector assembling signal processor / objects for Max and Pure Data
 
-Copyright (c)2002-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c)2002-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -29,15 +29,15 @@ inline R wf_lanczos(R i,const OpParam &p) { const R x = i*p.wnd.p1+p.wnd.p2; ret
 
 
 static V WndOp(wfunc wf,OpParam &p) {
-	register I i;
+	I i;
 
 	if(!p.wnd.mul) {
-		register BS *dd = p.rddt;
+		BS *dd = p.rddt;
 		_D_LOOP(i,p.frames) *dd = wf(i,p),dd += p.rds; _E_LOOP 
 	}
 	else {
-		register const BS *sd = p.rsdt;
-		register BS *dd = p.rddt;
+		const BS *sd = p.rsdt;
+		BS *dd = p.rddt;
 		_D_LOOP(i,p.frames) *dd = *sd*wf(i,p),sd += p.rss,dd += p.rds; _E_LOOP
 	}
 }
@@ -56,22 +56,22 @@ BL VecOp::d_window(OpParam &p)
 
 	switch(p.wnd.wndtp) {	
 	case 0: { // bevel (Bartlett)
-		register R inc,cur;
+		R inc,cur;
 		inc = (rev?-1.:1.)/p.frames; // increase
 		cur = rev?(1+inc/2):inc/2; // start
 
 		if(!p.wnd.mul) {
-			register BS *dd = p.rddt;
-			register I i;
+			BS *dd = p.rddt;
+			I i;
 			if(p.rds == 1)
 				_D_LOOP(i,p.frames) *(dd++) = cur,cur += inc; _E_LOOP
 			else
 				_D_LOOP(i,p.frames) *dd = cur,dd += p.rds,cur += inc; _E_LOOP
 		}
 		else {
-			register const BS *sd = p.rsdt;
-			register BS *dd = p.rddt;
-			register I i;
+			const BS *sd = p.rsdt;
+			BS *dd = p.rddt;
+			I i;
 			if(sd == dd)
 				if(p.rss == 1 && p.rds == 1)
 					_D_LOOP(i,p.frames) *(dd++) *= cur,cur += inc; _E_LOOP
